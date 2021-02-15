@@ -19,8 +19,10 @@ const getDefaultState = () => {
     },
     maxViewMode: 'person',
 
-    token: 'sdfssfdsssddfdsfsdfsfdfsfsd',
-    refreshToken: 'sdfdsfsdsieieiedkdieie',
+    // token: 'sdfssfdsssddfdsfsdfsfdfsfsd',
+    // refreshToken: 'sdfdsfsdsieieiedkdieie',
+    token: '',
+    refreshToken: '',
   };
 };
 
