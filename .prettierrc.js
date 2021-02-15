@@ -8,7 +8,7 @@ module.exports = {
   arrowParens: 'always',
   bracketSpacing: true,
   endOfLine: 'lf',
-  printWidth: 120,
+  printWidth: 80,
   proseWrap: 'preserve',
   quoteProps: 'as-needed',
   vueIndentScriptAndStyle: true,
