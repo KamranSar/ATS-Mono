@@ -18,7 +18,7 @@
         timeout: 6000,
       };
     },
-    created: function() {
+    created: function () {
       this.$store.watch(
         (state) => state.snackbar.snack,
         () => {

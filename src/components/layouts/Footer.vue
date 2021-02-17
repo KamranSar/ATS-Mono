@@ -24,12 +24,12 @@
           class="ma-auto text--grey caption"
         >
           <span
-            style="cursor:pointer;color:grey;text-decoration:underline"
+            style="cursor: pointer; color: grey; text-decoration: underline"
             @click="creditsDialog = true"
           >
             <Credits @input="creditsDialog = false"></Credits> </span
           >&nbsp;| &nbsp;
-          <a href="https://pragital.com" target="_blank" style="color:grey"
+          <a href="https://pragital.com" target="_blank" style="color: grey"
             >Pragital Powered.</a
           >
         </v-col>

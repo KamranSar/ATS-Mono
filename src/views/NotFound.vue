@@ -17,10 +17,8 @@
         </v-col>
         <v-col cols="12" md="9">
           <v-card flat height="100%">
-            <p class="display-1 font-weight-bold mt-5">
-              Page not found.
-            </p>
-            <p class="title ">
+            <p class="display-1 font-weight-bold mt-5">Page not found.</p>
+            <p class="title">
               Try going back to home page and repeating your action. Or, contact
               us for assistance.
             </p>

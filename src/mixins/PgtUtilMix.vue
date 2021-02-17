@@ -25,7 +25,7 @@
     methods: {
       pgtDebounce(func, delay) {
         let debounceTimer;
-        return function() {
+        return function () {
           const context = this;
           const args = arguments;
           clearTimeout(debounceTimer);

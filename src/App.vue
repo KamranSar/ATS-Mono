@@ -32,12 +32,12 @@
     },
 
     filters: {
-      capitalize: function(value) {
+      capitalize: function (value) {
         if (!value) return '';
         value = value.toString();
         return value.charAt(0).toUpperCase() + value.slice(1);
       },
-      fmtCurrency: function(value) {
+      fmtCurrency: function (value) {
         if (!value) value = 0;
         return value.toLocaleString('en-IN', {
           style: 'currency',

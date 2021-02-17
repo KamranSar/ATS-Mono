@@ -42,16 +42,16 @@
       this.localField = this.parseDate(this.field);
     },
     watch: {
-      localFieldFmt: function(val) {
+      localFieldFmt: function (val) {
         this.$emit('update:field', val);
       },
     },
     computed: {
       localFieldFmt: {
-        get: function() {
+        get: function () {
           return this.formatDate(this.localField);
         },
-        set: function(val) {
+        set: function (val) {
           this.$emit('update:field', val);
         },
       },

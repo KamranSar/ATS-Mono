@@ -10,7 +10,7 @@
     <template slot="content">
       <v-row dense>
         <v-col cols="12">
-          <v-card flat color="transparent" height="100%" style="overflow:auto">
+          <v-card flat color="transparent" height="100%" style="overflow: auto">
             <v-card-title>
               <v-spacer></v-spacer>
 
@@ -105,7 +105,7 @@
         deep: true,
       },
 
-      search: function() {
+      search: function () {
         if (!this.awaitingSearch) {
           setTimeout(() => {
             this.fetchServiceReq({

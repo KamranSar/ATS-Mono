@@ -27,7 +27,10 @@
                   or
                   <span
                     class="pl-3"
-                    style="text-decoration:underline;text-underline-position: under"
+                    style="
+                      text-decoration: underline;
+                      text-underline-position: under;
+                    "
                   >
                     login
                   </span>

@@ -1,9 +1,7 @@
 <template>
   <Panel icon="mdi-view-dashboard" title="Dashboard">
     <template slot="content">
-      <v-container>
-        This is a beautiful dashboard.
-      </v-container>
+      <v-container> This is a beautiful dashboard. </v-container>
     </template>
   </Panel>
 </template>

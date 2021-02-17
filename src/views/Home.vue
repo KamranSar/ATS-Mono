@@ -32,7 +32,7 @@
       getImgUrl(img) {
         return require('@/assets/' + img);
       },
-      scrollTo: function(hashtag) {
+      scrollTo: function (hashtag) {
         setTimeout(() => {
           location.href = hashtag;
         }, 1);
