@@ -3,7 +3,7 @@ import { make } from 'vuex-pathify';
 const getDefaultState = () => {
   return {
     leftDrawOpen: false,
-    rightDrawOpen: true,
+    rightDrawOpen: false,
     rightDrawEnabled: true,
     systemBarEnabled: true,
   };

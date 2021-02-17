@@ -33,7 +33,8 @@ const vuexCookie = new VuexPersist({
 const vuexLocal = new VuexPersist({
   key: 'localStore', // The key to store the state on in the storage provider.
   storage: localStorage, // or window.sessionStorage or localForage
-  modules: ['pref', 'serviceReq'],
+  // modules: ['pref', 'serviceReq'],
+  modules: ['serviceReq'], // Dont include prefs
   // reducer: (state) => ({ navigation: state.navigation }), //only save navigation state module
   // filter: (mutation) => mutation.type == 'addNavItem'
 });
