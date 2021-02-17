@@ -22,6 +22,11 @@ function logout(to, from, next) {
   next('/login');
 }
 
+const waitForStorageToBeReady = async (to, from, next) => {
+  await store.restored;
+  next();
+};
+
 const routes = [
   {
     path: '/',
@@ -96,6 +101,7 @@ router.beforeResolve((to, from, next) => {
 
   next();
 });
+router.beforeEach(waitForStorageToBeReady);
 
 router.afterEach(() => {
   store.set('loading', false);
