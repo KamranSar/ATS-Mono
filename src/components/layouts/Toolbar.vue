@@ -1,14 +1,6 @@
 <template>
   <div>
-    <v-system-bar app v-if="systemBarEnabled">
-      <v-spacer></v-spacer>
-
-      <v-icon>mdi-square</v-icon>
-
-      <v-icon>mdi-circle</v-icon>
-
-      <v-icon>mdi-triangle</v-icon>
-    </v-system-bar>
+    <system-bar v-if="systemBarEnabled"></system-bar>
     <v-app-bar
       :clipped-left="clippedLeft"
       :clipped-right="clippedRight"
@@ -179,7 +171,17 @@
 
     components: {
       NavDrawer,
-      NavDrawerRight: () => import('./NavDrawerRight'),
+      SystemBar: () =>
+        import(
+          /* webpackChunkName: "default-system-bar" */
+          '@/components/layouts/SystemBar'
+        ),
+
+      NavDrawerRight: () =>
+        import(
+          /* webpackChunkName: "nav-drawer-right" */
+          '@/components/layouts/NavDrawerRight'
+        ),
     },
   };
 </script>
