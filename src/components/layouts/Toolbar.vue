@@ -11,7 +11,7 @@
       <v-app-bar-nav-icon
         @click="leftDrawOpen = !leftDrawOpen"
       ></v-app-bar-nav-icon>
-      <router-link to="/">
+      <router-link :to="{ name: 'home' }">
         <v-img
           src="../../assets/img/logo.png"
           contain
