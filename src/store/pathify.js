@@ -6,3 +6,6 @@ export default pathify;
 // options
 pathify.options.mapping = 'standard';
 pathify.options.deep = 2;
+if (process.env.NODE_ENV === 'development') {
+  pathify.debug(); // Print out pathify's settings
+}
