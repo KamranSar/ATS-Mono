@@ -9,6 +9,7 @@
       min-height="65"
     >
       <v-app-bar-nav-icon
+        v-if="leftDrawEnabled"
         @click="leftDrawOpen = !leftDrawOpen"
       ></v-app-bar-nav-icon>
       <router-link :to="{ name: 'home' }">
@@ -71,15 +72,21 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="leftDrawOpen" clipped hide-overlay app>
+    <v-navigation-drawer
+      v-if="leftDrawEnabled"
+      v-model="leftDrawOpen"
+      clipped
+      hide-overlay
+      app
+    >
       <!-- Items are passed from here since we may want to reuse these at 
           toolbar level at some point in time -->
-      <NavDrawer
+      <NavDrawerLeft
         :userItems="userItems"
         :adminItems="adminItems"
         :anonItems="anonItems"
         :anonNavItems="anonNavItems"
-      ></NavDrawer>
+      ></NavDrawerLeft>
     </v-navigation-drawer>
 
     <v-navigation-drawer
@@ -106,7 +113,6 @@
 </template>
 
 <script>
-  import NavDrawer from './NavDrawer';
   import { sync } from 'vuex-pathify';
   import { mapActions, mapGetters } from 'vuex';
 
@@ -161,6 +167,7 @@
       ...sync('pref', [
         'leftDrawOpen',
         'rightDrawOpen',
+        'leftDrawEnabled',
         'rightDrawEnabled',
         'systemBarEnabled',
       ]),
@@ -170,7 +177,11 @@
     },
 
     components: {
-      NavDrawer,
+      NavDrawerLeft: () =>
+        import(
+          /* webpackChunkName: "nav-drawer-left" */
+          '@/components/layouts/NavDrawerLeft'
+        ),
       SystemBar: () =>
         import(
           /* webpackChunkName: "default-system-bar" */

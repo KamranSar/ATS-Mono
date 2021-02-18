@@ -4,6 +4,7 @@ const getDefaultState = () => {
   return {
     leftDrawOpen: false,
     rightDrawOpen: false,
+    leftDrawEnabled: true,
     rightDrawEnabled: true,
     systemBarEnabled: true,
   };
