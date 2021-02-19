@@ -59,7 +59,14 @@
       <!-- </v-container> -->
     </v-main>
 
-    <Footer v-if="footerEnabled"></Footer>
+    <Footer
+      v-if="footerEnabled"
+      :userItems="userItems"
+      :adminItems="adminItems"
+      :anonItems="anonItems"
+      :anonNavItems="anonNavItems"
+    ></Footer>
+
     <BottomNavBar
       v-if="bottomBarEnabled"
       :userItems="userItems"
@@ -117,14 +124,35 @@
       return {
         clippedLeft: true,
         clippedRight: true,
+        //  see here for icons: http://materialdesignicons.com/
         anonNavItems: [
-          { title: 'How it works?', to: '/#howitworks' },
-          { title: 'Features', to: '/#features' },
-          { title: 'Pricing', to: '/#pricing' },
+          {
+            title: 'How it works?',
+            to: '/#howitworks',
+            icon: 'mdi-lightbulb',
+          },
+          {
+            title: 'Features',
+            to: '/#features',
+            icon: 'mdi-bug',
+          },
+          {
+            title: 'Pricing',
+            to: '/#pricing',
+            icon: 'mdi-cash-multiple',
+          },
         ],
         anonItems: [
-          { title: 'Login', to: '/login', icon: 'mdi-fingerprint' },
-          { title: 'Signup', to: '/signup', icon: 'mdi-account-box-outline' },
+          {
+            title: 'Login',
+            to: '/login',
+            icon: 'mdi-fingerprint',
+          },
+          {
+            title: 'Signup',
+            to: '/signup',
+            icon: 'mdi-account-box-outline',
+          },
         ],
         userItems: [
           {
@@ -145,7 +173,11 @@
           },
         ],
         adminItems: [
-          { icon: 'mdi-account-outline', title: 'Users', to: '/admin/users' },
+          {
+            icon: 'mdi-account-outline',
+            title: 'Users',
+            to: '/admin/users',
+          },
           {
             icon: 'mdi-printer',
             title: 'Export Templates',
@@ -153,8 +185,16 @@
           },
         ],
         userToolbarItems: [
-          { icon: 'mdi-folder-account', title: 'Account', to: '/my-account' },
-          { icon: 'mdi-logout', title: 'Logout', to: '/logout' },
+          {
+            icon: 'mdi-folder-account',
+            title: 'Account',
+            to: '/my-account',
+          },
+          {
+            icon: 'mdi-logout',
+            title: 'Logout',
+            to: '/logout',
+          },
         ],
       };
     },

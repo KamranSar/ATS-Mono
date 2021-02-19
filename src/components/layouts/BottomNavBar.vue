@@ -1,32 +1,23 @@
 <template>
-  <v-bottom-navigation :value="value" color="teal" grow>
-    <!-- <v-btn
-      v-for="link in links"
-      :key="link.caption"
-      color="white"
-      text
-      class="my-2"
-      :to="link.to"
-      >{{ link.caption }}</v-btn
-    > -->
+  <v-bottom-navigation :value="value" color="blue" grow>
+    <template v-if="isLoggedIn">
+      <v-btn v-for="(item, i) in userItems" :key="i" :to="item.to">
+        <span>{{ item.title }}</span>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-btn>
+    </template>
 
-    <v-btn>
-      <span>Recents</span>
+    <template v-else>
+      <v-btn v-for="(item, i) in anonNavItems" :key="i" :to="item.to">
+        <span>{{ item.title }}</span>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-btn>
+    </template>
 
-      <v-icon>mdi-history</v-icon>
-    </v-btn>
-
-    <v-btn>
-      <span>Favorites</span>
-
-      <v-icon>mdi-heart</v-icon>
-    </v-btn>
-
-    <v-btn>
+    <!--<v-btn>
       <span>Nearby</span>
-
       <v-icon>mdi-map-marker</v-icon>
-    </v-btn>
+    </v-btn> -->
   </v-bottom-navigation>
 </template>
 

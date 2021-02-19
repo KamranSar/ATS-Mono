@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters>
-    <v-col cols="12">
+    <v-col id="howitworks" cols="12">
       <HomeHero></HomeHero>
     </v-col>
 
@@ -10,6 +10,8 @@
         <HomeFeatures></HomeFeatures>
       </v-col>
     </v-container>
+
+    <v-col id="pricing" cols="12">Price Is Free!!!</v-col>
   </v-row>
 </template>
 
@@ -32,7 +34,7 @@
       getImgUrl(img) {
         return require('@/assets/' + img);
       },
-      scrollTo: function (hashtag) {
+      scrollTo: (hashtag) => {
         setTimeout(() => {
           location.href = hashtag;
         }, 1);

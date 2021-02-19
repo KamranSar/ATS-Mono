@@ -23,7 +23,7 @@ function logout(to, from, next) {
 }
 
 const waitForStorageToBeReady = async (to, from, next) => {
-  await store.restored;
+  await store.restored; // Set by VuexPersist
   next();
 };
 

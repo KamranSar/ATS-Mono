@@ -10,22 +10,25 @@
       v-if="leftDrawEnabled"
       @click="leftDrawOpen = !leftDrawOpen"
     ></v-app-bar-nav-icon>
+
     <router-link :to="{ name: 'home' }">
       <v-img
-        src="../../assets/img/logo.png"
+        src="@/assets/logo.svg"
         contain
-        max-height="50px"
-        max-width="50px"
+        max-height="40px"
+        max-width="40px"
       />
     </router-link>
-    <span class="title ml-1">Awesome Monkey</span>
+
+    <span class="title ml-1">Awesome Program Title</span>
     <!-- <span class="caption grey--text text-lighten-5">beta</span> -->
 
     <v-spacer></v-spacer>
+
     <v-card color="transparent" class="hidden-md-and-down" flat>
       <v-btn-toggle group v-if="!isLoggedIn">
         <span v-for="item in anonNavItems" :key="item.title">
-          <v-btn :href="item.to" text :key="item.title">
+          <v-btn :to="item.to" text :key="item.title">
             {{ item.title }}
           </v-btn>
         </span>
@@ -61,6 +64,7 @@
         </v-list>
       </v-menu>
     </v-card>
+
     <v-btn text v-if="rightDrawEnabled" @click="rightDrawOpen = !rightDrawOpen">
       <v-icon>mdi-menu</v-icon>
     </v-btn>

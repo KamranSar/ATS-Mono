@@ -26,7 +26,7 @@
     </v-list>
 
     <v-list v-else dense>
-      <v-list-item v-for="(item, i) in anonNavItems" :key="i" :href="item.to">
+      <v-list-item v-for="(item, i) in anonNavItems" :key="i" :to="item.to">
         <v-list-item-avatar>
           <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
         </v-list-item-avatar>

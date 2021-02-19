@@ -4,13 +4,13 @@
       <v-row no-gutters>
         <v-col cols="12" align="center" justify="center" class="ma-auto">
           <v-btn
-            v-for="link in links"
-            :key="link.caption"
+            v-for="link in anonNavItems"
+            :key="link.title"
             color="white"
             text
             class="my-2"
             :to="link.to"
-            >{{ link.caption }}</v-btn
+            >{{ link.title }}</v-btn
           >
         </v-col>
 
@@ -40,6 +40,26 @@
 
 <script>
   export default {
+    name: 'Footer',
+    props: {
+      anonItems: {
+        type: Array,
+        required: true,
+      },
+      anonNavItems: {
+        type: Array,
+        required: true,
+      },
+      userItems: {
+        type: Array,
+        required: true,
+      },
+      adminItems: {
+        type: Array,
+        required: true,
+      },
+    },
+
     components: {
       Credits: () => import('../Credits'),
     },
@@ -48,9 +68,9 @@
       return {
         creditsDialog: false,
         links: [
-          { caption: 'Home', to: '/' },
-          { caption: 'Contact Us', to: '/contact-us' },
-          { caption: 'Terms', to: '/terms' },
+          { title: 'Home', to: '/' },
+          { title: 'Contact Us', to: '/contact-us' },
+          { title: 'Terms', to: '/terms' },
         ],
       };
     },
