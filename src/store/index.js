@@ -2,14 +2,15 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import pathify from './pathify';
-// pathify.debug();
+import { make } from 'vuex-pathify';
 
 import VuexPersist from 'vuex-persist';
 import Cookies from 'js-cookie';
 
 import snackbar from './snackbar';
 
-import pref from './pref';
+import userprefs from './userPrefs';
+import appfeatures from './appFeatures';
 import authentication from './authentication';
 import alert from './alert';
 
@@ -33,13 +34,8 @@ const vuexCookie = new VuexPersist({
 const vuexLocal = new VuexPersist({
   key: 'localStore', // The key to store the state on in the storage provider.
   storage: localStorage, // or window.sessionStorage or localForage
-  // modules: ['pref', 'serviceReq'],
-  modules: ['serviceReq'], // Dont include prefs
-  // reducer: (state) => ({ navigation: state.navigation }), //only save navigation state module
-  // filter: (mutation) => mutation.type == 'addNavItem'
+  modules: ['serviceReq', 'userprefs'], // Dont include appfeatures
 });
-
-import { make } from 'vuex-pathify';
 
 const getDefaultState = () => {
   return {
@@ -52,7 +48,7 @@ const getDefaultState = () => {
 
 const state = getDefaultState();
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   namespaced: true,
   name: 'global',
 
@@ -64,10 +60,14 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     snackbar,
-    pref,
+    userprefs,
+    appfeatures,
     authentication,
     alert,
     serviceReq,
   },
   plugins: [pathify.plugin, vuexCookie.plugin, vuexLocal.plugin],
 });
+
+export default store;
+window.store = store;

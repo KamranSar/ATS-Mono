@@ -1,6 +1,5 @@
 <template>
   <div>
-    <system-bar v-if="systemBarEnabled"></system-bar>
     <v-app-bar
       :clipped-left="clippedLeft"
       :clipped-right="clippedRight"
@@ -113,7 +112,7 @@
 </template>
 
 <script>
-  import { sync } from 'vuex-pathify';
+  import { sync, get } from 'vuex-pathify';
   import { mapActions, mapGetters } from 'vuex';
 
   export default {
@@ -164,13 +163,8 @@
     },
     computed: {
       ...mapGetters('authentication', ['isLoggedIn', 'registerEmail']),
-      ...sync('pref', [
-        'leftDrawOpen',
-        'rightDrawOpen',
-        'leftDrawEnabled',
-        'rightDrawEnabled',
-        'systemBarEnabled',
-      ]),
+      ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
+      ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
     },
     methods: {
       ...mapActions('authentication', ['logout']),
@@ -182,12 +176,6 @@
           /* webpackChunkName: "nav-drawer-left" */
           '@/components/layouts/NavDrawerLeft'
         ),
-      SystemBar: () =>
-        import(
-          /* webpackChunkName: "default-system-bar" */
-          '@/components/layouts/SystemBar'
-        ),
-
       NavDrawerRight: () =>
         import(
           /* webpackChunkName: "nav-drawer-right" */

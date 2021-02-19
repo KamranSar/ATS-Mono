@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <system-bar v-if="systemBarEnabled"></system-bar>
+
     <Toolbar></Toolbar>
 
     <Snackbar />
@@ -14,13 +16,15 @@
       <!-- </v-container> -->
     </v-main>
 
-    <Footer></Footer>
+    <Footer v-if="footerEnabled"></Footer>
+    <NavDrawerBottom v-if="bottomBarEnabled"></NavDrawerBottom>
   </v-app>
 </template>
 
 <script>
   import Toolbar from '@/components/layouts/Toolbar';
   import Footer from '@/components/layouts/Footer';
+  import { get } from 'vuex-pathify';
 
   export default {
     name: 'App',
@@ -28,7 +32,21 @@
     components: {
       Toolbar,
       Footer,
-      Snackbar: () => import('./components/util/Snackbar'),
+      SystemBar: () =>
+        import(
+          /* webpackChunkName: "default-system-bar" */
+          '@/components/layouts/SystemBar'
+        ),
+      Snackbar: () =>
+        import(
+          /* webpackChunkName: "snackbar" */
+          './components/util/Snackbar'
+        ),
+      NavDrawerBottom: () =>
+        import(
+          /* webpackChunkName: "nav-drawer-bottom" */
+          '@/components/layouts/NavDrawerBottom'
+        ),
     },
 
     filters: {
@@ -44,6 +62,13 @@
           currency: 'INR',
         });
       },
+    },
+    computed: {
+      ...get('appfeatures', [
+        'systemBarEnabled',
+        'bottomBarEnabled',
+        'footerEnabled',
+      ]),
     },
   };
 </script>

@@ -88,6 +88,7 @@
 <script>
   import { mapGetters, mapState } from 'vuex';
   export default {
+    name: 'NavDrawerLeft',
     computed: {
       ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
       ...mapState('authentication', ['user']),

@@ -37,7 +37,7 @@ export default {
     logout({ commit }) {
       try {
         store.set('alert/alert', {});
-        store.set('pref/leftDrawOpen', false);
+        store.set('userprefs/leftDrawOpen', false);
 
         commit('resetState');
         router.push('/login');
@@ -56,7 +56,7 @@ export default {
         if (data) {
           store.set('authentication/token', data['token']);
           store.set('authentication/refreshToken', data['refreshToken']);
-          store.set('pref/leftDrawOpen', true);
+          store.set('userprefs/leftDrawOpen', true);
           store.set('authentication/user', data['user']);
           router.push('/dashboard');
         }
