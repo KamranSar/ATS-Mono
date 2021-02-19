@@ -10,8 +10,6 @@
         <HomeFeatures></HomeFeatures>
       </v-col>
     </v-container>
-
-    <v-col id="pricing" cols="12">Price Is Free!!!</v-col>
   </v-row>
 </template>
 

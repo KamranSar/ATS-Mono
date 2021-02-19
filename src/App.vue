@@ -138,7 +138,7 @@
           },
           {
             title: 'Pricing',
-            to: '/#pricing',
+            to: '/pricing',
             icon: 'mdi-cash-multiple',
           },
         ],
