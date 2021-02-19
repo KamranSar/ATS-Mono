@@ -2,7 +2,50 @@
   <v-app>
     <system-bar v-if="systemBarEnabled"></system-bar>
 
-    <Toolbar></Toolbar>
+    <AppBar
+      :userItems="userItems"
+      :adminItems="adminItems"
+      :anonItems="anonItems"
+      :anonNavItems="anonNavItems"
+    ></AppBar>
+
+    <v-navigation-drawer
+      v-if="leftDrawEnabled"
+      v-model="leftDrawOpen"
+      clipped
+      hide-overlay
+      app
+    >
+      <!-- Items are passed from here since we may want to reuse these at 
+          toolbar level at some point in time -->
+      <NavDrawerLeft
+        :userItems="userItems"
+        :adminItems="adminItems"
+        :anonItems="anonItems"
+        :anonNavItems="anonNavItems"
+      ></NavDrawerLeft>
+    </v-navigation-drawer>
+
+    <v-navigation-drawer
+      v-if="rightDrawEnabled"
+      v-model="rightDrawOpen"
+      clipped
+      hide-overlay
+      app
+      right
+    >
+      <NavDrawerRight title="Right side Drawer" icon="mdi-view-dashboard">
+        <template v-slot:content>
+          <v-list>
+            <v-list-item v-for="n in 5" :key="n" link>
+              <v-list-item-content>
+                <v-list-item-title>Item {{ n }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </template>
+      </NavDrawerRight>
+    </v-navigation-drawer>
 
     <Snackbar />
 
@@ -17,36 +60,113 @@
     </v-main>
 
     <Footer v-if="footerEnabled"></Footer>
-    <NavDrawerBottom v-if="bottomBarEnabled"></NavDrawerBottom>
+    <BottomNavBar
+      v-if="bottomBarEnabled"
+      :userItems="userItems"
+      :adminItems="adminItems"
+      :anonItems="anonItems"
+      :anonNavItems="anonNavItems"
+    ></BottomNavBar>
   </v-app>
 </template>
 
 <script>
-  import Toolbar from '@/components/layouts/Toolbar';
-  import Footer from '@/components/layouts/Footer';
-  import { get } from 'vuex-pathify';
+  import { sync, get } from 'vuex-pathify';
 
   export default {
     name: 'App',
 
     components: {
-      Toolbar,
-      Footer,
       SystemBar: () =>
         import(
           /* webpackChunkName: "default-system-bar" */
           '@/components/layouts/SystemBar'
         ),
+      AppBar: () =>
+        import(
+          /* webpackChunkName: "app-bar" */
+          '@/components/layouts/AppBar'
+        ),
+      NavDrawerLeft: () =>
+        import(
+          /* webpackChunkName: "nav-drawer-left" */
+          '@/components/layouts/NavDrawerLeft'
+        ),
+      NavDrawerRight: () =>
+        import(
+          /* webpackChunkName: "nav-drawer-right" */
+          '@/components/layouts/NavDrawerRight'
+        ),
       Snackbar: () =>
         import(
           /* webpackChunkName: "snackbar" */
-          './components/util/Snackbar'
+          '@/components/util/Snackbar'
         ),
-      NavDrawerBottom: () =>
+      BottomNavBar: () =>
         import(
-          /* webpackChunkName: "nav-drawer-bottom" */
-          '@/components/layouts/NavDrawerBottom'
+          /* webpackChunkName: "bottom-nav-bar" */
+          '@/components/layouts/BottomNavBar'
         ),
+      Footer: () =>
+        import(
+          /* webpackChunkName: "footer" */
+          '@/components/layouts/Footer'
+        ),
+    },
+    data() {
+      return {
+        clippedLeft: true,
+        clippedRight: true,
+        anonNavItems: [
+          { title: 'How it works?', to: '/#howitworks' },
+          { title: 'Features', to: '/#features' },
+          { title: 'Pricing', to: '/#pricing' },
+        ],
+        anonItems: [
+          { title: 'Login', to: '/login', icon: 'mdi-fingerprint' },
+          { title: 'Signup', to: '/signup', icon: 'mdi-account-box-outline' },
+        ],
+        userItems: [
+          {
+            icon: 'mdi-view-dashboard',
+            title: 'Dashboard',
+            to: '/dashboard',
+            color: 'success',
+          },
+          {
+            icon: 'mdi-book-plus',
+            title: 'Service Request',
+            to: '/sr',
+          },
+          {
+            icon: 'mdi-bank',
+            title: 'Partners',
+            to: '/companies',
+          },
+        ],
+        adminItems: [
+          { icon: 'mdi-account-outline', title: 'Users', to: '/admin/users' },
+          {
+            icon: 'mdi-printer',
+            title: 'Export Templates',
+            to: '/admin/templates',
+          },
+        ],
+        userToolbarItems: [
+          { icon: 'mdi-folder-account', title: 'Account', to: '/my-account' },
+          { icon: 'mdi-logout', title: 'Logout', to: '/logout' },
+        ],
+      };
+    },
+    computed: {
+      ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
+      ...get('appfeatures', [
+        'systemBarEnabled',
+        'leftDrawEnabled',
+        'rightDrawEnabled',
+        'bottomBarEnabled',
+        'footerEnabled',
+      ]),
     },
 
     filters: {
@@ -62,13 +182,6 @@
           currency: 'INR',
         });
       },
-    },
-    computed: {
-      ...get('appfeatures', [
-        'systemBarEnabled',
-        'bottomBarEnabled',
-        'footerEnabled',
-      ]),
     },
   };
 </script>

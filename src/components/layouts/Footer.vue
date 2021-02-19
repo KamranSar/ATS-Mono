@@ -16,7 +16,7 @@
 
         <v-col cols="12">&nbsp;</v-col>
 
-        <v-col cols="6" class="caption">© 2000-2100. Techformist.</v-col>
+        <v-col cols="6" class="caption">© 2020-2021 CDCR.</v-col>
         <v-col
           cols="6"
           align="end"

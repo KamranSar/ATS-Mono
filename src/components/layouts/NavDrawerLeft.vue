@@ -102,10 +102,22 @@
       },
     },
     props: {
-      anonItems: Array,
-      anonNavItems: Array,
-      userItems: Array,
-      adminItems: Array,
+      anonItems: {
+        type: Array,
+        required: true,
+      },
+      anonNavItems: {
+        type: Array,
+        required: true,
+      },
+      userItems: {
+        type: Array,
+        required: true,
+      },
+      adminItems: {
+        type: Array,
+        required: true,
+      },
     },
     methods: {
       goGo(to) {

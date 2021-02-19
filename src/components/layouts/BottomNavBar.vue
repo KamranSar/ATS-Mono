@@ -33,7 +33,7 @@
 <script>
   import { mapGetters, mapState } from 'vuex';
   export default {
-    name: 'NavDrawerBottom',
+    name: 'BottomNavBar',
     computed: {
       ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
       ...mapState('authentication', ['user']),
@@ -47,10 +47,22 @@
       },
     },
     props: {
-      anonItems: Array,
-      anonNavItems: Array,
-      userItems: Array,
-      adminItems: Array,
+      anonItems: {
+        type: Array,
+        required: true,
+      },
+      anonNavItems: {
+        type: Array,
+        required: true,
+      },
+      userItems: {
+        type: Array,
+        required: true,
+      },
+      adminItems: {
+        type: Array,
+        required: true,
+      },
     },
     data: () => ({ value: 1 }),
     methods: {
