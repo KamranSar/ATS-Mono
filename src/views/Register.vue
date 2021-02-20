@@ -1,4 +1,5 @@
 <template>
+  <!-- This is just an example page.  Delete it for your project.  The Routes are still in place, but commented out -->
   <Panel title="Register">
     <template slot="content">
       <v-container grid-list-mg text-xs-center class="pt-5">
@@ -9,7 +10,7 @@
         >
           <v-row justify="center" dense>
             <v-col cols="12" md="6" class="info-text mb-5"
-              >Fill up some basic information and we will set you up.</v-col
+              >Fill in some basic information and we will set you up.</v-col
             >
             <v-col md="12"></v-col>
 
@@ -77,7 +78,7 @@
 
             <v-col cols="12"></v-col>
             <v-col cols="12" md="6" class="pt-3 text-right">
-              <v-btn outlined to="/" class="mr-3">Cancel</v-btn>
+              <v-btn outlined :to="{ name: 'home' }" class="mr-3">Cancel</v-btn>
               <v-btn color="primary" @click="validateAndRegister">
                 <v-icon small class="mr-2">mdi-send</v-icon>Sign up
               </v-btn>

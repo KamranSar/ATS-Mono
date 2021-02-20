@@ -16,14 +16,19 @@
             </v-col>
 
             <v-col cols="12" md="6">
-              <v-btn x-large color="primary" class="mr-3" to="/signup">
-                Sign up
+              <v-btn
+                x-large
+                color="primary"
+                class="mr-3"
+                :to="{ name: 'Contact Us' }"
+              >
+                Contact Us
               </v-btn>
-              <v-btn x-large outlined dark to="/#features">Details</v-btn>
+              <v-btn x-large outlined dark to="#features">Details</v-btn>
               <span>
                 <br />
 
-                <v-btn dark dense to="/login" text class="ml-auto">
+                <v-btn dark dense :to="{ name: 'login' }" text class="ml-auto">
                   or
                   <span
                     class="pl-3"

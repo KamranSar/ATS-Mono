@@ -34,12 +34,12 @@ const routes = [
     component: Home,
     beforeEnter: dynamicHome,
   },
-  {
-    path: '/signup',
-    name: 'signup',
-    component: () =>
-      import(/* webpackChunkName: "register" */ '../views/Register.vue'),
-  },
+  // {
+  //   path: '/signup',
+  //   name: 'signup',
+  //   component: () =>
+  //     import(/* webpackChunkName: "register" */ '../views/Register.vue'),
+  // },
   {
     path: '/pricing',
     name: 'Pricing',

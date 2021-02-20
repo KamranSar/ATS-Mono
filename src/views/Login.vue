@@ -35,7 +35,7 @@
             </v-col>
             <v-col md="12"></v-col>
             <v-col cols="12" md="6" class="pt-3 text-right">
-              <v-btn outlined to="/" class="mr-5">Cancel</v-btn>
+              <v-btn outlined :to="{ name: 'home' }" class="mr-5">Cancel</v-btn>
               <span class="text-center">
                 <v-btn type="submit" color="primary" class="mr-3">Login</v-btn>
                 <br />
