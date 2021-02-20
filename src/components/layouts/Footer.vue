@@ -68,9 +68,9 @@
       return {
         creditsDialog: false,
         links: [
-          { title: 'Home', to: '/' },
-          { title: 'Contact Us', to: '/contact-us' },
-          { title: 'Terms', to: '/terms' },
+          { title: 'Home', to: { name: 'home' } },
+          { title: 'Contact Us', to: { name: 'Contact Us' } },
+          { title: 'Terms', to: { name: 'terms' } },
         ],
       };
     },

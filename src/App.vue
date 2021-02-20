@@ -128,48 +128,48 @@
         anonNavItems: [
           {
             title: 'How it works?',
-            to: '/#howitworks',
+            to: '/#howitworks', // This is a Home page anchor tag, not a Router view
             icon: 'mdi-lightbulb',
           },
           {
             title: 'Features',
-            to: '/#features',
+            to: '/#features', // This is a home page anchor tag, not a Router view
             icon: 'mdi-bug',
           },
           {
             title: 'Pricing',
-            to: '/pricing',
+            to: { name: 'Pricing' },
             icon: 'mdi-cash-multiple',
+          },
+          {
+            title: 'Contact Us',
+            to: { name: 'Contact Us' },
+            icon: 'mdi-card-account-mail',
           },
         ],
         anonItems: [
           {
             title: 'Login',
-            to: '/login',
-            icon: 'mdi-fingerprint',
+            to: { name: 'login' },
+            icon: 'mdi-login',
           },
-          {
-            title: 'Signup',
-            to: '/signup',
-            icon: 'mdi-account-box-outline',
-          },
+          // {
+          //   title: 'Signup',
+          //   to: { name: 'signup' },
+          //   icon: 'mdi-account-box-outline',
+          // },
         ],
         userItems: [
           {
             icon: 'mdi-view-dashboard',
             title: 'Dashboard',
-            to: '/dashboard',
+            to: { name: 'Dashboard' },
             color: 'success',
           },
           {
             icon: 'mdi-book-plus',
             title: 'Service Request',
-            to: '/sr',
-          },
-          {
-            icon: 'mdi-bank',
-            title: 'Partners',
-            to: '/companies',
+            to: { name: 'ServiceReq' },
           },
         ],
         adminItems: [
@@ -193,7 +193,7 @@
           {
             icon: 'mdi-logout',
             title: 'Logout',
-            to: '/logout',
+            to: { name: 'logout' },
           },
         ],
       };
