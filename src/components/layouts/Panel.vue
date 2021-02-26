@@ -53,7 +53,7 @@
       return {};
     },
     computed: {
-      ...mapState(['loading']),
+      ...mapState('app', ['loading']),
     },
     components: {
       Alert: () => import('../util/Alert'),

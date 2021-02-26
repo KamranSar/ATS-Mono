@@ -28,7 +28,7 @@
     computed: {
       ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
       ...mapState('authentication', ['user']),
-      ...mapState(['loading']),
+      ...mapState('app', ['loading']),
       formattedUserId() {
         let userId = this.user && this.user.userid;
         if (userId && userId.length > 12)

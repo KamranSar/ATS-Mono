@@ -1,9 +1,9 @@
 import Vue from 'vue';
 
-import store from '../store/index';
+import store from '@/store/index';
 
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Home from '@/views/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -44,13 +44,13 @@ const routes = [
     path: '/pricing',
     name: 'Pricing',
     component: () =>
-      import(/* webpackChunkName: "pricing" */ '../views/Pricing.vue'),
+      import(/* webpackChunkName: "pricing" */ '@/views/Pricing.vue'),
   },
   {
     path: '/login',
     name: 'login',
     component: () =>
-      import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+      import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
     path: '/logout',
@@ -61,24 +61,24 @@ const routes = [
     path: '/terms',
     name: 'Terms',
     component: () =>
-      import(/* webpackChunkName: "terms" */ '../views/Terms.vue'),
+      import(/* webpackChunkName: "terms" */ '@/views/Terms.vue'),
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
     component: () =>
-      import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
+      import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
   },
   {
     path: '/sr',
     name: 'ServiceReq',
-    component: () => import('../views/ServiceReq.vue'),
+    component: () => import('@/views/ServiceReq.vue'),
   },
   {
     path: '/contact-us',
     name: 'Contact Us',
     component: () =>
-      import(/* webpackChunkName: "contact-us" */ '../views/ContactUs.vue'),
+      import(/* webpackChunkName: "contact-us" */ '@/views/ContactUs.vue'),
   },
   {
     path: '/about',
@@ -87,12 +87,12 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/About.vue'),
+      import(/* webpackChunkName: "about" */ '@/views/About.vue'),
   },
   {
     // catch all 404
     path: '*',
-    component: () => import('../views/NotFound.vue'),
+    component: () => import('@/views/NotFound.vue'),
   },
 ];
 
@@ -103,14 +103,14 @@ const router = new VueRouter({
 });
 
 router.beforeResolve((to, from, next) => {
-  if (to.name) store.set('loading', true);
+  if (to.name) store.set('app/loading', true);
 
   next();
 });
 router.beforeEach(waitForStorageToBeReady);
 
 router.afterEach(() => {
-  store.set('loading', false);
+  store.set('app/loading', false);
 });
 
 export default router;

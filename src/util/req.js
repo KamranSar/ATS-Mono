@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../store/index';
 
 export default async (reqType, reqURL, data) => {
-  store.set('loading', true);
+  store.set('app/loading', true);
   store.commit('alert/setAlertMsg', '');
 
   const options = {
@@ -55,6 +55,6 @@ export default async (reqType, reqURL, data) => {
 
     // stop further processing in caller!
   } finally {
-    store.set('loading', false);
+    store.set('app/loading', false);
   }
 };

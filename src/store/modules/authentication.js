@@ -1,8 +1,8 @@
-import req from '../util/req';
-import store from '../store';
+import req from '@/util/req';
+import store from '@/store';
 
 import { make } from 'vuex-pathify';
-import router from '../router';
+import router from '@/router';
 
 const getDefaultState = () => {
   return {
@@ -29,7 +29,6 @@ const getDefaultState = () => {
 const state = getDefaultState();
 
 export default {
-  name: 'authentication',
   namespaced: true,
   state: state,
 
@@ -42,6 +41,7 @@ export default {
         commit('resetState');
         router.push('/login');
       } catch (e) {
+        console.log(e);
         //blah
       }
     },
@@ -61,6 +61,7 @@ export default {
           router.push('/dashboard');
         }
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -91,6 +92,7 @@ export default {
           router.push('/login');
         }
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -153,6 +155,7 @@ export default {
           store.set('authentication/validUserIdStatus', result);
         }
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -191,6 +194,7 @@ export default {
           console.error('Error verifying token. ');
         }
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -229,6 +233,7 @@ export default {
           );
         }
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -250,6 +255,7 @@ export default {
         }
         store.set('authentication/registerPass', '');
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -278,6 +284,7 @@ export default {
         }
         store.set('authentication/registerPass', '');
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },
@@ -302,6 +309,7 @@ export default {
           }
         }
       } catch (e) {
+        console.log(e);
         // nothing here
       }
     },

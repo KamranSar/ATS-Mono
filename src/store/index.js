@@ -1,20 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-
-import pathify from './pathify';
-import { make } from 'vuex-pathify';
+import pathify from 'vuex-pathify';
 
 import VuexPersist from 'vuex-persist';
 import Cookies from 'js-cookie';
 
-import snackbar from './snackbar';
-
-import userprefs from './userPrefs';
-import appfeatures from './appFeatures';
-import authentication from './authentication';
-import alert from './alert';
-
-import serviceReq from './serviceReq';
+// Modules
+import * as modules from './modules';
 
 Vue.use(Vuex);
 
@@ -37,37 +29,15 @@ const vuexLocal = new VuexPersist({
   modules: ['serviceReq', 'userprefs'], // Dont include appfeatures
 });
 
-const getDefaultState = () => {
-  return {
-    baseURL: '/api',
-    isMobileApp: false,
-    loading: false,
-    tinyKey: '6bsm37mwzh123b23iaqvjzvn594567n9fu3zrwga8or29wsr',
-  };
-};
-
-const state = getDefaultState();
-
 const store = new Vuex.Store({
-  namespaced: true,
-  name: 'global',
-
-  state: state,
-
-  mutations: {
-    ...make.mutations(state),
-  },
-  actions: {},
-  modules: {
-    snackbar,
-    userprefs,
-    appfeatures,
-    authentication,
-    alert,
-    serviceReq,
-  },
+  modules,
   plugins: [pathify.plugin, vuexCookie.plugin, vuexLocal.plugin],
 });
 
-export default store;
+store.dispatch('app/init');
+store.dispatch('azureAuthentication/signIn', 'loginPopup');
 window.store = store;
+
+export default store;
+
+export const ROOT_DISPATCH = Object.freeze({ root: true });
