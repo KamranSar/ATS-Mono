@@ -5,6 +5,7 @@
     :tile="true"
     height="48px"
     elevation="3"
+    @click="$emit('click')"
   >
     <v-img
       max-height="25px"

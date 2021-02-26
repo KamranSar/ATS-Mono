@@ -8,54 +8,14 @@
           @submit.prevent="validateAndLogin"
         >
           <v-row justify="center">
-            <v-col cols="12" md="12" class="pt-3">
-              <MicrosoftLoginButton></MicrosoftLoginButton>
+            <v-col md="12" v-for="i in 5" :key="i + 't'"></v-col>
+            <v-col cols="12" class="text-center">
+              <MicrosoftLoginButton
+                :small="$vuetify.breakpoint.xs"
+                @click="signinButtonClicked"
+              ></MicrosoftLoginButton>
             </v-col>
-            <v-col cols="12" md="6" class="pt-3">
-              <v-text-field
-                v-model="registerUserId"
-                name="userid"
-                autocomplete="userid"
-                label="User Id"
-                :rules="[rules.required]"
-                :append-icon="'mdi-account-box'"
-                hint="Enter your user id."
-              ></v-text-field>
-            </v-col>
-            <v-col md="12"></v-col>
-            <v-col cols="12" md="6" class="pt-3">
-              <v-text-field
-                name="password"
-                autocomplete="password"
-                v-model="registerPass"
-                label="Enter your password"
-                hint="At least 8 characters."
-                :rules="[rules.max20Chars]"
-                :append-icon="passShow ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="passShow ? 'password' : 'text'"
-                @click:append="() => (passShow = !passShow)"
-              ></v-text-field>
-            </v-col>
-            <v-col md="12"></v-col>
-            <v-col cols="12" md="6" class="pt-3 text-right">
-              <v-btn outlined :to="{ name: 'home' }" class="mr-5">Cancel</v-btn>
-              <span class="text-center">
-                <v-btn type="submit" color="primary" class="mr-3">Login</v-btn>
-                <br />
-
-                <a
-                  class="pt-3 caption grey--text text-darken-5"
-                  style="text-decoration: none"
-                  @click="confirmAndPassReset"
-                  >Forgot Password?</a
-                >
-              </span>
-            </v-col>
-            <v-col md="12"></v-col>
-            <v-col cols="12" md="6" class="info-text mt-5">
-              You should've confirmed your registration through email before
-              logging into the application.
-            </v-col>
+            <v-col md="12" v-for="i in 2" :key="i + 'b'"></v-col>
           </v-row>
         </v-form>
       </v-container>
@@ -101,6 +61,10 @@
       ...mapActions('authentication', ['login', 'resetPasswordInitiate']),
       ...mapMutations('alert', ['setAlert']),
       ...mapMutations('snackbar', ['setSnack']),
+
+      signinButtonClicked() {
+        console.log('Microsoft Clicked');
+      },
 
       validateAndLogin() {
         if (this.$refs.form.validate()) {
