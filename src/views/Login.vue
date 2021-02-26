@@ -8,6 +8,9 @@
           @submit.prevent="validateAndLogin"
         >
           <v-row justify="center">
+            <v-col cols="12" md="12" class="pt-3">
+              <MicrosoftLoginButton></MicrosoftLoginButton>
+            </v-col>
             <v-col cols="12" md="6" class="pt-3">
               <v-text-field
                 v-model="registerUserId"
@@ -67,7 +70,11 @@
   import PgtUtilMix from '../mixins/PgtUtilMix.vue';
 
   export default {
-    components: { Panel: () => import('../components/layouts/Panel') },
+    components: {
+      Panel: () => import('../components/layouts/Panel'),
+      MicrosoftLoginButton: () =>
+        import('@/components/layouts/buttons/SignInWithMicrosoftButton'),
+    },
 
     mixins: [PgtUtilMix],
 
