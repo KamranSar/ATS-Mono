@@ -93,6 +93,10 @@
         type: Array,
         required: true,
       },
+      userToolbarItems: {
+        type: Array,
+        required: true,
+      },
     },
     data() {
       return {

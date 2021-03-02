@@ -8,14 +8,14 @@
           <v-col cols="12" class="text-center">
             <MicrosoftLoginButton
               :small="$vuetify.breakpoint.xs"
-              :loading="loading"
-              :disabled="loading"
+              :loading="azureLoading"
+              :disabled="azureLoading"
               @click="signinButtonClicked"
             ></MicrosoftLoginButton>
           </v-col>
 
           <v-col cols="6" class="text-center">
-            <v-img max-height="72" max-width="72" :src="myImage"></v-img>
+            <v-img max-height="72" max-width="72" :src="myPhoto"></v-img>
           </v-col>
 
           <v-col cols="12" class="text-center">
@@ -52,13 +52,13 @@
       };
     },
     computed: {
-      ...get('azureAuthentication', [
-        'loading',
-        'myInfo',
-        'myImage',
-        'myPhotoMetaData',
-        'localAccountId',
-      ]),
+      ...get('azureAuthentication', {
+        azureLoading: 'loading',
+        myInfo: 'myInfo',
+        myPhoto: 'myPhoto',
+        myPhotoMetaData: 'myPhotoMetaData',
+        localAccountId: 'localAccountId',
+      }),
       ...sync('authentication', [
         'registerUserId',
         'registerEmail',

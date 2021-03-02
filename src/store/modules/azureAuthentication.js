@@ -286,7 +286,9 @@ const mutations = {
  */
 const getters = {
   //  ...make.getters(state),
-  myImage(state) {
+
+  // Override state var with custom getter
+  myPhoto(state) {
     if (state.myPhotoMetaData && state.myPhoto) {
       const imageType = state.myPhotoMetaData['@odata.mediaContentType'];
       const imageStr = `data:${imageType};base64,${state.myPhoto}`;

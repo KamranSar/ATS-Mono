@@ -7,6 +7,7 @@
       :adminItems="adminItems"
       :anonItems="anonItems"
       :anonNavItems="anonNavItems"
+      :userToolbarItems="userToolbarItems"
     ></AppBar>
 
     <v-navigation-drawer
