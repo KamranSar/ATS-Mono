@@ -52,6 +52,7 @@ const msalConfig = {
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
 const loginRequest = {
   scopes: ['openid', 'profile', 'offline_access', 'email', 'User.Read'],
+  forceRefresh: false, // Set this to "true" to skip a cached token and go to the server to get a new token
 };
 
 // Add here the endpoints for MS Graph API services you would like to use.
@@ -64,6 +65,7 @@ const graphConfig = {
 
 const silentRequest = {
   scopes: ['openid', 'profile', 'offline_access', 'email', 'User.Read'],
+  forceRefresh: false, // Set this to "true" to skip a cached token and go to the server to get a new token
 };
 
 const logoutRequest = {
