@@ -26,7 +26,7 @@ const vuexCookie = new VuexPersist({
 const vuexLocal = new VuexPersist({
   key: 'localStore', // The key to store the state on in the storage provider.
   storage: localStorage, // or window.sessionStorage or localForage
-  modules: ['serviceReq', 'userprefs'], // Dont include appfeatures
+  modules: ['serviceReq', 'userprefs', 'azureAuthentication'], // Dont include appfeatures
 });
 
 const store = new Vuex.Store({
