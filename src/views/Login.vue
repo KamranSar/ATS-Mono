@@ -8,8 +8,8 @@
           <v-col cols="12" class="text-center">
             <MicrosoftLoginButton
               :small="$vuetify.breakpoint.xs"
-              :loading="authenticating"
-              :disabled="authenticating"
+              :loading="loading"
+              :disabled="loading"
               @click="signinButtonClicked"
             ></MicrosoftLoginButton>
           </v-col>
@@ -53,7 +53,7 @@
     },
     computed: {
       ...get('azureAuthentication', [
-        'authenticating',
+        'loading',
         'myInfo',
         'myImage',
         'myPhotoMetaData',
