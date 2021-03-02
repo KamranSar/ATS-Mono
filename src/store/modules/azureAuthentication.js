@@ -66,14 +66,14 @@ const actions = {
       // The user has already logged in. We try to get his token silently
       if (state.azuretokenresponse && state.azuretokenresponse.account) {
         silentRequest.account = state.azuretokenresponse.account;
-        console.log('***** 1 acquireTokenSilent *******');
+        // console.log('***** 1 acquireTokenSilent *******');
         newTokenResponse = await dispatch('getTokenPopup', silentRequest);
       }
       // No token found, so try logging in the user.  This will pop up the login popup
       // and if signed in, it will go away immediately
       if (!newTokenResponse) {
         try {
-          console.log('***** 4 loginPopup *******');
+          // console.log('***** 4 loginPopup *******');
           newTokenResponse = await myMSALObj.loginPopup(loginRequest);
         } catch (err) {
           console.error(err);
@@ -88,15 +88,18 @@ const actions = {
         // We add the access token as an authorization header for our Axios requests to our API
         // this._vm.axios.defaults.headers.common['Authorization'] =
         //   'Bearer ' + newTokenResponse.accessToken;
-        if (graphConfig.meEndpoint) {
+        if (graphConfig.myInfoEndpoint) {
           // The graph is set, we check if the user has already a picture in the local storage
           // if he does not we grab a token silently for our graph scope and call Microsoft graph to get the picture
           // if (!localStorage.getItem('userPicture')) {
           // Get information about logged in user
           try {
-            console.log('***** 6 msGraphCall-Me *******');
+            // console.log('***** 6 msGraphCall-Me *******');
             let graphResponse = await myMSALObj
-              .callMSGraph(graphConfig.meEndpoint, newTokenResponse.accessToken)
+              .callMSGraph(
+                graphConfig.myInfoEndpoint,
+                newTokenResponse.accessToken
+              )
               .catch((error) => {
                 console.error(error);
               });
@@ -113,7 +116,7 @@ const actions = {
             }
           } catch (e) {
             console.error(e);
-            if (store.me !== null) {
+            if (store.myInfo !== null) {
               store.set('azureAuthentication/myInfo', null);
             }
           }
@@ -122,7 +125,7 @@ const actions = {
         if (graphConfig.profilePhotoEndpoint) {
           // Try to get their photo if it exists
           try {
-            console.log('***** 7 msGraphCall-Photo *******');
+            // console.log('***** 7 msGraphCall-Photo *******');
             let graphResponse = await myMSALObj.callMSGraph(
               graphConfig.profilePhotoEndpoint,
               newTokenResponse.accessToken
@@ -169,7 +172,7 @@ const actions = {
           // if (!localStorage.getItem('userPicture')) {
           // Get information about logged in user
           try {
-            console.log('***** 8 msGraphCall-Photo Meta *******');
+            // console.log('***** 8 msGraphCall-Photo Meta *******');
             let graphResponse = await myMSALObj
               .callMSGraph(
                 graphConfig.profilePhotoMetaEndpoint,
@@ -191,13 +194,13 @@ const actions = {
             }
           } catch (e) {
             console.error(e);
-            if (store.me !== null) {
+            if (store.myPhotoMetaData !== null) {
               store.set('azureAuthentication/myPhotoMetaData', null);
             }
           }
         }
       } else {
-        console.log('***** 99 NO newTokenResponse FOUND *******');
+        // console.log('***** 99 NO newTokenResponse FOUND *******');
       }
     } catch (error) {
       console.error(error);
