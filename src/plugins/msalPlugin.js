@@ -10,7 +10,7 @@ export default class msalPlugin extends msal.PublicClientApplication {
 
   constructor(options) {
     super(options);
-    this.config.graph = options.graph || {};
+    // this.config.graph = options.graph || {};
   }
 
   callMSGraph(endpoint, accessToken) {
@@ -26,16 +26,16 @@ export default class msalPlugin extends msal.PublicClientApplication {
       .catch((error) => console.log(error));
   }
 
-  async getSilentToken(account, scopes = ['User.Read']) {
-    const silentRequest = { account, scopes };
-    return await this.acquireTokenSilent(silentRequest).catch((error) => {
-      console.error(error);
-      if (error instanceof msal.InteractionRequiredAuthError) {
-        // fallback to interaction when silent call fails
-        return this.acquireTokenRedirect(silentRequest);
-      }
-    });
-  }
+  // async getSilentToken(account, scopes = ['User.Read']) {
+  //   const silentRequest = { account, scopes };
+  //   return await this.acquireTokenSilent(silentRequest).catch((error) => {
+  //     console.error(error);
+  //     if (error instanceof msal.InteractionRequiredAuthError) {
+  //       // fallback to interaction when silent call fails
+  //       return this.acquireTokenRedirect(silentRequest);
+  //     }
+  //   });
+  // }
 }
 
 export { msalInstance };

@@ -9,12 +9,25 @@
         >
           <v-row justify="center">
             <v-col md="12" v-for="i in 5" :key="i + 't'"></v-col>
+
             <v-col cols="12" class="text-center">
               <MicrosoftLoginButton
                 :small="$vuetify.breakpoint.xs"
+                :loading="authenticating"
+                :disabled="authenticating"
                 @click="signinButtonClicked"
               ></MicrosoftLoginButton>
             </v-col>
+
+            <v-col cols="12" class="text-center">
+              <v-img max-height="128" max-width="128" :src="myImage"></v-img>
+            </v-col>
+
+            <v-col cols="12" class="text-center">
+              localAccountId={{ localAccountId }}
+            </v-col>
+            <v-col cols="12" class="text-center"> myInfo={{ myInfo }} </v-col>
+
             <v-col md="12" v-for="i in 2" :key="i + 'b'"></v-col>
           </v-row>
         </v-form>
@@ -24,9 +37,8 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions } from 'vuex';
-  import { sync } from 'vuex-pathify';
-
+  // import { mapMutations, mapActions } from 'vuex';
+  import { get, sync, call } from 'vuex-pathify';
   import PgtUtilMix from '../mixins/PgtUtilMix.vue';
 
   export default {
@@ -45,6 +57,12 @@
       };
     },
     computed: {
+      ...get('azureAuthentication', [
+        'authenticating',
+        'myInfo',
+        'myImage',
+        'localAccountId',
+      ]),
       ...sync('authentication', [
         'registerUserId',
         'registerEmail',
@@ -58,12 +76,14 @@
       //   "setRegisterPass",
       //   "setRegisterError"
       // ]),
-      ...mapActions('authentication', ['login', 'resetPasswordInitiate']),
-      ...mapMutations('alert', ['setAlert']),
-      ...mapMutations('snackbar', ['setSnack']),
+      ...call('azureAuthentication', { azureLogin: 'AzureAuthentication' }),
+      // ...mapActions('authentication', ['login', 'resetPasswordInitiate']),
+      // ...mapMutations('alert', ['setAlert']),
+      // ...mapMutations('snackbar', ['setSnack']),
 
       signinButtonClicked() {
         console.log('Microsoft Clicked');
+        this.azureLogin();
       },
 
       validateAndLogin() {

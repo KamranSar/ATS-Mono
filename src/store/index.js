@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import pathify from 'vuex-pathify';
+import pathify from '@/plugins/vuex-pathify';
 
 import VuexPersist from 'vuex-persist';
 import Cookies from 'js-cookie';
@@ -35,9 +35,12 @@ const store = new Vuex.Store({
 });
 
 store.dispatch('app/init');
-store.dispatch('azureAuthentication/signIn', 'loginPopup');
-window.store = store;
+// store.dispatch('azureAuthentication/signIn', 'loginPopup');
+// store.dispatch('azureAuthentication/AzureAuthentication');
 
+if (process.env.NODE_ENV === 'development') {
+  window.store = store; // Make store available from the console.
+}
 export default store;
 
 export const ROOT_DISPATCH = Object.freeze({ root: true });

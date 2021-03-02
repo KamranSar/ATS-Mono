@@ -5,6 +5,7 @@
     :tile="true"
     height="48px"
     elevation="3"
+    :loading="loading"
     @click="$emit('click')"
   >
     <v-img
@@ -29,6 +30,10 @@
     name: 'SignInWithMicrosoftButton',
     props: {
       small: {
+        type: Boolean,
+        default: false,
+      },
+      loading: {
         type: Boolean,
         default: false,
       },
