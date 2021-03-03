@@ -26,7 +26,7 @@
     <v-spacer></v-spacer>
 
     <v-card color="transparent" class="hidden-md-and-down" flat>
-      <v-btn-toggle group v-if="!isLoggedIn">
+      <v-btn-toggle group v-if="!azureLoggedIn">
         <span v-for="item in anonNavItems" :key="item.title">
           <v-btn :to="item.to" text :key="item.title">
             {{ item.title }}
@@ -41,7 +41,7 @@
       </v-btn-toggle>
     </v-card>
 
-    <v-card color="transparent" flat v-if="isLoggedIn">
+    <v-card color="transparent" flat v-if="azureLoggedIn">
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">

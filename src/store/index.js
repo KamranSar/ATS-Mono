@@ -2,8 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import pathify from '@/plugins/vuex-pathify';
 
-import VuexPersist from 'vuex-persist';
+import VuexPersistence from 'vuex-persist';
 import Cookies from 'js-cookie';
+import localForage from 'localforage';
 
 // Modules
 import * as modules from './modules';
@@ -12,7 +13,7 @@ Vue.use(Vuex);
 
 // https://github.com/championswimmer/vuex-persist#detailed
 // https://github.com/js-cookie/js-cookie
-const vuexCookie = new VuexPersist({
+const vuexCookie = new VuexPersistence({
   key: 'cookieStore', // The key to store the state on in the storage provider.
   restoreState: (key) => Cookies.getJSON(key),
   saveState: (key, state) =>
@@ -20,18 +21,46 @@ const vuexCookie = new VuexPersist({
       expires: 3, // Number of days to expire cookie in
     }),
   modules: ['authentication'], //only save user module
-  // filter: (mutation) => mutation.type == 'logIn' || mutation.type == 'logOut'
+  // https://github.com/championswimmer/vuex-persist/issues/178
+  filter: (mutation) => mutation.type.includes('authentication/'), // Method to filter which mutations will trigger state saving
 });
 
-const vuexLocal = new VuexPersist({
+const vuexLocal = new VuexPersistence({
   key: 'localStore', // The key to store the state on in the storage provider.
-  storage: localStorage, // or window.sessionStorage or localForage
-  modules: ['serviceReq', 'userprefs', 'azureAuthentication'], // Dont include appfeatures
+  storage: window.localStorage, // or window.sessionStorage or localForage
+  modules: ['serviceReq', 'userprefs'], // Dont include app
+  filter: (mutation) =>
+    mutation.type.includes('userprefs/') ||
+    mutation.type.includes('serviceReq/'), // Method to filter which mutations will trigger state saving
+  //filter: (mutation) => console.log(mutation.type),
+  // mutation.type.includes('serviceReq/') ||
+  // mutation.type.includes('userprefs/'), //modules doesn't filter, so filter the mutations
+});
+
+const vuexAzure = new VuexPersistence({
+  key: 'azureStore', // The key to store the state on in the storage provider.
+  storage: localForage, // or window.sessionStorage or localForage
+  asyncStorage: true,
+  modules: ['azureAuthentication'],
+  // reducer: (state) => ({ azureAuthentication: state.azureAuthentication }),
+  filter: (mutation) => mutation.type.includes('azureAuthentication/'), // Method to filter which mutations will trigger state saving
+  // filter: (
+  //   mutation // {
+  // ) =>
+  //   mutation.type == 'azureAuthentication/azuretokenresponse' ||
+  //   mutation.type == 'azureAuthentication/SET_MY_INFO' ||
+  //   mutation.type == 'azureAuthentication/SET_MY_PHOTO' ||
+  //   mutation.type == 'azureAuthentication/SET_MY_PHOTO_META_DATA',
 });
 
 const store = new Vuex.Store({
   modules,
-  plugins: [pathify.plugin, vuexCookie.plugin, vuexLocal.plugin],
+  plugins: [
+    pathify.plugin,
+    vuexCookie.plugin,
+    vuexLocal.plugin,
+    vuexAzure.plugin,
+  ],
 });
 
 store.dispatch('app/init');

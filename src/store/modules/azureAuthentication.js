@@ -61,23 +61,17 @@ const actions = {
   // eslint-disable-next-line no-unused-vars
   AzureAuthentication: async ({ dispatch, commit, state }) => {
     try {
-      commit('SET_LOADING', true);
+      commit('loading', true);
       let newTokenResponse = null;
       // The user has already logged in. We try to get his token silently
       if (state.azuretokenresponse && state.azuretokenresponse.account) {
         silentRequest.account = state.azuretokenresponse.account;
-        // console.log('***** 1 acquireTokenSilent *******');
         newTokenResponse = await dispatch('getTokenPopup', silentRequest);
       }
       // No token found, so try logging in the user.  This will pop up the login popup
       // and if signed in, it will go away immediately
       if (!newTokenResponse) {
-        try {
-          // console.log('***** 4 loginPopup *******');
-          newTokenResponse = await myMSALObj.loginPopup(loginRequest);
-        } catch (err) {
-          console.error(err);
-        }
+        newTokenResponse = await myMSALObj.loginPopup(loginRequest);
       }
       if (newTokenResponse) {
         store.set('azureAuthentication/azuretokenresponse', newTokenResponse);
@@ -93,76 +87,51 @@ const actions = {
           // if he does not we grab a token silently for our graph scope and call Microsoft graph to get the picture
           // if (!localStorage.getItem('userPicture')) {
           // Get information about logged in user
-          try {
-            // console.log('***** 6 msGraphCall-Me *******');
-            let graphResponse = await myMSALObj
-              .callMSGraph(
-                graphConfig.myInfoEndpoint,
-                newTokenResponse.accessToken
-              )
-              .catch((error) => {
-                console.error(error);
-              });
-            if (graphResponse.status === 200) {
-              // const reader = graphResponse.body.getReader();
-              if (graphResponse.body instanceof ReadableStream) {
-                try {
-                  const jsondata = await graphResponse.json();
-                  store.set('azureAuthentication/myInfo', jsondata);
-                } catch (e) {
-                  console.error(e);
-                }
-              }
-            }
-          } catch (e) {
-            console.error(e);
-            if (store.myInfo !== null) {
-              store.set('azureAuthentication/myInfo', null);
+          let graphResponse = await myMSALObj.callMSGraph(
+            graphConfig.myInfoEndpoint,
+            newTokenResponse.accessToken
+          );
+          if (graphResponse.status === 200) {
+            // const reader = graphResponse.body.getReader();
+            if (graphResponse.body instanceof ReadableStream) {
+              const jsondata = await graphResponse.json();
+              store.set('azureAuthentication/myInfo', jsondata);
             }
           }
         }
 
         if (graphConfig.profilePhotoEndpoint) {
           // Try to get their photo if it exists
-          try {
-            // console.log('***** 7 msGraphCall-Photo *******');
-            let graphResponse = await myMSALObj.callMSGraph(
-              graphConfig.profilePhotoEndpoint,
-              newTokenResponse.accessToken
-            );
-            if (graphResponse.status === 200) {
-              if (graphResponse.body instanceof ReadableStream) {
-                const reader = graphResponse.body.getReader();
+          let graphResponse = await myMSALObj.callMSGraph(
+            graphConfig.profilePhotoEndpoint,
+            newTokenResponse.accessToken
+          );
+          if (graphResponse.status === 200) {
+            if (graphResponse.body instanceof ReadableStream) {
+              const reader = graphResponse.body.getReader();
 
-                // Read the image in chunks and then re-assemble them into a base64 image
-                const binaryData = [];
-                // https://web.dev/fetch-upload-streaming/
-                // eslint-disable-next-line no-constant-condition
-                while (true) {
-                  const { value, done } = await reader.read();
-                  if (done) break;
-                  // console.log('Received', value); // Can be used to keep track of chunk numbers
-                  binaryData.push(value);
-                }
-                //https://stackoverflow.com/questions/14071463/how-can-i-merge-typedarrays-in-javascript
-                const mergedUint8Array = new Uint8Array(
-                  binaryData
-                    .map((typedArray) => [...new Uint8Array(typedArray.buffer)])
-                    .flat()
-                );
-                const base64String = window.btoa(
-                  String.fromCharCode(...mergedUint8Array)
-                );
-                store.set('azureAuthentication/myPhoto', base64String);
+              // Read the image in chunks and then re-assemble them into a base64 image
+              const binaryData = [];
+              // https://web.dev/fetch-upload-streaming/
+              // eslint-disable-next-line no-constant-condition
+              while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                // console.log('Received', value); // Can be used to keep track of chunk numbers
+                binaryData.push(value);
               }
-            }
-          } catch (e) {
-            console.error(e);
-            if (store.myPhoto !== null) {
-              store.set('azureAuthentication/myPhoto', null);
+              //https://stackoverflow.com/questions/14071463/how-can-i-merge-typedarrays-in-javascript
+              const mergedUint8Array = new Uint8Array(
+                binaryData
+                  .map((typedArray) => [...new Uint8Array(typedArray.buffer)])
+                  .flat()
+              );
+              const base64String = window.btoa(
+                String.fromCharCode(...mergedUint8Array)
+              );
+              store.set('azureAuthentication/myPhoto', base64String);
             }
           }
-          // }
         }
 
         // Get the photo meta data
@@ -171,42 +140,51 @@ const actions = {
           // if he does not we grab a token silently for our graph scope and call Microsoft graph to get the picture
           // if (!localStorage.getItem('userPicture')) {
           // Get information about logged in user
-          try {
-            // console.log('***** 8 msGraphCall-Photo Meta *******');
-            let graphResponse = await myMSALObj
-              .callMSGraph(
-                graphConfig.profilePhotoMetaEndpoint,
-                newTokenResponse.accessToken
-              )
-              .catch((error) => {
-                console.error(error);
-              });
-            if (graphResponse.status === 200) {
-              // const reader = graphResponse.body.getReader();
-              if (graphResponse.body instanceof ReadableStream) {
-                try {
-                  const jsondata = await graphResponse.json();
-                  store.set('azureAuthentication/myPhotoMetaData', jsondata);
-                } catch (e) {
-                  console.error(e);
-                }
+          let graphResponse = await myMSALObj
+            .callMSGraph(
+              graphConfig.profilePhotoMetaEndpoint,
+              newTokenResponse.accessToken
+            )
+            .catch((error) => {
+              console.error(error);
+            });
+          if (graphResponse.status === 200) {
+            // const reader = graphResponse.body.getReader();
+            if (graphResponse.body instanceof ReadableStream) {
+              try {
+                const jsondata = await graphResponse.json();
+                store.set('azureAuthentication/myPhotoMetaData', jsondata);
+              } catch (e) {
+                console.error(e);
               }
-            }
-          } catch (e) {
-            console.error(e);
-            if (store.myPhotoMetaData !== null) {
-              store.set('azureAuthentication/myPhotoMetaData', null);
             }
           }
         }
       } else {
-        // console.log('***** 99 NO newTokenResponse FOUND *******');
+        // NO newTokenResponse FOUND
+        if (store.azuretokenresponse !== null) {
+          store.set('azureAuthentication/azuretokenresponse', null);
+        }
       }
     } catch (error) {
-      console.errer('Ah Oh, Programmer...');
+      commit('loading', false);
+
+      console.error('Ah Oh, Programmer. Check this error out...');
       console.error(error);
+      if (store.myInfo !== null) {
+        store.set('azureAuthentication/myInfo', null);
+      }
+      if (store.myPhotoMetaData !== null) {
+        store.set('azureAuthentication/myPhotoMetaData', null);
+      }
+      if (store.myPhoto !== null) {
+        store.set('azureAuthentication/myPhoto', null);
+      }
+      if (store.azuretokenresponse !== null) {
+        store.set('azureAuthentication/azuretokenresponse', null);
+      }
     }
-    commit('SET_LOADING', false);
+    commit('loading', false);
   },
 
   // selectAccount(state, resp) {
