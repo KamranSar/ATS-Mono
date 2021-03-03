@@ -12,9 +12,10 @@ const msalConfig = {
     // authority: 'https://login.microsoftonline.com/common',
     // knownAuthorities: ["https://login.microsoftonline.com"], // You must identify your tenant's domain as a known authority.
     // redirectUri: window.location.origin, // You must register this URI on Azure Portal/App Registration. Defaults to "window.location.href".
-    redirectUri: window.location.href,
+    // redirectUri: window.location.href,
     postLogoutRedirectUri: window.location.href, // This is the default behavior
-    navigateToLoginRequestUrl: false,
+    // navigateToLoginRequestUrl: false,
+    navigateToLoginRequestUrl: true,
   },
   cache: {
     cacheLocation: 'localStorage', // Configures cache location. "sessionStorage" is more secure, but "localStorage" gives you SSO.

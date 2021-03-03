@@ -16,6 +16,7 @@ const getDefaultState = () => {
     validUserIdStatus: false,
     user: {
       id: '23432423',
+      role_cd: 'Org Admin',
     },
     maxViewMode: 'person',
 

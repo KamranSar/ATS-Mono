@@ -61,7 +61,7 @@
     </v-main>
 
     <Footer
-      v-if="footerEnabled"
+      v-if="footerEnabled && !azureLoggedIn"
       :userItems="userItems"
       :adminItems="adminItems"
       :anonItems="anonItems"
@@ -177,24 +177,29 @@
           {
             icon: 'mdi-account-outline',
             title: 'Users',
-            to: '/admin/users',
+            to: { name: 'users' },
           },
           {
             icon: 'mdi-printer',
             title: 'Export Templates',
-            to: '/admin/templates',
+            to: { name: 'templates' },
           },
         ],
         userToolbarItems: [
           {
             icon: 'mdi-folder-account',
             title: 'Account',
-            to: '/my-account',
+            to: { name: 'my-account' },
           },
           {
             icon: 'mdi-logout',
             title: 'Logout',
             to: { name: 'logout' },
+          },
+          {
+            icon: 'mdi-login',
+            title: 'Login',
+            to: { name: 'login' },
           },
         ],
       };
@@ -208,6 +213,15 @@
         'bottomBarEnabled',
         'footerEnabled',
       ]),
+      ...get('azureAuthentication', {
+        azureLoading: 'loading',
+        myInfo: 'myInfo',
+        myPhoto: 'myPhoto',
+        myPhotoMetaData: 'myPhotoMetaData',
+        localAccountId: 'localAccountId',
+        displayName: 'displayName',
+        azureLoggedIn: 'isLoggedIn',
+      }),
     },
 
     filters: {

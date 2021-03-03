@@ -1,25 +1,29 @@
 import Vue from 'vue';
 
 import store from '@/store/index';
-
 import VueRouter from 'vue-router';
 import Home from '@/views/Home.vue';
 
 Vue.use(VueRouter);
 
-// function requireAuth(to, from, next) {
-//   if (store.state.authentication.token) next();
-//   else next("/login");
-// }
+function requireAuth(to, from, next) {
+  const token = store.get('azureAuthentication/azuretokenresponse');
+  if (token) next();
+  else next({ name: 'login' });
+}
 
 function dynamicHome(to, from, next) {
-  if (store.state.authentication.token) next('/dashboard');
+  const token = store.get('azureAuthentication/azuretokenresponse');
+  if (token) next({ name: 'Dashboard' });
   else next();
 }
 
 function logout(to, from, next) {
-  if (store.state.authentication.token) store.dispatch('authentication/logout');
-  next('/login');
+  const token = store.get('azureAuthentication/azuretokenresponse');
+  if (token) {
+    store.dispatch('azureAuthentication/signOut');
+  }
+  next({ name: 'login' });
 }
 
 const waitForStorageToBeReady = async (to, from, next) => {
@@ -66,12 +70,19 @@ const routes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
+    beforeEnter: requireAuth,
+    // beforeEnter: (to, from, next) => {
+    //   const token = store.get('azureAuthentication/azuretokenresponse');
+    //   if (token) next();
+    //   else next({ name: 'home' });
+    // },
     component: () =>
       import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
   },
   {
     path: '/sr',
     name: 'ServiceReq',
+    beforeEnter: requireAuth,
     component: () => import('@/views/ServiceReq.vue'),
   },
   {
@@ -88,6 +99,29 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ '@/views/About.vue'),
+  },
+  {
+    path: '/my-account',
+    name: 'my-account',
+    beforeEnter: requireAuth,
+    redirect: { name: '4oh4' },
+  },
+  {
+    path: '/users',
+    name: 'users',
+    beforeEnter: requireAuth,
+    redirect: { name: '4oh4' },
+  },
+  {
+    path: '/templates',
+    name: 'templates',
+    redirect: { name: '4oh4' },
+  },
+  {
+    // catch all 404
+    path: '/404',
+    name: '4oh4',
+    component: () => import('@/views/NotFound.vue'),
   },
   {
     // catch all 404

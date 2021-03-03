@@ -45,7 +45,10 @@
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">
-            <v-icon color="darker">mdi-account-circle</v-icon>
+            <v-avatar v-if="myPhoto">
+              <v-img max-height="32" max-width="32" :src="myPhoto"></v-img>
+            </v-avatar>
+            <v-icon v-else color="darker">mdi-account-circle</v-icon>
           </v-btn>
         </template>
 
@@ -108,6 +111,15 @@
       ...mapGetters('authentication', ['isLoggedIn', 'registerEmail']),
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
+      ...get('azureAuthentication', {
+        azureLoading: 'loading',
+        myInfo: 'myInfo',
+        myPhoto: 'myPhoto',
+        myPhotoMetaData: 'myPhotoMetaData',
+        localAccountId: 'localAccountId',
+        displayName: 'displayName',
+        azureLoggedIn: 'isLoggedIn',
+      }),
     },
     methods: {
       ...mapActions('authentication', ['logout']),

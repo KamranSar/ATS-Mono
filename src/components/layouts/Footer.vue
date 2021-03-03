@@ -16,7 +16,9 @@
 
         <v-col cols="12">&nbsp;</v-col>
 
-        <v-col cols="6" class="caption">© 2020-2021 CDCR.</v-col>
+        <v-col cols="6" class="ma-auto text--grey caption">
+          <span>© 2021 CDCR</span>
+        </v-col>
         <v-col
           cols="6"
           align="end"

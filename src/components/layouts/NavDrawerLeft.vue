@@ -1,15 +1,21 @@
 <template>
   <div>
     <v-toolbar flat class="subtitle-2 grey--text" dense color="#ECEFF1">
-      <span class="font-weight-bold">
-        <v-avatar class="mr-3" v-if="isLoggedIn">
-          <v-icon>mdi-account-circle</v-icon>
+      <span class="font-weight-bold text-truncate">
+        <v-avatar class="mr-2" v-if="azureLoggedIn">
+          <v-img
+            v-if="myPhoto"
+            max-height="46"
+            max-width="46"
+            :src="myPhoto"
+          ></v-img>
+          <v-icon v-else>mdi-account-circle</v-icon>
         </v-avatar>
-        <span>{{ formattedUserId }}</span>
+        <span>{{ displayName }}</span>
       </span>
     </v-toolbar>
 
-    <v-list v-if="isLoggedIn" dense>
+    <v-list v-if="azureLoggedIn" dense>
       <v-list-item
         v-for="(item, i) in userItems"
         :key="i"
@@ -40,7 +46,7 @@
       </v-list-item>
     </v-list>
 
-    <v-list v-if="!isLoggedIn" dense>
+    <v-list v-if="!azureLoggedIn" dense>
       <v-list-item v-for="(item, i) in anonItems" :key="i" :to="item.to">
         <v-list-item-avatar>
           <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
@@ -87,9 +93,21 @@
 
 <script>
   import { mapGetters, mapState } from 'vuex';
+  import { get } from 'vuex-pathify';
+
   export default {
     name: 'NavDrawerLeft',
     computed: {
+      ...get('azureAuthentication', {
+        azureLoading: 'loading',
+        myInfo: 'myInfo',
+        myPhoto: 'myPhoto',
+        myPhotoMetaData: 'myPhotoMetaData',
+        localAccountId: 'localAccountId',
+        displayName: 'displayName',
+        azureLoggedIn: 'isLoggedIn',
+      }),
+
       ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
       ...mapState('authentication', ['user']),
       ...mapState('app', ['loading']),

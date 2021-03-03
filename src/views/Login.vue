@@ -14,19 +14,6 @@
             ></MicrosoftLoginButton>
           </v-col>
 
-          <v-col cols="6" class="text-center">
-            <v-img max-height="72" max-width="72" :src="myPhoto"></v-img>
-          </v-col>
-
-          <v-col cols="12" class="text-center">
-            localAccountId={{ localAccountId }}
-          </v-col>
-          <v-col cols="12" class="text-center"> myInfo={{ myInfo }} </v-col>
-
-          <v-col cols="12" class="text-center">
-            myPhotoMetaData={{ myPhotoMetaData }}
-          </v-col>
-
           <v-col md="12" v-for="i in 2" :key="i + 'b'"></v-col>
         </v-row>
       </v-container>

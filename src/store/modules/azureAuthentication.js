@@ -59,7 +59,7 @@ const actions = {
 
   // Authenticate the user with Active Directory
   // eslint-disable-next-line no-unused-vars
-  async AzureAuthentication({ dispatch, commit, state }) {
+  AzureAuthentication: async ({ dispatch, commit, state }) => {
     try {
       commit('SET_LOADING', true);
       let newTokenResponse = null;
@@ -203,6 +203,7 @@ const actions = {
         // console.log('***** 99 NO newTokenResponse FOUND *******');
       }
     } catch (error) {
+      console.errer('Ah Oh, Programmer...');
       console.error(error);
     }
     commit('SET_LOADING', false);
@@ -246,16 +247,15 @@ const actions = {
   //   }
   // },
 
-  signOut({ state }) {
-    const localAccountId = state.localAccountId;
-    if (localAccountId) {
-      // logoutRequest.account = myMSALObj.getAccountByHomeId(accountId);
-      logoutRequest.account = myMSALObj.getAccountByLocalId(localAccountId);
+  signOut: ({ state, commit }) => {
+    if (state.azuretokenresponse && state.azuretokenresponse.account) {
+      logoutRequest.account = state.azuretokenresponse.account;
       myMSALObj.logout(logoutRequest);
+      commit('resetState');
     }
   },
 
-  async getTokenPopup(state, request) {
+  getTokenPopup: async (state, request) => {
     return await myMSALObj.acquireTokenSilent(request).catch(async (error) => {
       console.log('silent token acquisition fails.');
       if (error instanceof msal.InteractionRequiredAuthError) {
@@ -276,7 +276,8 @@ const actions = {
 const mutations = {
   ...make.mutations(state),
 
-  resetState(state) {
+  resetState: (state) => {
+    console.log('resetstate called');
     Object.assign(state, getDefaultState());
   },
 };
@@ -285,10 +286,10 @@ const mutations = {
  * azureAuthentication getters
  */
 const getters = {
-  //  ...make.getters(state),
+  // ...make.getters(state),
 
   // Override state var with custom getter
-  myPhoto(state) {
+  myPhoto: (state) => {
     if (state.myPhotoMetaData && state.myPhoto) {
       const imageType = state.myPhotoMetaData['@odata.mediaContentType'];
       const imageStr = `data:${imageType};base64,${state.myPhoto}`;
@@ -297,10 +298,21 @@ const getters = {
     return null;
   },
 
-  localAccountId(state) {
+  localAccountId: (state) => {
     if (state.azuretokenresponse && state.azuretokenresponse.account) {
       const localAccountId = state.azuretokenresponse.account.localAccountId;
       return localAccountId;
+    }
+    return null;
+  },
+
+  isLoggedIn: (state) => {
+    return !!state.azuretokenresponse;
+  },
+
+  displayName: (state) => {
+    if (state.myInfo) {
+      return state.myInfo.displayName || null;
     }
     return null;
   },
