@@ -214,7 +214,6 @@
         'footerEnabled',
       ]),
       ...get('azureAuthentication', {
-        azureLoading: 'loading',
         myInfo: 'myInfo',
         myPhoto: 'myPhoto',
         myPhotoMetaData: 'myPhotoMetaData',
@@ -222,6 +221,7 @@
         displayName: 'displayName',
         azureLoggedIn: 'isLoggedIn',
       }),
+      ...get('app', ['azureLoading']),
     },
 
     filters: {

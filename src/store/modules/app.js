@@ -4,7 +4,8 @@ import { make } from 'vuex-pathify';
 const getDefaultState = () => {
   return {
     baseURL: '/api',
-    loading: false,
+    loading: false, // route change triggers this
+    azureLoading: false,
   };
 };
 

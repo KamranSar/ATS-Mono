@@ -40,12 +40,12 @@
     },
     computed: {
       ...get('azureAuthentication', {
-        azureLoading: 'loading',
         myInfo: 'myInfo',
         myPhoto: 'myPhoto',
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
       }),
+      ...get('app', ['loading', 'azureLoading']),
       ...sync('authentication', [
         'registerUserId',
         'registerEmail',

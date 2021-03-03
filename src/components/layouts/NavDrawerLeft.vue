@@ -99,7 +99,6 @@
     name: 'NavDrawerLeft',
     computed: {
       ...get('azureAuthentication', {
-        azureLoading: 'loading',
         myInfo: 'myInfo',
         myPhoto: 'myPhoto',
         myPhotoMetaData: 'myPhotoMetaData',
@@ -107,10 +106,9 @@
         displayName: 'displayName',
         azureLoggedIn: 'isLoggedIn',
       }),
-
+      ...get('app', ['loading', 'azureLoading']),
       ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
       ...mapState('authentication', ['user']),
-      ...mapState('app', ['loading']),
       formattedUserId() {
         let userId = this.user && this.user.userid;
         if (userId && userId.length > 12)

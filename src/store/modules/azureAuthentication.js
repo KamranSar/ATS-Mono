@@ -32,7 +32,6 @@ const myMSALObj = new msal(msalConfig);
 
 const getDefaultState = () => {
   return {
-    loading: false,
     azuretokenresponse: null,
     myInfo: null,
     myPhoto: null,
@@ -58,10 +57,10 @@ const actions = {
   ...make.actions(state),
 
   // Authenticate the user with Active Directory
-  // eslint-disable-next-line no-unused-vars
-  AzureAuthentication: async ({ dispatch, commit, state }) => {
+  AzureAuthentication: async ({ dispatch, state }) => {
     try {
-      commit('loading', true);
+      store.commit('app/azureLoading', true);
+
       let newTokenResponse = null;
       // The user has already logged in. We try to get his token silently
       if (state.azuretokenresponse && state.azuretokenresponse.account) {
@@ -167,7 +166,7 @@ const actions = {
         }
       }
     } catch (error) {
-      commit('loading', false);
+      store.commit('app/azureLoading', false);
 
       console.error('Ah Oh, Programmer. Check this error out...');
       console.error(error);
@@ -184,7 +183,8 @@ const actions = {
         store.set('azureAuthentication/azuretokenresponse', null);
       }
     }
-    commit('loading', false);
+
+    store.commit('app/azureLoading', false);
   },
 
   // selectAccount(state, resp) {

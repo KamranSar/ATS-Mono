@@ -29,6 +29,7 @@ const vuexLocal = new VuexPersistence({
   key: 'localStore', // The key to store the state on in the storage provider.
   storage: window.localStorage, // or window.sessionStorage or localForage
   modules: ['serviceReq', 'userprefs'], // Dont include app
+  // reducer: (state) => ({ dog: state.dog }),
   filter: (mutation) =>
     mutation.type.includes('userprefs/') ||
     mutation.type.includes('serviceReq/'), // Method to filter which mutations will trigger state saving
