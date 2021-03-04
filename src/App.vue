@@ -220,8 +220,8 @@
         localAccountId: 'localAccountId',
         displayName: 'displayName',
         azureLoggedIn: 'isLoggedIn',
+        azureLoading: 'azureLoading',
       }),
-      ...get('app', ['azureLoading']),
     },
 
     filters: {

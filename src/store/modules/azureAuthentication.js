@@ -32,6 +32,7 @@ const myMSALObj = new msal(msalConfig);
 
 const getDefaultState = () => {
   return {
+    azureLoading: false,
     azuretokenresponse: null,
     myInfo: null,
     myPhoto: null,
@@ -56,10 +57,15 @@ const state = getDefaultState();
 const actions = {
   ...make.actions(state),
 
-  // Authenticate the user with Active Directory
+  // eslint-disable-next-line no-unused-vars
+  init: async ({ dispatch }) => {
+    //
+  },
+
+  // Authenticate the user with Azure Active Directory
   AzureAuthentication: async ({ dispatch, state }) => {
     try {
-      store.commit('app/azureLoading', true);
+      store.commit('azureAuthentication/azureLoading', true);
 
       let newTokenResponse = null;
       // The user has already logged in. We try to get his token silently
@@ -75,16 +81,12 @@ const actions = {
       if (newTokenResponse) {
         store.set('azureAuthentication/azuretokenresponse', newTokenResponse);
 
-        // console.log('***** 5 setActiveAccount *******');
         // myMSALObj.setActiveAccount(newTokenResponse.account);
         // There is an existing token, we authentify the user
         // We add the access token as an authorization header for our Axios requests to our API
-        // this._vm.axios.defaults.headers.common['Authorization'] =
-        //   'Bearer ' + newTokenResponse.accessToken;
         if (graphConfig.myInfoEndpoint) {
           // The graph is set, we check if the user has already a picture in the local storage
           // if he does not we grab a token silently for our graph scope and call Microsoft graph to get the picture
-          // if (!localStorage.getItem('userPicture')) {
           // Get information about logged in user
           let graphResponse = await myMSALObj.callMSGraph(
             graphConfig.myInfoEndpoint,
@@ -166,7 +168,7 @@ const actions = {
         }
       }
     } catch (error) {
-      store.commit('app/azureLoading', false);
+      store.commit('azureAuthentication/azureLoading', false);
 
       console.error('Ah Oh, Programmer. Check this error out...');
       console.error(error);
@@ -184,7 +186,7 @@ const actions = {
       }
     }
 
-    store.commit('app/azureLoading', false);
+    store.commit('azureAuthentication/azureLoading', false);
   },
 
   // selectAccount(state, resp) {
@@ -225,6 +227,7 @@ const actions = {
   //   }
   // },
 
+  // This signs completely out of Azure including any other applications using this browser
   signOut: ({ state, commit }) => {
     if (state.azuretokenresponse && state.azuretokenresponse.account) {
       logoutRequest.account = state.azuretokenresponse.account;
@@ -233,18 +236,40 @@ const actions = {
     }
   },
 
+  logOut: ({ commit }) => {
+    commit('resetState');
+  },
+
+  // Request a token to be used for a MSGraph call or Middle Tier login
   getTokenPopup: async (state, request) => {
-    return await myMSALObj.acquireTokenSilent(request).catch(async (error) => {
-      console.log('silent token acquisition fails.');
-      if (error instanceof msal.InteractionRequiredAuthError) {
-        console.log('acquiring token using popup');
-        return myMSALObj.acquireTokenPopup(request).catch((error) => {
-          console.error(error);
-        });
-      } else {
-        console.error(error);
-      }
-    });
+    store.commit('azureAuthentication/azureLoading', true);
+    let newtoken = await myMSALObj
+      .acquireTokenSilent(request)
+      .catch(async (error) => {
+        // console.log('silent token acquisition fails.');
+        if (error instanceof msal.InteractionRequiredAuthError) {
+          // console.log('acquiring token using popup');
+          newtoken = myMSALObj.acquireTokenPopup(request).catch((error) => {
+            store.commit('azureAuthentication/azureLoading', false);
+            throw error;
+          });
+        } else {
+          store.commit('azureAuthentication/azureLoading', false);
+          throw error;
+        }
+      });
+    store.commit('azureAuthentication/azureLoading', false);
+    return newtoken;
+  },
+
+  getAccessTokenPopup: async ({ dispatch }) => {
+    try {
+      const newToken = await dispatch('getTokenPopup', loginRequest);
+      store.set('azureAuthentication/azuretokenresponse', newToken);
+    } catch (error) {
+      store.set('azureAuthentication/azuretokenresponse', null);
+      console.error(error);
+    }
   },
 };
 

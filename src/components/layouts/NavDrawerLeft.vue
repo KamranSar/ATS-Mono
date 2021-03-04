@@ -105,8 +105,9 @@
         localAccountId: 'localAccountId',
         displayName: 'displayName',
         azureLoggedIn: 'isLoggedIn',
+        azureLoading: 'azureLoading',
       }),
-      ...get('app', ['loading', 'azureLoading']),
+      ...get('app', ['loading']),
       ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
       ...mapState('authentication', ['user']),
       formattedUserId() {

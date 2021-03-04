@@ -31,6 +31,11 @@ const mutations = {
 
 const actions = {
   ...make.actions(state),
+  // eslint-disable-next-line no-unused-vars
+  init: async ({ dispatch }) => {
+    //
+  },
+
   async fetchServiceReq(args, params) {
     let { page, query } = params;
     let url = `v0/sr-my`;

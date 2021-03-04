@@ -26,6 +26,10 @@ const mutations = {
 
 const actions = {
   ...make.actions(state),
+  // eslint-disable-next-line no-unused-vars
+  init: async ({ dispatch }) => {
+    //
+  },
 };
 
 const getters = {};

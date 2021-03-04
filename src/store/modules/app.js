@@ -5,7 +5,6 @@ const getDefaultState = () => {
   return {
     baseURL: '/api',
     loading: false, // route change triggers this
-    azureLoading: false,
   };
 };
 

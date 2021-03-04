@@ -34,6 +34,11 @@ export default {
   state: state,
 
   actions: {
+    // eslint-disable-next-line no-unused-vars
+    init: async ({ dispatch }) => {
+      //
+    },
+
     logout({ commit }) {
       try {
         store.set('alert/alert', {});

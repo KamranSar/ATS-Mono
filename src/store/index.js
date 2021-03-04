@@ -9,6 +9,20 @@ import localForage from 'localforage';
 // Modules
 import * as modules from './modules';
 
+// https://localforage.github.io/localForage/#multiple-instances-createinstance
+const dbName = 'appDatabaseName'; // indexedDB database name
+
+var localForageForAzure = localForage.createInstance({
+  name: dbName,
+  storeName: 'azureInfo', // table name
+});
+
+var localForageForServices = localForage.createInstance({
+  name: dbName,
+  storeName: 'serviceReq', // table name
+});
+
+// Attach vuex to the vue instance
 Vue.use(Vuex);
 
 // https://github.com/championswimmer/vuex-persist#detailed
@@ -28,39 +42,47 @@ const vuexCookie = new VuexPersistence({
 
 const vuexLocal = new VuexPersistence({
   key: 'localStore', // The key to store the state on in the storage provider.
-  storage: window.localStorage, // or window.sessionStorage or localForage
-  modules: ['serviceReq', 'userprefs'], // Dont include app
-  // reducer: (state) => ({ dog: state.dog }),
-  filter: (mutation) =>
-    mutation.type.includes('userprefs/') ||
-    mutation.type.includes('serviceReq/'), // Method to filter which mutations will trigger state saving
+  storage: window.localStorage, // or window.sessionStorage, window.localStorage, or localForage
+  modules: ['userprefs'], // Dont include app
+  filter: (mutation) => mutation.type.includes('userprefs/'), // Method to filter which mutations will trigger state saving
+});
+
+const vuexServices = new VuexPersistence({
+  key: 'serviceReq', // The key to store the state on in the storage provider.
+  storage: localForageForServices, // or window.sessionStorage, window.localStorage, or localForage
+  asyncStorage: true, // needed for localforage
+  modules: ['serviceReq'], // Dont include app
+  filter: (mutation) => mutation.type.includes('serviceReq/'), // Method to filter which mutations will trigger state saving
 });
 
 const vuexIndexdb = new VuexPersistence({
-  key: 'indexdbStore', // The key to store the state on in the storage provider.
-  storage: localForage, // or window.sessionStorage or localForage
-  asyncStorage: true,
-  // Define custom set/get for state so we can log what's getting saved/restored
+  key: 'azureAuthentication', // The key to store the state on in the storage provider.
+  storage: localForageForAzure, // or window.sessionStorage, window.localStorage, or localForage
+  asyncStorage: true, // needed for localforage
   restoreState: (key) => {
-    // console.log(key + '_restored');
-    return localForage.getItem(key);
+    localForageForAzure.getItem(key).then((state) => {
+      // You can manipulate the state here before it is restored - such as decrypt certain keys
+      console.log(state);
+      return state;
+    });
+    return localForageForAzure.getItem(key);
   },
   saveState: (key, state) => {
-    // console.log(key + '_saved');
-    // console.log(state);
-    return localForage.setItem(key, state);
+    // You can manipulate the state here before it goes into the database - such as encrypt certain keys
+    console.log(key, state);
+    return localForageForAzure.setItem(key, state);
   },
-
-  modules: ['azureAuthentication'],
-  // reducer: (state) => ({ azureAuthentication: state.azureAuthentication }),
+  // modules: ['azureAuthentication'],
+  // strip the state for azure down to only the fields we care about
+  reducer: (state) => ({
+    azureAuthentication: {
+      azuretokenresponse: state.azureAuthentication.azuretokenresponse,
+      myInfo: state.azureAuthentication.myInfo,
+      myPhoto: state.azureAuthentication.myPhoto,
+      myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,
+    },
+  }),
   filter: (mutation) => mutation.type.includes('azureAuthentication/'), // Method to filter which mutations will trigger state saving
-  // filter: (
-  //   mutation // {
-  // ) =>
-  //   mutation.type == 'azureAuthentication/azuretokenresponse' ||
-  //   mutation.type == 'azureAuthentication/SET_MY_INFO' ||
-  //   mutation.type == 'azureAuthentication/SET_MY_PHOTO' ||
-  //   mutation.type == 'azureAuthentication/SET_MY_PHOTO_META_DATA',
 });
 
 const store = new Vuex.Store({
@@ -70,16 +92,24 @@ const store = new Vuex.Store({
     vuexCookie.plugin,
     vuexLocal.plugin,
     vuexIndexdb.plugin,
+    vuexServices.plugin,
   ],
 });
 
+// initialization functions for each vuex store
+// Adding await to the beginning of one makes it synchronous
+store.dispatch('alert/init');
 store.dispatch('app/init');
-// store.dispatch('azureAuthentication/signIn', 'loginPopup');
-// store.dispatch('azureAuthentication/AzureAuthentication');
+store.dispatch('appfeatures/init');
+store.dispatch('authentication/init');
+store.dispatch('azureAuthentication/init');
+store.dispatch('serviceReq/init');
+store.dispatch('snackbar/init');
+store.dispatch('userprefs/init');
 
 if (process.env.NODE_ENV === 'development') {
   window.store = store; // Make store available from the console.
 }
 export default store;
 
-export const ROOT_DISPATCH = Object.freeze({ root: true });
+// export const ROOT_DISPATCH = Object.freeze({ root: true });

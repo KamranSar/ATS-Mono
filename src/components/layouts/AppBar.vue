@@ -111,7 +111,6 @@
       ...mapGetters('authentication', ['isLoggedIn', 'registerEmail']),
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
-      ...get('app', ['azureLoading']),
       ...get('azureAuthentication', {
         myInfo: 'myInfo',
         myPhoto: 'myPhoto',
@@ -119,6 +118,7 @@
         localAccountId: 'localAccountId',
         displayName: 'displayName',
         azureLoggedIn: 'isLoggedIn',
+        azureLoading: 'azureLoading',
       }),
     },
     methods: {

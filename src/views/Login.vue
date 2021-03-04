@@ -44,8 +44,9 @@
         myPhoto: 'myPhoto',
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
+        azureLoading: 'azureLoading',
       }),
-      ...get('app', ['loading', 'azureLoading']),
+      ...get('app', ['loading']),
       ...sync('authentication', [
         'registerUserId',
         'registerEmail',
