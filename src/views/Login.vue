@@ -14,7 +14,11 @@
             ></MicrosoftLoginButton>
           </v-col>
 
-          <v-col md="12" v-for="i in 2" :key="i + 'b'"></v-col>
+          <v-col md="12" class="text-center">
+            {{ isTokenExpired }}
+          </v-col>
+
+          <v-col md="12" v-for="i in 2" :key="i + 'b'"> </v-col>
         </v-row>
       </v-container>
     </template>
@@ -45,6 +49,7 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         azureLoading: 'azureLoading',
+        isTokenExpired: 'isTokenExpired',
       }),
       ...get('app', ['loading']),
       ...sync('authentication', [

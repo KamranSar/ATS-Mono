@@ -227,7 +227,7 @@ const actions = {
   //   }
   // },
 
-  // This signs completely out of Azure including any other applications using this browser
+  // This signs completely out of Azure including any other applications using this browser (outlook email, Teams, Devops, etc.)
   signOut: ({ state, commit }) => {
     if (state.azuretokenresponse && state.azuretokenresponse.account) {
       logoutRequest.account = state.azuretokenresponse.account;
@@ -307,6 +307,33 @@ const getters = {
       return localAccountId;
     }
     return null;
+  },
+
+  tokenExpiration: (state) => {
+    const hasToken =
+      !!state.azuretokenresponse && !!state.azuretokenresponse.expiresOn;
+    if (hasToken) {
+      const ExpiresAt = state.azuretokenresponse.expiresOn;
+      // console.log(ExpiresAt.toLocaleString());
+      return ExpiresAt;
+    } else {
+      return null;
+    }
+  },
+
+  isTokenExpired: () => {
+    const expDate = store.get('azureAuthentication/tokenExpiration');
+    if (expDate) {
+      const now = new Date();
+      console.log('If', now, '<=', expDate, 'Then Token is Expired');
+      if (expDate <= now) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   },
 
   isLoggedIn: (state) => {
