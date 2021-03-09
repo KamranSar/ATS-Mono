@@ -17,7 +17,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   modules,
   plugins: [
-    pathify.plugin, // Must register the pathify plugin
+    pathify.plugin,
     // Register the custom persistence plugins
     cookiePlugin.plugin,
     localStorage.plugin,

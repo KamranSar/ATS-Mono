@@ -27,14 +27,19 @@ const vuexPersist = new VuexPersistence({
     return localForageInstance.setItem(key, state);
   },
   // only save these fields from the state
-  reducer: (state) => ({
-    azureAuthentication: {
-      azuretokenresponse: state.azureAuthentication.azuretokenresponse,
-      myInfo: state.azureAuthentication.myInfo,
-      myPhoto: state.azureAuthentication.myPhoto,
-      myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,
-    },
-  }),
+  reducer: (state) => {
+    // console.log(state);
+    // Your reducer should not change the shape of the state.
+    // https://github.com/championswimmer/vuex-persist#reducer
+    return {
+      azureAuthentication: {
+        azuretokenresponse: state.azureAuthentication.azuretokenresponse,
+        myInfo: state.azureAuthentication.myInfo,
+        myPhoto: state.azureAuthentication.myPhoto,
+        myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,
+      },
+    };
+  },
   filter: (mutation) => {
     return !modules.every((name) => {
       return !mutation.type.includes(name + '/');
