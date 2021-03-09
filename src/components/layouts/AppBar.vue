@@ -56,7 +56,7 @@
           <v-list-item
             v-for="(item, index) in userToolbarItems"
             dense
-            :key="index"
+            :key="'u' + index"
             :to="item.to"
           >
             <v-list-item-avatar>

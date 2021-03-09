@@ -138,7 +138,7 @@
     },
     methods: {
       goGo(to) {
-        this.$router.go(to);
+        this.$router.push(to);
       },
     },
   };

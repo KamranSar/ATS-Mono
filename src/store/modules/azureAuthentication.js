@@ -31,6 +31,7 @@ import {
 const myMSALObj = new msal(msalConfig);
 
 const getDefaultState = () => {
+  console.log('getDefaultState called');
   return {
     azureLoading: false,
     azuretokenresponse: null,
@@ -262,6 +263,10 @@ const actions = {
     return newtoken;
   },
 
+  /**
+   *  Dispatches the get Silent Token with popup if needed.
+   * @param {dispatch} dispatch
+   */
   getAccessTokenPopup: async ({ dispatch }) => {
     try {
       const newToken = await dispatch('getTokenPopup', loginRequest);
@@ -280,7 +285,6 @@ const mutations = {
   ...make.mutations(state),
 
   resetState: (state) => {
-    console.log('resetstate called');
     Object.assign(state, getDefaultState());
   },
 };
@@ -325,7 +329,7 @@ const getters = {
     const expDate = store.get('azureAuthentication/tokenExpiration');
     if (expDate) {
       const now = new Date();
-      console.log('If', now, '<=', expDate, 'Then Token is Expired');
+      // console.log('If', now, '<=', expDate, 'Then Token is Expired');
       if (expDate <= now) {
         return true;
       } else {
@@ -337,7 +341,9 @@ const getters = {
   },
 
   isLoggedIn: (state) => {
-    return !!state.azuretokenresponse;
+    const loggedIn = !!state.azuretokenresponse;
+    console.log('isLoggedIn', loggedIn);
+    return loggedIn;
   },
 
   displayName: (state) => {

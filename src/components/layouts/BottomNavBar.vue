@@ -58,7 +58,7 @@
     data: () => ({ value: 1 }),
     methods: {
       goGo(to) {
-        this.$router.go(to);
+        this.$router.push(to);
       },
     },
   };

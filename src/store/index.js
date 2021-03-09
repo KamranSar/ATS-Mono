@@ -41,5 +41,3 @@ if (process.env.NODE_ENV === 'development') {
   window.store = store; // Make store available from the console.
 }
 export default store;
-
-// export const ROOT_DISPATCH = Object.freeze({ root: true });

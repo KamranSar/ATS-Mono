@@ -7,27 +7,49 @@ import Home from '@/views/Home.vue';
 Vue.use(VueRouter);
 
 function requireAuth(to, from, next) {
-  const token = store.get('azureAuthentication/azuretokenresponse');
-  if (token) next();
+  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  if (loggedIn) next();
   else next({ name: 'login' });
 }
 
 function dynamicHome(to, from, next) {
-  const token = store.get('azureAuthentication/azuretokenresponse');
-  if (token) next({ name: 'Dashboard' });
+  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  if (loggedIn) next({ name: 'Dashboard' });
   else next();
 }
 
+function dynamicLogin(to, from, next) {
+  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  console.log(loggedIn);
+  if (loggedIn) {
+    console.log('going to dahsboard');
+    next({ name: 'Dashboard' });
+  } else {
+    console.log('going to next');
+    next();
+  }
+}
+
 function logout(to, from, next) {
-  const token = store.get('azureAuthentication/azuretokenresponse');
-  if (token) {
-    store.dispatch('azureAuthentication/signOut');
+  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  if (loggedIn) {
+    store.dispatch('azureAuthentication/logOut');
   }
   next({ name: 'login' });
 }
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+let previouslyRestored = false;
 const waitForStorageToBeReady = async (to, from, next) => {
+  console.log('waiting...');
   await store.restored; // Set by VuexPersist
+  if (!previouslyRestored) {
+    // do the things you want to do only once after the store is restored
+    await delay(1000); // Because of a problem with vuex-persist not waiting for all localForage keys to load, we have to wait here
+    // TODO: Add your custom initialization code here
+    previouslyRestored = true;
+  }
+  console.log('finished ...');
   next();
 };
 
@@ -53,6 +75,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
+    beforeEnter: dynamicLogin,
     component: () =>
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },

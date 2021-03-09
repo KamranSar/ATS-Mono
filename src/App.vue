@@ -196,11 +196,6 @@
             title: 'Logout',
             to: { name: 'logout' },
           },
-          {
-            icon: 'mdi-login',
-            title: 'Login',
-            to: { name: 'login' },
-          },
         ],
       };
     },

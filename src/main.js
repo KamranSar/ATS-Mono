@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api'; // Remove when upgrading to Vue 3.0
+import { initServiceWorker } from '@/registerServiceWorker.js';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
 import vuetify from '@/plugins/vuetify';
-// import { msalPlugin, msalConfig } from './plugins/msalConfig';
 import VTooltip from 'v-tooltip';
+
+initServiceWorker();
 
 Vue.use(VueCompositionAPI); // Remove when upgrading to Vue 3.0
 

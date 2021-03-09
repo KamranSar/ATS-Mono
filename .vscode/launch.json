@@ -5,26 +5,44 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "name": "Launch Chrome against localhost",
+      "type": "pwa-chrome",
       "request": "launch",
-      "name": "Launch Dev Build",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/index.js",
-      "outputCapture": "std",
-      "env": {
-        "NODE_ENV": "development"
-      }      
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}"
     },
     {
-      "type": "node",
+      "name": "Launch Incognito Chrome against localhost",
+      "type": "pwa-chrome",
       "request": "launch",
-      "name": "Launch Prod Build",
+      "url": "http://localhost:8080",
+      "runtimeArgs": ["--incognito"],
+      "webRoot": "${workspaceFolder}",
+      "browserLaunchLocation": null
+    },
+    {
+      "name": "npm run serve",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "serve"],
+      "runtimeExecutable": "npm",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/index.js",
-      "outputCapture": "std",
-      "env": {
-        "NODE_ENV": "production"
-      } 
+      "type": "pwa-node"
+    },
+    {
+      "name": "npm run build",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "build"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    },
+    {
+      "name": "npm run prod",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "prod"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
     }
   ]
 }

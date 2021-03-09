@@ -14,9 +14,9 @@
             ></MicrosoftLoginButton>
           </v-col>
 
-          <v-col md="12" class="text-center">
+          <!-- <v-col md="12" class="text-center">
             {{ isTokenExpired }}
-          </v-col>
+          </v-col> -->
 
           <v-col md="12" v-for="i in 2" :key="i + 'b'"> </v-col>
         </v-row>
@@ -70,8 +70,9 @@
       // ...mapMutations('alert', ['setAlert']),
       // ...mapMutations('snackbar', ['setSnack']),
 
-      signinButtonClicked() {
-        this.AzureAuthentication();
+      async signinButtonClicked() {
+        await this.AzureAuthentication();
+        this.$router.push({ name: 'Dashboard' });
       },
     },
   };
