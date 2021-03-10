@@ -38,15 +38,15 @@ function logout(to, from, next) {
   next({ name: 'login' });
 }
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// await delay(1000);
+
 let previouslyRestored = false;
 const waitForStorageToBeReady = async (to, from, next) => {
   console.log('waiting...');
-  await store.restored; // Set by VuexPersist
+  await Promise.all(store.restored); // Set by VuexPersist
   if (!previouslyRestored) {
-    // do the things you want to do only once after the store is restored
-    await delay(1000); // Because of a problem with vuex-persist not waiting for all localForage keys to load, we have to wait here
-    // TODO: Add your custom initialization code here
+    // TODO: Add your custom initialization code here : do the things you want to do only once after the store is restored
     previouslyRestored = true;
   }
   console.log('finished ...');

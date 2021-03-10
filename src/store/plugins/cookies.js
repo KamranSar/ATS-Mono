@@ -1,4 +1,4 @@
-import VuexPersistence from 'vuex-persist';
+import VuexPersistence from '@/../local_modules/vuex-persist';
 import Cookies from 'js-cookie';
 
 // https://github.com/championswimmer/vuex-persist#detailed

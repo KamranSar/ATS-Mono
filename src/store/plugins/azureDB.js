@@ -1,4 +1,4 @@
-import VuexPersistence from 'vuex-persist';
+import VuexPersistence from '@/../local_modules/vuex-persist';
 import localForage from 'localforage';
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance

@@ -1,4 +1,4 @@
-import VuexPersistence from 'vuex-persist';
+import VuexPersistence from '@/../local_modules/vuex-persist';
 
 const modules = ['userprefs']; // Modules you want to save to persistence
 
