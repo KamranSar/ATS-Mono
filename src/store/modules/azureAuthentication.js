@@ -31,7 +31,6 @@ import {
 const myMSALObj = new msal(msalConfig);
 
 const getDefaultState = () => {
-  console.log('getDefaultState called');
   return {
     azureLoading: false,
     azuretokenresponse: null,
@@ -340,9 +339,8 @@ const getters = {
     }
   },
 
-  isLoggedIn: (state) => {
+  isAzureLoggedIn: (state) => {
     const loggedIn = !!state.azuretokenresponse;
-    console.log('isLoggedIn', loggedIn);
     return loggedIn;
   },
 

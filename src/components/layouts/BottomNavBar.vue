@@ -1,6 +1,6 @@
 <template>
   <v-bottom-navigation :value="value" color="blue" grow>
-    <template v-if="isLoggedIn">
+    <template v-if="isAzureLoggedIn">
       <v-btn v-for="(item, i) in userItems" :key="i" :to="item.to">
         <span>{{ item.title }}</span>
         <v-icon>{{ item.icon }}</v-icon>
@@ -8,13 +8,13 @@
     </template>
 
     <template v-else>
-      <v-btn v-for="(item, i) in anonNavItems" :key="i" :to="item.to">
+      <v-btn v-for="(item, i) in anonymousNavItems" :key="i" :to="item.to">
         <span>{{ item.title }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
     </template>
 
-    <!--<v-btn>
+    <!-- <v-btn>
       <span>Nearby</span>
       <v-icon>mdi-map-marker</v-icon>
     </v-btn> -->
@@ -22,11 +22,17 @@
 </template>
 
 <script>
+  import { get } from 'vuex-pathify';
+
   import { mapGetters, mapState } from 'vuex';
   export default {
     name: 'BottomNavBar',
     computed: {
-      ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
+      ...get('azureAuthentication', {
+        isAzureLoggedIn: 'isAzureLoggedIn',
+      }),
+
+      ...mapGetters('authentication', ['isOrgAdmin']),
       ...mapState('authentication', ['user']),
       ...mapState('app', ['loading']),
       formattedUserId() {
@@ -38,11 +44,11 @@
       },
     },
     props: {
-      anonItems: {
+      anonymousItems: {
         type: Array,
         required: true,
       },
-      anonNavItems: {
+      anonymousNavItems: {
         type: Array,
         required: true,
       },

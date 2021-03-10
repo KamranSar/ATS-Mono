@@ -2,7 +2,7 @@
   <div>
     <v-toolbar flat class="subtitle-2 grey--text" dense color="#ECEFF1">
       <span class="font-weight-bold text-truncate">
-        <v-avatar class="mr-2" v-if="azureLoggedIn">
+        <v-avatar class="mr-2" v-if="isAzureLoggedIn">
           <v-img
             v-if="myPhoto"
             max-height="46"
@@ -15,7 +15,7 @@
       </span>
     </v-toolbar>
 
-    <v-list v-if="azureLoggedIn" dense>
+    <v-list v-if="isAzureLoggedIn" dense>
       <v-list-item
         v-for="(item, i) in userItems"
         :key="i"
@@ -32,7 +32,11 @@
     </v-list>
 
     <v-list v-else dense>
-      <v-list-item v-for="(item, i) in anonNavItems" :key="i" :to="item.to">
+      <v-list-item
+        v-for="(item, i) in anonymousNavItems"
+        :key="i"
+        :to="item.to"
+      >
         <v-list-item-avatar>
           <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
         </v-list-item-avatar>
@@ -46,8 +50,8 @@
       </v-list-item>
     </v-list>
 
-    <v-list v-if="!azureLoggedIn" dense>
-      <v-list-item v-for="(item, i) in anonItems" :key="i" :to="item.to">
+    <v-list v-if="!isAzureLoggedIn" dense>
+      <v-list-item v-for="(item, i) in anonymousItems" :key="i" :to="item.to">
         <v-list-item-avatar>
           <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
         </v-list-item-avatar>
@@ -104,11 +108,11 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
-        azureLoggedIn: 'isLoggedIn',
+        isAzureLoggedIn: 'isAzureLoggedIn',
         azureLoading: 'azureLoading',
       }),
       ...get('app', ['loading']),
-      ...mapGetters('authentication', ['isLoggedIn', 'isOrgAdmin']),
+      ...mapGetters('authentication', ['isOrgAdmin']),
       ...mapState('authentication', ['user']),
       formattedUserId() {
         let userId = this.user && this.user.userid;
@@ -119,11 +123,11 @@
       },
     },
     props: {
-      anonItems: {
+      anonymousItems: {
         type: Array,
         required: true,
       },
-      anonNavItems: {
+      anonymousNavItems: {
         type: Array,
         required: true,
       },

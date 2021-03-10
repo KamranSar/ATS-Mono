@@ -4,7 +4,7 @@
       <v-row no-gutters>
         <v-col cols="12" align="center" justify="center" class="ma-auto">
           <v-btn
-            v-for="link in anonNavItems"
+            v-for="link in anonymousNavItems"
             :key="link.title"
             color="white"
             text
@@ -44,11 +44,11 @@
   export default {
     name: 'Footer',
     props: {
-      anonItems: {
+      anonymousItems: {
         type: Array,
         required: true,
       },
-      anonNavItems: {
+      anonymousNavItems: {
         type: Array,
         required: true,
       },

@@ -5,8 +5,8 @@
     <AppBar
       :userItems="userItems"
       :adminItems="adminItems"
-      :anonItems="anonItems"
-      :anonNavItems="anonNavItems"
+      :anonymousItems="anonymousItems"
+      :anonymousNavItems="anonymousNavItems"
       :userToolbarItems="userToolbarItems"
     ></AppBar>
 
@@ -22,8 +22,8 @@
       <NavDrawerLeft
         :userItems="userItems"
         :adminItems="adminItems"
-        :anonItems="anonItems"
-        :anonNavItems="anonNavItems"
+        :anonymousItems="anonymousItems"
+        :anonymousNavItems="anonymousNavItems"
       ></NavDrawerLeft>
     </v-navigation-drawer>
 
@@ -61,19 +61,19 @@
     </v-main>
 
     <Footer
-      v-if="footerEnabled && !azureLoggedIn"
+      v-if="footerEnabled && !isAzureLoggedIn"
       :userItems="userItems"
       :adminItems="adminItems"
-      :anonItems="anonItems"
-      :anonNavItems="anonNavItems"
+      :anonymousItems="anonymousItems"
+      :anonymousNavItems="anonymousNavItems"
     ></Footer>
 
     <BottomNavBar
       v-if="bottomBarEnabled"
       :userItems="userItems"
       :adminItems="adminItems"
-      :anonItems="anonItems"
-      :anonNavItems="anonNavItems"
+      :anonymousItems="anonymousItems"
+      :anonymousNavItems="anonymousNavItems"
     ></BottomNavBar>
   </v-app>
 </template>
@@ -126,7 +126,7 @@
         clippedLeft: true,
         clippedRight: true,
         //  see here for icons: http://materialdesignicons.com/
-        anonNavItems: [
+        anonymousNavItems: [
           {
             title: 'How it works?',
             to: '/#howitworks', // This is a Home page anchor tag, not a Router view
@@ -148,7 +148,7 @@
             icon: 'mdi-card-account-mail',
           },
         ],
-        anonItems: [
+        anonymousItems: [
           {
             title: 'Login',
             to: { name: 'login' },
@@ -214,7 +214,7 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
-        azureLoggedIn: 'isLoggedIn',
+        isAzureLoggedIn: 'isAzureLoggedIn',
         azureLoading: 'azureLoading',
       }),
     },

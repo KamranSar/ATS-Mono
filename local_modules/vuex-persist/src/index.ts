@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Created by championswimmer on 18/07/17.
  */

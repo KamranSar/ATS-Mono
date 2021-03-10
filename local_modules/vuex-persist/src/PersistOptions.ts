@@ -1,22 +1,23 @@
+/* eslint-disable */
 /**
  * Options to be used to construct a {@link VuexPersistence} object
  */
-import { Payload } from 'vuex'
-import { AsyncStorage } from './AsyncStorage'
-import { MergeOptionType } from './utils'
+import { Payload } from 'vuex';
+import { AsyncStorage } from './AsyncStorage';
+import { MergeOptionType } from './utils';
 
 export interface PersistOptions<S> {
   /**
    * Window.Storage type object. Default is localStorage
    */
-  storage?: Storage | AsyncStorage
+  storage?: Storage | AsyncStorage;
 
   /**
    * Method to retrieve state from persistence
    * @param key
    * @param [storage]
    */
-  restoreState?: (key: string, storage?: Storage) => Promise<S> | S
+  restoreState?: (key: string, storage?: Storage) => Promise<S> | S;
 
   /**
    * Method to save state into persistence
@@ -24,7 +25,11 @@ export interface PersistOptions<S> {
    * @param state
    * @param [storage]
    */
-  saveState?: (key: string, state: {}, storage?: Storage) => Promise<void> | void
+  saveState?: (
+    key: string,
+    state: {},
+    storage?: Storage
+  ) => Promise<void> | void;
 
   /**
    * Function to reduce state to the object you want to save.
@@ -32,12 +37,12 @@ export interface PersistOptions<S> {
    * You can use this if you want to save only a portion of it.
    * @param state
    */
-  reducer?: (state: S) => {}
+  reducer?: (state: S) => {};
 
   /**
    * Key to use to save the state into the storage
    */
-  key?: string
+  key?: string;
 
   /**
    * Method to filter which mutations will trigger state saving
@@ -45,21 +50,21 @@ export interface PersistOptions<S> {
    * Check mutations using <code>mutation.type</code>
    * @param mutation object of type {@link Payload}
    */
-  filter?: (mutation: Payload) => boolean
+  filter?: (mutation: Payload) => boolean;
 
   /**
    * Names of modules that you want to persist.
    * If you create your custom {@link PersistOptions.reducer} function,
    * then that will override filter behaviour, not this argument
    */
-  modules?: string[]
+  modules?: string[];
 
   /**
    * Set this to true to support
    * <a href="https://vuex.vuejs.org/en/strict.html">Vuex Strict Mode</a>
    * @default false
    */
-  strictMode?: boolean
+  strictMode?: boolean;
 
   /**
    * If your storage is async
@@ -67,7 +72,7 @@ export interface PersistOptions<S> {
    * (Must be used for asynchronous storages like LocalForage)
    * @default false
    */
-  asyncStorage?: boolean
+  asyncStorage?: boolean;
 
   /**
    * Support serializing circular json objects
@@ -81,12 +86,12 @@ export interface PersistOptions<S> {
    * @default false
    *
    */
-  supportCircular?: boolean
+  supportCircular?: boolean;
 
   /**
    * Whether to replace or concat arrays when merging
    * saved state with restored state
    * defaults to replacing arrays
    */
-  mergeOption?: MergeOptionType
+  mergeOption?: MergeOptionType;
 }

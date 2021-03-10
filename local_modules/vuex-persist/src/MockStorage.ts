@@ -1,7 +1,8 @@
+/* eslint-disable */
 /**
  * Created by championswimmer on 22/07/17.
  */
-let MockStorage: typeof Storage | undefined
+let MockStorage: typeof Storage | undefined;
 
 // @ts-ignore
 if (process.env.MODULE_FORMAT !== 'umd') {
@@ -10,28 +11,28 @@ if (process.env.MODULE_FORMAT !== 'umd') {
     [key: string]: any;
 
     public get length(): number {
-      return Object.keys(this).length
+      return Object.keys(this).length;
     }
 
     public key(index: number): string | any {
-      return Object.keys(this)[index]
+      return Object.keys(this)[index];
     }
 
     public setItem(key: string, data: any): void {
-      this[key] = data.toString()
+      this[key] = data.toString();
     }
     public getItem(key: string): string {
-      return this[key]
+      return this[key];
     }
     public removeItem(key: string): void {
-      delete this[key]
+      delete this[key];
     }
     public clear(): void {
       for (let key of Object.keys(this)) {
-        delete this[key]
+        delete this[key];
       }
     }
-  }
+  };
 }
 
-export { MockStorage }
+export { MockStorage };

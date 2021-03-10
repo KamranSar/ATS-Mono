@@ -7,31 +7,28 @@ import Home from '@/views/Home.vue';
 Vue.use(VueRouter);
 
 function requireAuth(to, from, next) {
-  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) next();
   else next({ name: 'login' });
 }
 
 function dynamicHome(to, from, next) {
-  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) next({ name: 'Dashboard' });
   else next();
 }
 
 function dynamicLogin(to, from, next) {
-  const loggedIn = store.get('azureAuthentication/isLoggedIn');
-  console.log(loggedIn);
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) {
-    console.log('going to dahsboard');
     next({ name: 'Dashboard' });
   } else {
-    console.log('going to next');
     next();
   }
 }
 
 function logout(to, from, next) {
-  const loggedIn = store.get('azureAuthentication/isLoggedIn');
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) {
     store.dispatch('azureAuthentication/logOut');
   }
@@ -43,13 +40,11 @@ function logout(to, from, next) {
 
 let previouslyRestored = false;
 const waitForStorageToBeReady = async (to, from, next) => {
-  console.log('waiting...');
   await Promise.all(store.restored); // Set by VuexPersist
   if (!previouslyRestored) {
     // TODO: Add your custom initialization code here : do the things you want to do only once after the store is restored
     previouslyRestored = true;
   }
-  console.log('finished ...');
   next();
 };
 

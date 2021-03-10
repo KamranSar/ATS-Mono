@@ -322,7 +322,7 @@ export default {
   },
 
   getters: {
-    isLoggedIn(state) {
+    isAuthLoggedIn(state) {
       return !!state.token;
     },
     isOrgAdmin(state) {

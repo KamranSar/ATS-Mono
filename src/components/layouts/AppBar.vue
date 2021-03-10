@@ -26,13 +26,13 @@
     <v-spacer></v-spacer>
 
     <v-card color="transparent" class="hidden-md-and-down" flat>
-      <v-btn-toggle group v-if="!azureLoggedIn">
-        <span v-for="item in anonNavItems" :key="item.title">
+      <v-btn-toggle group v-if="!isAzureLoggedIn">
+        <span v-for="item in anonymousNavItems" :key="item.title">
           <v-btn :to="item.to" text :key="item.title">
             {{ item.title }}
           </v-btn>
         </span>
-        <span v-for="(item, index) in anonItems" :key="index">
+        <span v-for="(item, index) in anonymousItems" :key="index">
           <v-btn :to="item.to" text :key="index">
             <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
             {{ item.title }}
@@ -41,7 +41,7 @@
       </v-btn-toggle>
     </v-card>
 
-    <v-card color="transparent" flat v-if="azureLoggedIn">
+    <v-card color="transparent" flat v-if="isAzureLoggedIn">
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">
@@ -80,11 +80,11 @@
 
   export default {
     props: {
-      anonItems: {
+      anonymousItems: {
         type: Array,
         required: true,
       },
-      anonNavItems: {
+      anonymousNavItems: {
         type: Array,
         required: true,
       },
@@ -108,7 +108,7 @@
       };
     },
     computed: {
-      ...mapGetters('authentication', ['isLoggedIn', 'registerEmail']),
+      ...mapGetters('authentication', ['registerEmail']),
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
       ...get('azureAuthentication', {
@@ -117,7 +117,7 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
-        azureLoggedIn: 'isLoggedIn',
+        isAzureLoggedIn: 'isAzureLoggedIn',
         azureLoading: 'azureLoading',
       }),
     },

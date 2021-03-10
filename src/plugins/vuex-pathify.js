@@ -7,7 +7,7 @@ import pathify from 'vuex-pathify';
 pathify.options.mapping = 'simple'; // keep mutation names the same as the variable name
 pathify.options.deep = 2;
 pathify.options.strict = true;
-if (process.env.NODE_ENV === 'development') {
-  pathify.debug(); // Print out pathify's settings
-}
+// if (process.env.NODE_ENV === 'development') {
+//   pathify.debug(); // Print out pathify's settings
+// }
 export default pathify;
