@@ -1,6 +1,27 @@
 import axios from 'axios';
 import store from '../store/index';
 
+async function fetchWithTimeout(resource, options) {
+  const { timeout = 8000 } = options;
+
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    return response;
+    // const retval = await response.json();
+    // return retval;
+  } catch (e) {
+    return null;
+  }
+}
+export { fetchWithTimeout };
+
 export default async (reqType, reqURL, data) => {
   store.set('app/loading', true);
   store.commit('alert/setAlertMsg', '');

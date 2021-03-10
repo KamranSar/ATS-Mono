@@ -36,6 +36,7 @@ store.dispatch('azureAuthentication/init');
 store.dispatch('serviceReq/init');
 store.dispatch('snackbar/init');
 store.dispatch('userprefs/init');
+store.dispatch('checkOnlineStatus/init');
 
 if (process.env.NODE_ENV === 'development') {
   window.store = store; // Make store available from the console.
