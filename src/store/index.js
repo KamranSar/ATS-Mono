@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import pathify from '@/plugins/vuex-pathify';
+import { FeathersVuex } from '@/feathers-client';
+import auth from './store.auth';
 
 // Modules
 import * as modules from './modules';
@@ -13,6 +15,20 @@ import azureDB from './plugins/azureDB';
 
 // Attach vuex to the vue instance
 Vue.use(Vuex);
+Vue.use(FeathersVuex);
+
+// https://vuex.feathersjs.com/getting-started.html#vuex-store
+const requireModule = require.context(
+  // The path where the service modules live
+  './services',
+  // Whether to look in subfolders
+  false,
+  // Only include .js files (prevents duplicate imports`)
+  /\.js$/
+);
+const servicePlugins = requireModule
+  .keys()
+  .map((modulePath) => requireModule(modulePath).default);
 
 const store = new Vuex.Store({
   modules,
@@ -23,6 +39,8 @@ const store = new Vuex.Store({
     localStorage.plugin,
     azureDB.plugin,
     indexedDB.plugin,
+    ...servicePlugins,
+    auth,
   ],
 });
 

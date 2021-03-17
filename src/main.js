@@ -1,17 +1,19 @@
 import Vue from 'vue';
+// https://vuex.feathersjs.com/composition-api.html#feathers-vuex-composition-api
 import VueCompositionAPI from '@vue/composition-api'; // Remove when upgrading to Vue 3.0
-import { initServiceWorker } from '@/registerServiceWorker.js';
+// Register the Composition API plugin BEFORE you import App.vue
+Vue.use(VueCompositionAPI); // Remove when upgrading to Vue 3.0
+
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
 import vuetify from '@/plugins/vuetify';
 import VTooltip from 'v-tooltip';
+import { initServiceWorker } from '@/registerServiceWorker.js';
 
 initServiceWorker();
 
-Vue.use(VueCompositionAPI); // Remove when upgrading to Vue 3.0
-
-Vue.config.productionTip = false;
+Vue.config.productionTip = true;
 
 // Vue.use(msalPlugin, msalConfig);
 

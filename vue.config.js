@@ -3,7 +3,7 @@ process.env.VUE_APP_NAME =
   process.env.VUE_APP_NAME || require('./package.json').name;
 
 module.exports = {
-  transpileDependencies: ['vuetify', 'vuex-persist'],
+  transpileDependencies: ['vuetify', 'vuex-persist', 'feathers-vuex'],
   lintOnSave: true,
   integrity: false, // enable Subresource Integrity (SRI) on <link rel="stylesheet"> and <script> tags in generated HTML.
   // crossorigin: "anonymous",
