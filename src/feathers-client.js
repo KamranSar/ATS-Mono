@@ -1,34 +1,37 @@
 // https://vuex.feathersjs.com/getting-started.html#feathers-client-feathers-vuex
 
 import feathers from '@feathersjs/feathers';
-// import socketio from '@feathersjs/socketio-client';
 import auth from '@feathersjs/authentication-client';
+// import socketio from '@feathersjs/socketio-client';
 // import io from 'socket.io-client';
 const rest = require('@feathersjs/rest-client');
 import { iff, discard } from 'feathers-hooks-common';
 import feathersVuex from 'feathers-vuex';
 
-// let API_URL = window.location.origin;
+let API_URL = window.location.origin;
 
-// if (window.location.hostname === 'localhost') {
-//   API_URL = 'http://localhost:3000';
-// }
+if (window.location.hostname === 'localhost') {
+  API_URL = 'http://localhost:3000';
+}
 
-// // const socket = io('http://localhost:3030', { transports: ['websocket'] });
 // const socket = io(API_URL, { transports: ['websocket'] }); // https://socket.io/docs/v3/client-initialization/
-// // const socket = io({ transports: ['websocket'] }); // https://socket.io/docs/v3/client-initialization/
 
 // Connect to the same as the browser URL (only in the browser)
 // https://docs.feathersjs.com/api/client/rest.html#rest-baseurl
-const restClient = rest();
-// Connect to a different URL
-//const restClient = rest('http://feathers-api.com');
+const restClient = rest(API_URL);
 
 const feathersClient = feathers()
   // .configure(socketio(socket))
-  // Configure an AJAX library (see below) with that client
   .configure(restClient.fetch(window.fetch))
-  .configure(auth({ storage: window.localStorage }))
+
+  .configure(
+    auth({
+      // https://docs.feathersjs.com/api/authentication/client.html#configuration
+      storage: window.localStorage,
+      storageKey: 'apiToken',
+      path: '/api/auth/v1.0/authentication',
+    })
+  )
   .hooks({
     before: {
       all: [
@@ -50,7 +53,9 @@ const {
   models,
   FeathersVuex,
 } = feathersVuex(feathersClient, {
+  // https://vuex.feathersjs.com/vue-plugin.html#using-the-vue-plugin
   enableEvents: false, // Must have socket.io wired up to enable this
+  nameStyle: 'path', // Use full API path as Vuex name.  In order to access this, use ['api/auth/v1.0/service'] syntax in an array.
   whitelist: ['$regex', '$options'],
 });
 

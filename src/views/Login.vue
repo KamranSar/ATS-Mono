@@ -8,15 +8,11 @@
           <v-col cols="12" class="text-center">
             <MicrosoftLoginButton
               :small="$vuetify.breakpoint.xs"
-              :loading="azureLoading"
-              :disabled="azureLoading"
+              :loading="authenticating"
+              :disabled="authenticating"
               @click="signinButtonClicked"
             ></MicrosoftLoginButton>
           </v-col>
-
-          <!-- <v-col md="12" class="text-center">
-            {{ isTokenExpired }}
-          </v-col> -->
 
           <v-col md="12" v-for="i in 2" :key="i + 'b'"> </v-col>
         </v-row>
@@ -26,8 +22,7 @@
 </template>
 
 <script>
-  // import { mapMutations, mapActions } from 'vuex';
-  import { get, sync, call } from 'vuex-pathify';
+  import { get, call } from 'vuex-pathify';
 
   export default {
     components: {
@@ -37,10 +32,7 @@
     },
 
     data() {
-      return {
-        validInput: true,
-        passShow: false,
-      };
+      return {};
     },
     computed: {
       ...get('azureAuthentication', {
@@ -49,30 +41,65 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         azureLoading: 'azureLoading',
-        isTokenExpired: 'isTokenExpired',
+        azuretokenresponse: 'azuretokenresponse',
       }),
+      ...get('feathersAuthentication', {
+        isFeathersLoggedIn: 'isFeathersLoggedIn',
+        isAuthenticatePending: 'isAuthenticatePending',
+        errorOnAuthenticate: 'errorOnAuthenticate',
+        isAuthenticated: 'isAuthenticated',
+        user: 'user',
+      }),
+
       ...get('app', ['loading']),
-      ...sync('authentication', [
-        'registerUserId',
-        'registerEmail',
-        'registerPass',
-        'registerError',
-      ]),
+      authenticating() {
+        return this.azureLoading || this.isAuthenticatePending;
+      },
     },
     methods: {
-      // ...mapMutations("authentication", [
-      //   "setRegisterUserId",
-      //   "setRegisterPass",
-      //   "setRegisterError"
-      // ]),
       ...call('azureAuthentication', ['AzureAuthentication']),
-      // ...mapActions('authentication', ['login', 'resetPasswordInitiate']),
-      // ...mapMutations('alert', ['setAlert']),
+      ...call('feathersAuthentication', ['authenticate']),
+      ...call('alert', ['setAlertMsg']),
+      ...call('users', {
+        getUserRecord: 'get',
+      }),
+
       // ...mapMutations('snackbar', ['setSnack']),
+      async delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      },
 
       async signinButtonClicked() {
-        await this.AzureAuthentication();
-        this.$router.push({ name: 'Dashboard' });
+        this.setAlertMsg('');
+        try {
+          // Sign in with azure
+          await this.AzureAuthentication();
+          try {
+            const packet = {
+              strategy: 'azuretoken_v1.0',
+              azuretokenresponse: this.azuretokenresponse, // Need the token from Azure to log into middle tier
+            };
+            // Now sign into Middle Tier
+            // console.log(this.isAuthenticated);
+            await this.authenticate(packet);
+            console.log(this.isAuthenticated);
+            console.log(this.user);
+            // const auth = await this.authenticate(packet);
+            // console.log(auth._id);
+            // const user = await this.getUserRecord(auth._id);
+            // console.log(user);
+            await this.delay(500); // Wait for the authentication to finish or we get router errors
+            this.$router.push({ name: 'Dashboard' });
+          } catch (e1) {
+            this.setAlertMsg(
+              'API server Authentication failed. ' + e1.message || ''
+            );
+          }
+        } catch (e2) {
+          this.setAlertMsg(
+            'Sign in with Microsoft failed. ' + e2.errorMessage || ''
+          );
+        }
       },
     },
   };

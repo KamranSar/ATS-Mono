@@ -1,4 +1,5 @@
 import { make } from 'vuex-pathify';
+import store from '@/store';
 
 const getDefaultState = () => {
   return {
@@ -21,6 +22,9 @@ const mutations = {
 
 const actions = {
   ...make.actions(state),
+  setAlertMsg(state, alertMsg) {
+    store.commit('alert/setAlertMsg', alertMsg);
+  },
   // eslint-disable-next-line no-unused-vars
   init: async ({ dispatch }) => {
     //

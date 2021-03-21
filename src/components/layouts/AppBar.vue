@@ -26,7 +26,7 @@
     <v-spacer></v-spacer>
 
     <v-card color="transparent" class="hidden-md-and-down" flat>
-      <v-btn-toggle group v-if="!isAzureLoggedIn">
+      <v-btn-toggle group v-if="!isFeathersLoggedIn">
         <span v-for="item in anonymousNavItems" :key="item.title">
           <v-btn :to="item.to" text :key="item.title">
             {{ item.title }}
@@ -41,7 +41,7 @@
       </v-btn-toggle>
     </v-card>
 
-    <v-card color="transparent" flat v-if="isAzureLoggedIn">
+    <v-card color="transparent" flat v-if="isFeathersLoggedIn">
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">
@@ -76,7 +76,7 @@
 
 <script>
   import { sync, get } from 'vuex-pathify';
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapGetters } from 'vuex';
 
   export default {
     props: {
@@ -117,12 +117,14 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
-        isAzureLoggedIn: 'isAzureLoggedIn',
-        azureLoading: 'azureLoading',
+      }),
+      ...get('feathersAuthentication', {
+        isFeathersLoggedIn: 'isFeathersLoggedIn',
+        isAuthenticatePending: 'isAuthenticatePending',
       }),
     },
     methods: {
-      ...mapActions('authentication', ['logout']),
+      // ...mapActions('authentication', ['logout']),
     },
 
     components: {},

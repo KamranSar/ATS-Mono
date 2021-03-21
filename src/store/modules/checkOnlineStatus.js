@@ -1,5 +1,6 @@
 import { make } from 'vuex-pathify';
 import { fetchWithTimeout } from '@/util/req';
+import store from '@/store';
 
 const getDefaultState = () => {
   return {
@@ -28,8 +29,11 @@ const actions = {
     // Then every so often check again
     setInterval(async () => {
       const result = await dispatch('checkOnlineStatus');
-      commit('isOnline', result);
-    }, 15000);
+      const isOnline = store.get('checkOnlineStatus/isOnline');
+      if (result !== isOnline) {
+        commit('isOnline', result);
+      }
+    }, 10000);
   },
 
   checkOnlineStatus: async () => {

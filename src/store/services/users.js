@@ -17,6 +17,7 @@ class User extends BaseModel {
   // Define default properties here - match the model on the server side
   static instanceDefaults() {
     return {
+      _id: '',
       objectSid: '',
       azureAccountId: '',
       tenantId: '',
@@ -26,9 +27,8 @@ class User extends BaseModel {
       displayname: '',
       email: '',
       lastloginstrategy: '',
-      password: '',
-      role: '',
-      disabled: false,
+      apirole: '',
+      disabled: true,
       logincount: 0,
       lastloginipaddress: '',
       prevloginipaddress: '',
@@ -38,13 +38,12 @@ class User extends BaseModel {
 
 // Set up the service name and plugin
 // https://vuex.feathersjs.com/service-plugin.html#configuration
-const servicePath = 'api/auth/v1.0/users';
+const servicePath = 'api/auth/v1.0/users'; // The Vuex namespace
 const servicePlugin = makeServicePlugin({
   Model: User,
   idField: '_id',
   service: feathersClient.service(servicePath),
-  servicePath,
-  namespace: null,
+  servicePath: servicePath,
 });
 
 // Setup the client-side Feathers hooks.
@@ -79,3 +78,4 @@ feathersClient.service(servicePath).hooks({
 });
 
 export default servicePlugin;
+export { servicePath };

@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import pathify from '@/plugins/vuex-pathify';
 import { FeathersVuex } from '@/feathers-client';
-import auth from './store.auth';
 
 // Modules
 import * as modules from './modules';
@@ -32,6 +31,7 @@ const servicePlugins = requireModule
 
 const store = new Vuex.Store({
   modules,
+  // ...servicePlugins,
   plugins: [
     pathify.plugin,
     // Register the custom persistence plugins
@@ -40,7 +40,6 @@ const store = new Vuex.Store({
     azureDB.plugin,
     indexedDB.plugin,
     ...servicePlugins,
-    auth,
   ],
 });
 
@@ -54,7 +53,8 @@ store.dispatch('azureAuthentication/init');
 store.dispatch('serviceReq/init');
 store.dispatch('snackbar/init');
 store.dispatch('userprefs/init');
-store.dispatch('checkOnlineStatus/init');
+// store.dispatch('checkOnlineStatus/init');
+store.dispatch('feathersAuthentication/init');
 
 if (process.env.NODE_ENV === 'development') {
   window.store = store; // Make store available from the console.

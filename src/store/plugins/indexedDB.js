@@ -4,7 +4,7 @@ import localForage from 'localforage';
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
   name: 'appDatabase', // database name
-  storeName: 'serviceReq', // table name
+  storeName: 'indexeddbkeys', // table name
 });
 
 const modules = ['serviceReq']; // Modules you want to save to persistence

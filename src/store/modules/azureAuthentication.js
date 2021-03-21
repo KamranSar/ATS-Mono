@@ -170,8 +170,8 @@ const actions = {
     } catch (error) {
       store.commit('azureAuthentication/azureLoading', false);
 
-      console.error('Ah Oh, Programmer. Check this error out...');
-      console.error(error);
+      // console.error('Ah Oh, Programmer. Check this error out...');
+      // console.error(error);
       if (store.myInfo !== null) {
         store.set('azureAuthentication/myInfo', null);
       }
@@ -184,6 +184,7 @@ const actions = {
       if (store.azuretokenresponse !== null) {
         store.set('azureAuthentication/azuretokenresponse', null);
       }
+      throw error; // Someone else may need to know about this error
     }
 
     store.commit('azureAuthentication/azureLoading', false);
@@ -236,7 +237,7 @@ const actions = {
     }
   },
 
-  logOut: ({ commit }) => {
+  logout: ({ commit }) => {
     commit('resetState');
   },
 
@@ -312,11 +313,11 @@ const getters = {
     return null;
   },
 
-  tokenExpiration: (state) => {
-    const hasToken =
-      !!state.azuretokenresponse && !!state.azuretokenresponse.expiresOn;
+  tokenExpiration: () => {
+    const token = store.get('azureAuthentication/azuretokenresponse');
+    const hasToken = !!token && !!token.expiresOn;
     if (hasToken) {
-      const ExpiresAt = state.azuretokenresponse.expiresOn;
+      const ExpiresAt = token.expiresOn;
       // console.log(ExpiresAt.toLocaleString());
       return ExpiresAt;
     } else {
@@ -328,8 +329,7 @@ const getters = {
     const expDate = store.get('azureAuthentication/tokenExpiration');
     if (expDate) {
       const now = new Date();
-      // console.log('If', now, '<=', expDate, 'Then Token is Expired');
-      if (expDate <= now) {
+      if (now >= expDate) {
         return true;
       } else {
         return false;
@@ -339,9 +339,8 @@ const getters = {
     }
   },
 
-  isAzureLoggedIn: (state) => {
-    const loggedIn = !!state.azuretokenresponse;
-    return loggedIn;
+  isAzureLoggedIn: () => {
+    return !store.get('azureAuthentication/isTokenExpired');
   },
 
   displayName: (state) => {

@@ -1,5 +1,6 @@
 import VuexPersistence from '@/../local_modules/vuex-persist';
 import localForage from 'localforage';
+import { servicePath as usersServicePath } from '@/store/services/users';
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
@@ -7,7 +8,11 @@ const localForageInstance = localForage.createInstance({
   storeName: 'azureInfo', // table name
 });
 
-const modules = ['azureAuthentication']; // Modules you want to save to persistence
+const modules = [
+  'azureAuthentication',
+  'feathersAuthentication',
+  usersServicePath,
+]; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
   key: 'azureFields', // The key to store the state on in the storage provider.
@@ -28,9 +33,9 @@ const vuexPersist = new VuexPersistence({
   },
   // only save these fields from the state
   reducer: (state) => {
-    // console.log(state);
     // Your reducer should not change the shape of the state.
     // https://github.com/championswimmer/vuex-persist#reducer
+    // console.dir(state);
     return {
       azureAuthentication: {
         azuretokenresponse: state.azureAuthentication.azuretokenresponse,
@@ -38,6 +43,12 @@ const vuexPersist = new VuexPersistence({
         myPhoto: state.azureAuthentication.myPhoto,
         myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,
       },
+      feathersAuthentication: {
+        accessToken: state.feathersAuthentication.accessToken,
+        payload: state.feathersAuthentication.payload,
+        user: state.feathersAuthentication.user,
+      },
+      [usersServicePath]: state[usersServicePath],
     };
   },
   filter: (mutation) => {
