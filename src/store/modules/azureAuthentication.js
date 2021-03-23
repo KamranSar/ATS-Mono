@@ -339,8 +339,10 @@ const getters = {
     }
   },
 
-  isAzureLoggedIn: () => {
-    return !store.get('azureAuthentication/isTokenExpired');
+  isAzureLoggedIn: (state) => {
+    // return !store.get('azureAuthentication/isTokenExpired');
+    const loggedIn = !!state.azuretokenresponse;
+    return loggedIn;
   },
 
   displayName: (state) => {

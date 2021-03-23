@@ -61,7 +61,7 @@
     </v-main>
 
     <Footer
-      v-if="footerEnabled && !isFeathersLoggedIn"
+      v-if="footerEnabled && !isAzureLoggedIn"
       :userItems="userItems"
       :adminItems="adminItems"
       :anonymousItems="anonymousItems"
@@ -214,6 +214,7 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
+        isAzureLoggedIn: 'isAzureLoggedIn',
       }),
       ...get('feathersAuthentication', {
         isFeathersLoggedIn: 'isFeathersLoggedIn',

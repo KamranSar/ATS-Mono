@@ -7,19 +7,19 @@ import Home from '@/views/Home.vue';
 Vue.use(VueRouter);
 
 function requireAuth(to, from, next) {
-  const loggedIn = store.get('feathersAuthentication/isFeathersLoggedIn');
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) next();
   else next({ name: 'login' });
 }
 
 function dynamicHome(to, from, next) {
-  const loggedIn = store.get('feathersAuthentication/isFeathersLoggedIn');
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) next({ name: 'Dashboard' });
   else next();
 }
 
 function dynamicLogin(to, from, next) {
-  const loggedIn = store.get('feathersAuthentication/isFeathersLoggedIn');
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) {
     next({ name: 'Dashboard' });
   } else {
@@ -28,17 +28,21 @@ function dynamicLogin(to, from, next) {
 }
 
 async function logout(to, from, next) {
-  // const loggedIn = store.get('feathersAuthentication/isFeathersLoggedIn');
-  const loggedIn = true;
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) {
     try {
-      await store.dispatch('feathersAuthentication/logout', {
-        strategy: 'jwt',
-      }); // log out of Feathers. Removes the local jwt and calls the api server to log out
-      // If the JWT has already expired, we will get a 401 (Unauthorized error back from the server which is OK).
-      // We disable the ability to renew (or delete) JWT's this way.  We can only call the POST (authenticate)
-      // method now for security reasons.
-      console.log('successfully logged out of api server');
+      const feathersLoggedIn = store.get(
+        'feathersAuthentication/isAuthenticated'
+      );
+      if (feathersLoggedIn) {
+        await store.dispatch('feathersAuthentication/logout', {
+          strategy: 'jwt',
+        }); // log out of Feathers. Removes the local jwt and calls the api server to log out
+        // If the JWT has already expired, we will get a 401 or 403 error back from the server which is OK.
+        // We disable the ability to renew (or delete) JWT's this way.  We can only call the POST (authenticate)
+        // method now for security reasons.
+        console.log('successfully logged out of api server');
+      }
     } catch (e) {
       console.log(e);
     }
@@ -111,6 +115,11 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     beforeEnter: requireAuth,
+    // beforeEnter: (to, from, next) => {
+    //   const token = store.get('azureAuthentication/azuretokenresponse');
+    //   if (token) next();
+    //   else next({ name: 'home' });
+    // },
     component: () =>
       import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
   },

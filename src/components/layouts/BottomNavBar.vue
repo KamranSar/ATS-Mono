@@ -1,6 +1,6 @@
 <template>
   <v-bottom-navigation :value="value" color="blue" grow>
-    <template v-if="isFeathersLoggedIn">
+    <template v-if="isAzureLoggedIn">
       <v-btn v-for="(item, i) in userItems" :key="i" :to="item.to">
         <span>{{ item.title }}</span>
         <v-icon>{{ item.icon }}</v-icon>
@@ -28,6 +28,9 @@
   export default {
     name: 'BottomNavBar',
     computed: {
+      ...get('azureAuthentication', {
+        isAzureLoggedIn: 'isAzureLoggedIn',
+      }),
       ...get('feathersAuthentication', {
         isFeathersLoggedIn: 'isFeathersLoggedIn',
         isAuthenticatePending: 'isAuthenticatePending',

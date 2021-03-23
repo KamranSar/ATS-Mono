@@ -2,7 +2,7 @@
   <div>
     <v-toolbar flat class="subtitle-2 grey--text" dense color="#ECEFF1">
       <span class="font-weight-bold text-truncate">
-        <v-avatar class="mr-2" v-if="isFeathersLoggedIn">
+        <v-avatar class="mr-2" v-if="isAzureLoggedIn">
           <v-img
             v-if="myPhoto"
             max-height="46"
@@ -15,7 +15,7 @@
       </span>
     </v-toolbar>
 
-    <v-list v-if="isFeathersLoggedIn" dense>
+    <v-list v-if="isAzureLoggedIn" dense>
       <v-list-item
         v-for="(item, i) in userItems"
         :key="i"
@@ -50,7 +50,7 @@
       </v-list-item>
     </v-list>
 
-    <v-list v-if="!isFeathersLoggedIn" dense>
+    <v-list v-if="!isAzureLoggedIn" dense>
       <v-list-item v-for="(item, i) in anonymousItems" :key="i" :to="item.to">
         <v-list-item-avatar>
           <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
@@ -108,6 +108,7 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
+        isAzureLoggedIn: 'isAzureLoggedIn',
       }),
       ...get('feathersAuthentication', {
         isFeathersLoggedIn: 'isFeathersLoggedIn',

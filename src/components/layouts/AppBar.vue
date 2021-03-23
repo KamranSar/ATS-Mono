@@ -26,7 +26,7 @@
     <v-spacer></v-spacer>
 
     <v-card color="transparent" class="hidden-md-and-down" flat>
-      <v-btn-toggle group v-if="!isFeathersLoggedIn">
+      <v-btn-toggle group v-if="!isAzureLoggedIn">
         <span v-for="item in anonymousNavItems" :key="item.title">
           <v-btn :to="item.to" text :key="item.title">
             {{ item.title }}
@@ -41,7 +41,7 @@
       </v-btn-toggle>
     </v-card>
 
-    <v-card color="transparent" flat v-if="isFeathersLoggedIn">
+    <v-card color="transparent" flat v-if="isAzureLoggedIn">
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">
@@ -117,6 +117,8 @@
         myPhotoMetaData: 'myPhotoMetaData',
         localAccountId: 'localAccountId',
         displayName: 'displayName',
+        isAzureLoggedIn: 'isAzureLoggedIn',
+        azureLoading: 'azureLoading',
       }),
       ...get('feathersAuthentication', {
         isFeathersLoggedIn: 'isFeathersLoggedIn',

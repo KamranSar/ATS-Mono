@@ -53,7 +53,7 @@
 
       ...get('app', ['loading']),
       authenticating() {
-        return this.azureLoading || this.isAuthenticatePending;
+        return this.azureLoading || this.loading;
       },
     },
     methods: {
@@ -74,27 +74,28 @@
         try {
           // Sign in with azure
           await this.AzureAuthentication();
-          try {
-            const packet = {
-              strategy: 'azuretoken_v1.0',
-              azuretokenresponse: this.azuretokenresponse, // Need the token from Azure to log into middle tier
-            };
-            // Now sign into Middle Tier
-            // console.log(this.isAuthenticated);
-            await this.authenticate(packet);
-            console.log(this.isAuthenticated);
-            console.log(this.user);
-            // const auth = await this.authenticate(packet);
-            // console.log(auth._id);
-            // const user = await this.getUserRecord(auth._id);
-            // console.log(user);
-            await this.delay(500); // Wait for the authentication to finish or we get router errors
-            this.$router.push({ name: 'Dashboard' });
-          } catch (e1) {
-            this.setAlertMsg(
-              'API server Authentication failed. ' + e1.message || ''
-            );
-          }
+          // try {
+          //   const packet = {
+          //     strategy: 'azuretoken_v1.0',
+          //     azuretokenresponse: this.azuretokenresponse, // Need the token from Azure to log into middle tier
+          //   };
+          //   // Now sign into Middle Tier
+          //   // console.log(this.isAuthenticated);
+          //   await this.authenticate(packet);
+          //   console.log(this.isAuthenticated);
+          //   console.log(this.user);
+          //   // const auth = await this.authenticate(packet);
+          //   // console.log(auth._id);
+          //   // const user = await this.getUserRecord(auth._id);
+          //   // console.log(user);
+          //   await this.delay(500); // Wait for the authentication to finish or we get router errors
+          //   this.$router.push({ name: 'Dashboard' });
+          // } catch (e1) {
+          //   this.setAlertMsg(
+          //     'API server Authentication failed. ' + e1.message || ''
+          //   );
+          // }
+          this.$router.push({ name: 'Dashboard' });
         } catch (e2) {
           this.setAlertMsg(
             'Sign in with Microsoft failed. ' + e2.errorMessage || ''
