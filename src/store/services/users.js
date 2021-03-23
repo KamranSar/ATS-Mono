@@ -19,7 +19,7 @@ class User extends BaseModel {
     return {
       _id: '',
       objectSid: '',
-      azureAccountId: '',
+      azureLocalAccountId: '',
       tenantId: '',
       username: '',
       firstname: '',
@@ -27,7 +27,6 @@ class User extends BaseModel {
       displayname: '',
       email: '',
       lastloginstrategy: '',
-      apirole: '',
       disabled: true,
       logincount: 0,
       lastloginipaddress: '',

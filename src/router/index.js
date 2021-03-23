@@ -36,6 +36,8 @@ async function logout(to, from, next) {
         strategy: 'jwt',
       }); // log out of Feathers. Removes the local jwt and calls the api server to log out
       // If the JWT has already expired, we will get a 401 (Unauthorized error back from the server which is OK).
+      // We disable the ability to renew (or delete) JWT's this way.  We can only call the POST (authenticate)
+      // method now for security reasons.
       console.log('successfully logged out of api server');
     } catch (e) {
       console.log(e);
