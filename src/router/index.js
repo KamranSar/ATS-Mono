@@ -114,12 +114,12 @@ const routes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    beforeEnter: requireAuth,
-    // beforeEnter: (to, from, next) => {
-    //   const token = store.get('azureAuthentication/azuretokenresponse');
-    //   if (token) next();
-    //   else next({ name: 'home' });
-    // },
+    // beforeEnter: requireAuth,
+    beforeEnter: (to, from, next) => {
+      const token = store.get('azureAuthentication/azuretokenresponse');
+      if (token) next();
+      else next({ name: 'home' });
+    },
     component: () =>
       import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
   },
