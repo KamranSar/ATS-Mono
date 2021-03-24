@@ -1,20 +1,79 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+## Project setup
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+### 1. git clone the admin-template repository as your app name
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+```
+git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template  MyAppName
+```
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+### 2. In `/MyAppName` install dependencies, shared CDCR libraries, and create .env file
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+```
+cd MyAppName
+npm install
+```
+
+### 3. Edit the .env and env.sample config file and change settings as needed
+
+```
+Set vars like APP_PORT to what you need
+
+```
+
+## Compiles and hot-reloads for development
+
+```
+npm run dev
+```
+
+## Lints and fixes files
+
+```
+npm run fix
+```
+
+# database-template
+
+> Template for developing Feathers API servers for the EIS Middle-Tier.
+
+## About
+
+This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
+
+## Getting Started
+
+Getting up and running is as easy as 1, 2, 3.
+
+1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
+2. Install your dependencies
+
+   ```
+   cd path/to/database-template
+   npm install
+   ```
+
+3. Start your app
+
+   ```
+   npm start
+   ```
+
+## Testing
+
+Simply run `npm test` and all your tests in the `test/` directory will be run.
+
+## Scaffolding
+
+Feathers has a powerful command line interface. Here are a few things it can do:
+
+```
+$ npm install -g @feathersjs/cli          # Install Feathers CLI
+
+$ feathers generate service               # Generate a new Service
+$ feathers generate hook                  # Generate a new Hook
+$ feathers help                           # Show all commands
+```
+
+## Help
+
+For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).

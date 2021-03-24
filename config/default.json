@@ -1,0 +1,111 @@
+{
+  "host": "APP_HOST",
+  "port": "APP_PORT",
+  "dochost": "DOC_HOST",
+  "public": "../public/",
+  "paginate": {
+    "default": 10,
+    "max": 50
+  },
+  "application": {
+    "name": "database-template"
+  },
+  "authentication": {
+    "entity": "user",
+    "service": "users",
+    "secret": "JWT_SALT_SECRET",
+    "authStrategies": ["jwt"],
+    "jwtOptions": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "AUTH_DOMAIN",
+      "issuer": "cdcr",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "jwt": {
+    }
+  },
+  "redis": {
+    "url": "redis://redis",
+    "sessionSecret": "REDIS_SESSION_SECRET",
+    "cachePathPrefix": "/cache",
+    "prefix": "frc:"
+  },
+  "mongodb": {
+    "comment": "This is your custom database.  Change the database name to match your application",
+    "server": "MONGO_SVR",
+    "port": "MONGO_PORT",
+    "database": "yourdbnamehere",
+    "connectTimeoutMS": 10000,
+    "poolSize": 5
+  },
+  "mongodbmidtier": {
+    "comment": "This is the midtier database connections.  This is always needed",
+    "server": "MONGO_SVR",
+    "port": "MONGO_PORT",
+    "database": "midtier",
+    "statsdatabase":"midtierstats",
+    "connectTimeoutMS": 10000,
+    "poolSize": 5
+  },
+  "mssql": {
+    "connection": {
+      "server": "MSSQL_SVR",
+      "user": "MSSQL_USER",
+      "password": "MSSQL_PASSWORD",
+      "database": "MSSQL_DB",
+      "options": {
+        "port": "MSSQL_PORT",
+        "enableArithAbort": true,
+        "timezone": "UTC",
+        "encrypt": false
+      }
+    },
+    "pool": {
+      "min": 1,
+      "max": 5
+    },
+    "connTimeout": 10000
+  },
+  "oracledb": {
+    "connection": {
+      "user": "ORACLE_USER",
+      "password": "ORACLE_PASSWORD",
+      "connectString": "ORACLE_CONNSTR"
+    },
+    "pool": {
+      "min": 1,
+      "max": 5
+    },
+    "connTimeout": 30000
+  },
+  "postgres": {
+    "connection": {
+      "server": "POSTGRESQL_SVR",
+      "user": "POSTGRESQL_USERNAME",
+      "password": "POSTGRESQL_POSTGRES_PASSWORD",
+      "database": "POSTGRESQL_DATABASE",
+      "options": {
+        "port": "POSTGRESQL_PORT"
+      }
+    },
+    "pool": {
+      "min": 1,
+      "max": 5
+    },
+    "connTimeout": 10000
+  },
+  "helmet": {
+    "contentSecurityPolicy": {
+      "allowedList": [
+        "'self'", 
+        "*.msauth.net",
+        "*.microsoftonline.com",
+        "*.msftauth.net",
+        "'unsafe-inline'"
+      ]
+    }
+  }
+}

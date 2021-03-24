@@ -1,0 +1,83 @@
+{
+  "name": "database-template",
+  "description": "Template for developing Feathers Database servers for the EIS-MiddleTier.",
+  "version": "0.0.0",
+  "homepage": "",
+  "private": true,
+  "main": "src",
+  "keywords": [
+    "feathers"
+  ],
+  "author": {
+    "name": "kevin.baroni",
+    "email": "kevin.baroni@cdcr.ca.gov"
+  },
+  "contributors": [],
+  "bugs": {},
+  "directories": {
+    "lib": "src",
+    "test": "test/",
+    "config": "config/"
+  },
+  "engines": {
+    "node": "^14.0.0",
+    "npm": ">= 7.0.0"
+  },
+  "scripts": {
+    "preinstall": "scripts/copy_libs_for_build.sh",
+    "test": "npm run lint && npm run mocha",
+    "fix": "eslint src/. test/. --config .eslintrc.json --fix",
+    "lint": "eslint src/. test/. --config .eslintrc.json --fix",
+    "dev": "NODE_ENV=development nodemon src/",
+    "prod": "NODE_ENV=production nodemon src/",
+    "perf": "echo 'Performance Testing Profile\n'; export NODE_ENV=perf; node src/",
+    "start": "node src/",
+    "mocha": "mocha test/ --recursive --exit"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ],
+    "ignore": []
+  },
+  "dependencies": {
+    "@feathersjs/authentication": "^4.5.11",
+    "@feathersjs/authentication-local": "^4.5.11",
+    "@feathersjs/configuration": "^4.5.11",
+    "@feathersjs/errors": "^4.5.11",
+    "@feathersjs/express": "^4.5.11",
+    "@feathersjs/feathers": "^4.5.11",
+    "@feathersjs/socketio": "^4.5.11",
+    "@feathersjs/transport-commons": "^4.5.11",
+    "async": "^3.2.0",
+    "cdcrhelpers": "file:local_modules/cdcrhelpers",
+    "cdcrhooks": "file:local_modules/cdcrhooks",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "feathers-hooks-common": "^5.0.5",
+    "feathers-knex": "^7.1.1",
+    "feathers-mongodb": "^6.3.0",
+    "feathers-mongoose": "^8.3.1",
+    "feathers-permissions": "^2.1.4",
+    "feathers-redis-cache": "^1.2.1",
+    "feathers-swagger": "^1.2.1",
+    "feathers-sync": "^2.2.0",
+    "helmet": "^4.4.1",
+    "https": "^1.0.0",
+    "knex": "^0.21.18",
+    "mongodb": "^3.6.4",
+    "mongodb-core": "^3.2.7",
+    "mongoose": "^5.11.18",
+    "mssql": "^6.3.1",
+    "oracledb": "^5.1.0",
+    "pg": "^8.5.1",
+    "serve-favicon": "^2.5.0",
+    "tough-cookie": "^4.0.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "mocha": "^8.3.0",
+    "nodemon": "^2.0.7"
+  }
+}
