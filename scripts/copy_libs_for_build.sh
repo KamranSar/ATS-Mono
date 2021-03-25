@@ -7,7 +7,7 @@
 # Make & move into local_modules & cdcr folders
 CWD=$(pwd)
 CDCR_LIB_FOLDER=local_modules
-EIS_MT_URL=https://cdcrmobility@dev.azure.com/cdcrmobility/EIS%20Middle%20Tier/_git
+EISMT_LIB_URL=https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git
 
 echo "."
 echo "Making sure local EIS-MiddleTier library folders exist"
@@ -32,14 +32,14 @@ clone_cdcr_library() {
         if [ -z "${BRANCHNAME}" ];
         then
             #empty branch name
-            echo "Cloning $EIS_MT_URL/$LIBNAME ${LIBNAME,,}"
+            echo "Cloning $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}"
             echo "."
-            git clone $EIS_MT_URL/$LIBNAME ${LIBNAME,,}
+            git clone $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}
         else
-            echo "Cloning branch ${BRANCHNAME} for $EIS_MT_URL/$aLIBNAME ${LIBNAME,,}"
+            echo "Cloning branch ${BRANCHNAME} for $EISMT_LIB_URL/$aLIBNAME ${LIBNAME,,}"
             echo "."
-            #git clone -b ${BRANCHNAME} $EIS_MT_URL/$LIBNAME ${LIBNAME,,}
-            git clone $EIS_MT_URL/$LIBNAME ${LIBNAME,,}
+            #git clone -b ${BRANCHNAME} $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}
+            git clone $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}
             git checkout ${BRANCHNAME}
         fi
         cd ${LIBNAME,,}
