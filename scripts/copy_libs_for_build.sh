@@ -45,8 +45,11 @@ clone_cdcr_library() {
         cd ${LIBNAME,,}
     fi
     echo "."
-    echo "Installing library $LIBNAME"
-    npm install
+    if [ -e package.json ]
+    then
+       echo "Installing library $LIBNAME"
+       npm install
+    fi
 }
 
 echo "."
