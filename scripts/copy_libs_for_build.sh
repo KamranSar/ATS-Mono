@@ -57,6 +57,7 @@ echo "Clone our EIS-MiddleTier libraries locally..."
 echo "."
 clone_cdcr_library CDCRHelpers
 clone_cdcr_library CDCRHooks
+clone_cdcr_library cdcr-remote-service
 echo "."
 
 cd "$CWD"
