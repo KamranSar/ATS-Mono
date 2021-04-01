@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const debug = require('debug')('database-template:src:mongodb:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:mongodb:dbname');
 const { logger } = require('cdcrhelpers');
 
 module.exports = function (app) {

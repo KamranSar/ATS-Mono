@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')('database-template:src:knex:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:knex:dbname');
 const { logger } = require('cdcrhelpers');
 const knex = require('knex');
 

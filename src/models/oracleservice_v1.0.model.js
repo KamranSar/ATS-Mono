@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-const debug = require('debug')('database-template:src:models:oracleservice_v1.0.model:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:models:oracleservice_v1.0.model:dbname');
 const { logger } = require('cdcrhelpers');
 //
 // oracleservice-model.js - KnexJS

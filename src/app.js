@@ -14,8 +14,13 @@ if (process.env.NODE_ENV==='production') {
   delete process.env.DEBUG;
   console.log = function() {};
 }
+else {
+  // If the DEBUG variable is populated, then add this app to those requested.
+  if (process.env.DEBUG && process.env.DEBUG.length > 1)
+    process.env.DEBUG += `,${process.env.APP_NAME}:*`;
+}
 
-const debug = require('debug')('database-template:src:app');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:app');
 const path = require('path');
 const favicon = require('serve-favicon');
 const helmet = require('helmet');

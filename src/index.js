@@ -1,5 +1,6 @@
+process.env.APP_NAME = require('../package.json').name;
 const app = require('./app');
-const debug = require('debug')('database-template:src:index');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:index');
 const { logger } = require('cdcrhelpers');
 const port = app.get('port') || app.get('serverport');
 const server = app.listen(port);

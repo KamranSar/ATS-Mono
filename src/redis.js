@@ -1,4 +1,4 @@
-const debug = require('debug')('database-template:src:redis:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:redis:dbname');
 const { logger } = require('cdcrhelpers');
 const redisCache = require('feathers-redis-cache');
 // const sync = require('feathers-sync');

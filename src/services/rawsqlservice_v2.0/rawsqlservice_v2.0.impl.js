@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')('database-template:src:services:rawsqlservice_v2.0:rawsqlservice_v2.0.impl');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:services:rawsqlservice_v2.0:rawsqlservice_v2.0.impl');
 const { GeneralError, BadRequest } = require('@feathersjs/errors');
 const { readSQLFiles } = require('cdcrhelpers');
 

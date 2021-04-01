@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')('database-template:src:app.hooks');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:app.hooks');
 const { logSvcError } = require('cdcrhelpers');
 const { addServiceTime } = require('cdcrhooks');
 

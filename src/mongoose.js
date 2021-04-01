@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')('database-template:src:mongoose:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:mongoose:dbname');
 const { logger } = require('cdcrhelpers');
 const mongoose = require('mongoose');
 

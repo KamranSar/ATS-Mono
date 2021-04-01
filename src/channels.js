@@ -1,4 +1,4 @@
-const debug = require('debug')('database-template:src:channels');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:channels');
 
 module.exports = function(app) {
   if(typeof app.channel !== 'function') {

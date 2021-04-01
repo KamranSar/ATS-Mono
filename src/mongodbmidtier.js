@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const debug = require('debug')('database-template:src:mongodbmidtier:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:mongodbmidtier:dbname');
 const { logger, configureMongoSvcStatConnection } = require('cdcrhelpers');
 
 module.exports = function (app) {

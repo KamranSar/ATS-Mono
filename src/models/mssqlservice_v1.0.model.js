@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const debug = require('debug')('database-template:src:models:mssqlservice_v1.0.model:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:`+'src:models:mssqlservice_v1.0.model:dbname');
 const { logger } = require('cdcrhelpers');
 //
 // mssqlservice-model.js - KnexJS
