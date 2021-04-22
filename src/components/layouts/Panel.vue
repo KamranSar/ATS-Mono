@@ -31,15 +31,22 @@
     </v-toolbar>
 
     <Alert />
-    <v-row>
-      <v-col cols="12">
-        <slot name="content">No content</slot>
-      </v-col>
-    </v-row>
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12">
+          <slot name="content">No content</slot>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
 <script>
+  /**
+   * When importing Panel.vue, the content slot does not require a v-container.fluid
+   * Ex. "@/views/Pricing.vue"
+   * <template slot="content"> This is a beautiful Pricing page. </template>
+   */
   import { mapState } from 'vuex';
   export default {
     name: 'panel',

@@ -1,7 +1,5 @@
 <template>
   <v-app>
-    <system-bar v-if="systemBarEnabled"></system-bar>
-
     <AppBar
       :userItems="userItems"
       :adminItems="adminItems"
@@ -51,13 +49,12 @@
     <Snackbar />
 
     <v-main>
-      <!-- <v-container fluid> -->
       <!-- 
         The key refreshes component in some wierd cases. 
-        You may or may not want this 
+        You may or may not want this:
+        <router-view :key="$route.fullPath" />
       -->
-      <router-view :key="$route.fullPath" />
-      <!-- </v-container> -->
+      <router-view />
     </v-main>
 
     <Footer
@@ -85,11 +82,6 @@
     name: 'App',
 
     components: {
-      SystemBar: () =>
-        import(
-          /* webpackChunkName: "default-system-bar" */
-          '@/components/layouts/SystemBar'
-        ),
       AppBar: () =>
         import(
           /* webpackChunkName: "app-bar" */

@@ -4,7 +4,6 @@ const getDefaultState = () => {
   return {
     leftDrawEnabled: true,
     rightDrawEnabled: true,
-    systemBarEnabled: true,
     footerEnabled: true,
     bottomBarEnabled: true,
   };

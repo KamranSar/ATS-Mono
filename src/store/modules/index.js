@@ -6,4 +6,3 @@ export { default as azureAuthentication } from './azureAuthentication';
 export { default as serviceReq } from './serviceReq';
 export { default as snackbar } from './snackbar';
 export { default as userprefs } from './userPrefs';
-export { default as checkOnlineStatus } from './checkOnlineStatus';

@@ -53,7 +53,6 @@ store.dispatch('azureAuthentication/init');
 store.dispatch('serviceReq/init');
 store.dispatch('snackbar/init');
 store.dispatch('userprefs/init');
-// store.dispatch('checkOnlineStatus/init');
 // store.dispatch('feathersAuthentication/init');
 
 if (process.env.NODE_ENV === 'development') {

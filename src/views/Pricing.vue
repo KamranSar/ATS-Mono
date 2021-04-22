@@ -1,8 +1,6 @@
 <template>
   <Panel icon="mdi-cash-multiple" title="Pricing">
-    <template slot="content">
-      <v-container> This is a beautiful Pricing page. </v-container>
-    </template>
+    <template slot="content"> This is a beautiful Pricing page. </template>
   </Panel>
 </template>
 
