@@ -66,7 +66,7 @@
     ></Footer>
 
     <BottomNavBar
-      v-if="bottomBarEnabled"
+      v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
       :userItems="userItems"
       :adminItems="adminItems"
       :anonymousItems="anonymousItems"

@@ -9,11 +9,14 @@ import router from '@/router';
 import store from '@/store';
 import vuetify from '@/plugins/vuetify';
 import VTooltip from 'v-tooltip';
+import myApp from '@/util/myApp.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 
 initServiceWorker();
 
 Vue.config.productionTip = true;
+
+Vue.prototype.$myApp = myApp;
 
 // Vue.use(msalPlugin, msalConfig);
 

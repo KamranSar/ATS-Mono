@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-navigation :value="value" color="blue" grow>
+  <v-bottom-navigation app :value="value" color="blue" grow>
     <template v-if="isAzureLoggedIn">
       <v-btn v-for="(item, i) in userItems" :key="i" :to="item.to">
         <span>{{ item.title }}</span>

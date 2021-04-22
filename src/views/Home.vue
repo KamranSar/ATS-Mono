@@ -1,16 +1,15 @@
 <template>
-  <v-row no-gutters>
-    <v-col id="howitworks" cols="12">
-      <HomeHero></HomeHero>
-    </v-col>
+  <v-container grid-list-md fluid>
+    <v-row no-gutters>
+      <v-col id="howitworks" cols="12">
+        <HomeHero></HomeHero>
+      </v-col>
 
-    <v-container grid-list-md fluid>
-      <v-col id="features" cols="12"></v-col>
-      <v-col cols="12">
+      <v-col id="features" cols="12">
         <HomeFeatures></HomeFeatures>
       </v-col>
-    </v-container>
-  </v-row>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -26,6 +25,8 @@
       if (this.$route.hash) {
         setTimeout(() => this.scrollTo(this.$route.hash), 1);
       }
+
+      console.log(this.$vuetify);
     },
 
     methods: {

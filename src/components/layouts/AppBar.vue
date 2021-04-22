@@ -20,8 +20,7 @@
       />
     </router-link>
 
-    <span class="title ml-1">Awesome Program Title</span>
-    <!-- <span class="caption grey--text text-lighten-5">beta</span> -->
+    <span class="title ml-1">{{ $myApp.name }}</span>
 
     <v-spacer></v-spacer>
 

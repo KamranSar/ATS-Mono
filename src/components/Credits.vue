@@ -1,60 +1,70 @@
 <template>
-  <v-dialog :value="creditsDialog" width="65%" @input="$emit('input')">
+  <v-dialog v-model="creditsDialog">
     <template v-slot:activator="{ on }">
       <span v-on="on">
         <a>Credits</a>
       </span>
     </template>
 
-    <v-card flat width="100%" height="100%">
+    <v-card flat>
       <v-card-title class="subheading grey lighten-3" primary-title
         >Credits</v-card-title
       >
 
-      <v-row>
-        <v-col cols="12" class="ml-5">
-          <p class="credit-text mt-3">
-            This application could not have happened without the awesome
-            contributions from our team and from the wider community.
-          </p>
-        </v-col>
+      <v-card-text>
+        <p class="credit-text mt-3">
+          This application could not have happened without the awesome
+          contributions from our team and from the wider community.
+        </p>
 
-        <v-col cols="12" class="ml-5 credit-text">
-          <ul>
-            <li>
-              Images and icons
-              <ul>
-                <li>
-                  Images on
-                  <a
-                    href="https://www.pexels.com"
-                    target="_blank"
-                    rel="nofollow"
-                    >Pexels</a
-                  >
-                </li>
-                <li>
-                  Icons by
-                  <a
-                    href="https://www.flaticon.com/"
-                    target="_blank"
-                    rel="nofollow"
-                    >Awesome people</a
-                  >
-                  on Flaticon
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </v-col>
-      </v-row>
+        <ul>
+          <li>
+            EIS Mobile Dev Team
+            <ul>
+              Nurthin Aziz, Kevin Baroni, Nathan Brizzee, Dave Eggers, Jeff
+              Funk, Jon Wegsteen, and many more!
+            </ul>
+          </li>
+          <li>
+            Framework, Material Design and Icons
+            <ul>
+              <li>
+                Framework by the team @
+                <a href="https://www.vuejs.org" target="_blank" rel="nofollow"
+                  >VueJS</a
+                >
+              </li>
+              <li>
+                Material Design with
+                <a
+                  href="https://www.vuetifyjs.com"
+                  target="_blank"
+                  rel="nofollow"
+                  >Vuetify</a
+                >
+              </li>
+              <li>
+                Free awesome icons @
+                <a
+                  href="https://www.fontawesome.com/"
+                  target="_blank"
+                  rel="nofollow"
+                  >fontawesome</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </v-card-text>
 
       <v-divider></v-divider>
 
-      <!-- <v-card-actions>
+      <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text @click="$emit('input')">Close</v-btn>
-      </v-card-actions>-->
+        <v-btn color="primary" text @click="creditsDialog = false">
+          Thank you
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -64,11 +74,10 @@
     data() {
       return {};
     },
-    props: {
-      creditsDialog: {
-        type: Boolean,
-        default: false,
-      },
+    data() {
+      return {
+        creditsDialog: false,
+      };
     },
   };
 </script>
