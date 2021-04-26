@@ -26,11 +26,6 @@
 
     <v-card color="transparent" class="hidden-md-and-down" flat>
       <v-btn-toggle group v-if="!isAzureLoggedIn">
-        <span v-for="item in anonymousNavItems" :key="item.title">
-          <v-btn :to="item.to" text :key="item.title">
-            {{ item.title }}
-          </v-btn>
-        </span>
         <span v-for="(item, index) in anonymousItems" :key="index">
           <v-btn :to="item.to" text :key="index">
             <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
@@ -76,32 +71,19 @@
 <script>
   import { sync, get } from 'vuex-pathify';
   import { mapGetters } from 'vuex';
-
+  import {
+    anonymousItems,
+    userItems,
+    adminItems,
+    userToolbarItems,
+  } from '@/config/navItems';
   export default {
-    props: {
-      anonymousItems: {
-        type: Array,
-        required: true,
-      },
-      anonymousNavItems: {
-        type: Array,
-        required: true,
-      },
-      userItems: {
-        type: Array,
-        required: true,
-      },
-      adminItems: {
-        type: Array,
-        required: true,
-      },
-      userToolbarItems: {
-        type: Array,
-        required: true,
-      },
-    },
     data() {
       return {
+        anonymousItems,
+        userItems,
+        adminItems,
+        userToolbarItems,
         clippedLeft: true,
         clippedRight: true,
       };

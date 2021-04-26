@@ -32,25 +32,6 @@
     </v-list>
 
     <v-list v-else dense>
-      <v-list-item
-        v-for="(item, i) in anonymousNavItems"
-        :key="i"
-        :to="item.to"
-      >
-        <v-list-item-avatar>
-          <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title
-            v-html="item.title"
-            class="body-2"
-          ></v-list-item-title>
-          <!-- <v-list-item-subtitle  v-html="item.subtitle"></v-list-item-subtitle> -->
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-
-    <v-list v-if="!isAzureLoggedIn" dense>
       <v-list-item v-for="(item, i) in anonymousItems" :key="i" :to="item.to">
         <v-list-item-avatar>
           <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
@@ -98,7 +79,7 @@
 <script>
   import { mapGetters, mapState } from 'vuex';
   import { get } from 'vuex-pathify';
-
+  import { anonymousItems, userItems, adminItems } from '@/config/navItems';
   export default {
     name: 'NavDrawerLeft',
     computed: {
@@ -126,23 +107,12 @@
         return userId;
       },
     },
-    props: {
-      anonymousItems: {
-        type: Array,
-        required: true,
-      },
-      anonymousNavItems: {
-        type: Array,
-        required: true,
-      },
-      userItems: {
-        type: Array,
-        required: true,
-      },
-      adminItems: {
-        type: Array,
-        required: true,
-      },
+    data() {
+      return {
+        anonymousItems,
+        userItems,
+        adminItems,
+      };
     },
     methods: {
       goGo(to) {

@@ -1,5 +1,5 @@
 <template>
-  <v-parallax src="../assets/img/dark-star-background.jpg" jumbotron>
+  <v-parallax src="@/assets/img/dark-star-background.jpg" jumbotron>
     <v-card flat class="pa-2 transparent" dark>
       <v-row align="start" class="mt-12">
         <v-col md="2"></v-col>

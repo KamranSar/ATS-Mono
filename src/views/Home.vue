@@ -9,6 +9,8 @@
         <HomeFeatures></HomeFeatures>
       </v-col>
     </v-row>
+
+    <Footer></Footer>
   </v-container>
 </template>
 
@@ -17,8 +19,9 @@
     name: 'Home',
 
     components: {
-      HomeHero: () => import('../components/HomeHero'),
-      HomeFeatures: () => import('../components/HomeFeatures'),
+      HomeHero: () => import('@/components/Home/HomeHero'),
+      HomeFeatures: () => import('@/components/Home/HomeFeatures'),
+      Footer: () => import('@/components/layouts/Footer'),
     },
 
     mounted() {

@@ -1,5 +1,15 @@
+/**
+ * Generic axios configuration to simplify Web Services.
+ * 
+ * Example:
+  const { getData } = await req('get', 'v0/get-profile/', state.user);
+  const { postData } = await req('post', 'v0/auth/login', {
+    userid: state.registerUserId,
+    password: state.registerPass,
+  });
+ */
 import axios from 'axios';
-import store from '../store/index';
+import store from '@/store/index';
 
 async function fetchWithTimeout(resource, options) {
   const { timeout = 8000 } = options;

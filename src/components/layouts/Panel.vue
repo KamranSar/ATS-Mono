@@ -63,7 +63,7 @@
       ...mapState('app', ['loading']),
     },
     components: {
-      Alert: () => import('../util/Alert'),
+      Alert: () => import('@/components/util/Alert'),
     },
   };
 </script>

@@ -1,9 +1,9 @@
 <template>
-  <v-footer app dark class="grey--text pt-5">
+  <v-footer v-bind="$attrs" dark class="grey--text">
     <v-row no-gutters>
       <v-col cols="12" align="center" justify="center" class="ma-auto">
         <v-btn
-          v-for="link in anonymousNavItems"
+          v-for="link in anonymousItems"
           :key="link.title"
           color="white"
           text
@@ -31,38 +31,15 @@
 </template>
 
 <script>
+  import { anonymousItems } from '@/config/navItems.js';
   export default {
     name: 'Footer',
-    props: {
-      anonymousItems: {
-        type: Array,
-        required: true,
-      },
-      anonymousNavItems: {
-        type: Array,
-        required: true,
-      },
-      userItems: {
-        type: Array,
-        required: true,
-      },
-      adminItems: {
-        type: Array,
-        required: true,
-      },
-    },
-
     components: {
-      Credits: () => import('../Credits'),
+      Credits: () => import('@/components/Credits'),
     },
-
     data() {
       return {
-        links: [
-          { title: 'Home', to: { name: 'home' } },
-          { title: 'Contact Us', to: { name: 'Contact Us' } },
-          { title: 'Terms', to: { name: 'terms' } },
-        ],
+        anonymousItems,
       };
     },
   };

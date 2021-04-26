@@ -13,7 +13,7 @@ import {
   silentRequest,
   logoutRequest,
   graphConfig,
-} from '@/plugins/msalConfig.js';
+} from '@/config/msalConfig.js';
 
 // Browser check variables
 // If you support IE, our recommendation is that you sign-in using Redirect APIs

@@ -8,8 +8,8 @@
 </template>
 
 <script>
-  import Panel from '../components/layouts/Panel';
-  import ServiceReqList from '../components/ServiceReqList';
+  import Panel from '@/components/layouts/Panel';
+  import ServiceReqList from '@/components/ServiceReqList';
 
   export default {
     components: {

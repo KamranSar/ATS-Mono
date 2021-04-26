@@ -1,12 +1,6 @@
 <template>
   <v-app>
-    <AppBar
-      :userItems="userItems"
-      :adminItems="adminItems"
-      :anonymousItems="anonymousItems"
-      :anonymousNavItems="anonymousNavItems"
-      :userToolbarItems="userToolbarItems"
-    ></AppBar>
+    <AppBar></AppBar>
 
     <v-navigation-drawer
       v-if="leftDrawEnabled"
@@ -17,12 +11,7 @@
     >
       <!-- Items are passed from here since we may want to reuse these at 
           toolbar level at some point in time -->
-      <NavDrawerLeft
-        :userItems="userItems"
-        :adminItems="adminItems"
-        :anonymousItems="anonymousItems"
-        :anonymousNavItems="anonymousNavItems"
-      ></NavDrawerLeft>
+      <NavDrawerLeft></NavDrawerLeft>
     </v-navigation-drawer>
 
     <v-navigation-drawer
@@ -57,20 +46,8 @@
       <router-view />
     </v-main>
 
-    <Footer
-      v-if="footerEnabled && !isAzureLoggedIn"
-      :userItems="userItems"
-      :adminItems="adminItems"
-      :anonymousItems="anonymousItems"
-      :anonymousNavItems="anonymousNavItems"
-    ></Footer>
-
     <BottomNavBar
       v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
-      :userItems="userItems"
-      :adminItems="adminItems"
-      :anonymousItems="anonymousItems"
-      :anonymousNavItems="anonymousNavItems"
     ></BottomNavBar>
   </v-app>
 </template>
@@ -107,88 +84,11 @@
           /* webpackChunkName: "bottom-nav-bar" */
           '@/components/layouts/BottomNavBar'
         ),
-      Footer: () =>
-        import(
-          /* webpackChunkName: "footer" */
-          '@/components/layouts/Footer'
-        ),
     },
     data() {
       return {
         clippedLeft: true,
         clippedRight: true,
-        //  see here for icons: http://materialdesignicons.com/
-        anonymousNavItems: [
-          {
-            title: 'How it works?',
-            to: '/#howitworks', // This is a Home page anchor tag, not a Router view
-            icon: 'mdi-lightbulb',
-          },
-          {
-            title: 'Features',
-            to: '/#features', // This is a home page anchor tag, not a Router view
-            icon: 'mdi-bug',
-          },
-          {
-            title: 'Pricing',
-            to: { name: 'Pricing' },
-            icon: 'mdi-cash-multiple',
-          },
-          {
-            title: 'Contact Us',
-            to: { name: 'Contact Us' },
-            icon: 'mdi-card-account-mail',
-          },
-        ],
-        anonymousItems: [
-          {
-            title: 'Login',
-            to: { name: 'login' },
-            icon: 'mdi-login',
-          },
-          // {
-          //   title: 'Signup',
-          //   to: { name: 'signup' },
-          //   icon: 'mdi-account-box-outline',
-          // },
-        ],
-        userItems: [
-          {
-            icon: 'mdi-view-dashboard',
-            title: 'Dashboard',
-            to: { name: 'Dashboard' },
-            color: 'success',
-          },
-          {
-            icon: 'mdi-book-plus',
-            title: 'Service Request',
-            to: { name: 'ServiceReq' },
-          },
-        ],
-        adminItems: [
-          {
-            icon: 'mdi-account-outline',
-            title: 'Users',
-            to: { name: 'users' },
-          },
-          {
-            icon: 'mdi-printer',
-            title: 'Export Templates',
-            to: { name: 'templates' },
-          },
-        ],
-        userToolbarItems: [
-          {
-            icon: 'mdi-folder-account',
-            title: 'Account',
-            to: { name: 'my-account' },
-          },
-          {
-            icon: 'mdi-logout',
-            title: 'Logout',
-            to: { name: 'logout' },
-          },
-        ],
       };
     },
     computed: {
@@ -198,7 +98,6 @@
         'leftDrawEnabled',
         'rightDrawEnabled',
         'bottomBarEnabled',
-        'footerEnabled',
       ]),
       ...get('azureAuthentication', {
         myInfo: 'myInfo',
@@ -213,33 +112,9 @@
         isAuthenticatePending: 'isAuthenticatePending',
       }),
     },
-
-    filters: {
-      capitalize: (value) => {
-        if (!value) return '';
-        value = value.toString();
-        return value.charAt(0).toUpperCase() + value.slice(1);
-      },
-      fmtCurrency: (value) => {
-        if (!value) value = 0;
-        return value.toLocaleString('en-IN', {
-          style: 'currency',
-          currency: 'INR',
-        });
-      },
-    },
   };
 </script>
 
 <style>
-  /* @import url("https://fonts.googleapis.com/css?family=Open Sans");
-.v-application {
-  font-family: "open sans";
-} */
-
-  /* .application {
-  font-family: "open sans" !important;
-} */
-
   @import './assets/css/main.css';
 </style>

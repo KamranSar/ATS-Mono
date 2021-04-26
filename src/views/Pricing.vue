@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import Panel from '../components/layouts/Panel';
+  import Panel from '@/components/layouts/Panel';
 
   export default {
     components: { Panel },

@@ -9,7 +9,7 @@ import router from '@/router';
 import store from '@/store';
 import vuetify from '@/plugins/vuetify';
 import VTooltip from 'v-tooltip';
-import myApp from '@/util/myApp.js';
+import myApp from '@/config/myApp.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 
 initServiceWorker();

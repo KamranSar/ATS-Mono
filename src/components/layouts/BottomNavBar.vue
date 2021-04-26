@@ -8,7 +8,7 @@
     </template>
 
     <template v-else>
-      <v-btn v-for="(item, i) in anonymousNavItems" :key="i" :to="item.to">
+      <v-btn v-for="(item, i) in anonymousItems" :key="i" :to="item.to">
         <span>{{ item.title }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
@@ -23,7 +23,7 @@
 
 <script>
   import { get } from 'vuex-pathify';
-
+  import { anonymousItems, userItems } from '@/config/navItems';
   import { mapGetters, mapState } from 'vuex';
   export default {
     name: 'BottomNavBar',
@@ -47,25 +47,11 @@
         return userId;
       },
     },
-    props: {
-      anonymousItems: {
-        type: Array,
-        required: true,
-      },
-      anonymousNavItems: {
-        type: Array,
-        required: true,
-      },
-      userItems: {
-        type: Array,
-        required: true,
-      },
-      adminItems: {
-        type: Array,
-        required: true,
-      },
-    },
-    data: () => ({ value: 1 }),
+    data: () => ({
+      anonymousItems,
+      userItems,
+      value: 1,
+    }),
     methods: {
       goGo(to) {
         this.$router.push(to);

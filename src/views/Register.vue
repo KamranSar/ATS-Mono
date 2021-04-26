@@ -94,8 +94,8 @@
   import { sync } from 'vuex-pathify';
   import { mapState, mapMutations, mapActions } from 'vuex';
 
-  import Panel from '../components/layouts/Panel';
-  import PgtUtilMix from '../mixins/PgtUtilMix.vue';
+  import Panel from '@/components/layouts/Panel';
+  import PgtUtilMix from '@/mixins/PgtUtilMix.vue';
 
   export default {
     components: { Panel },
