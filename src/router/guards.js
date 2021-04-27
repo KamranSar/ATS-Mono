@@ -49,7 +49,7 @@ async function logout(to, from, next) {
 
     try {
       await store.dispatch('azureAuthentication/logout'); // And always remove the Azure login token.
-      await store.commit('api/auth/v1.0/users/clearAll');
+      await store.commit('users/clearAll');
     } catch (e) {
       console.log(e);
     }

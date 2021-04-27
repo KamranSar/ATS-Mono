@@ -3,7 +3,7 @@
 import feathersClient, {
   makeServicePlugin,
   BaseModel,
-} from '@/feathers-client';
+} from '@/config/feathers';
 
 /**
  * User Model Class
@@ -35,14 +35,23 @@ class User extends BaseModel {
   }
 }
 
+const getters = {
+  isOrgAdmin(state) {
+    console.log('state: ', state);
+    return !!state.User && state.User.role && state.User.role === 'admin';
+  },
+};
+
 // Set up the service name and plugin
 // https://vuex.feathersjs.com/service-plugin.html#configuration
 const servicePath = 'api/auth/v1.0/users'; // The Vuex namespace
 const servicePlugin = makeServicePlugin({
+  namespace: 'users',
   Model: User,
   idField: '_id',
   service: feathersClient.service(servicePath),
   servicePath: servicePath,
+  getters: getters,
 });
 
 // Setup the client-side Feathers hooks.

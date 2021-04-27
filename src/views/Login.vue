@@ -78,6 +78,7 @@
             const packet = {
               strategy: 'azuretoken_v1.0',
               azuretokenresponse: this.azuretokenresponse, // Need the token from Azure to log into middle tier
+              clientId: '', // FIXME:
             };
             // Now sign into Middle Tier
             // console.log(this.isAuthenticated);

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import pathify from '@/plugins/vuex-pathify';
-import { FeathersVuex } from '@/feathers-client';
+import { FeathersVuex } from '@/config/feathers';
 
 // Modules
 import * as modules from './modules';
@@ -48,7 +48,6 @@ const store = new Vuex.Store({
 store.dispatch('alert/init');
 store.dispatch('app/init');
 store.dispatch('appfeatures/init');
-store.dispatch('authentication/init');
 store.dispatch('azureAuthentication/init');
 store.dispatch('serviceReq/init');
 store.dispatch('snackbar/init');

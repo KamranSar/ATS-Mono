@@ -36,6 +36,9 @@ export default async (reqType, reqURL, data) => {
   store.set('app/loading', true);
   store.commit('alert/setAlertMsg', '');
 
+  const baseURL =
+    store && store.state && store.state.baseURL ? store.state.baseURL : '/api';
+
   const options = {
     headers: {
       Authorization: `Bearer ${store.state.authentication.token}`,
@@ -45,21 +48,13 @@ export default async (reqType, reqURL, data) => {
   try {
     switch (reqType) {
       case 'post':
-        return await axios.post(
-          store.state.baseURL + '/' + reqURL,
-          data,
-          options
-        );
+        return await axios.post(baseURL + '/' + reqURL, data, options);
 
       case 'patch':
-        return await axios.patch(
-          store.state.baseURL + '/' + reqURL,
-          data,
-          options
-        );
+        return await axios.patch(baseURL + '/' + reqURL, data, options);
 
       case 'get':
-        return await axios.get(store.state.baseURL + '/' + reqURL, options);
+        return await axios.get(baseURL + '/' + reqURL, options);
     }
   } catch (e) {
     const msgPrefix = ['post', 'patch'].includes(reqType)

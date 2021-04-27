@@ -77,7 +77,6 @@
 </template>
 
 <script>
-  import { mapGetters, mapState } from 'vuex';
   import { get } from 'vuex-pathify';
   import { anonymousItems, userItems, adminItems } from '@/config/navItems';
   export default {
@@ -94,11 +93,12 @@
       ...get('feathersAuthentication', {
         isFeathersLoggedIn: 'isFeathersLoggedIn',
         isAuthenticatePending: 'isAuthenticatePending',
+        user: 'user',
+        isOrgAdmin: 'isOrgAdmin',
       }),
 
       ...get('app', ['loading']),
-      ...mapGetters('authentication', ['isOrgAdmin']),
-      ...mapState('authentication', ['user']),
+
       formattedUserId() {
         let userId = this.user && this.user.userid;
         if (userId && userId.length > 12)

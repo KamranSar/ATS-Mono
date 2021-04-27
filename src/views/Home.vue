@@ -2,11 +2,11 @@
   <v-container grid-list-md fluid>
     <v-row no-gutters>
       <v-col id="howitworks" cols="12">
-        <HomeHero></HomeHero>
+        <Hero></Hero>
       </v-col>
 
       <v-col id="features" cols="12">
-        <HomeFeatures></HomeFeatures>
+        <Features></Features>
       </v-col>
     </v-row>
 
@@ -19,8 +19,8 @@
     name: 'Home',
 
     components: {
-      HomeHero: () => import('@/components/Home/HomeHero'),
-      HomeFeatures: () => import('@/components/Home/HomeFeatures'),
+      Hero: () => import('@/components/Home/Hero'),
+      Features: () => import('@/components/Home/Features'),
       Footer: () => import('@/components/layouts/Footer'),
     },
 
@@ -28,8 +28,6 @@
       if (this.$route.hash) {
         setTimeout(() => this.scrollTo(this.$route.hash), 1);
       }
-
-      console.log(this.$vuetify);
     },
 
     methods: {
