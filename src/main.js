@@ -18,8 +18,6 @@ Vue.config.productionTip = true;
 
 Vue.prototype.$myApp = myApp;
 
-// Vue.use(msalPlugin, msalConfig);
-
 Vue.use(VTooltip);
 // Vuetify tooltip is a pain.
 // This should be removed when Vuetify has better tooltip

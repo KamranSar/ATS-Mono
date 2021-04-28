@@ -9,16 +9,19 @@
     <v-app-bar-nav-icon
       v-if="leftDrawEnabled"
       @click="leftDrawOpen = !leftDrawOpen"
-    ></v-app-bar-nav-icon>
+    >
+      <v-avatar>
+        <v-img
+          src="@/assets/logo.svg"
+          contain
+          max-height="36"
+          max-width="36"
+          alt="logo"
+        />
+      </v-avatar>
+    </v-app-bar-nav-icon>
 
-    <router-link :to="{ name: 'home' }">
-      <v-img
-        src="@/assets/logo.svg"
-        contain
-        max-height="40px"
-        max-width="40px"
-      />
-    </router-link>
+    <router-link :to="{ name: 'Home' }"> </router-link>
 
     <span class="title ml-1">{{ $myApp.name }}</span>
 
@@ -27,9 +30,9 @@
     <v-card color="transparent" class="hidden-md-and-down" flat>
       <v-btn-toggle group v-if="!isAzureLoggedIn">
         <span v-for="(item, index) in anonymousItems" :key="index">
-          <v-btn :to="item.to" text :key="index">
+          <v-btn :to="item.path" text :key="index">
             <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
-            {{ item.title }}
+            {{ item.name }}
           </v-btn>
         </span>
       </v-btn-toggle>
@@ -51,12 +54,12 @@
             v-for="(item, index) in userToolbarItems"
             dense
             :key="'u' + index"
-            :to="item.to"
+            :to="item.path"
           >
             <v-list-item-avatar>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-avatar>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -70,7 +73,6 @@
 
 <script>
   import { sync, get } from 'vuex-pathify';
-  import { mapGetters } from 'vuex';
   import {
     anonymousItems,
     userItems,
@@ -89,7 +91,6 @@
       };
     },
     computed: {
-      ...mapGetters('authentication', ['registerEmail']),
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
       ...get('azureAuthentication', {
@@ -106,11 +107,6 @@
         isAuthenticatePending: 'isAuthenticatePending',
       }),
     },
-    methods: {
-      // ...mapActions('authentication', ['logout']),
-    },
-
-    components: {},
   };
 </script>
 <style scoped>

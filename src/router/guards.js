@@ -1,15 +1,22 @@
 import store from '@/store/index';
+import myApp from '@/config/myApp.js';
 
 function requireToken(to, from, next) {
   const token = store.get('azureAuthentication/azuretokenresponse');
   if (token) next();
-  else next({ name: 'home' });
+  else next({ name: 'Home' });
 }
 
 function requireAuth(to, from, next) {
   const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) next();
-  else next({ name: 'login' });
+  else next({ name: 'Login' });
+}
+
+function requireRoleAdmin(to, from, next) {
+  const user = store.state.feathersAuthentication.user;
+  if (user && String(user.role).toLowerCase() === 'admin') next();
+  else next({ name: '4oh4' });
 }
 
 function dynamicHome(to, from, next) {
@@ -50,11 +57,16 @@ async function logout(to, from, next) {
     try {
       await store.dispatch('azureAuthentication/logout'); // And always remove the Azure login token.
       await store.commit('users/clearAll');
+
+      store.dispatch('snackbar/setSnack', {
+        message: `Logged out of ${myApp.name} successfully.`,
+        color: 'success',
+      });
     } catch (e) {
       console.log(e);
     }
   }
-  next({ name: 'login' });
+  next({ name: 'Login' });
 }
 
 // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -77,6 +89,7 @@ const waitForStorageToBeReady = async (to, from, next) => {
 export {
   requireToken,
   requireAuth,
+  requireRoleAdmin,
   dynamicHome,
   dynamicLogin,
   logout,

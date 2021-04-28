@@ -7,7 +7,7 @@ const localForageInstance = localForage.createInstance({
   storeName: 'indexeddbkeys', // table name
 });
 
-const modules = ['serviceReq']; // Modules you want to save to persistence
+const modules = []; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
   key: 'keys', // The key to store the state on in the storage provider.

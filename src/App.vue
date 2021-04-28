@@ -62,17 +62,17 @@
       AppBar: () =>
         import(
           /* webpackChunkName: "app-bar" */
-          '@/components/layouts/AppBar'
+          '@/components/layouts/navigation/AppBar'
         ),
       NavDrawerLeft: () =>
         import(
           /* webpackChunkName: "nav-drawer-left" */
-          '@/components/layouts/NavDrawerLeft'
+          '@/components/layouts/navigation/NavDrawerLeft'
         ),
       NavDrawerRight: () =>
         import(
           /* webpackChunkName: "nav-drawer-right" */
-          '@/components/layouts/NavDrawerRight'
+          '@/components/layouts/navigation/NavDrawerRight'
         ),
       Snackbar: () =>
         import(
@@ -82,7 +82,7 @@
       BottomNavBar: () =>
         import(
           /* webpackChunkName: "bottom-nav-bar" */
-          '@/components/layouts/BottomNavBar'
+          '@/components/layouts/navigation/BottomNavBar'
         ),
     },
     data() {

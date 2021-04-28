@@ -47,7 +47,7 @@
    * Ex. "@/views/Pricing.vue"
    * <template slot="content"> This is a beautiful Pricing page. </template>
    */
-  import { mapState } from 'vuex';
+  import { get } from 'vuex-pathify';
   export default {
     name: 'panel',
 
@@ -60,7 +60,7 @@
       return {};
     },
     computed: {
-      ...mapState('app', ['loading']),
+      ...get('app', ['loading']),
     },
     components: {
       Alert: () => import('@/components/util/Alert'),

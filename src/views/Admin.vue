@@ -1,8 +1,8 @@
 <template>
-  <Panel icon="mdi-view-dashboard" title="Dashboard">
+  <Panel icon="mdi-view-dashboard" title="Admin">
     <template slot="content">
       <v-container>
-        This is a beautiful dashboard.
+        This is a beautiful Admin Screen.
         {{ user }}
       </v-container>
     </template>
@@ -14,7 +14,7 @@
   import Panel from '@/components/layouts/Panel';
 
   export default {
-    components: { Panel, Footer: () => import('@/components/layouts/Footer') },
+    components: { Panel },
     computed: {
       ...get('feathersAuthentication', ['user']),
     },

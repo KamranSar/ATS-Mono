@@ -4,14 +4,47 @@ import store from '@/store';
 
 import { make } from 'vuex-pathify';
 
-// import * as msal from '@azure/msal-browser';
-import msal from '@/plugins/msalPlugin';
-
 // https://github.com/ahermant/vue-msal-browser
-// import { default as msalPlugin } from './msalPlugin';
-// https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser
-// import * as msal from '@azure/msal-browser';
+import * as msal from '@azure/msal-browser';
+let msalInstance = null;
 
+class msalPlugin extends msal.PublicClientApplication {
+  static install(vue, msalConfig = {}) {
+    msalInstance = new msalPlugin(msalConfig);
+    vue.prototype.$msal = msalInstance;
+  }
+
+  constructor(options) {
+    super(options);
+    // this.config.graph = options.graph || {};
+  }
+
+  callMSGraph(endpoint, accessToken) {
+    const headers = new Headers();
+    const bearer = `Bearer ${accessToken}`;
+    headers.append('Authorization', bearer);
+    const options = {
+      method: 'GET',
+      headers: headers,
+    };
+    return fetch(endpoint, options)
+      .then((response) => response)
+      .catch((error) => console.log(error));
+  }
+
+  // async getSilentToken(account, scopes = ['User.Read']) {
+  //   const silentRequest = { account, scopes };
+  //   return await this.acquireTokenSilent(silentRequest).catch((error) => {
+  //     console.error(error);
+  //     if (error instanceof msal.InteractionRequiredAuthError) {
+  //       // fallback to interaction when silent call fails
+  //       return this.acquireTokenRedirect(silentRequest);
+  //     }
+  //   });
+  // }
+}
+
+// https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md#logger-config-options
 const azureAppID = 'c0cf535a-bb4d-4731-94fb-8a4165b1a124'; //Change this to match your application APP ID on Azure
 const tenantId = '0662477d-fa0c-4556-a8f5-c3bc62aa0d9c'; // TenantId of CDCR.
@@ -99,7 +132,7 @@ const logoutRequest = {
 // Create the main myMSALObj instance
 // configuration parameters are located at msalConfig.js
 // const myMSALObj = new msal.PublicClientApplication(msalConfig);
-const myMSALObj = new msal(msalConfig);
+const myMSALObj = new msalPlugin(msalConfig);
 
 const getDefaultState = () => {
   return {
@@ -319,7 +352,7 @@ const actions = {
       .acquireTokenSilent(request)
       .catch(async (error) => {
         // console.log('silent token acquisition fails.');
-        if (error instanceof msal.InteractionRequiredAuthError) {
+        if (error instanceof msalPlugin.InteractionRequiredAuthError) {
           // console.log('acquiring token using popup');
           newtoken = myMSALObj.acquireTokenPopup(request).catch((error) => {
             store.commit('azureAuthentication/azureLoading', false);

@@ -22,7 +22,7 @@
               Try going back to home page and repeating your action. Or, contact
               us for assistance.
             </p>
-            <v-btn color="primary" large :to="{ name: 'home' }"
+            <v-btn color="primary" large :to="{ name: 'Home' }"
               >Take me home</v-btn
             >
           </v-card>

@@ -1,16 +1,7 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-row no-gutters>
-      <v-col id="howitworks" cols="12">
-        <Hero></Hero>
-      </v-col>
-
-      <v-col id="features" cols="12">
-        <Features></Features>
-      </v-col>
-    </v-row>
-
-    <Footer></Footer>
+    Home page
+    <!-- <Footer absolute></Footer> -->
   </v-container>
 </template>
 
@@ -19,8 +10,6 @@
     name: 'Home',
 
     components: {
-      Hero: () => import('@/components/Home/Hero'),
-      Features: () => import('@/components/Home/Features'),
       Footer: () => import('@/components/layouts/Footer'),
     },
 

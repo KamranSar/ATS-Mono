@@ -63,8 +63,8 @@
       ...call('users', {
         getUserRecord: 'get',
       }),
+      ...call('snackbar', ['setSnack']),
 
-      // ...mapMutations('snackbar', ['setSnack']),
       async delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
       },
@@ -83,7 +83,6 @@
             // Now sign into Middle Tier
             // console.log(this.isAuthenticated);
             await this.authenticate(packet);
-            console.log(this.isAuthenticated);
             // console.log(this.user);
             // const auth = await this.authenticate(packet);
             // console.log(auth._id);
@@ -91,6 +90,11 @@
             // console.log(user);
             await this.delay(500); // Wait for the authentication to finish or we get router errors
             this.$router.push({ name: 'Dashboard' });
+
+            this.setSnack({
+              message: `Logged into ${this.$myApp.name} successfully.`,
+              color: 'success',
+            });
           } catch (e1) {
             this.setAlertMsg(
               'API server Authentication failed. ' + e1.message || ''

@@ -37,7 +37,6 @@ class User extends BaseModel {
 
 const getters = {
   isOrgAdmin(state) {
-    console.log('state: ', state);
     return !!state.User && state.User.role && state.User.role === 'admin';
   },
 };

@@ -8,8 +8,8 @@
           color="white"
           text
           class="my-2"
-          :to="link.to"
-          >{{ link.title }}</v-btn
+          :to="link.path"
+          >{{ link.name }}</v-btn
         >
       </v-col>
 

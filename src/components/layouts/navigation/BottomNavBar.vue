@@ -1,15 +1,15 @@
 <template>
   <v-bottom-navigation app :value="value" color="blue" grow>
     <template v-if="isAzureLoggedIn">
-      <v-btn v-for="(item, i) in userItems" :key="i" :to="item.to">
-        <span>{{ item.title }}</span>
+      <v-btn v-for="(item, i) in userItems" :key="i" :to="item.path">
+        <span>{{ item.name }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
     </template>
 
     <template v-else>
-      <v-btn v-for="(item, i) in anonymousItems" :key="i" :to="item.to">
-        <span>{{ item.title }}</span>
+      <v-btn v-for="(item, i) in anonymousItems" :key="i" :to="item.path">
+        <span>{{ item.name }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
     </template>
@@ -24,7 +24,6 @@
 <script>
   import { get } from 'vuex-pathify';
   import { anonymousItems, userItems } from '@/config/navItems';
-  import { mapGetters, mapState } from 'vuex';
   export default {
     name: 'BottomNavBar',
     computed: {
@@ -36,9 +35,7 @@
         isAuthenticatePending: 'isAuthenticatePending',
       }),
 
-      ...mapGetters('authentication', ['isOrgAdmin']),
-      ...mapState('authentication', ['user']),
-      ...mapState('app', ['loading']),
+      ...get('app', ['loading']),
       formattedUserId() {
         let userId = this.user && this.user.userid;
         if (userId && userId.length > 12)
