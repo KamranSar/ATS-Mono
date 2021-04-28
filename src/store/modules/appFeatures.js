@@ -13,10 +13,6 @@ const state = getDefaultState();
 const mutations = {
   ...make.mutations(state),
 
-  setAlertMsg(state, alertMsg) {
-    state.alert = { message: alertMsg };
-  },
-
   resetState(state) {
     Object.assign(state, getDefaultState());
   },

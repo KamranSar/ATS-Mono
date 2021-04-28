@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import store from '@/store/index';
 import VueRouter from 'vue-router';
-import { waitForStorageToBeReady } from '@/router/guards.js';
+import { waitForStorageToBeReady } from '@/router/helpers/guards.js';
 import routes from '@/config/navItems.js';
 Vue.use(VueRouter);
 

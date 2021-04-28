@@ -4,7 +4,7 @@ import myApp from '@/config/myApp.js';
 function requireToken(to, from, next) {
   const token = store.get('azureAuthentication/azuretokenresponse');
   if (token) next();
-  else next({ name: 'Home' });
+  else next({ name: 'Login' });
 }
 
 function requireAuth(to, from, next) {
@@ -17,21 +17,6 @@ function requireRoleAdmin(to, from, next) {
   const user = store.state.feathersAuthentication.user;
   if (user && String(user.role).toLowerCase() === 'admin') next();
   else next({ name: '4oh4' });
-}
-
-function dynamicHome(to, from, next) {
-  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
-  if (loggedIn) next({ name: 'Dashboard' });
-  else next();
-}
-
-function dynamicLogin(to, from, next) {
-  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
-  if (loggedIn) {
-    next({ name: 'Dashboard' });
-  } else {
-    next();
-  }
 }
 
 async function logout(to, from, next) {
@@ -90,8 +75,6 @@ export {
   requireToken,
   requireAuth,
   requireRoleAdmin,
-  dynamicHome,
-  dynamicLogin,
   logout,
   waitForStorageToBeReady,
 };

@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md fluid>
-    Home page
-    <!-- <Footer absolute></Footer> -->
+    Welcome Home
+    <Footer id="footer" absolute></Footer>
   </v-container>
 </template>
 
@@ -20,30 +20,11 @@
     },
 
     methods: {
-      getImgUrl(img) {
-        return require('@/assets/' + img);
-      },
       scrollTo: (hashtag) => {
         setTimeout(() => {
           location.href = hashtag;
         }, 1);
       },
-    },
-
-    head: {
-      title: {
-        inner: 'Home',
-      },
-      meta: [
-        {
-          name: 'home',
-          id: 'home',
-          content: "Home's very real.",
-        },
-      ],
-      link: [
-        { rel: 'canonical', href: 'https://techformist.com/', id: 'canonical' },
-      ],
     },
   };
 </script>

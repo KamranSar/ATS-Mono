@@ -3,7 +3,6 @@ import { make } from 'vuex-pathify';
 
 const getDefaultState = () => {
   return {
-    baseURL: '/api',
     loading: false, // route change triggers this
   };
 };

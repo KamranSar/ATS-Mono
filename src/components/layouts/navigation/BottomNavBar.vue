@@ -1,14 +1,24 @@
 <template>
   <v-bottom-navigation app :value="value" color="blue" grow>
     <template v-if="isAzureLoggedIn">
-      <v-btn v-for="(item, i) in userItems" :key="i" :to="item.path">
+      <v-btn
+        v-for="(item, i) in userItems"
+        :key="i"
+        :to="item.path"
+        @click="onClick(item)"
+      >
         <span>{{ item.name }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
     </template>
 
     <template v-else>
-      <v-btn v-for="(item, i) in anonymousItems" :key="i" :to="item.path">
+      <v-btn
+        v-for="(item, i) in anonymousItems"
+        :key="i"
+        :to="item.path"
+        @click="onClick(item)"
+      >
         <span>{{ item.name }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
@@ -30,11 +40,6 @@
       ...get('azureAuthentication', {
         isAzureLoggedIn: 'isAzureLoggedIn',
       }),
-      ...get('feathersAuthentication', {
-        isFeathersLoggedIn: 'isFeathersLoggedIn',
-        isAuthenticatePending: 'isAuthenticatePending',
-      }),
-
       ...get('app', ['loading']),
       formattedUserId() {
         let userId = this.user && this.user.userid;
@@ -50,8 +55,10 @@
       value: 1,
     }),
     methods: {
-      goGo(to) {
-        this.$router.push(to);
+      onClick(item) {
+        if (item && item.onClick) {
+          item.onClick();
+        }
       },
     },
   };

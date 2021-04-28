@@ -1,57 +1,33 @@
 /**
  * This file contains all the routes used by vue-router
  * By default, all the router items are exported.
- * import * as routes from "@/config/routeItems.js";
+ * import routes from "@/config/routeItems.js";
  *
  * Nav Components import by choice.
  * import { anonymousItems, adminItems, userItems, userToolbarItems } from "@/config/routeItems.js";
  */
-
 import {
   requireToken,
   requireAuth,
   requireRoleAdmin,
-  dynamicHome,
-  dynamicLogin,
   logout,
-} from '@/router/guards.js';
+} from '@/router/helpers/guards.js';
+import { checkForChildren } from '@/router/helpers/index.js';
 
-/**
- * Checks recursively for any children
- * in the route until no child is left behind.
- * @param {VueRouter} route
- * @param {Array} listOfRouteNames
- * @param {Array} matchedRoutes
- */
-function _checkForChildren(route, listOfRouteNames, matchedRoutes) {
-  if (route.children && route.children.length) {
-    route.children.forEach((route) => {
-      if (listOfRouteNames.includes(String(route.name).toLowerCase())) {
-        matchedRoutes.push(route);
-        _checkForChildren(route, listOfRouteNames, matchedRoutes);
-      }
-    });
-  } else {
-    return matchedRoutes;
-  }
-}
-
-/**
- * Filter for routes only in the list
+/** Filter for routes only in the list
  * @param {Array[String]} listOfRouteNames - Array of route names.
- * @returns {Array} The route item objects in an Array
+ * @returns {Array[VueRouter]} An Array of Type Vue Router
  */
 function _getRoutesByName(listOfRouteNames) {
   const routeItems = [];
   if (listOfRouteNames && listOfRouteNames.length && routes && routes.length) {
     const reducer = (currentValue) => String(currentValue).toLowerCase();
     listOfRouteNames = listOfRouteNames.map(reducer);
-
     routes.forEach((route) => {
       if (listOfRouteNames.includes(String(route.name).toLowerCase())) {
         routeItems.push(route);
       }
-      _checkForChildren(route, listOfRouteNames, routeItems);
+      checkForChildren(route, listOfRouteNames, routeItems);
     });
   }
   return routeItems;
@@ -62,18 +38,19 @@ const routes = [
     /** custom properties */
     icon: 'mdi-home',
     color: 'primary', // optional
-    /** vue-router properties */
+    /** vue-router properties
+     * https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
+     */
     path: '/',
     name: 'Home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
-    beforeEnter: dynamicHome, // Optional
+    beforeEnter: requireToken,
     // redirect: // Optional
   },
   {
     icon: 'mdi-login',
     path: '/login',
     name: 'Login',
-    beforeEnter: dynamicLogin,
     component: () =>
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
@@ -82,15 +59,6 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     beforeEnter: logout,
-  },
-  {
-    icon: 'mdi-view-dashboard',
-    color: 'success',
-    path: '/dashboard',
-    name: 'Dashboard',
-    beforeEnter: requireToken,
-    component: () =>
-      import(/* webpackChunkName: "dashboard" */ '@/views/Dashboard.vue'),
   },
   {
     icon: 'mdi-folder-account',
@@ -139,10 +107,14 @@ const routes = [
   },
 ];
 
-const anonymousItems = _getRoutesByName(['Home', 'Login']);
-const userItems = _getRoutesByName(['Dashboard']);
-const adminItems = _getRoutesByName(['Admin']);
-const userToolbarItems = _getRoutesByName(['Account', 'Logout']);
+// Public Routes
+const anonymousItems = _getRoutesByName(['Login']);
+// Routes for Anyone Logged In
+const userItems = _getRoutesByName(['Home']);
+// Routes for Users with Role Admin
+const adminItems = _getRoutesByName(['Admin', 'export templates']);
+// Routes used for the Toolbar in AppBar.vue
+const userToolbarItems = _getRoutesByName(['Home', 'Logout']);
 
 export { anonymousItems, userItems, adminItems, userToolbarItems };
 export default routes;

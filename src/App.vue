@@ -38,12 +38,7 @@
     <Snackbar />
 
     <v-main>
-      <!-- 
-        The key refreshes component in some wierd cases. 
-        You may or may not want this:
-        <router-view :key="$route.fullPath" />
-      -->
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </v-main>
 
     <BottomNavBar
@@ -94,23 +89,10 @@
     computed: {
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', [
-        'systemBarEnabled',
         'leftDrawEnabled',
         'rightDrawEnabled',
         'bottomBarEnabled',
       ]),
-      ...get('azureAuthentication', {
-        myInfo: 'myInfo',
-        myPhoto: 'myPhoto',
-        myPhotoMetaData: 'myPhotoMetaData',
-        localAccountId: 'localAccountId',
-        displayName: 'displayName',
-        isAzureLoggedIn: 'isAzureLoggedIn',
-      }),
-      ...get('feathersAuthentication', {
-        isFeathersLoggedIn: 'isFeathersLoggedIn',
-        isAuthenticatePending: 'isAuthenticatePending',
-      }),
     },
   };
 </script>

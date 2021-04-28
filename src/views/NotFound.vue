@@ -9,7 +9,7 @@
                 contain
                 height="200px"
                 width="200px"
-                src="@/assets/img/logo-jaz.jpg"
+                src="@/assets/logo.png"
                 justify="end"
               ></v-img>
             </v-col>

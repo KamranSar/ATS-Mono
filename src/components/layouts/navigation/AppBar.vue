@@ -65,7 +65,11 @@
       </v-menu>
     </v-card>
 
-    <v-btn text v-if="rightDrawEnabled" @click="rightDrawOpen = !rightDrawOpen">
+    <v-btn
+      text
+      v-if="rightDrawEnabled && isAzureLoggedIn"
+      @click="rightDrawOpen = !rightDrawOpen"
+    >
       <v-icon>mdi-menu</v-icon>
     </v-btn>
   </v-app-bar>
@@ -94,17 +98,8 @@
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
       ...get('azureAuthentication', {
-        myInfo: 'myInfo',
         myPhoto: 'myPhoto',
-        myPhotoMetaData: 'myPhotoMetaData',
-        localAccountId: 'localAccountId',
-        displayName: 'displayName',
         isAzureLoggedIn: 'isAzureLoggedIn',
-        azureLoading: 'azureLoading',
-      }),
-      ...get('feathersAuthentication', {
-        isFeathersLoggedIn: 'isFeathersLoggedIn',
-        isAuthenticatePending: 'isAuthenticatePending',
       }),
     },
   };

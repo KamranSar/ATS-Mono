@@ -44,10 +44,9 @@
         azuretokenresponse: 'azuretokenresponse',
       }),
       ...get('feathersAuthentication', {
-        isFeathersLoggedIn: 'isFeathersLoggedIn',
+        isAuthenticated: 'isAuthenticated',
         isAuthenticatePending: 'isAuthenticatePending',
         errorOnAuthenticate: 'errorOnAuthenticate',
-        isAuthenticated: 'isAuthenticated',
         user: 'user',
       }),
 
@@ -89,7 +88,7 @@
             // const user = await this.getUserRecord(auth._id);
             // console.log(user);
             await this.delay(500); // Wait for the authentication to finish or we get router errors
-            this.$router.push({ name: 'Dashboard' });
+            this.$router.push({ name: 'Home' });
 
             this.setSnack({
               message: `Logged into ${this.$myApp.name} successfully.`,
@@ -100,7 +99,6 @@
               'API server Authentication failed. ' + e1.message || ''
             );
           }
-          //this.$router.push({ name: 'Dashboard' });
         } catch (e2) {
           this.setAlertMsg(
             'Sign in with Microsoft failed. ' + e2.errorMessage || ''

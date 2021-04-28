@@ -1,7 +1,17 @@
 <template>
   <div>
+    <v-banner v-if="deferredPrompt" color="info" dark class="text-left">
+      Get our free app. It won't take up space on your phone and also works
+      offline!
+
+      <template v-slot:actions>
+        <v-btn text @click="dismiss">Dismiss</v-btn>
+        <v-btn text @click="install">Install</v-btn>
+      </template>
+    </v-banner>
+
     <v-toolbar flat class="subtitle-2 grey--text" color="#ECEFF1">
-      <span class="font-weight-bold text-truncate">
+      <span class="text-truncate">
         <v-avatar class="mr-2" v-if="isAzureLoggedIn">
           <v-img
             v-if="myPhoto"
@@ -11,7 +21,7 @@
           ></v-img>
           <v-icon v-else>mdi-account-circle</v-icon>
         </v-avatar>
-        <span>{{ displayName }}</span>
+        <span>{{ displayName ? displayName : 'Currently Logged Out' }}</span>
       </span>
     </v-toolbar>
 
@@ -49,6 +59,10 @@
         </template>
       </v-list>
     </span>
+
+    <v-list>
+      <NavListItem :item="installItem()"></NavListItem>
+    </v-list>
   </div>
 </template>
 
@@ -65,40 +79,52 @@
     },
     computed: {
       ...get('azureAuthentication', {
-        myInfo: 'myInfo',
         myPhoto: 'myPhoto',
-        myPhotoMetaData: 'myPhotoMetaData',
-        localAccountId: 'localAccountId',
         displayName: 'displayName',
         isAzureLoggedIn: 'isAzureLoggedIn',
       }),
       ...get('feathersAuthentication', {
-        isFeathersLoggedIn: 'isFeathersLoggedIn',
-        isAuthenticatePending: 'isAuthenticatePending',
-        user: 'user',
         isOrgAdmin: 'isOrgAdmin',
       }),
-
-      ...get('app', ['loading']),
-
-      formattedUserId() {
-        let userId = this.user && this.user.userid;
-        if (userId && userId.length > 12)
-          userId = `${this.user.userid.substr(0, 10)}..`;
-
-        return userId;
-      },
     },
     data() {
       return {
         anonymousItems,
         userItems,
         adminItems,
+        deferredPrompt: null,
       };
     },
+    created() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        this.deferredPrompt = e;
+      });
+      window.addEventListener('appinstalled', () => {
+        this.deferredPrompt = null;
+      });
+    },
     methods: {
+      async dismiss() {
+        this.deferredPrompt = null;
+      },
+      async install() {
+        this.deferredPrompt.prompt();
+      },
       goGo(to) {
         this.$router.push(to);
+      },
+      installItem() {
+        const item = {
+          icon: 'mdi-apps',
+          name: `Install App`,
+          redirect: { name: '4oh4' },
+          onclick: () => {
+            this.install();
+          },
+        };
+        return item;
       },
     },
   };
