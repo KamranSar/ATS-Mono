@@ -75,7 +75,6 @@ const getters = {
   isOrgAdmin: () => {
     const payload = store.get('feathersAuthentication/payload');
     const user = payload && payload.user ? payload.user : null;
-    console.log('user: ', user);
     return user && user.role && String(user.role).toLowerCase() === 'admin';
   },
   // tokenExpiration: () => {

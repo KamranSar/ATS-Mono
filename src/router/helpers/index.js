@@ -77,4 +77,21 @@ const onClick = (item) => {
   }
 };
 
-export { checkForChildren, onClick, logout };
+/**
+ * Template provided helper to safely grab the icon color if
+ * currentRoute is pointing to it or returns an empty string.
+ * @param {VueRouter} item
+ * @returns {String} item.color if currentRoute.name matches or an empty string
+ */
+const getRouterColor = (item) => {
+  return router &&
+    router.currentRoute &&
+    router.currentRoute.name &&
+    router.currentRoute.name === item.name
+    ? item.color
+      ? item.color
+      : 'primary'
+    : '';
+};
+
+export { logout, checkForChildren, onClick, getRouterColor };

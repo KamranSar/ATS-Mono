@@ -29,7 +29,7 @@
       <v-btn-toggle group v-if="!isAzureLoggedIn">
         <span v-for="(item, index) in anonymousItems" :key="index">
           <v-btn @click="onClick(item)" text :key="index">
-            <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
+            <v-icon :color="getRouterColor(item)">{{ item.icon }}</v-icon>
             {{ item.name }}
           </v-btn>
         </span>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import { onClick } from '@/router/helpers/index.js';
+  import { onClick, getRouterColor } from '@/router/helpers/index.js';
   import { sync, get } from 'vuex-pathify';
   import { anonymousItems, userToolbarItems } from '@/config/navItems';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
@@ -99,6 +99,7 @@
     },
     methods: {
       onClick,
+      getRouterColor,
     },
   };
 </script>

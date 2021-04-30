@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-navigation-drawer v-model="rightDrawOpen" clipped hide-overlay app right>
     <v-toolbar flat class="subtitle-2 grey--text" dense color="#ECEFF1">
       <span>
         <v-icon class="mr-2">{{ icon }}</v-icon>
@@ -8,13 +8,13 @@
     </v-toolbar>
 
     <slot name="content"></slot>
-  </div>
+  </v-navigation-drawer>
 </template>
 
 <script>
+  import { sync } from 'vuex-pathify';
   export default {
     name: 'NavDrawerRight',
-    computed: {},
     props: {
       title: {
         type: String,
@@ -27,6 +27,9 @@
     },
     data() {
       return {};
+    },
+    computed: {
+      ...sync('userprefs', ['rightDrawOpen']),
     },
   };
 </script>

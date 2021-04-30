@@ -1,9 +1,9 @@
 <template>
-  <v-bottom-navigation app :value="value" color="blue" grow>
+  <v-bottom-navigation app :value="value" grow color="primary">
     <template v-if="isAzureLoggedIn">
       <v-btn v-for="(item, i) in userItems" :key="i" @click="onClick(item)">
-        <span>{{ item.name }}</span>
-        <v-icon>{{ item.icon }}</v-icon>
+        <span :class="`${item.color}--text`">{{ item.name }}</span>
+        <v-icon :color="item.color">{{ item.icon }} </v-icon>
       </v-btn>
     </template>
 
@@ -13,8 +13,8 @@
         :key="i"
         @click="onClick(item)"
       >
-        <span>{{ item.name }}</span>
-        <v-icon>{{ item.icon }}</v-icon>
+        <span :class="`${item.color}--text`">{{ item.name }}</span>
+        <v-icon :color="item.color">{{ item.icon }}</v-icon>
       </v-btn>
     </template>
   </v-bottom-navigation>

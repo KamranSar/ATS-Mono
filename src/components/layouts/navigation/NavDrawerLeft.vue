@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-navigation-drawer v-model="leftDrawOpen" z clipped hide-overlay app>
     <v-banner v-if="deferredPrompt" color="info" dark class="text-left">
       Get our free app. It won't take up space on your phone and also works
       offline!
@@ -25,56 +25,48 @@
       </span>
     </v-toolbar>
 
-    <v-list v-if="isAzureLoggedIn">
-      <template v-for="(item, i) in userItems">
-        <NavListGroup
-          v-if="item.children"
-          :key="i"
-          :group="item"
-        ></NavListGroup>
-        <NavListItem v-else :key="i" :item="item"></NavListItem>
-      </template>
-    </v-list>
-
-    <v-list v-else>
-      <template v-for="(item, i) in anonymousItems">
-        <NavListGroup
-          v-if="item.children"
-          :key="i"
-          :group="item"
-        ></NavListGroup>
-        <NavListItem v-else :key="i" :item="item"></NavListItem>
-      </template>
-    </v-list>
-
-    <span v-if="isOrgAdmin">
-      <v-list>
-        <template v-for="(item, i) in adminItems">
-          <NavListGroup
-            v-if="item.children"
-            :key="i"
-            :group="item"
-          ></NavListGroup>
-          <NavListItem v-else :key="i" :item="item"></NavListItem>
-        </template>
-      </v-list>
-    </span>
-
     <v-list>
-      <template v-for="(item, i) in fixedNavItems">
+      <template v-if="isAzureLoggedIn" v-for="item in userItems">
         <NavListGroup
           v-if="item.children"
-          :key="i"
+          :key="item.name"
           :group="item"
         ></NavListGroup>
-        <NavListItem v-else :key="i" :item="item"></NavListItem>
+        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
+      </template>
+
+      <template v-else v-for="(item, j) in anonymousItems">
+        <NavListGroup
+          v-if="item.children"
+          :key="item.name"
+          :group="item"
+        ></NavListGroup>
+        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
+      </template>
+
+      <template v-if="isOrgAdmin" v-for="item in adminItems">
+        <NavListGroup
+          v-if="item.children"
+          :key="item.name"
+          :group="item"
+        ></NavListGroup>
+        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
+      </template>
+
+      <template v-for="item in fixedNavItems">
+        <NavListGroup
+          v-if="item.children"
+          :key="item.name"
+          :group="item"
+        ></NavListGroup>
+        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
       </template>
     </v-list>
-  </div>
+  </v-navigation-drawer>
 </template>
 
 <script>
-  import { get } from 'vuex-pathify';
+  import { get, sync } from 'vuex-pathify';
   import {
     getRoutesByName,
     anonymousItems,
@@ -90,6 +82,7 @@
       NavListGroup,
     },
     computed: {
+      ...sync('userprefs', ['leftDrawOpen']),
       ...get('azureAuthentication', {
         myPhoto: 'myPhoto',
         displayName: 'displayName',

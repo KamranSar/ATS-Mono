@@ -11,10 +11,11 @@
     name: 'Home',
 
     components: {
-      Footer: import(
-        /* webpackChunkName: "footer" */
-        '@/components/layouts/Footer'
-      ),
+      Footer: () =>
+        import(
+          /* webpackChunkName: "footer" */
+          '@/components/layouts/Footer'
+        ),
     },
 
     mounted() {

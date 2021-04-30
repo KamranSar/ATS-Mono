@@ -2,38 +2,23 @@
   <v-app>
     <AppBar></AppBar>
 
-    <v-navigation-drawer
-      v-if="leftDrawEnabled"
-      v-model="leftDrawOpen"
-      clipped
-      hide-overlay
-      app
-    >
-      <!-- Items are passed from here since we may want to reuse these at 
-          toolbar level at some point in time -->
-      <NavDrawerLeft></NavDrawerLeft>
-    </v-navigation-drawer>
+    <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
 
-    <v-navigation-drawer
+    <NavDrawerRight
       v-if="rightDrawEnabled"
-      v-model="rightDrawOpen"
-      clipped
-      hide-overlay
-      app
-      right
+      title="Right side Drawer"
+      icon="fa-bar"
     >
-      <NavDrawerRight title="Right side Drawer" icon="fa-bar">
-        <template v-slot:content>
-          <v-list>
-            <v-list-item v-for="n in 5" :key="n" link>
-              <v-list-item-content>
-                <v-list-item-title>Item {{ n }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </template>
-      </NavDrawerRight>
-    </v-navigation-drawer>
+      <template v-slot:content>
+        <v-list>
+          <v-list-item v-for="n in 5" :key="n" link>
+            <v-list-item-content>
+              <v-list-item-title>Item {{ n }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+    </NavDrawerRight>
 
     <Snackbar />
 

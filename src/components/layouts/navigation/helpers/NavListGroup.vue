@@ -1,10 +1,9 @@
 <template>
   <v-list-group
     v-bind="$attrs"
-    :value="true"
+    v-model="value"
     :key="group.name"
     :prepend-icon="child ? null : group.icon"
-    :color="group.color"
     :no-action="child"
     :sub-group="child"
   >
@@ -40,6 +39,11 @@
         type: Boolean,
         default: false,
       },
+    },
+    data: () => {
+      return {
+        value: null,
+      };
     },
   };
 </script>

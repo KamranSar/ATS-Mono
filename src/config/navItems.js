@@ -34,7 +34,7 @@ const routes = [
   {
     /** custom properties */
     icon: 'fa-home',
-    color: 'primary', // optional
+    color: 'primary', // Optional - Default: primary
     // onClick: () => {}, // Set path to '' for onClick to fire.
     /** vue-router properties */
     path: '/',
@@ -45,6 +45,7 @@ const routes = [
   },
   {
     icon: 'fa-sign-in-alt',
+    color: 'primary',
     path: '/login',
     name: 'Login',
     component: () =>
@@ -118,7 +119,7 @@ const routes = [
 // Public Routes
 const anonymousItems = getRoutesByName(['Login']);
 // Routes for Anyone Logged In
-const userItems = getRoutesByName(['Home', 'search']);
+const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
