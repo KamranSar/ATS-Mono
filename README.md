@@ -1,4 +1,4 @@
-# vue-vuetify-api-boost
+# cdcr-client-template
 
 ## What is this?
 

@@ -3,7 +3,7 @@
 
 import { makeAuthPlugin } from '@/config/feathers';
 import { make } from 'vuex-pathify';
-import { servicePath as usersServicePath } from '@/store/services/users';
+import store from '@/store/index.js';
 
 const getDefaultState = () => {
   return {};
@@ -72,8 +72,11 @@ const mutations = {
 };
 
 const getters = {
-  isOrgAdmin: (state) => {
-    return state.user && state.user.role === 'admin';
+  isOrgAdmin: () => {
+    const payload = store.get('feathersAuthentication/payload');
+    const user = payload && payload.user ? payload.user : null;
+    console.log('user: ', user);
+    return user && user.role && String(user.role).toLowerCase() === 'admin';
   },
   // tokenExpiration: () => {
   //   const payload = store.get('feathersAuthentication/payload');
@@ -93,7 +96,7 @@ const getters = {
 };
 
 export default makeAuthPlugin({
-  userService: usersServicePath, // name of user service to call if no user is passed back in the JWT payload
+  userService: 'Users', // name of user service to call if no user is passed back in the JWT payload
   namespace: 'feathersAuthentication',
   entityIdField: '_id', // ID field in the object returned from authenticating.  Server needs to return _id as well as user.
   responseEntityField: 'user', // Name of user object returned from authenticating.  Usually "user"

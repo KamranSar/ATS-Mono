@@ -1,12 +1,7 @@
 <template>
   <v-bottom-navigation app :value="value" color="blue" grow>
     <template v-if="isAzureLoggedIn">
-      <v-btn
-        v-for="(item, i) in userItems"
-        :key="i"
-        :to="item.path"
-        @click="onClick(item)"
-      >
+      <v-btn v-for="(item, i) in userItems" :key="i" @click="onClick(item)">
         <span>{{ item.name }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
@@ -16,24 +11,19 @@
       <v-btn
         v-for="(item, i) in anonymousItems"
         :key="i"
-        :to="item.path"
         @click="onClick(item)"
       >
         <span>{{ item.name }}</span>
         <v-icon>{{ item.icon }}</v-icon>
       </v-btn>
     </template>
-
-    <!-- <v-btn>
-      <span>Nearby</span>
-      <v-icon>mdi-map-marker</v-icon>
-    </v-btn> -->
   </v-bottom-navigation>
 </template>
 
 <script>
   import { get } from 'vuex-pathify';
   import { anonymousItems, userItems } from '@/config/navItems';
+  import { onClick } from '@/router/helpers/index.js';
   export default {
     name: 'BottomNavBar',
     computed: {
@@ -41,13 +31,6 @@
         isAzureLoggedIn: 'isAzureLoggedIn',
       }),
       ...get('app', ['loading']),
-      formattedUserId() {
-        let userId = this.user && this.user.userid;
-        if (userId && userId.length > 12)
-          userId = `${this.user.userid.substr(0, 10)}..`;
-
-        return userId;
-      },
     },
     data: () => ({
       anonymousItems,
@@ -55,11 +38,7 @@
       value: 1,
     }),
     methods: {
-      onClick(item) {
-        if (item && item.onClick) {
-          item.onClick();
-        }
-      },
+      onClick,
     },
   };
 </script>

@@ -162,11 +162,12 @@
     },
     methods: {
       onError({ vueErr, unhandled, generic }) {
-        let id = getNowAsTS();
+        let id = Date.now();
         let err = vueErr ? vueErr.err : unhandled ? unhandled.reason : generic;
         let code = err ? err.code : null;
         let message = err ? err.message : 'unknown error';
         let stack = err ? err.stack : null;
+        let timestamp = `${new Date().toDateString()} ${new Date().toTimeString()}`;
 
         let error = {
           id,
@@ -177,7 +178,7 @@
           vueErr,
           unhandled,
           generic,
-          timestamp: formatDateTime(),
+          timestamp,
         };
         if (!this.myApp.hooks.onError({ error })) {
           // if app doesn't handle the error, do it here...

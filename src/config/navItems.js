@@ -4,21 +4,18 @@
  * import routes from "@/config/routeItems.js";
  *
  * Nav Components import by choice.
- * import { anonymousItems, adminItems, userItems, userToolbarItems } from "@/config/routeItems.js";
+ * import { anonymousItems, adminItems, userItems } from "@/config/routeItems.js";
  */
-import {
-  requireToken,
-  requireAuth,
-  requireRoleAdmin,
-  logout,
-} from '@/router/helpers/guards.js';
+
+import { requireToken, requireRoleAdmin } from '@/router/helpers/guards.js';
 import { checkForChildren } from '@/router/helpers/index.js';
+import { logout } from '../router/helpers';
 
 /** Filter for routes only in the list
  * @param {Array[String]} listOfRouteNames - Array of route names.
  * @returns {Array[VueRouter]} An Array of Type Vue Router
  */
-function _getRoutesByName(listOfRouteNames) {
+function getRoutesByName(listOfRouteNames) {
   const routeItems = [];
   if (listOfRouteNames && listOfRouteNames.length && routes && routes.length) {
     const reducer = (currentValue) => String(currentValue).toLowerCase();
@@ -36,11 +33,10 @@ function _getRoutesByName(listOfRouteNames) {
 const routes = [
   {
     /** custom properties */
-    icon: 'mdi-home',
+    icon: 'fa-home',
     color: 'primary', // optional
-    /** vue-router properties
-     * https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
-     */
+    // onClick: () => {}, // Set path to '' for onClick to fire.
+    /** vue-router properties */
     path: '/',
     name: 'Home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
@@ -48,29 +44,20 @@ const routes = [
     // redirect: // Optional
   },
   {
-    icon: 'mdi-login',
+    icon: 'fa-sign-in-alt',
     path: '/login',
     name: 'Login',
     component: () =>
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
-    icon: 'mdi-logout',
-    path: '/logout',
+    icon: 'fa-sign-out-alt',
+    path: '',
     name: 'Logout',
-    beforeEnter: logout,
+    onClick: logout,
   },
   {
-    icon: 'mdi-folder-account',
-    path: '/my-account',
-    name: 'Account',
-    // TODO: Create a component for my-account
-    // component: () => import(/* webpackChunkName: "account" */ '@/views/Accountvue'),
-    beforeEnter: requireAuth,
-    redirect: { name: '4oh4' },
-  },
-  {
-    icon: 'mdi-account-key',
+    icon: 'fa-key',
     path: '/admin',
     name: 'Admin',
     beforeEnter: requireRoleAdmin,
@@ -78,27 +65,48 @@ const routes = [
       import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
     children: [
       {
-        icon: 'mdi-account-multiple',
-        path: 'users',
+        icon: 'fa-users',
+        path: '/users',
         name: 'Users',
-        beforeEnter: requireAuth,
-        redirect: { name: '4oh4' },
         children: [
           {
-            icon: 'mdi-printer',
-            path: 'templates',
+            icon: 'fa-print',
+            path: '/templates',
             name: 'Export Templates',
-            redirect: { name: '4oh4' },
+            component: () =>
+              import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
           },
         ],
       },
     ],
   },
   {
-    // catch all 404
-    path: '/404',
-    name: '4oh4',
-    component: () => import('@/views/NotFound.vue'),
+    icon: 'fa-sitemap',
+    path: '/cdcr-dashboard',
+    name: 'CDCR Dashboard',
+    beforeEnter() {
+      location.href = 'https://apps.cdcr.ca.gov';
+    },
+  },
+  {
+    icon: 'fa-th',
+    name: `Install App`,
+    path: '',
+    redirect: { name: 'Home' },
+    onClick: () => {
+      // Initialize deferredPrompt for use later to show browser install prompt.
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI notify the user they can install the PWA
+        showInstallPromotion();
+        // Optionally, send analytics event that PWA install promo was shown.
+        console.log(`'beforeinstallprompt' event was fired.`);
+      });
+    },
   },
   {
     // catch all 404
@@ -108,13 +116,19 @@ const routes = [
 ];
 
 // Public Routes
-const anonymousItems = _getRoutesByName(['Login']);
+const anonymousItems = getRoutesByName(['Login']);
 // Routes for Anyone Logged In
-const userItems = _getRoutesByName(['Home']);
+const userItems = getRoutesByName(['Home', 'search']);
 // Routes for Users with Role Admin
-const adminItems = _getRoutesByName(['Admin', 'export templates']);
+const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = _getRoutesByName(['Home', 'Logout']);
+const userToolbarItems = getRoutesByName(['Home', 'Logout']);
 
-export { anonymousItems, userItems, adminItems, userToolbarItems };
+export {
+  getRoutesByName,
+  anonymousItems,
+  userItems,
+  adminItems,
+  userToolbarItems,
+};
 export default routes;

@@ -19,7 +19,7 @@
             max-width="46"
             :src="myPhoto"
           ></v-img>
-          <v-icon v-else>mdi-account-circle</v-icon>
+          <v-icon v-else>fa-user-circle</v-icon>
         </v-avatar>
         <span>{{ displayName ? displayName : 'Currently Logged Out' }}</span>
       </span>
@@ -61,14 +61,26 @@
     </span>
 
     <v-list>
-      <NavListItem :item="installItem()"></NavListItem>
+      <template v-for="(item, i) in fixedNavItems">
+        <NavListGroup
+          v-if="item.children"
+          :key="i"
+          :group="item"
+        ></NavListGroup>
+        <NavListItem v-else :key="i" :item="item"></NavListItem>
+      </template>
     </v-list>
   </div>
 </template>
 
 <script>
   import { get } from 'vuex-pathify';
-  import { anonymousItems, userItems, adminItems } from '@/config/navItems';
+  import {
+    getRoutesByName,
+    anonymousItems,
+    userItems,
+    adminItems,
+  } from '@/config/navItems';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   export default {
@@ -86,6 +98,9 @@
       ...get('feathersAuthentication', {
         isOrgAdmin: 'isOrgAdmin',
       }),
+      fixedNavItems() {
+        return getRoutesByName(['CDCR Dashboard', 'Install App']);
+      },
     },
     data() {
       return {
@@ -111,20 +126,6 @@
       },
       async install() {
         this.deferredPrompt.prompt();
-      },
-      goGo(to) {
-        this.$router.push(to);
-      },
-      installItem() {
-        const item = {
-          icon: 'mdi-apps',
-          name: `Install App`,
-          redirect: { name: '4oh4' },
-          onclick: () => {
-            this.install();
-          },
-        };
-        return item;
       },
     },
   };

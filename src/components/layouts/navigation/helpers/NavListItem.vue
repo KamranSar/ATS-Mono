@@ -1,5 +1,5 @@
 <template>
-  <v-list-item v-bind="$attrs" @click="onClick" link>
+  <v-list-item v-bind="$attrs" @click="onClick(item)">
     <v-list-item-title v-text="item.name"></v-list-item-title>
     <v-list-item-avatar>
       <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
@@ -8,6 +8,7 @@
 </template>
 
 <script>
+  import { onClick } from '@/router/helpers/index.js';
   export default {
     props: {
       item: {
@@ -16,13 +17,7 @@
       },
     },
     methods: {
-      onClick() {
-        if (this.item.path) {
-          this.$router.push(this.item.path);
-        } else if (this.item.onclick) {
-          this.item.onclick();
-        }
-      },
+      onClick,
     },
   };
 </script>

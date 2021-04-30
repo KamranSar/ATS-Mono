@@ -10,13 +10,9 @@
 </template>
 
 <script>
-  import { get } from 'vuex-pathify';
   import Panel from '@/components/layouts/Panel';
 
   export default {
     components: { Panel },
-    computed: {
-      ...get('feathersAuthentication', ['user']),
-    },
   };
 </script>

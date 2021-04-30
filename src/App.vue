@@ -22,7 +22,7 @@
       app
       right
     >
-      <NavDrawerRight title="Right side Drawer" icon="mdi-view-dashboard">
+      <NavDrawerRight title="Right side Drawer" icon="fa-bar">
         <template v-slot:content>
           <v-list>
             <v-list-item v-for="n in 5" :key="n" link>
@@ -96,7 +96,3 @@
     },
   };
 </script>
-
-<style>
-  @import './assets/css/main.css';
-</style>

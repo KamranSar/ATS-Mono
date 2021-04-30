@@ -45,7 +45,7 @@ const getters = {
 // https://vuex.feathersjs.com/service-plugin.html#configuration
 const servicePath = 'api/auth/v1.0/users'; // The Vuex namespace
 const servicePlugin = makeServicePlugin({
-  namespace: 'users',
+  namespace: 'Users',
   Model: User,
   idField: '_id',
   service: feathersClient.service(servicePath),

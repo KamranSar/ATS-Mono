@@ -1,7 +1,8 @@
 <template>
   <v-container grid-list-md fluid>
     Welcome Home
-    <Footer id="footer" absolute></Footer>
+
+    <Footer absolute></Footer>
   </v-container>
 </template>
 
@@ -10,7 +11,10 @@
     name: 'Home',
 
     components: {
-      Footer: () => import('@/components/layouts/Footer'),
+      Footer: import(
+        /* webpackChunkName: "footer" */
+        '@/components/layouts/Footer'
+      ),
     },
 
     mounted() {

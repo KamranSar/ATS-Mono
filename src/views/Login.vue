@@ -64,10 +64,6 @@
       }),
       ...call('snackbar', ['setSnack']),
 
-      async delay(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-      },
-
       async signinButtonClicked() {
         this.setAlertMsg('');
         try {
@@ -87,7 +83,7 @@
             // console.log(auth._id);
             // const user = await this.getUserRecord(auth._id);
             // console.log(user);
-            await this.delay(500); // Wait for the authentication to finish or we get router errors
+            await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for the authentication to finish or we get router errors
             this.$router.push({ name: 'Home' });
 
             this.setSnack({

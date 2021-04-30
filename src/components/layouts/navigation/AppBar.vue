@@ -21,8 +21,6 @@
       </v-avatar>
     </v-app-bar-nav-icon>
 
-    <router-link :to="{ name: 'Home' }"> </router-link>
-
     <span class="title ml-1">{{ $myApp.name }}</span>
 
     <v-spacer></v-spacer>
@@ -30,7 +28,7 @@
     <v-card color="transparent" class="hidden-md-and-down" flat>
       <v-btn-toggle group v-if="!isAzureLoggedIn">
         <span v-for="(item, index) in anonymousItems" :key="index">
-          <v-btn :to="item.path" text :key="index">
+          <v-btn @click="onClick(item)" text :key="index">
             <v-icon color="item.iconColor">{{ item.icon }}</v-icon>
             {{ item.name }}
           </v-btn>
@@ -45,22 +43,19 @@
             <v-avatar v-if="myPhoto">
               <v-img max-height="32" max-width="32" :src="myPhoto"></v-img>
             </v-avatar>
-            <v-icon v-else color="darker">mdi-account-circle</v-icon>
+            <v-icon v-else color="darker">fa-user-circle</v-icon>
           </v-btn>
         </template>
 
         <v-list>
-          <v-list-item
-            v-for="(item, index) in userToolbarItems"
-            dense
-            :key="'u' + index"
-            :to="item.path"
-          >
-            <v-list-item-avatar>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-title>{{ item.name }}</v-list-item-title>
-          </v-list-item>
+          <template v-for="(item, i) in userToolbarItems">
+            <NavListGroup
+              v-if="item.children"
+              :key="i"
+              :group="item"
+            ></NavListGroup>
+            <NavListItem v-else :key="i" :item="item"></NavListItem>
+          </template>
         </v-list>
       </v-menu>
     </v-card>
@@ -70,25 +65,25 @@
       v-if="rightDrawEnabled && isAzureLoggedIn"
       @click="rightDrawOpen = !rightDrawOpen"
     >
-      <v-icon>mdi-menu</v-icon>
+      <v-icon>fa-bars</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
 
 <script>
+  import { onClick } from '@/router/helpers/index.js';
   import { sync, get } from 'vuex-pathify';
-  import {
-    anonymousItems,
-    userItems,
-    adminItems,
-    userToolbarItems,
-  } from '@/config/navItems';
+  import { anonymousItems, userToolbarItems } from '@/config/navItems';
+  import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
+  import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   export default {
+    components: {
+      NavListItem,
+      NavListGroup,
+    },
     data() {
       return {
         anonymousItems,
-        userItems,
-        adminItems,
         userToolbarItems,
         clippedLeft: true,
         clippedRight: true,
@@ -101,6 +96,9 @@
         myPhoto: 'myPhoto',
         isAzureLoggedIn: 'isAzureLoggedIn',
       }),
+    },
+    methods: {
+      onClick,
     },
   };
 </script>

@@ -1,6 +1,6 @@
 import VuexPersistence from '@/../local_modules/vuex-persist';
 import localForage from 'localforage';
-import { servicePath as usersServicePath } from '@/store/services/users';
+import { servicePath as usersServicePath } from '@/store/services/Users';
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
