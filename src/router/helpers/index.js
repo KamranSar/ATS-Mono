@@ -22,7 +22,7 @@ async function logout() {
       // If the JWT has already expired, we will get a 401 or 403 error back from the server which is OK.
       // We disable the ability to renew (or delete) JWT's this way.  We can only call the POST (authenticate)
       // method now for security reasons.
-      console.log('successfully logged out of api server');
+      // console.log('successfully logged out of api server');
       // }
 
       await store.dispatch('azureAuthentication/logout'); // And always remove the Azure login token.
@@ -34,7 +34,7 @@ async function logout() {
       });
     }
   } catch (e) {
-    console.error(e);
+    // console.error(e);
   } finally {
     router.push({ name: 'Login' });
   }
@@ -67,8 +67,6 @@ function checkForChildren(route, listOfRouteNames, matchedRoutes) {
  */
 const onClick = (item) => {
   if (item) {
-    console.log('router: ', router);
-    console.log('item: ', item);
     if (item.path && router.currentRoute.path !== item.path) {
       router.push(item.path).catch(() => {});
     } else if (item.onClick) {

@@ -52,6 +52,14 @@ const routes = [
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
+    icon: 'fa-phone',
+    color: 'primary',
+    path: '/install',
+    name: 'Install',
+    component: () =>
+      import(/* webpackChunkName: "install" */ '@/views/Install.vue'),
+  },
+  {
     icon: 'fa-sign-out-alt',
     path: '',
     name: 'Logout',
@@ -90,26 +98,6 @@ const routes = [
     },
   },
   {
-    icon: 'fa-th',
-    name: `Install App`,
-    path: '',
-    redirect: { name: 'Home' },
-    onClick: () => {
-      // Initialize deferredPrompt for use later to show browser install prompt.
-      let deferredPrompt;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent the mini-infobar from appearing on mobile
-        e.preventDefault();
-        // Stash the event so it can be triggered later.
-        deferredPrompt = e;
-        // Update UI notify the user they can install the PWA
-        showInstallPromotion();
-        // Optionally, send analytics event that PWA install promo was shown.
-        console.log(`'beforeinstallprompt' event was fired.`);
-      });
-    },
-  },
-  {
     // catch all 404
     path: '*',
     component: () => import('@/views/NotFound.vue'),
@@ -123,7 +111,7 @@ const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName(['Home', 'Logout']);
+const userToolbarItems = getRoutesByName(['Home', 'Logout', 'Install']);
 
 export {
   getRoutesByName,

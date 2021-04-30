@@ -25,8 +25,8 @@
       </span>
     </v-toolbar>
 
-    <v-list>
-      <template v-if="isAzureLoggedIn" v-for="item in userItems">
+    <v-list v-if="isAzureLoggedIn">
+      <template v-for="item in userItems">
         <NavListGroup
           v-if="item.children"
           :key="item.name"
@@ -34,8 +34,9 @@
         ></NavListGroup>
         <NavListItem v-else :key="item.name" :item="item"></NavListItem>
       </template>
-
-      <template v-else v-for="(item, j) in anonymousItems">
+    </v-list>
+    <v-list v-else>
+      <template v-for="item in anonymousItems">
         <NavListGroup
           v-if="item.children"
           :key="item.name"
@@ -43,8 +44,10 @@
         ></NavListGroup>
         <NavListItem v-else :key="item.name" :item="item"></NavListItem>
       </template>
+    </v-list>
 
-      <template v-if="isOrgAdmin" v-for="item in adminItems">
+    <v-list v-if="isOrgAdmin">
+      <template v-for="item in adminItems">
         <NavListGroup
           v-if="item.children"
           :key="item.name"
