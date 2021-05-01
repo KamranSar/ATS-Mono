@@ -37,7 +37,7 @@
     </v-card>
 
     <v-card color="transparent" flat v-if="isAzureLoggedIn">
-      <v-menu offset-y>
+      <v-menu offset-y persistent :close-on-content-click="false">
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">
             <v-avatar v-if="myPhoto">
@@ -73,7 +73,11 @@
 <script>
   import { onClick, getRouterColor } from '@/router/helpers/index.js';
   import { sync, get } from 'vuex-pathify';
-  import { anonymousItems, userToolbarItems } from '@/config/navItems';
+  import {
+    anonymousItems,
+    adminItems,
+    userToolbarItems,
+  } from '@/config/navItems';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   export default {
@@ -84,6 +88,7 @@
     data() {
       return {
         anonymousItems,
+        adminItems,
         userToolbarItems,
         clippedLeft: true,
         clippedRight: true,

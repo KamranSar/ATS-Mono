@@ -52,10 +52,10 @@ const routes = [
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
-    icon: 'fa-phone',
+    icon: 'mdi-download',
     color: 'primary',
     path: '/install',
-    name: 'Install',
+    name: 'Install App',
     component: () =>
       import(/* webpackChunkName: "install" */ '@/views/Install.vue'),
   },
@@ -111,7 +111,14 @@ const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName(['Home', 'Logout', 'Install']);
+const userToolbarItems = getRoutesByName(['Home', 'Logout']);
+
+// Add Install Routes only if app is not already installed
+if (!window.matchMedia('(display-mode: standalone)').matches) {
+  const installRoute = getRoutesByName(['Install App']);
+  userItems.push(...installRoute);
+  userToolbarItems.push(...installRoute);
+}
 
 export {
   getRoutesByName,

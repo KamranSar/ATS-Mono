@@ -1,39 +1,42 @@
 <template>
-  <div id="app">
-    <v-app>
-      <v-banner v-if="deferredPrompt" color="info" dark class="text-left">
-        Get our free app. It won't take up space on your phone and also works
-        offline!
+  <v-banner
+    v-if="deferredPrompt"
+    single-line
+    color="info"
+    dark
+    class="text-left"
+    ><v-icon slot="icon" color="warning" size="36"> mdi-download </v-icon>
+    Install the App
 
-        <template v-slot:actions>
-          <v-btn text @click="dismiss">Dismiss</v-btn>
-          <v-btn text @click="install">Install</v-btn>
-        </template>
-      </v-banner>
-      <div class="pa-4 text-center">
-        <img alt="Vue logo" src="@/assets/logo.svg" />
-        <h1>Customize Your Vue.js PWA Installation</h1>
-      </div>
-    </v-app>
-  </div>
+    <template v-slot:actions>
+      <v-btn text @click="dismiss">Dismiss</v-btn>
+      <v-btn text @click="install">Install</v-btn>
+    </template>
+  </v-banner>
 </template>
 <script>
   export default {
-    name: 'App',
+    name: 'Install',
     data() {
       return {
         deferredPrompt: null,
       };
     },
     created() {
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        // Stash the event so it can be triggered later.
-        this.deferredPrompt = e;
-      });
-      window.addEventListener('appinstalled', () => {
-        this.deferredPrompt = null;
-      });
+      // Don't do anything if you're already installed (PWA)
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          // Stash the event so it can be triggered later.
+          this.deferredPrompt = e;
+        });
+        window.addEventListener('appinstalled', () => {
+          this.deferredPrompt = null;
+        });
+      } else {
+        // Else go back to where you came from
+        this.$router.push({ name: 'Home' });
+      }
     },
     methods: {
       async dismiss() {

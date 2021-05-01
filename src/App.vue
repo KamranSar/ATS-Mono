@@ -34,36 +34,19 @@
 
 <script>
   import { sync, get } from 'vuex-pathify';
-
+  import AppBar from '@/components/layouts/navigation/AppBar.vue';
+  import NavDrawerLeft from '@/components/layouts/navigation/NavDrawerLeft.vue';
+  import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
+  import Snackbar from '@/components/util/Snackbar.vue';
+  import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
   export default {
     name: 'App',
-
     components: {
-      AppBar: () =>
-        import(
-          /* webpackChunkName: "app-bar" */
-          '@/components/layouts/navigation/AppBar'
-        ),
-      NavDrawerLeft: () =>
-        import(
-          /* webpackChunkName: "nav-drawer-left" */
-          '@/components/layouts/navigation/NavDrawerLeft'
-        ),
-      NavDrawerRight: () =>
-        import(
-          /* webpackChunkName: "nav-drawer-right" */
-          '@/components/layouts/navigation/NavDrawerRight'
-        ),
-      Snackbar: () =>
-        import(
-          /* webpackChunkName: "snackbar" */
-          '@/components/util/Snackbar'
-        ),
-      BottomNavBar: () =>
-        import(
-          /* webpackChunkName: "bottom-nav-bar" */
-          '@/components/layouts/navigation/BottomNavBar'
-        ),
+      AppBar,
+      NavDrawerLeft,
+      NavDrawerRight,
+      Snackbar,
+      BottomNavBar,
     },
     data() {
       return {

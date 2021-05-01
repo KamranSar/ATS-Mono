@@ -1,23 +1,23 @@
 // https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
 import store from '@/store/index';
 
-function requireToken(to, from, next) {
+const requireToken = (to, from, next) => {
   const token = store.get('azureAuthentication/azuretokenresponse');
   if (token) next();
   else next({ name: 'Login' });
-}
+};
 
-function requireAuth(to, from, next) {
+const requireAuth = (to, from, next) => {
   const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
   if (loggedIn) next();
   else next({ name: 'Login' });
-}
+};
 
-function requireRoleAdmin(to, from, next) {
+const requireRoleAdmin = (to, from, next) => {
   const user = store.get('feathersAuthentication/user');
   if (user && String(user.role).toLowerCase() === 'admin') next();
   else next({ path: '/404' });
-}
+};
 
 let previouslyRestored = false;
 const waitForStorageToBeReady = async (to, from, next) => {
