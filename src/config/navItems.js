@@ -17,7 +17,13 @@ import { logout } from '../router/helpers';
  */
 function getRoutesByName(listOfRouteNames) {
   const routeItems = [];
-  if (listOfRouteNames && listOfRouteNames.length && routes && routes.length) {
+  if (
+    listOfRouteNames &&
+    Array.isArray(listOfRouteNames) &&
+    listOfRouteNames.length &&
+    routes &&
+    routes.length
+  ) {
     const reducer = (currentValue) => String(currentValue).toLowerCase();
     listOfRouteNames = listOfRouteNames.map(reducer);
     routes.forEach((route) => {
@@ -50,14 +56,6 @@ const routes = [
     name: 'Login',
     component: () =>
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
-  },
-  {
-    icon: 'mdi-download',
-    color: 'primary',
-    path: '/install',
-    name: 'Install App',
-    component: () =>
-      import(/* webpackChunkName: "install" */ '@/views/Install.vue'),
   },
   {
     icon: 'fa-sign-out-alt',
@@ -112,13 +110,6 @@ const userItems = getRoutesByName(['Home']);
 const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
 const userToolbarItems = getRoutesByName(['Home', 'Logout']);
-
-// Add Install Routes only if app is not already installed
-if (!window.matchMedia('(display-mode: standalone)').matches) {
-  const installRoute = getRoutesByName(['Install App']);
-  userItems.push(...installRoute);
-  userToolbarItems.push(...installRoute);
-}
 
 export {
   getRoutesByName,

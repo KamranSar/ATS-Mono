@@ -46,12 +46,17 @@
         <NavListItem v-else :key="item.name" :item="item"></NavListItem>
       </template>
     </v-list>
+
+    <v-list v-if="!isRunningPWA()">
+      <NavListItem :key="installItem.name" :item="installItem"></NavListItem>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
   import { get, sync } from 'vuex-pathify';
   import { anonymousItems, userItems, adminItems } from '@/config/navItems';
+  import Install from '@/components/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   export default {
@@ -60,6 +65,7 @@
       NavListItem,
       NavListGroup,
     },
+    mixins: [Install],
     computed: {
       ...sync('userprefs', ['leftDrawOpen']),
       ...get('azureAuthentication', {
