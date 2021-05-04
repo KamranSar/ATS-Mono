@@ -12,7 +12,7 @@
       </v-col>
       <v-col cols="auto">
         <v-btn icon @click="showError = false">
-          <v-icon v-text="'mdi close-circle-outline'" />
+          <v-icon v-text="'mdi-close'" />
         </v-btn>
       </v-col>
     </v-row>
@@ -54,7 +54,6 @@
         </span>
       </p>
       <p v-if="oldestError.stack">
-        <DataStores ref="datastores" inCatch />
         <v-btn text @click="stack = !stack">
           {{ stack ? 'Hide Stack' : 'Show Stack' }}
         </v-btn>
@@ -85,8 +84,41 @@
    * 4) always catch a recoverable error in the business layer to avoid this Catch
    *    component from being triggered. This component is really meant for fatal errors.
    */
-  import { addListener, removeListeners } from '@cdcr/helpers';
-  import { getNowAsTS, formatDateTime } from '@cdcr/helpers/dateTime.js';
+
+  /*
+   * Adds event listener to global collection associated with the component
+   */
+  const _listeners = {};
+  function addListener(component, { name, callback, options }) {
+    if (window && component && name && callback) {
+      window.addEventListener(name, callback, options);
+      if (!_listeners[component._uid]) _listeners[component._uid] = [];
+      _listeners[component._uid].push(arguments[1]);
+      //console.log(`addListener: ${component._uid}-${name}`, _listeners);
+    }
+  }
+
+  /*
+   * Removes all listeners added for the given component. If component is null,
+   * then all listeners for the app are removed.
+   */
+  function removeListeners(component) {
+    let keys = component ? [component._uid] : Object.keys(_listeners);
+    for (let key of keys) {
+      let listeners = _listeners[key];
+      if (listeners) {
+        for (let listener of listeners) {
+          window.removeEventListener(
+            listener.name,
+            listener.callback,
+            listener.options
+          );
+        }
+        delete _listeners[key];
+      }
+    }
+    //console.log(`removeListeners: ${component ? component._uid : "All"}`,_listeners);
+  }
 
   export default {
     name: 'Catch',
@@ -100,9 +132,6 @@
     }),
     created() {
       if (window) {
-        console.groupCollapsed('Registering onerror and unhandledrejection');
-        console.log('Intentionally left empty');
-        console.groupEnd();
         let self = this;
         addListener(this, {
           name: 'unhandledrejection',
@@ -180,29 +209,20 @@
           generic,
           timestamp,
         };
-        if (!this.myApp.hooks.onError({ error })) {
-          // if app doesn't handle the error, do it here...
-          // first, check for off-line
-          if (error.code === 'off-line') {
-            this.$store.dispatch('setSnackbar', {
-              text: 'Please try again when device is on-line',
-            });
-          } else {
-            // last, handle all other errors by logging and displaying
-            console.error(`Error Caught: ${message}`, error);
 
-            // see if we should ignore the error
-            if (
-              message &&
-              message.toLowerCase().includes('failed to update a serviceworker')
-            ) {
-              error = null;
-            }
+        // handle all errors by logging and displaying
+        console.error(`Error Caught: ${message}`, error);
 
-            // add to collection for display to user
-            if (error) this.$set(this.errors, id, error);
-          }
+        // see if we should ignore the error
+        if (
+          message &&
+          message.toLowerCase().includes('failed to update a serviceworker')
+        ) {
+          error = null;
         }
+
+        // add to collection for display to user
+        if (error) this.$set(this.errors, id, error);
         return false; // don't propagate
       },
       deleteOldest() {

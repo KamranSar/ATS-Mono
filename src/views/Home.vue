@@ -1,8 +1,7 @@
 <template>
   <v-container grid-list-md fluid>
     Welcome Home
-
-    <Footer absolute></Footer>
+    <Footer app></Footer>
   </v-container>
 </template>
 

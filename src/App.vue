@@ -1,30 +1,42 @@
 <template>
   <v-app>
-    <AppBar></AppBar>
+    <Catch label="AppBar">
+      <AppBar></AppBar>
+    </Catch>
 
-    <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
+    <Catch label="LeftNav">
+      <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
+    </Catch>
 
-    <NavDrawerRight v-if="rightDrawEnabled" title="Right side Drawer">
-      <template v-slot:content>
-        <v-list>
-          <v-list-item v-for="n in 5" :key="n" link>
-            <v-list-item-content>
-              <v-list-item-title>Item {{ n }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </template>
-    </NavDrawerRight>
+    <Catch label="RightNav">
+      <NavDrawerRight v-if="rightDrawEnabled" title="Right side Drawer">
+        <template v-slot:content>
+          <v-list>
+            <v-list-item v-for="n in 5" :key="n" link>
+              <v-list-item-content>
+                <v-list-item-title>Item {{ n }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </template>
+      </NavDrawerRight>
+    </Catch>
 
-    <Snackbar />
+    <Catch label="Snackbar">
+      <Snackbar />
+    </Catch>
 
-    <v-main>
-      <router-view :key="$route.fullPath" />
-    </v-main>
+    <Catch label="Main">
+      <v-main>
+        <router-view :key="$route.fullPath" />
+      </v-main>
+    </Catch>
 
-    <BottomNavBar
-      v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
-    ></BottomNavBar>
+    <Catch label="BottomNav">
+      <BottomNavBar
+        v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
+      ></BottomNavBar>
+    </Catch>
   </v-app>
 </template>
 
@@ -35,6 +47,7 @@
   import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
   import Snackbar from '@/components/util/Snackbar.vue';
   import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
+  import Catch from '@/components/util/Catch.vue';
   export default {
     name: 'App',
     components: {
@@ -43,6 +56,7 @@
       NavDrawerRight,
       Snackbar,
       BottomNavBar,
+      Catch,
     },
     data() {
       return {
