@@ -12,7 +12,7 @@
       max-height="25px"
       max-width="25px"
       class="ml-n1 mr-3 pa-1"
-      src="@/assets/svg/ms-symbollockup_mssymbol_19.svg"
+      src="/img/ms-symbollockup_mssymbol_19.svg"
     ></v-img>
     <span
       class="buttonText"

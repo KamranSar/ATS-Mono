@@ -12,7 +12,7 @@
     >
       <v-avatar>
         <v-img
-          src="@/assets/logo.svg"
+          src="/img/logo.svg"
           contain
           max-height="36"
           max-width="36"

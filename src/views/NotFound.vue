@@ -9,7 +9,7 @@
                 contain
                 height="200px"
                 width="200px"
-                src="@/assets/logo.png"
+                src="/img/logo.png"
                 justify="end"
               ></v-img>
             </v-col>
