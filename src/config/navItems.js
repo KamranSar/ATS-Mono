@@ -10,6 +10,7 @@
 import { requireToken, requireRoleAdmin } from '@/router/helpers/guards.js';
 import { checkForChildren } from '@/router/helpers/index.js';
 import { logout } from '../router/helpers';
+import Home from '@/views/Home.vue';
 
 /** Filter for routes only in the list
  * @param {Array[String]} listOfRouteNames - Array of route names.
@@ -45,7 +46,7 @@ const routes = [
     /** vue-router properties */
     path: '/',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+    component: Home,
     beforeEnter: requireToken,
     // redirect: // Optional
   },

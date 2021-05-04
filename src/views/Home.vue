@@ -7,15 +7,12 @@
 </template>
 
 <script>
+  import Footer from '@/components/layouts/Footer';
   export default {
     name: 'Home',
 
     components: {
-      Footer: () =>
-        import(
-          /* webpackChunkName: "footer" */
-          '@/components/layouts/Footer'
-        ),
+      Footer,
     },
 
     mounted() {
