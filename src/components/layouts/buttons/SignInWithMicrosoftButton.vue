@@ -1,5 +1,6 @@
 <template>
   <v-btn
+    v-bind="$attrs"
     :loading="authenticating"
     :color="$vuetify.theme.dark ? '#2F2F2F' : '#FFFFFF'"
     ripple

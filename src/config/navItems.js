@@ -8,8 +8,7 @@
  */
 
 import { requireToken, requireRoleAdmin } from '@/router/helpers/guards.js';
-import { checkForChildren } from '@/router/helpers/index.js';
-import { logout } from '../router/helpers';
+import { checkForChildren, logout } from '@/router/helpers/index.js';
 import Home from '@/views/Home.vue';
 
 /** Filter for routes only in the list
@@ -59,7 +58,7 @@ const routes = [
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
-    icon: 'mdi-lougout',
+    icon: 'mdi-logout',
     path: '',
     name: 'Logout',
     onClick: logout,
