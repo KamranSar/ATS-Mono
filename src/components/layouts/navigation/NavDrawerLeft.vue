@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer v-model="leftDrawOpen" z clipped hide-overlay app>
+  <!-- FIX: Add disable-route-watcher to fix router color not opening without having to toggle drawer -->
+  <v-navigation-drawer
+    v-model="leftDrawOpen"
+    clipped
+    hide-overlay
+    app
+    :disable-route-watcher="true"
+  >
     <v-toolbar flat class="subtitle-2 grey--text" color="#ECEFF1">
       <span class="text-truncate">
         <v-avatar class="mr-2" v-if="isAzureLoggedIn">
