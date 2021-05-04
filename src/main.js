@@ -7,7 +7,7 @@ Vue.use(VueCompositionAPI); // Remove when upgrading to Vue 3.0
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
-import vuetify from '@/plugins/vuetify';
+import vuetify from '@/config/vuetify';
 import VTooltip from 'v-tooltip';
 import myApp from '@/config/myApp.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';

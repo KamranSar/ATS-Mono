@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import pathify from '@/plugins/vuex-pathify';
+import pathify from '@/config/vuex-pathify';
 import { FeathersVuex } from '@/config/feathers';
 
 // Modules
 import * as modules from './modules';
 
 // plugins
-import cookiePlugin from './plugins/cookies';
-import localStorage from './plugins/localStorage';
-import indexedDB from './plugins/indexedDB';
-import azureDB from './plugins/azureDB';
+import cookiePlugin from '@/store/plugins/cookies';
+import localStorage from '@/store/plugins/localStorage';
+import indexedDB from '@/store/plugins/indexedDB';
+import azureDB from '@/store/plugins/azureDB';
 
 // Attach vuex to the vue instance
 Vue.use(Vuex);

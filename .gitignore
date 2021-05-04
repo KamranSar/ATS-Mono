@@ -18,6 +18,3 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-src/views/Login copy.vue
-src/plugins/authFunctions.js
-src/store/modules/azureAuthentication copy.js
