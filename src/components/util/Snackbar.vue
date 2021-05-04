@@ -4,7 +4,7 @@
 
     <template v-slot:action="{ attrs }">
       <v-btn color="white" icon small v-bind="attrs" @click="show = false">
-        <v-icon>fa-times</v-icon>
+        <v-icon>mdi-close</v-icon>
       </v-btn>
     </template>
   </v-snackbar>

@@ -16,7 +16,7 @@
             max-width="46"
             :src="myPhoto"
           ></v-img>
-          <v-icon v-else>fa-user-circle</v-icon>
+          <v-icon v-else>mdi-account-circle</v-icon>
         </v-avatar>
         <span>{{ displayName ? displayName : 'Currently Logged Out' }}</span>
       </span>

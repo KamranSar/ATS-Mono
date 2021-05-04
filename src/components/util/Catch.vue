@@ -12,7 +12,7 @@
       </v-col>
       <v-col cols="auto">
         <v-btn icon @click="showError = false">
-          <v-icon v-text="'fas fa-times-circle'" />
+          <v-icon v-text="'mdi close-circle-outline'" />
         </v-btn>
       </v-col>
     </v-row>

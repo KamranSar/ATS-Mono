@@ -43,7 +43,7 @@
             <v-avatar v-if="myPhoto">
               <v-img max-height="32" max-width="32" :src="myPhoto"></v-img>
             </v-avatar>
-            <v-icon v-else color="darker">fa-user-circle</v-icon>
+            <v-icon v-else color="darker">mdi-account-circle</v-icon>
           </v-btn>
         </template>
 
@@ -65,7 +65,7 @@
       v-if="rightDrawEnabled && isAzureLoggedIn"
       @click="rightDrawOpen = !rightDrawOpen"
     >
-      <v-icon>fa-bars</v-icon>
+      <v-icon>mdi-menu</v-icon>
     </v-btn>
   </v-app-bar>
 </template>

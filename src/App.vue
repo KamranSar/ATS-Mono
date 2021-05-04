@@ -4,11 +4,7 @@
 
     <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
 
-    <NavDrawerRight
-      v-if="rightDrawEnabled"
-      title="Right side Drawer"
-      icon="fa-bar"
-    >
+    <NavDrawerRight v-if="rightDrawEnabled" title="Right side Drawer">
       <template v-slot:content>
         <v-list>
           <v-list-item v-for="n in 5" :key="n" link>

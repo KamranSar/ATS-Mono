@@ -39,7 +39,7 @@ function getRoutesByName(listOfRouteNames) {
 const routes = [
   {
     /** custom properties */
-    icon: 'fa-home',
+    icon: 'mdi-home',
     color: 'primary', // Optional - Default: primary
     // onClick: () => {}, // Set path to '' for onClick to fire.
     /** vue-router properties */
@@ -50,7 +50,7 @@ const routes = [
     // redirect: // Optional
   },
   {
-    icon: 'fa-sign-in-alt',
+    icon: 'mdi-login',
     color: 'primary',
     path: '/login',
     name: 'Login',
@@ -58,13 +58,13 @@ const routes = [
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
-    icon: 'fa-sign-out-alt',
+    icon: 'mdi-lougout',
     path: '',
     name: 'Logout',
     onClick: logout,
   },
   {
-    icon: 'fa-key',
+    icon: 'mdi-account-key-outline',
     path: '/admin',
     name: 'Admin',
     beforeEnter: requireRoleAdmin,
@@ -72,12 +72,12 @@ const routes = [
       import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
     children: [
       {
-        icon: 'fa-users',
+        icon: 'mdi-account-multiple-outline',
         path: '/users',
         name: 'Users',
         children: [
           {
-            icon: 'fa-print',
+            icon: 'mdi-printer',
             path: '/templates',
             name: 'Export Templates',
             component: () =>
@@ -88,7 +88,7 @@ const routes = [
     ],
   },
   {
-    icon: 'fa-sitemap',
+    icon: 'mdi-apps',
     path: '/cdcr-dashboard',
     name: 'CDCR Dashboard',
     beforeEnter() {
