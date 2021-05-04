@@ -64,6 +64,13 @@ const routes = [
     onClick: logout,
   },
   {
+    icon: 'mdi-arrow-right',
+    path: '/signout',
+    name: 'Sign Out',
+    component: () =>
+      import(/* webpackChunkName: "signout" */ '@/views/SignOut.vue'),
+  },
+  {
     icon: 'mdi-account-key-outline',
     path: '/admin',
     name: 'Admin',
@@ -109,7 +116,7 @@ const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName(['Home', 'Logout']);
+const userToolbarItems = getRoutesByName(['Home', 'Logout', 'Sign Out']);
 
 export {
   getRoutesByName,

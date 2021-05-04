@@ -41,6 +41,22 @@ async function logout() {
 }
 
 /**
+ * Template provided helper to sign the user out of the microsoft web space.
+ * This includes teams, outlook, word, powerpoint, and any other microsoft related products.
+ * This function eventually pushes the user to the login page.
+ */
+async function signout() {
+  try {
+    await store.dispatch('azureAuthentication/signOut');
+    await logout();
+  } catch (e) {
+    // console.error(e);
+  } finally {
+    router.push({ name: 'Login' });
+  }
+}
+
+/**
  * Template provided helper to check recursively for
  * any children in the route until no child is left behind.
  * @param {VueRouter} route
@@ -92,4 +108,4 @@ const getRouterColor = (item) => {
     : '';
 };
 
-export { logout, checkForChildren, onClick, getRouterColor };
+export { logout, signout, checkForChildren, onClick, getRouterColor };
