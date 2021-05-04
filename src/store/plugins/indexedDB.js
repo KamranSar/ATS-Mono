@@ -10,7 +10,7 @@ const localForageInstance = localForage.createInstance({
 const modules = []; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
-  key: 'keys', // The key to store the state on in the storage provider.
+  key: `idb.${process.env.VUE_APP_NAME}`, // The key to store the state on in the storage provider.
   storage: localForageInstance, // or window.sessionStorage, window.localStorage, or localForage
   asyncStorage: true, // needed for localforage
   modules: [...modules],

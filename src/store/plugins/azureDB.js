@@ -15,7 +15,7 @@ const modules = [
 ]; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
-  key: 'azureFields', // The key to store the state on in the storage provider.
+  key: `a.${process.env.VUE_APP_NAME}`, // The key to store the state on in the storage provider.
   storage: localForageInstance, // or window.sessionStorage, window.localStorage, or localForage
   asyncStorage: true, // needed for localforage
   restoreState: (key) => {

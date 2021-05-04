@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 const modules = ['authentication']; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
-  key: 'cookieStore', // The key to store the state on in the storage provider.
+  key: `c.${process.env.VUE_APP_NAME}`, // The key to store the state on in the storage provider.
   restoreState: (key) => Cookies.getJSON(key),
   saveState: (key, state) => {
     return Cookies.set(key, state, {
