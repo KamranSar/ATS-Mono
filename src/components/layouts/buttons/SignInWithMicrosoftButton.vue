@@ -1,6 +1,5 @@
 <template>
   <v-btn
-    v-bind="$attrs"
     :loading="authenticating"
     :color="$vuetify.theme.dark ? '#2F2F2F' : '#FFFFFF'"
     ripple
@@ -48,7 +47,7 @@
             const packet = {
               strategy: 'azuretoken_v1.0',
               azuretokenresponse: this.azuretokenresponse, // Need the token from Azure to log into middle tier
-              clientId: '', // FIXME:
+              clientId: this.$myApp.clientId,
             };
             // Now sign into Middle Tier
             // console.log(this.isAuthenticated);
