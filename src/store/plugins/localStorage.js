@@ -3,7 +3,7 @@ import {
   knownToken,
   encryptData,
   decryptData,
-} from '@/store/plugins/crypto.js';
+} from '@/store/plugins/helpers/crypto.js';
 
 const modules = ['userprefs', 'Users']; // Modules you want to save to persistence
 const storageKey = `ls.${process.env.VUE_APP_NAME}`;

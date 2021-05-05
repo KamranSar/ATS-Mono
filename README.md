@@ -5,38 +5,62 @@
 This repository is a starter project based on -
 
 1. Vue CLI
-1. Vuex + Pathify
-1. Vuetify + standard layouts + dashboard
-1. Axios for using APIs
+2. Vuex + Pathify
+3. Vuetify + standard layouts + dashboard
+4. Axios for using APIs
 
 The objective is to keep things simple for simple client/server projects.
 
 ## Project setup
 
-Setup like any other Vue project.
+### Setup your local backend
+
+If you haven't already... setting up a backend is easy.
+
+```sh
+git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/api-router-template
+cd api-router-template
+npm install
+cd /scripts
+./start_db.sh
+npm run dev
+```
+
+Now back in your `cdcr-client-template` folder
 
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-
-```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for production and PWA testing
 
 ```
 npm run build
 ```
 
-### Customize configuration
+## Directory Structure
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Below outlines the default directory structure the template comes with:
 
-## Partner Projects
-
-See the following for the `boost` server side boilerplates that play nice with this Vue project -
-
-- [Adonis v4.1](https://github.com/techformist/adonis41-api-boost)
+```
+.
+├── App.vue
+├── components - Vue components live here
+│   ├── layouts
+│   │   ├── buttons
+│   │   ├── navigation
+│   │   │   ├── helpers
+│   ├── mixins
+│   │   └── Install.js - PWA Install Mixin
+│   └── util
+├── config - Application configuration folder
+├── router - Vue Router folder
+│   ├── helpers
+├── store - Vuex store, used VuexPersistence and FeathersVuex
+│   ├── modules
+│   ├── plugins
+│   │   ├── helpers
+│   └── services
+└── views - Router Views (See config/navItems.js)
+```
