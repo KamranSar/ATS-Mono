@@ -10,7 +10,12 @@
       v-if="leftDrawEnabled"
       @click="leftDrawOpen = !leftDrawOpen"
     >
-      <v-avatar>
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        v-if="loading"
+      ></v-progress-circular>
+      <v-avatar v-else>
         <v-img
           src="/img/logo.svg"
           contain
@@ -95,6 +100,7 @@
       };
     },
     computed: {
+      ...sync('app', ['loading']),
       ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
       ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
       ...get('azureAuthentication', {
