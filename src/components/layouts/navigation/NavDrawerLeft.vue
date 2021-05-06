@@ -74,13 +74,13 @@
     },
     mixins: [Install],
     computed: {
-      ...sync('userprefs', ['leftDrawOpen']),
+      ...sync('userPrefs', ['leftDrawOpen']),
       ...get('azureAuthentication', {
         myPhoto: 'myPhoto',
         displayName: 'displayName',
         isAzureLoggedIn: 'isAzureLoggedIn',
       }),
-      ...get('feathersAuthentication', {
+      ...get('FeathersAuthentication', {
         isOrgAdmin: 'isOrgAdmin',
       }),
     },

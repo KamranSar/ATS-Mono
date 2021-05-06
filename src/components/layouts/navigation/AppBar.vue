@@ -101,8 +101,8 @@
     },
     computed: {
       ...sync('app', ['loading']),
-      ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
-      ...get('appfeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
+      ...sync('userPrefs', ['leftDrawOpen', 'rightDrawOpen']),
+      ...get('appFeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
       ...get('azureAuthentication', {
         myPhoto: 'myPhoto',
         isAzureLoggedIn: 'isAzureLoggedIn',

@@ -11,12 +11,12 @@ async function logout() {
   try {
     if (loggedIn) {
       // const feathersLoggedIn = store.get(
-      //   'feathersAuthentication/isAuthenticated'
+      //   'FeathersAuthentication/isAuthenticated'
       // );
 
       // FIXME: (feathersLoggedIn) always returns false and we get a DELETE forbidden
       // if (feathersLoggedIn) {
-      await store.dispatch('feathersAuthentication/logout', {
+      await store.dispatch('FeathersAuthentication/logout', {
         strategy: 'jwt',
       }); // log out of Feathers. Removes the local jwt and calls the api server to log out
       // If the JWT has already expired, we will get a 401 or 403 error back from the server which is OK.

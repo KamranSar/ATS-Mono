@@ -16,7 +16,7 @@
   export default {
     components: { Panel },
     computed: {
-      ...sync('feathersAuthentication', ['user']),
+      ...sync('FeathersAuthentication', ['user']),
     },
   };
 </script>

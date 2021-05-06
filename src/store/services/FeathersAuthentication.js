@@ -19,7 +19,7 @@ const actions = {
   },
 
   // checkTokenExpired: () => {
-  //   const expDate = store.get('feathersAuthentication/tokenExpiration');
+  //   const expDate = store.get('FeathersAuthentication/tokenExpiration');
   //   if (expDate) {
   //     const now = new Date();
   //     if (now >= expDate) {
@@ -33,7 +33,7 @@ const actions = {
   // },
 
   // calcSecondsToTokenExpire: () => {
-  //   const expDate = store.get('feathersAuthentication/tokenExpiration');
+  //   const expDate = store.get('FeathersAuthentication/tokenExpiration');
   //   if (expDate) {
   //     const now = new Date().getTime();
   //     let secs = Math.round((expDate.getTime() - now) / 1000);
@@ -47,7 +47,7 @@ const actions = {
   // },
 
   // checkTokenExpiringSoon: () => {
-  //   const expDate = store.get('feathersAuthentication/tokenExpiration');
+  //   const expDate = store.get('FeathersAuthentication/tokenExpiration');
   //   if (expDate) {
   //     const now = new Date();
   //     const minutes = 60; // Alert the user this many minutes before their session expires
@@ -73,12 +73,12 @@ const mutations = {
 
 const getters = {
   isOrgAdmin: () => {
-    const payload = store.get('feathersAuthentication/payload');
+    const payload = store.get('FeathersAuthentication/payload');
     const user = payload && payload.user ? payload.user : null;
     return user && user.role && String(user.role).toLowerCase() === 'admin';
   },
   // tokenExpiration: () => {
-  //   const payload = store.get('feathersAuthentication/payload');
+  //   const payload = store.get('FeathersAuthentication/payload');
   //   const hasToken =
   //     payload &&
   //     payload.authentication &&
@@ -96,7 +96,7 @@ const getters = {
 
 export default makeAuthPlugin({
   userService: 'Users', // name of user service to call if no user is passed back in the JWT payload
-  namespace: 'feathersAuthentication',
+  namespace: 'FeathersAuthentication',
   entityIdField: '_id', // ID field in the object returned from authenticating.  Server needs to return _id as well as user.
   responseEntityField: 'user', // Name of user object returned from authenticating.  Usually "user"
   state: state,

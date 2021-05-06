@@ -2,7 +2,7 @@
 
 # Image Resizer
 # Author: Nurthin Aziz
-# This shell script takes in a single arguement pointing to a .svg or .png
+# This shell script takes in a single argument pointing to a .svg or .png
 # This shell script ensures that all dependencies are installed before called python3 image_resize.py $1
 # Example: ./image_resize.sh ~/Documents/Icons/logo.png
 

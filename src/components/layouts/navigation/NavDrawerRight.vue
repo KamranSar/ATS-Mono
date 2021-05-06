@@ -29,7 +29,7 @@
       return {};
     },
     computed: {
-      ...sync('userprefs', ['rightDrawOpen']),
+      ...sync('userPrefs', ['rightDrawOpen']),
     },
   };
 </script>

@@ -65,8 +65,8 @@
       };
     },
     computed: {
-      ...sync('userprefs', ['leftDrawOpen', 'rightDrawOpen']),
-      ...get('appfeatures', [
+      ...sync('userPrefs', ['leftDrawOpen', 'rightDrawOpen']),
+      ...get('appFeatures', [
         'leftDrawEnabled',
         'rightDrawEnabled',
         'bottomBarEnabled',

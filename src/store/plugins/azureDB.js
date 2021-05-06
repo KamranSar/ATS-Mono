@@ -12,7 +12,7 @@ const localForageInstance = localForage.createInstance({
 
 const modules = [
   'azureAuthentication',
-  'feathersAuthentication',
+  'FeathersAuthentication',
   usersServicePath,
 ]; // Modules you want to save to persistence
 
@@ -45,10 +45,10 @@ const vuexPersist = new VuexPersistence({
         myPhoto: state.azureAuthentication.myPhoto,
         myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,
       },
-      feathersAuthentication: {
-        accessToken: state.feathersAuthentication.accessToken,
-        payload: state.feathersAuthentication.payload,
-        user: state.feathersAuthentication.user,
+      FeathersAuthentication: {
+        accessToken: state.FeathersAuthentication.accessToken,
+        payload: state.FeathersAuthentication.payload,
+        user: state.FeathersAuthentication.user,
       },
       [usersServicePath]: state[usersServicePath],
     };

@@ -31,7 +31,7 @@
     name: 'SignInWithMicrosoftButton',
     methods: {
       ...call('azureAuthentication', ['AzureAuthentication']),
-      ...call('feathersAuthentication', ['authenticate']),
+      ...call('FeathersAuthentication', ['authenticate']),
       ...call('alert', ['setAlertMsg']),
       ...call('users', {
         getUserRecord: 'get',

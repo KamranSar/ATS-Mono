@@ -48,19 +48,18 @@ Below outlines the default directory structure the template comes with:
 ├── App.vue
 ├── components - Vue components live here
 │   ├── layouts
-│   │   ├── buttons
 │   │   ├── navigation
 │   │   │   ├── helpers
 │   ├── mixins
 │   │   └── Install.js - PWA Install Mixin
 │   └── util
 ├── config - Application configuration folder
+│   ├── private - Underlying template code, DO NOT MODIFY
 ├── router - Vue Router folder
 │   ├── helpers
 ├── store - Vuex store uses VuexPersistence
 │   ├── modules
 │   ├── plugins
-│   │   ├── helpers
 │   └── services
 └── views - Router Views (See config/navItems.js)
 ```
