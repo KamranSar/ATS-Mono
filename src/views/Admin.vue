@@ -10,9 +10,13 @@
 </template>
 
 <script>
+  import { sync } from 'vuex-pathify';
   import Panel from '@/components/layouts/Panel';
 
   export default {
     components: { Panel },
+    computed: {
+      ...sync('feathersAuthentication', ['user']),
+    },
   };
 </script>

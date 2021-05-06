@@ -38,7 +38,10 @@ function getRoutesByName(listOfRouteNames) {
 
 const routes = [
   {
-    /** custom properties */
+    /** custom application properties
+     * These can be expanded beyond the default: icon, color, and onClick properties.
+     * Just be sure the '@/components/navigation/' components are updated appropriately.
+     */
     icon: 'mdi-home',
     color: 'primary', // Optional - Default: primary
     // onClick: () => {}, // Set path to '' for onClick to fire.

@@ -68,8 +68,8 @@ function checkForChildren(route, listOfRouteNames, matchedRoutes) {
     route.children.forEach((route) => {
       if (listOfRouteNames.includes(String(route.name).toLowerCase())) {
         matchedRoutes.push(route);
-        checkForChildren(route, listOfRouteNames, matchedRoutes);
       }
+      checkForChildren(route, listOfRouteNames, matchedRoutes);
     });
   } else {
     return matchedRoutes;

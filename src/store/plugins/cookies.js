@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 // https://github.com/championswimmer/vuex-persist#detailed
 // https://github.com/js-cookie/js-cookie
-const modules = ['authentication']; // Modules you want to save to persistence
+const modules = []; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
   key: `c.${process.env.VUE_APP_NAME}`, // The key to store the state on in the storage provider.
@@ -16,6 +16,7 @@ const vuexPersist = new VuexPersistence({
   modules: [...modules],
   // https://github.com/championswimmer/vuex-persist/issues/178
   filter: (mutation) => {
+    // FIXME: If no modules are being persisted don't run through mutation.type
     return !modules.every((name) => {
       return !mutation.type.includes(name + '/');
     });

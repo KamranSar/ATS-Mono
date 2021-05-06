@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import pathify from '@/config/vuex-pathify';
-import { FeathersVuex } from '@/config/feathers';
+import { FeathersVuex } from '@/config/private/feathers';
 
 // Modules
 import * as modules from './modules';

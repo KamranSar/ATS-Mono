@@ -3,12 +3,13 @@ import {
   knownToken,
   encryptData,
   decryptData,
-} from '@/store/plugins/helpers/crypto.js';
+} from '@/config/private/crypto.js';
 
 const modules = ['userprefs', 'Users']; // Modules you want to save to persistence
 const storageKey = `ls.${process.env.VUE_APP_NAME}`;
 const PROD_ENV = process.env.NODE_ENV === 'production';
 const vuexPersist = new VuexPersistence({
+  // TODO: Store by module name
   storage: {
     getItem: async () => {
       // Get the store from local storage.

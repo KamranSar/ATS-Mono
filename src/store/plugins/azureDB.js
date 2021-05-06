@@ -2,9 +2,11 @@ import VuexPersistence from '@/../local_modules/vuex-persist';
 import localForage from 'localforage';
 import { servicePath as usersServicePath } from '@/store/services/Users';
 
+const APP_NAME = process.env.VUE_APP_NAME;
+
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
-  name: 'appDatabase', // database name
+  name: `${APP_NAME}`, // database name
   storeName: 'azureInfo', // table name
 });
 
@@ -15,7 +17,7 @@ const modules = [
 ]; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
-  key: `a.${process.env.VUE_APP_NAME}`, // The key to store the state on in the storage provider.
+  // key: `a.${APP_NAME}`, // The key to store the state on in the storage provider.
   storage: localForageInstance, // or window.sessionStorage, window.localStorage, or localForage
   asyncStorage: true, // needed for localforage
   restoreState: (key) => {

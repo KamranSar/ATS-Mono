@@ -57,7 +57,7 @@ Below outlines the default directory structure the template comes with:
 ├── config - Application configuration folder
 ├── router - Vue Router folder
 │   ├── helpers
-├── store - Vuex store, used VuexPersistence and FeathersVuex
+├── store - Vuex store uses VuexPersistence
 │   ├── modules
 │   ├── plugins
 │   │   ├── helpers

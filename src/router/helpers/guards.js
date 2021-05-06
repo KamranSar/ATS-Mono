@@ -14,7 +14,8 @@ const requireAuth = (to, from, next) => {
 };
 
 const requireRoleAdmin = (to, from, next) => {
-  const user = store.get('feathersAuthentication/user');
+  const payload = store.get('feathersAuthentication/payload');
+  const user = payload.user;
   if (user && String(user.role).toLowerCase() === 'admin') next();
   else next({ path: '/404' });
 };

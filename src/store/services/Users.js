@@ -3,7 +3,7 @@
 import feathersClient, {
   makeServicePlugin,
   BaseModel,
-} from '@/config/feathers';
+} from '@/config/private/feathers';
 
 /**
  * User Model Class
