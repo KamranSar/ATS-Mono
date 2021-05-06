@@ -169,7 +169,7 @@ const actions = {
   // Authenticate the user with Azure Active Directory
   AzureAuthentication: async ({ dispatch, state }) => {
     try {
-      store.commit('azureAuthentication/azureLoading', true);
+      store.set('azureAuthentication/azureLoading', true);
 
       let newTokenResponse = null;
       // The user has already logged in. We try to get his token silently
@@ -272,7 +272,7 @@ const actions = {
         }
       }
     } catch (error) {
-      store.commit('azureAuthentication/azureLoading', false);
+      store.set('azureAuthentication/azureLoading', false);
 
       // console.error('Ah Oh, Programmer. Check this error out...');
       // console.error(error);
@@ -291,7 +291,7 @@ const actions = {
       throw error; // Someone else may need to know about this error
     }
 
-    store.commit('azureAuthentication/azureLoading', false);
+    store.set('azureAuthentication/azureLoading', false);
   },
 
   // selectAccount(state, resp) {
@@ -347,7 +347,7 @@ const actions = {
 
   // Request a token to be used for a MSGraph call or Middle Tier login
   getTokenPopup: async (state, request) => {
-    store.commit('azureAuthentication/azureLoading', true);
+    store.set('azureAuthentication/azureLoading', true);
     let newtoken = await myMSALObj
       .acquireTokenSilent(request)
       .catch(async (error) => {
@@ -355,15 +355,15 @@ const actions = {
         if (error instanceof msalPlugin.InteractionRequiredAuthError) {
           // console.log('acquiring token using popup');
           newtoken = myMSALObj.acquireTokenPopup(request).catch((error) => {
-            store.commit('azureAuthentication/azureLoading', false);
+            store.set('azureAuthentication/azureLoading', false);
             throw error;
           });
         } else {
-          store.commit('azureAuthentication/azureLoading', false);
+          store.set('azureAuthentication/azureLoading', false);
           throw error;
         }
       });
-    store.commit('azureAuthentication/azureLoading', false);
+    store.set('azureAuthentication/azureLoading', false);
     return newtoken;
   },
 
