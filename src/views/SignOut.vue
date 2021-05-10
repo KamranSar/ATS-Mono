@@ -10,12 +10,8 @@
               </v-btn>
             </template>
             <v-card>
-              <v-card-title class="title"> Sign Out Disclaimer </v-card-title>
-              <v-card-text
-                >Doing so will also sign you out of all other microsoft
-                connection applications (Teams, Outlook, Microsoft 365,
-                DocuSign...).</v-card-text
-              >
+              <v-card-title class="title"> {{ title }} </v-card-title>
+              <v-card-text>{{ text }}</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text @click="dismiss"> Cancel </v-btn>
@@ -39,6 +35,9 @@
     data: () => {
       return {
         dialog: true,
+        title: 'Are you sure?',
+        text:
+          "You'll have to re-type your email, password and re-authenticate the next time you log in.",
       };
     },
     components: {

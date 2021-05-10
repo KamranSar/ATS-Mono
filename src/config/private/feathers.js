@@ -28,16 +28,13 @@ const feathersClient = feathers()
     auth({
       // https://docs.feathersjs.com/api/authentication/client.html#configuration
       storage: window.localStorage,
-      storageKey: 'apiToken', // FIXME: Dynamic storageKey by appName
+      storageKey: process.env.VUE_APP_NAME,
       path: '/api/auth/v1.0/authentication',
     })
   )
   .hooks({
     before: {
       all: [
-        // TODO: Can we check if device is online
-        // Then grab a token from azure
-        // IF token almost expired, exit and get a feathers token before making the feathers call
         iff(
           (context) => ['create', 'update', 'patch'].includes(context.method),
           discard('__id', '__isTemp')

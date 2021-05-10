@@ -167,7 +167,7 @@
         },
       },
       errorCount() {
-        return Object.keys(this.errors).length; // TODO: add way to show total # errors, and clear all errors
+        return Object.keys(this.errors).length;
       },
       oldestError() {
         let error;

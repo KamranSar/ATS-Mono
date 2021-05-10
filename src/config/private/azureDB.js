@@ -1,12 +1,16 @@
+/**
+ * All apps will share the same azureDB iDB Collection to avoid storing duplicate data.
+ */
 import VuexPersistence from '@/../local_modules/vuex-persist';
 import localForage from 'localforage';
+import pako from 'pako';
 import { servicePath as usersServicePath } from '@/store/services/Users';
 
-const APP_NAME = process.env.VUE_APP_NAME;
+const STORAGE_NAME = 'azureDB';
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
-  name: `${APP_NAME}`, // database name
+  name: STORAGE_NAME, // database name
   storeName: 'azureInfo', // table name
 });
 
@@ -17,21 +21,30 @@ const modules = [
 ]; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
-  // key: `a.${APP_NAME}`, // The key to store the state on in the storage provider.
+  key: STORAGE_NAME, // The key to store the state on in the storage provider.
   storage: localForageInstance, // or window.sessionStorage, window.localStorage, or localForage
   asyncStorage: true, // needed for localforage
-  restoreState: (key) => {
-    localForageInstance.getItem(key).then((state) => {
-      // You can manipulate the state here before it is restored - such as decrypt certain keys
-      // console.log(state);
-      return state;
-    });
-    return localForageInstance.getItem(key);
+  restoreState: async (key) => {
+    try {
+      let data;
+      data = await localForageInstance.getItem(key);
+      data = pako.inflate(data, { level: 6 });
+      data = JSON.parse(new TextDecoder('utf-8').decode(data));
+      return data;
+    } catch (e) {
+      return e;
+    }
   },
   saveState: (key, state) => {
     // You can manipulate the state here before it goes into the database - such as encrypt certain keys
     // console.log(key, state);
-    return localForageInstance.setItem(key, state);
+    try {
+      let data = new TextEncoder().encode(JSON.stringify(state));
+      data = pako.deflate(data, { level: 6 });
+      return localForageInstance.setItem(key, data);
+    } catch (error) {
+      return error;
+    }
   },
   // only save these fields from the state
   reducer: (state) => {
@@ -60,4 +73,4 @@ const vuexPersist = new VuexPersistence({
   },
 });
 
-export default vuexPersist;
+export default vuexPersist.plugin;

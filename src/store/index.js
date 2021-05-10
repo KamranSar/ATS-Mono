@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 // Manually pull in template provided modules/plugins/services or middleware
 import azureAuthentication from '@/config/private/azureAuthentication';
+import azureDB from '@/config/private/azureDB';
 import { FeathersVuex } from '@/config/private/feathers';
 
 // Auto import all modules, plugins and services
@@ -16,7 +17,7 @@ Vue.use(FeathersVuex);
 
 const store = new Vuex.Store({
   modules: { ...modules, azureAuthentication },
-  plugins: [...plugins, ...services],
+  plugins: [...plugins, ...services, azureDB],
 });
 
 // initialization functions for each vuex store

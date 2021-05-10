@@ -57,6 +57,12 @@
     <v-list v-if="!isRunningPWA()">
       <NavListItem :key="installItem.name" :item="installItem"></NavListItem>
     </v-list>
+
+    <template v-slot:append>
+      <p class="text-right caption pa-1 mb-n1">
+        <router-link to="signout">Log in as another user</router-link>
+      </p>
+    </template>
   </v-navigation-drawer>
 </template>
 

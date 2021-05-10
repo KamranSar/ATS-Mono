@@ -119,7 +119,7 @@ const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin', 'export templates']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName(['Home', 'Logout', 'Sign Out']);
+const userToolbarItems = getRoutesByName(['Home', 'Logout']);
 
 export {
   getRoutesByName,
