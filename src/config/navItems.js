@@ -39,11 +39,10 @@ function getRoutesByName(listOfRouteNames) {
 const routes = [
   {
     /** custom application properties
-     * These can be expanded beyond the default: icon, color, and onClick properties.
+     * These can be expanded beyond the default: icon, and onClick properties.
      * Just be sure the '@/components/navigation/' components are updated appropriately.
      */
     icon: 'mdi-home',
-    color: 'primary', // Optional - Default: primary
     // onClick: () => {}, // Set path to '' for onClick to fire.
     /** vue-router properties */
     path: '/',
@@ -54,7 +53,6 @@ const routes = [
   },
   {
     icon: 'mdi-login',
-    color: 'primary',
     path: '/login',
     name: 'Login',
     component: () =>
@@ -75,25 +73,28 @@ const routes = [
   },
   {
     icon: 'mdi-account-key-outline',
-    path: '/admin',
     name: 'Admin',
+    path: '/admin',
     beforeEnter: requireRoleAdmin,
     component: () =>
-      import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
+      import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
     children: [
       {
         icon: 'mdi-account-multiple-outline',
-        path: '/users',
+        path: 'users',
         name: 'Users',
-        children: [
-          {
-            icon: 'mdi-printer',
-            path: '/templates',
-            name: 'Export Templates',
-            component: () =>
-              import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
-          },
-        ],
+        component: () =>
+          import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
+        // children: [],
+      },
+      {
+        icon: 'mdi-printer',
+        path: 'templates',
+        name: 'Export Templates',
+        component: () =>
+          import(
+            /* webpackChunkName: "template" */ '@/views/Admin/Template.vue'
+          ),
       },
     ],
   },
@@ -108,6 +109,8 @@ const routes = [
   {
     // catch all 404
     path: '*',
+    name: '4oh4',
+    alias: '/404',
     component: () => import('@/views/NotFound.vue'),
   },
 ];
@@ -117,7 +120,7 @@ const anonymousItems = getRoutesByName(['Login']);
 // Routes for Anyone Logged In
 const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
-const adminItems = getRoutesByName(['Admin', 'export templates']);
+const adminItems = getRoutesByName(['Admin']);
 // Routes used for the Toolbar in AppBar.vue
 const userToolbarItems = getRoutesByName(['Home', 'Logout']);
 

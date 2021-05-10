@@ -8,10 +8,9 @@ requireModule.keys().forEach((filename) => {
   // remove the store.js extension and capitalize
   const pluginName = filename.replace(/(\.\/|\.js)/g, '');
   if (String(pluginName).toLowerCase() !== 'index') {
-    const mod =
-      requireModule(filename).default.plugin || requireModule(filename).plugin;
-    console.log('mod: ', mod);
-    plugins.push(mod);
+    plugins.push(
+      requireModule(filename).default.plugin || requireModule(filename).plugin
+    );
   }
 });
 // console.log('plugins: ', plugins);

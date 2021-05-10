@@ -1,9 +1,9 @@
 <template>
-  <v-bottom-navigation app :value="value" grow color="primary">
+  <v-bottom-navigation app :value="value" grow :key="$route.currentPath">
     <template v-if="isAzureLoggedIn">
       <v-btn v-for="(item, i) in userItems" :key="i" @click="onClick(item)">
-        <span :class="`${item.color}--text`">{{ item.name }}</span>
-        <v-icon :color="item.color">{{ item.icon }} </v-icon>
+        <span :class="`${getRouterColor(item)}--text`">{{ item.name }}</span>
+        <v-icon :color="getRouterColor(item)">{{ item.icon }} </v-icon>
       </v-btn>
     </template>
 
@@ -13,8 +13,8 @@
         :key="i"
         @click="onClick(item)"
       >
-        <span :class="`${item.color}--text`">{{ item.name }}</span>
-        <v-icon :color="item.color">{{ item.icon }}</v-icon>
+        <span :class="`${getRouterColor(item)}--text`">{{ item.name }}</span>
+        <v-icon :color="getRouterColor(item)">{{ item.icon }} </v-icon>
       </v-btn>
     </template>
   </v-bottom-navigation>
@@ -23,7 +23,7 @@
 <script>
   import { get } from 'vuex-pathify';
   import { anonymousItems, userItems } from '@/config/navItems';
-  import { onClick } from '@/router/helpers/index.js';
+  import { onClick, getRouterColor } from '@/router/helpers/index.js';
   export default {
     name: 'BottomNavBar',
     computed: {
@@ -39,6 +39,7 @@
     }),
     methods: {
       onClick,
+      getRouterColor,
     },
   };
 </script>

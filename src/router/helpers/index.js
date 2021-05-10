@@ -83,8 +83,8 @@ function checkForChildren(route, listOfRouteNames, matchedRoutes) {
  */
 const onClick = (item) => {
   if (item) {
-    if (item.path && router.currentRoute.path !== item.path) {
-      router.push(item.path).catch(() => {});
+    if (item.path && router.currentRoute.name !== item.name) {
+      router.push({ name: item.name });
     } else if (item.onClick) {
       item.onClick();
     }
@@ -92,20 +92,22 @@ const onClick = (item) => {
 };
 
 /**
- * Template provided helper to safely grab the icon color if
+ * Template provided helper to set the icon color if
  * currentRoute is pointing to it or returns an empty string.
  * @param {VueRouter} item
- * @returns {String} item.color if currentRoute.name matches or an empty string
+ * @returns {String} primary if currentRoute.name matches otherwise an empty string.
  */
 const getRouterColor = (item) => {
-  return router &&
+  if (
+    router &&
     router.currentRoute &&
     router.currentRoute.name &&
     router.currentRoute.name === item.name
-    ? item.color
-      ? item.color
-      : 'primary'
-    : '';
+  ) {
+    return 'primary';
+  } else {
+    return '';
+  }
 };
 
 export { logout, signout, checkForChildren, onClick, getRouterColor };

@@ -34,7 +34,9 @@
       <v-btn-toggle group v-if="!isAzureLoggedIn">
         <span v-for="(item, index) in anonymousItems" :key="index">
           <v-btn @click="onClick(item)" text :key="index">
-            <v-icon :color="getRouterColor(item)">{{ item.icon }}</v-icon>
+            <v-icon :key="$route.fullPath" :color="getRouterColor(item)">{{
+              item.icon
+            }}</v-icon>
             {{ item.name }}
           </v-btn>
         </span>
@@ -66,9 +68,9 @@
     </v-card>
 
     <v-btn
-      text
       v-if="rightDrawEnabled && isAzureLoggedIn"
       @click="rightDrawOpen = !rightDrawOpen"
+      icon
     >
       <v-icon>mdi-menu</v-icon>
     </v-btn>

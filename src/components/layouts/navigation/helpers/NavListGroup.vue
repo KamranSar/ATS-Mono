@@ -2,13 +2,17 @@
   <v-list-group
     v-bind="$attrs"
     v-model="value"
-    :key="group.name"
-    :prepend-icon="child ? null : group.icon"
     :no-action="child"
     :sub-group="child"
+    :key="$route.fullPath"
   >
     <template v-slot:activator>
-      <v-list-item-content>
+      <v-list-item-icon
+        ><v-icon :color="getRouterColor(group)">{{
+          group.icon
+        }}</v-icon></v-list-item-icon
+      >
+      <v-list-item-content :class="`${getRouterColor(group)}--text`">
         <v-list-item-title>{{ group.name }}</v-list-item-title>
       </v-list-item-content>
     </template>
@@ -27,6 +31,8 @@
 <script>
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
+  import { getRouterColor } from '@/router/helpers/index.js';
+
   export default {
     name: 'NavListGroup',
     components: { NavListGroup, NavListItem },
@@ -44,6 +50,9 @@
       return {
         value: null,
       };
+    },
+    methods: {
+      getRouterColor,
     },
   };
 </script>

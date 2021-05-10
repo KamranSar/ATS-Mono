@@ -6,7 +6,8 @@ import localForage from 'localforage';
 import pako from 'pako';
 import { servicePath as usersServicePath } from '@/store/services/Users';
 
-const STORAGE_NAME = 'azureDB';
+const PROD_ENV = process.env.NODE_ENV === 'production'; // Only do compression during production
+const STORAGE_NAME = 'azureDB'; // All apps will share the same azureDB instance.
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
@@ -28,8 +29,10 @@ const vuexPersist = new VuexPersistence({
     try {
       let data;
       data = await localForageInstance.getItem(key);
-      data = pako.inflate(data, { level: 6 });
-      data = JSON.parse(new TextDecoder('utf-8').decode(data));
+      if (PROD_ENV) {
+        data = pako.inflate(data, { level: 6 });
+        data = JSON.parse(new TextDecoder('utf-8').decode(data));
+      }
       return data;
     } catch (e) {
       return e;
@@ -39,8 +42,11 @@ const vuexPersist = new VuexPersistence({
     // You can manipulate the state here before it goes into the database - such as encrypt certain keys
     // console.log(key, state);
     try {
-      let data = new TextEncoder().encode(JSON.stringify(state));
-      data = pako.deflate(data, { level: 6 });
+      let data = state;
+      if (PROD_ENV) {
+        data = new TextEncoder().encode(JSON.stringify(state));
+        data = pako.deflate(data, { level: 6 });
+      }
       return localForageInstance.setItem(key, data);
     } catch (error) {
       return error;

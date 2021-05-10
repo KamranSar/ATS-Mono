@@ -1,14 +1,10 @@
 <template>
-  <v-list-item v-bind="$attrs" @click="onClick(item)">
-    <v-list-item-title
-      :key="$route.fullPath"
-      :class="`${getRouterColor(item)}--text`"
-      >{{ item.name }}</v-list-item-title
-    >
+  <v-list-item v-bind="$attrs" @click="onClick(item)" :key="$route.fullPath">
+    <v-list-item-title :class="`${getRouterColor(item)}--text`">{{
+      item.name
+    }}</v-list-item-title>
     <v-list-item-icon>
-      <v-icon :key="$route.fullPath" :color="getRouterColor(item)">{{
-        item.icon
-      }}</v-icon>
+      <v-icon :color="getRouterColor(item)">{{ item.icon }}</v-icon>
     </v-list-item-icon>
   </v-list-item>
 </template>
