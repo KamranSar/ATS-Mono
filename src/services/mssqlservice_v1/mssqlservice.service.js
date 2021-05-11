@@ -1,25 +1,35 @@
-// Initializes the `mssqlservice` service on path `/api/database/v1/mssqlservice`
-const { MssqlserviceV1 } = require('./mssqlservice.class');
-const createModel = require('../../models/mssqlservice.model');
-const hooks = require('./mssqlservice.hooks');
+// Initializes the service
+const serviceName = require('path').basename(__filename, '.service.js');
+const className = './' + serviceName + '.class';
+const hooksName = './' + serviceName + '.hooks';
+const docsName = './' + serviceName + '.docs';
+const modelName = '../../models/' + serviceName + '.model';
+const createModel = require(modelName);
+const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
+const apppath = (process.env.APP_PATH.substr(0, 1) == '/' ? process.env.APP_PATH.substr(1) : process.env.APP_PATH);
+const appUrl = `${apppath}/${service.version}/${service.endpoint}`;
+const { ServiceClass } = require(className);
+const hooks = require(hooksName);
 
 module.exports = function (app) {
   const options = {
     Model: createModel(app),
     paginate: app.get('paginate'),
-    app
+    app,
   };
 
-  const svc = new MssqlserviceV1(options, app);
-  const { ids, docs } = require('./mssqlservice.docs');
+  const svc = new ServiceClass(options, app);
+
+  const { ids, docs } = require(docsName);
   svc.id = ids;
   svc.docs = docs;
 
   // Initialize our service with any options it requires
-  app.use('/api/database/v1/mssqlservice', svc);
+  // Note: This starts with a /
+  app.use(`/${appUrl}`, svc);
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('api/database/v1/mssqlservice');
-
+  // Note: This does not start with a /
+  const service = app.service(`${appUrl}`);
   service.hooks(hooks);
 };

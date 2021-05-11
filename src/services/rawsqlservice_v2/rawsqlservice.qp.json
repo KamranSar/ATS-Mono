@@ -1,0 +1,16 @@
+{
+  "lastname": {
+    "required": true,
+    "repeatable": false,
+    "valueRequired": true,
+    "noValueRequired": false,
+    "exclusive": false
+  },
+  "firstname": {
+    "required": true,
+    "repeatable": false,
+    "valueRequired": true,
+    "noValueRequired": false,
+    "exclusive": false
+  }
+}

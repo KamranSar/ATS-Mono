@@ -6,11 +6,10 @@ const swagger = require('feathers-swagger');
  * @see https://github.com/feathersjs-ecosystem/feathers-swagger#api
  */
 module.exports = function (app) {
-  // Change end of path to your server endpoint
-  const docspath = '/docs';
+  const docspath = process.env.DOCS_PATH;
   const docsJsonPath = `${docspath}/spec.json`;
+
   const specs = {
-    // Change app name to your app's name
     prefix: /^(\/?[^/]+){0,3}\/v\d{0,3}\//gm,
     versionPrefix: /v\d/,
     ignore: {
@@ -25,9 +24,8 @@ module.exports = function (app) {
     specs: {
       info: {
         // Change app title & description to match your app.
-        title: `EIS-MiddleTier Database Server (${app.get('application').name})`,
-        description:
-          'This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.',
+        title: `CDCR EIS-MiddleTier Server (${process.env.APP_NAME} ${process.env.APP_RELEASE})`,
+        description: `${process.env.APP_DESCRIPTION}`,
         termsOfService: 'https://www.cdcr.ca.gov/conditions-of-use/',
         contact: {
           name: 'Support',
@@ -68,7 +66,7 @@ module.exports = function (app) {
           },
         },
       },
-    }
+    },
   };
   app.configure(swagger(specs));
 };

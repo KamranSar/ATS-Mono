@@ -1,6 +1,14 @@
-process.env.APP_NAME = require('../package.json').name;
+const serverData = require('./index.json').server;
+
+// Server parameters go into process env
+process.env.APP_NAME = serverData.name;
+process.env.APP_PATH = serverData.appPath;
+process.env.APP_DESCRIPTION = serverData.description;
+process.env.APP_RELEASE = serverData.release;
+process.env.DOCS_PATH = serverData.docsPath;
+
 const app = require('./app');
-const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:index');
+const debug = require('debug')(`${process.env.APP_NAME}` + ':src:index');
 const { logger } = require('cdcrhelpers');
 const port = app.get('port') || app.get('serverport');
 const server = app.listen(port);

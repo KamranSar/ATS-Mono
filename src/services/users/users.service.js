@@ -1,7 +1,12 @@
-// Initializes the `users` service on path `/users`
-const { Users } = require('./users.class');
-const createModel = require('../../models/users.model');
-const hooks = require('./users.hooks');
+// Initializes the service
+const serviceName = require('path').basename(__filename, '.service.js');
+const className = './' + serviceName + '.class';
+const hooksName = './' + serviceName + '.hooks';
+const modelName = '../../models/' + serviceName + '.model';
+const createModel = require(modelName);
+const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
+const { ServiceClass } = require(className);
+const hooks = require(hooksName);
 
 module.exports = function (app) {
   const options = {
@@ -9,13 +14,14 @@ module.exports = function (app) {
     paginate: app.get('paginate'),
   };
 
-  const svc = new Users(options, app);
+  const svc = new ServiceClass(options, app);
 
   // Initialize our service with any options it requires
-  app.use('/internal/users', svc);
+  // Note: This starts with a /
+  app.use(`/${service.endpoint}`, svc);
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('internal/users');
-
-  service.hooks(hooks);
+  // Note: This does not start with a /
+  const lservice = app.service(`${service.endpoint}`);
+  lservice.hooks(hooks);
 };

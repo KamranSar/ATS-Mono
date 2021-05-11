@@ -1,18 +1,18 @@
-const serviceName = 'mssqlservice'; // Service name
-const version = '1'; // Service version
+const serviceName = require('path').basename(__filename, '.docs.js');
+const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
 
 /**
  * This is the name of the ID field used by the API's {id}
  */
-const ids = ['_id'];
+const ids = ['id'];
 
 /**
  * This is the docs portion of this API
  */
-const schemaName = `${serviceName}_v${version}`;
-const schemaNameList = `${schemaName}_list`;
-const docs = {
-  description: 'CRUD services for an MS-SQL database. The A_PEOPLE table is used for this template.',
+ const schemaName = `${service.endpoint}_${service.version}`;
+ const schemaNameList = `${service.endpoint}_list`;
+ const docs = {
+  description: `${service.description}`,
   definitions: {
     [schemaName]: {
       type: 'object',
@@ -84,11 +84,98 @@ const docs = {
             },
           },
         },
+        400: {
+          description: 'bad request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                  code: {
+                    type: 'integer',
+                    default: 400,
+                  },
+                  className: {
+                    type: 'string',
+                  },
+                  errors: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
+                }
+              }
+            }
+          }
+        },
         401: {
           description: 'not authenticated',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                  code: {
+                    type: 'integer',
+                    default: 401,
+                  },
+                  className: {
+                    type: 'string',
+                  },
+                  errors: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
+                }
+              }
+            }
+          }
         },
         500: {
           description: 'general error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                  code: {
+                    type: 'integer',
+                    default: 500,
+                  },
+                  className: {
+                    type: 'string',
+                  },
+                  errors: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
+                }
+              }
+            }
+          }
         },
       },
     },

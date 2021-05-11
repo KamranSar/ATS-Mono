@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:services:rawsqlservice_v2:rawsqlservice_v2.impl');
+const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:services:rawsqlservice_v2:rawsqlservice.impl');
 const { GeneralError, BadRequest } = require('@feathersjs/errors');
-const { readSQLFiles } = require('cdcrhelpers');
+const { readSQLFiles, validateQueryParameters } = require('cdcrhelpers');
+const queryJSON = require('./rawsqlservice.qp.json');
+
 
 //
 // Load the SQL queries
@@ -49,13 +51,12 @@ async function runQuery(options, params) {
     params.query.lastname || '',
     params.query.firstname || ''
   ];
+
   //
-  // Test for no query parameters found, throw an error is all are missing
+  // Validate the query parameters
   //
-  // let valuesTest = values.every((val) => {return !!val;});
-  //
-  const valuesTest = aryStrVal1.some((val) => { return (val) ? true : false; });
-  if (!valuesTest)
+  const { paramsTestResult, failMsg, passMsg } = validateQueryParameters(queryJSON, params.query, true);
+  if (!paramsTestResult)
     throw new BadRequest('runQuery: missing required query parameters');
 
 

@@ -51,6 +51,13 @@ clone_cdcr_library() {
        npm install
     fi
 }
+# This function parses a JSON string to extract a property value. If the string contains multiple 
+# occurrances of the same key, then you can request a specific property instance value to be returned.
+jsonValue() {
+  KEY=$1
+  num=$2
+  awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p
+}
 
 echo "."
 echo "Clone our EIS-MiddleTier libraries locally..."
@@ -60,6 +67,7 @@ clone_cdcr_library CDCRHooks
 clone_cdcr_library cdcr-remote-service
 echo "."
 
+# Return to the project root
 cd "$CWD"
 if [ -f ".env" ];
 then
@@ -68,6 +76,18 @@ else
     echo "Copying env.sample to .env. Remember to make changes to .env before running the server"
     cp env.sample .env 
 fi
+
+# Change the replaceable values in the index.html file with values from index.json
+serverName=$(cat src/index.json | jsonValue name 1 | tr -d '[:space:]')
+docsPath1=$(cat src/index.json | jsonValue docsPath 1 | tr -d '[:space:]')
+docsPath2=${docsPath1//\//\\\/}
+# Only change index.html file if not a template
+if [[ $serverName != *"-template" ]]; then
+    sed -i "s/DOCS_TITLE/${serverName}/" public/index.html
+    sed -i "s/DOCS_PATH/${docsPath2}/" public/index.html
+fi
+unset serverName docsPath1 docsPath2
+
 echo "."
 echo "EIS-MiddleTier library installs completed"
 echo "."

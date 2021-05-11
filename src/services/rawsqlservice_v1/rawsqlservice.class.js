@@ -1,12 +1,13 @@
-/* eslint-disable no-unused-vars */
-const { runQuery } = require('./rawsqlservice.impl.js');
+const serviceName = require('path').basename(__filename, '.class.js');
+const {runQuery} = require(`./${serviceName}.impl.js`);
 
-exports.RawsqlserviceV1 = class RawsqlserviceV1 {
-  constructor(options) {
+exports.ServiceClass = class ServiceClass {
+  constructor (options, app) {
     this.options = options || {};
+    this.app = app;
   }
 
-  async find(params) {
+  async find (params) {
     return await runQuery(this.options, params);
   }
 };

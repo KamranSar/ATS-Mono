@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 const { getUptime } = require('cdcrhelpers');
-exports.HeartbeatV1 = class HeartbeatV1 {
-  constructor(options) {
+exports.ServiceClass = class ServiceClass {
+  constructor(options, app) {
     this.options = options || {};
+    this.app = app;
   }
 
   async find(params) {

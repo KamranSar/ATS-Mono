@@ -1,11 +1,12 @@
 const { Service } = require('feathers-knex');
 
-exports.OracleserviceV1 = class OracleserviceV1 extends Service {
-  constructor(options) {
+exports.ServiceClass = class ServiceClass extends Service {
+  constructor(options, app) {
     super({
       ...options,
       name: 'A_PEOPLE',
       id: 'ID'
     });
+    this.app = app;
   }
 };

@@ -92,7 +92,7 @@
   "helmet": {
     "contentSecurityPolicy": {
       "allowedList": [
-        "'self'", 
+        "'self'",
         "*.msauth.net",
         "*.microsoftonline.com",
         "*.msftauth.net",

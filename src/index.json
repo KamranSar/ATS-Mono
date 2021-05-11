@@ -1,0 +1,106 @@
+{
+  "server": {
+    "name": "database-template",
+    "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
+    "appPath": "/api/database",
+    "docsPath": "/docs",
+    "release": "R1"
+  },
+  "services": [
+    {
+      "name": "heartbeat",
+      "endpoint": "heartbeat",
+      "version": "v1",
+      "enabled": true,
+      "description": "Service to check if server is running.",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    },
+    {
+      "name": "mssqlservice",
+      "endpoint": "mssqlservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "CRUD services for an MS-SQL database. The A_PEOPLE table is used for this template.",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    },
+    {
+      "name": "oracleservice",
+      "endpoint": "oracleservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "CRUD services for an Oracle database. The A_PEOPLE table is used for this template.",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    },
+    {
+      "name": "postgresservice",
+      "endpoint": "postgresservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "CRUD services for an Postgres database. The A_PEOPLE table is used for this template.",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    },
+    {
+      "name": "rawsqlservice",
+      "endpoint": "rawsqlservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template.",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    },
+    {
+      "name": "rawsqlservice",
+      "endpoint": "rawsqlservice",
+      "version": "v2",
+      "enabled": true,
+      "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template.",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    },
+    {
+      "name": "users",
+      "endpoint": "internal/users",
+      "version": "",
+      "enabled": true,
+      "description": "Users",
+      "httpMethods": {
+        "find": {
+          "allowed": true,
+          "authorization": true
+        },
+        "get": {
+          "allowed": true,
+          "authorization": true
+        }
+      }
+    }
+  ]
+}

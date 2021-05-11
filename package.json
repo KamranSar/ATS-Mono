@@ -1,7 +1,7 @@
 {
   "name": "database-template",
   "description": "Template for developing Feathers Database servers for the EIS-MiddleTier.",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "homepage": "",
   "private": true,
   "main": "src",

@@ -1,11 +1,12 @@
 const { Service } = require('feathers-knex');
 
-exports.MssqlserviceV1 = class MssqlserviceV1 extends Service {
-  constructor(options) {
+exports.ServiceClass = class ServiceClass extends Service {
+  constructor(options, app) {
     super({
       ...options,
       name: 'A_PEOPLE',
       id: 'ID',
     });
+    this.app = app;
   }
 };

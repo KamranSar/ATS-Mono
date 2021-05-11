@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
-const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:models:postgresservice_v1.model:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:models:postgresservice.model:dbname');
 const { logger } = require('cdcrhelpers');
 //
 // postgresservice-model.js - KnexJS
