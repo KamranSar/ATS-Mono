@@ -7,12 +7,15 @@ const swagger = require('feathers-swagger');
  */
 module.exports = function (app) {
   // Change end of path to your server endpoint
-  const docspath = '/docs/database';
+  const docspath = '/docs';
   const docsJsonPath = `${docspath}/spec.json`;
   const specs = {
     // Change app name to your app's name
-    prefix: /api\/database\/v\d.\d\//,
-    versionPrefix: /v\d.\d/,
+    prefix: /^(\/?[^/]+){0,3}\/v\d{0,3}\//gm,
+    versionPrefix: /v\d/,
+    ignore: {
+      paths: ['internal'],
+    },
     docsPath: docspath,
     docsJsonPath: docsJsonPath,
     openApiVersion: 3,

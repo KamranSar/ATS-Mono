@@ -1,55 +1,32 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
-const { protect } = require('@feathersjs/authentication-local').hooks;
-const { disallow, iff, isProvider } = require('feathers-hooks-common');
+const { disallow, iff, isProvider, discard } = require('feathers-hooks-common');
 const redisCache = require('feathers-redis-cache').hooks;
 const { logSvcMsg } = require('cdcrhooks');
 
 module.exports = {
   before: {
     all: [],
-    find: [ 
-      authenticate('jwt'), 
-      logSvcMsg(),
-      iff(isProvider('external'), disallow()),
-      redisCache.before() 
-    ],
-    get: [ 
-      authenticate('jwt'), 
-      logSvcMsg(), 
-      iff(isProvider('external'), disallow()),
-      redisCache.before() 
-    ],
-    create: [
-      disallow()
-    ],
-    update: [
-      disallow()
-    ],
-    patch: [
-      disallow()
-    ],
-    remove: [
-      disallow()
-    ]
+    find: [authenticate('jwt'), logSvcMsg(), iff(isProvider('external'), disallow()), redisCache.before()],
+    get: [authenticate('jwt'), logSvcMsg(), iff(isProvider('external'), disallow()), redisCache.before()],
+    create: [disallow()],
+    update: [disallow()],
+    patch: [disallow()],
+    remove: [disallow()],
   },
 
   after: {
-    all: [ 
+    all: [
       // Make sure the password field is never sent to the client
       // MUST always be the last hook!
-      protect('password'),
-      logSvcMsg()
+      discard('password'),
+      logSvcMsg(),
     ],
-    find: [
-      redisCache.after({ expiration: 60 * 60 * 4 })
-    ],
-    get: [
-      redisCache.after({ expiration: 60 * 60  * 4 })
-    ],
-    create: [], 
+    find: [redisCache.after({ expiration: 60 * 60 * 4 })],
+    get: [redisCache.after({ expiration: 60 * 60 * 4 })],
+    create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -59,6 +36,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

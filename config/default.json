@@ -12,9 +12,11 @@
   },
   "authentication": {
     "entity": "user",
-    "service": "users",
+    "service": "internal/users",
     "secret": "JWT_SALT_SECRET",
-    "authStrategies": ["jwt"],
+    "authStrategies": [
+      "jwt"
+    ],
     "jwtOptions": {
       "header": {
         "typ": "access"
@@ -24,8 +26,7 @@
       "algorithm": "HS256",
       "expiresIn": "1d"
     },
-    "jwt": {
-    }
+    "jwt": {}
   },
   "redis": {
     "url": "redis://redis",
@@ -34,19 +35,10 @@
     "prefix": "frc:"
   },
   "mongodb": {
-    "comment": "This is your custom database.  Change the database name to match your application",
-    "server": "MONGO_SVR",
-    "port": "MONGO_PORT",
-    "database": "yourdbnamehere",
-    "connectTimeoutMS": 10000,
-    "poolSize": 5
-  },
-  "mongodbmidtier": {
-    "comment": "This is the midtier database connections.  This is always needed",
     "server": "MONGO_SVR",
     "port": "MONGO_PORT",
     "database": "midtier",
-    "statsdatabase":"midtierstats",
+    "statsdatabase": "midtierstats",
     "connectTimeoutMS": 10000,
     "poolSize": 5
   },

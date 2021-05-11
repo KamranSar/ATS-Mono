@@ -5,15 +5,21 @@
 // for more of what you can do here.
 module.exports = function (app) {
   const modelName = 'users';
-  const mongooseClient = app.get('mongooseClientMidTier');
+  const mongooseClient = app.get('mongooseClient');
 
-  const schema = new mongooseClient.Schema({
-    username: { type: String, required: true, lowercase: true, unique: true }, // This will look like an email address
-    password: { type: String, required: false },
-    // Only the Auth server has a full list and allows updates to the user objext
-  }, {
-    timestamps: true
-  });
+  const schema = new mongooseClient.Schema(
+    {
+      // DO NOT MODIFY THIS RECORD.
+      // THE AUTH SERVER CONTROLS THIS RECORD DEFINITION
+      azureLocalAccountId: { type: String },
+      username: { type: String },
+      password: { type: String },
+      // Only the Auth server has a full list and allows updates to the user objext
+    },
+    {
+      timestamps: true,
+    }
+  );
 
   // This is necessary to avoid model compilation errors in watch mode
   // see https://mongoosejs.com/docs/api/connection.html#connection_Connection-deleteModel

@@ -1,9 +1,9 @@
 const { MongoClient } = require('mongodb');
-const debug = require('debug')(`${process.env.APP_NAME}:`+'src:mongodb:dbname');
-const { logger } = require('cdcrhelpers');
+const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:mongodb:dbname');
+const { logger, configureMongoSvcStatConnection } = require('cdcrhelpers');
 
 module.exports = function (app) {
-  const { server, port, database, connectTimeoutMS, poolSize } = app.get('mongodb');
+  const { server, port, database, statsdatabase, connectTimeoutMS, poolSize } = app.get('mongodb');
   if (!server || server.length < 1 || !port || port.length < 1) {
     logger.error('MongoDb server or port must be specified in configuration, exiting...');
     process.exit(1);
@@ -22,8 +22,11 @@ module.exports = function (app) {
       return client.db(database);
     })
     .catch((error) => {
-      logger.error(`MongoDb database ${database} error at ${dbConnection} - `, { error: error.message || error });
+      logger.error(`MongoDb database ${database} error at ${dbConnection} - `, error);
       process.exit(1);
     });
   app.set('mongoClient', mongoClient); // For use by all apps for middle tier databases - Feathers wants it this way
+
+  // Configure the Stats database for the logging middleware
+  configureMongoSvcStatConnection(app, server, port, statsdatabase, connectTimeoutMS, poolSize);
 };

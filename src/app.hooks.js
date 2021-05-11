@@ -1,18 +1,18 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')(`${process.env.APP_NAME}:`+'src:app.hooks');
+const { iff } = require('feathers-hooks-common');
 const { logSvcError } = require('cdcrhelpers');
-const { addServiceTime } = require('cdcrhooks');
+const { addServiceTime, hasAccessToken, decodeToken } = require('cdcrhooks');
 
 // Application hooks that run for every service
 module.exports = {
   before: {
-    all: [addServiceTime()],
+    all: [addServiceTime(), iff(hasAccessToken(), decodeToken())],
     find: [],
     get: [],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   after: {
@@ -22,21 +22,21 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
     all: [
-      async context => {
+      async (context) => {
         logSvcError(context);
         return context;
-      }
+      },
     ],
     find: [],
     get: [],
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
