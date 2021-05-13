@@ -10,8 +10,8 @@ module.exports = function (app) {
   const docsJsonPath = `${docspath}/spec.json`;
 
   const specs = {
-    prefix: /^(\/?[^/]+){0,3}\/v\d{0,3}\//gm,
-    versionPrefix: /v\d/,
+    prefix: /^(\/?[^/v\d]+){2,}\/v\d{0,3}\//gm,
+    versionPrefix: /v\d{0,3}/,
     ignore: {
       paths: ['internal'],
     },
