@@ -67,11 +67,11 @@
 </template>
 
 <script>
-  import { get, sync } from 'vuex-pathify';
   import { anonymousItems, userItems, adminItems } from '@/config/navItems';
-  import Install from '@/components/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
+  import Install from '@/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
+  import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
     name: 'NavDrawerLeft',
     components: {
@@ -79,19 +79,19 @@
       NavListGroup,
     },
     mixins: [Install],
-    computed: {
-      ...sync('userPrefs', ['leftDrawOpen']),
-      ...get('azureAuthentication', {
-        myPhoto: 'myPhoto',
-        displayName: 'displayName',
-        isAzureLoggedIn: 'isAzureLoggedIn',
-      }),
-      ...get('FeathersAuthentication', {
-        isOrgAdmin: 'isOrgAdmin',
-      }),
-    },
-    data() {
+    setup(props, context) {
+      const { sync, get } = useVuexPathify(context);
+      const leftDrawOpen = sync('userPrefs/leftDrawOpen');
+      const myPhoto = get('azureAuthentication/myPhoto');
+      const displayName = get('azureAuthentication/displayName');
+      const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
+      const isOrgAdmin = get('FeathersAuthentication/isOrgAdmin');
       return {
+        leftDrawOpen,
+        myPhoto,
+        displayName,
+        isAzureLoggedIn,
+        isOrgAdmin,
         anonymousItems,
         userItems,
         adminItems,

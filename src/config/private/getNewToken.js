@@ -1,10 +1,13 @@
-// https://github.com/davestewart/vuex-pathify/issues/95
 import myApp from '@/config/myApp';
 import store from '@/store';
 
+/**
+ * Call this function to get a new token silently
+ *
+ * import getNewToken from "@/config/private/getNewToken.js";
+ * <v-btn @click="getNewToken()">Extend current session</v-btn>
+ */
 const getNewToken = async () => {
-  console.log('store: ', store);
-
   try {
     await store.dispatch('azureAuthentication/AzureAuthentication');
     const _azuretokenresponse =

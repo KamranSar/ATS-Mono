@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import useVuexPathify from '@/compositions/useVuexPathify';
+  import { get } from 'vuex-pathify';
   import AppBar from '@/components/layouts/navigation/AppBar.vue';
   import NavDrawerLeft from '@/components/layouts/navigation/NavDrawerLeft.vue';
   import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
@@ -59,20 +59,12 @@
       BottomNavBar,
       Catch,
     },
-    setup(props, context) {
-      // Composition to use vuex-pathify setup function
-      const { get, sync } = useVuexPathify(context);
-      const userPrefs = sync('userPrefs', ['leftDrawOpen', 'rightDrawOpen']);
-      const appFeatures = get('appFeatures', [
+    computed: {
+      ...get('appFeatures', [
         'leftDrawEnabled',
         'rightDrawEnabled',
         'bottomBarEnabled',
-      ]);
-
-      return {
-        ...userPrefs.value,
-        ...appFeatures.value,
-      };
+      ]),
     },
   };
 </script>

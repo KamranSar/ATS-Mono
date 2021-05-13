@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import { sync } from 'vuex-pathify';
+  import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
     name: 'NavDrawerRight',
     props: {
@@ -25,11 +25,10 @@
         default: '',
       },
     },
-    data() {
-      return {};
-    },
-    computed: {
-      ...sync('userPrefs', ['rightDrawOpen']),
+    setup(props, context) {
+      const { sync } = useVuexPathify(context);
+      const rightDrawOpen = sync('userPrefs/rightDrawOpen');
+      return { rightDrawOpen };
     },
   };
 </script>

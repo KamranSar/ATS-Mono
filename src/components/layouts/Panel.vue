@@ -47,20 +47,20 @@
    * Ex. "@/views/Pricing.vue"
    * <template slot="content"> This is a beautiful Pricing page. </template>
    */
-  import { get } from 'vuex-pathify';
+  import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
     name: 'panel',
-
     props: {
       title: String,
       icon: String,
       extn: Boolean,
     },
-    data() {
-      return {};
-    },
-    computed: {
-      ...get('app', ['loading']),
+    setup(props, context) {
+      const { get } = useVuexPathify(context);
+      const loading = get('app/loading');
+      return {
+        loading,
+      };
     },
     components: {
       Alert: () => import('@/components/util/Alert'),

@@ -13,23 +13,29 @@
 </template>
 
 <script>
-  import { sync } from 'vuex-pathify';
+  import { reactive } from '@vue/composition-api';
+  import useVuexPathify from '@/compositions/useVuexPathify';
 
   export default {
-    data() {
-      return {
+    setup(props, context) {
+      const { sync } = useVuexPathify(context);
+      const data = reactive({
         show: false,
         message: '',
         type: 'error',
+      });
+
+      const alert = sync('alert/alert');
+
+      const closeAlert = () => {
+        data.alert['message'] = '';
       };
-    },
-    computed: {
-      alert: sync('alert/alert'),
-    },
-    methods: {
-      closeAlert() {
-        this.alert['message'] = '';
-      },
+
+      return {
+        ...data,
+        alert,
+        closeAlert,
+      };
     },
   };
 </script>

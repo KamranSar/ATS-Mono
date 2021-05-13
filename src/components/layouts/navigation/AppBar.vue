@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
-    :clipped-left="clippedLeft"
-    :clipped-right="clippedRight"
+    :clipped-left="true"
+    :clipped-right="true"
     flat
     app
     min-height="65"
@@ -79,7 +79,6 @@
 
 <script>
   import { onClick, getRouterColor } from '@/router/helpers/index.js';
-  import { sync, get } from 'vuex-pathify';
   import {
     anonymousItems,
     adminItems,
@@ -87,32 +86,37 @@
   } from '@/config/navItems';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
+  import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
     components: {
       NavListItem,
       NavListGroup,
     },
-    data() {
+    setup(props, context) {
+      const { sync, get } = useVuexPathify(context);
+
+      const loading = sync('app/loading');
+      const leftDrawOpen = sync('userPrefs/leftDrawOpen');
+      const rightDrawOpen = sync('userPrefs/rightDrawOpen');
+      const leftDrawEnabled = get('appFeatures/leftDrawEnabled');
+      const rightDrawEnabled = get('appFeatures/rightDrawEnabled');
+      const myPhoto = get('azureAuthentication/myPhoto');
+      const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
+
       return {
+        loading,
+        leftDrawOpen,
+        rightDrawOpen,
+        leftDrawEnabled,
+        rightDrawEnabled,
+        myPhoto,
+        isAzureLoggedIn,
         anonymousItems,
         adminItems,
         userToolbarItems,
-        clippedLeft: true,
-        clippedRight: true,
+        onClick,
+        getRouterColor,
       };
-    },
-    computed: {
-      ...sync('app', ['loading']),
-      ...sync('userPrefs', ['leftDrawOpen', 'rightDrawOpen']),
-      ...get('appFeatures', ['leftDrawEnabled', 'rightDrawEnabled']),
-      ...get('azureAuthentication', {
-        myPhoto: 'myPhoto',
-        isAzureLoggedIn: 'isAzureLoggedIn',
-      }),
-    },
-    methods: {
-      onClick,
-      getRouterColor,
     },
   };
 </script>

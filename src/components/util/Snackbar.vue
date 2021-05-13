@@ -11,15 +11,18 @@
 </template>
 
 <script>
+  import { reactive } from '@vue/composition-api';
   export default {
-    data() {
-      return {
+    setup() {
+      const data = reactive({
         show: false,
         top: true,
         message: '',
         color: '',
         timeout: 6000,
-      };
+      });
+
+      return { ...data };
     },
     created: function () {
       this.$store.watch(

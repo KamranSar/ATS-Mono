@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import { call, get } from 'vuex-pathify';
+  import { call, get, sync } from 'vuex-pathify';
   import getNewToken from '@/config/private/getNewToken';
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
@@ -41,6 +41,7 @@
 
       async signinButtonClicked() {
         this.setAlertMsg('');
+        this.loading = true;
         try {
           // Sign in with azure
           await this.AzureAuthentication();
@@ -62,13 +63,15 @@
           this.setAlertMsg(
             'Sign in with Microsoft failed. ' + e2.errorMessage || ''
           );
+        } finally {
+          this.loading = false;
         }
       },
     },
     computed: {
       ...get('azureAuthentication', ['azureLoading', 'azuretokenresponse']),
       ...get('FeathersAuthentication', ['isAuthenticatePending']),
-      ...get('app', ['loading']),
+      ...sync('app', ['loading']),
       authenticating() {
         return this.azureLoading || this.isAuthenticatePending || this.loading;
       },
