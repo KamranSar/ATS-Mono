@@ -8,18 +8,6 @@
   },
   "services": [
     {
-      "name": "heartbeat",
-      "version": "v1",
-      "enabled": true,
-      "description": "Service to check if server is running.",
-      "httpMethods": {
-        "find": {
-          "allowed": true,
-          "authorization": true
-        }
-      }
-    },
-    {
       "name": "mssqlservice",
       "version": "v1",
       "enabled": true,

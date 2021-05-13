@@ -22,7 +22,7 @@ module.exports = function (app) {
   app.configure(users);
   app.configure(heartbeatV1);
 
-  // Load/Register public services that may change over time
+  // Load/Register public Mutable services
   load(app);
 
 };
