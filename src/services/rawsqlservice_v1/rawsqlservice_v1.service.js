@@ -12,7 +12,6 @@ const hooks = require(hooksName);
 module.exports = function (app) {
   const options = {
     paginate: app.get('paginate'),
-    app,
   };
 
   const svc = new ServiceClass(options, app);

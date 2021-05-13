@@ -15,7 +15,7 @@ module.exports = function (app) {
   const options = {
     Model: createModel(app),
     paginate: app.get('paginate'),
-    app,
+    multi: false, // to activate, provide a list of method names (ex: [ 'create', 'patch', 'put' ] or true for all methods)
   };
 
   const svc = new ServiceClass(options, app);
