@@ -29,7 +29,7 @@ const feathersClient = feathers()
       // https://docs.feathersjs.com/api/authentication/client.html#configuration
       storage: window.localStorage,
       storageKey: process.env.VUE_APP_NAME,
-      path: '/api/auth/v1.0/authentication',
+      path: '/api/auth/authentication',
     })
   )
   .hooks({
@@ -55,7 +55,7 @@ const {
 } = feathersVuex(feathersClient, {
   // https://vuex.feathersjs.com/vue-plugin.html#using-the-vue-plugin
   enableEvents: false, // Must have socket.io wired up to enable this
-  // nameStyle: 'path', // Use full API path as Vuex name.  In order to access this, use ['api/auth/v1.0/service'] syntax in an array.
+  // nameStyle: 'path', // Use full API path as Vuex name.  In order to access this, use ['api/auth/v1/service'] syntax in an array.
   nameStyle: 'short',
   whitelist: ['$regex', '$options'],
 });

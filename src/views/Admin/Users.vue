@@ -6,11 +6,12 @@
 </template>
 
 <script>
-  import { sync } from 'vuex-pathify';
-
+  import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
-    computed: {
-      ...sync('FeathersAuthentication', ['user']),
+    setup(props, context) {
+      const { sync } = useVuexPathify(context);
+      const FeathersAuthentication = sync('FeathersAuthentication', ['user']);
+      return { ...FeathersAuthentication.value };
     },
   };
 </script>

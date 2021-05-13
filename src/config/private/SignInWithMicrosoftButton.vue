@@ -26,6 +26,7 @@
 
 <script>
   import { call, get } from 'vuex-pathify';
+  import getNewToken from '@/config/private/getNewToken';
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
     name: 'SignInWithMicrosoftButton',
@@ -44,19 +45,7 @@
           // Sign in with azure
           await this.AzureAuthentication();
           try {
-            const packet = {
-              strategy: 'azuretoken_v1.0',
-              azuretokenresponse: this.azuretokenresponse, // Need the token from Azure to log into middle tier
-              clientId: this.$myApp.clientId,
-            };
-            // Now sign into Middle Tier
-            // console.log(this.isAuthenticated);
-            await this.authenticate(packet);
-            // console.log(this.user);
-            // const auth = await this.authenticate(packet);
-            // console.log(auth._id);
-            // const user = await this.getUserRecord(auth._id);
-            // console.log(user);
+            await getNewToken();
             await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for the authentication to finish or we get router errors
             this.$router.push({ name: 'Home' });
 
@@ -78,9 +67,10 @@
     },
     computed: {
       ...get('azureAuthentication', ['azureLoading', 'azuretokenresponse']),
+      ...get('FeathersAuthentication', ['isAuthenticatePending']),
       ...get('app', ['loading']),
       authenticating() {
-        return this.azureLoading || this.loading;
+        return this.azureLoading || this.isAuthenticatePending || this.loading;
       },
     },
   };

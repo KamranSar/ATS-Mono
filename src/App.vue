@@ -41,15 +41,16 @@
 </template>
 
 <script>
-  import { sync, get } from 'vuex-pathify';
+  import useVuexPathify from '@/compositions/useVuexPathify';
   import AppBar from '@/components/layouts/navigation/AppBar.vue';
   import NavDrawerLeft from '@/components/layouts/navigation/NavDrawerLeft.vue';
   import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
   import Snackbar from '@/components/util/Snackbar.vue';
   import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
   import Catch from '@/components/util/Catch.vue';
+
+  // https://v3.vuejs.org/guide/composition-api-setup.html#setup
   export default {
-    name: 'App',
     components: {
       AppBar,
       NavDrawerLeft,
@@ -58,19 +59,20 @@
       BottomNavBar,
       Catch,
     },
-    data() {
-      return {
-        clippedLeft: true,
-        clippedRight: true,
-      };
-    },
-    computed: {
-      ...sync('userPrefs', ['leftDrawOpen', 'rightDrawOpen']),
-      ...get('appFeatures', [
+    setup(props, context) {
+      // Composition to use vuex-pathify setup function
+      const { get, sync } = useVuexPathify(context);
+      const userPrefs = sync('userPrefs', ['leftDrawOpen', 'rightDrawOpen']);
+      const appFeatures = get('appFeatures', [
         'leftDrawEnabled',
         'rightDrawEnabled',
         'bottomBarEnabled',
-      ]),
+      ]);
+
+      return {
+        ...userPrefs.value,
+        ...appFeatures.value,
+      };
     },
   };
 </script>

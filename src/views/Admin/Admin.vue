@@ -1,6 +1,7 @@
 <template>
   <Panel icon="mdi-view-dashboard" title="Admin">
     <template slot="content">
+      <!-- Router View for /admin/... -->
       <router-view></router-view>
     </template>
   </Panel>

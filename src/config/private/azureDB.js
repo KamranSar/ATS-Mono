@@ -60,6 +60,7 @@ const vuexPersist = new VuexPersistence({
     return {
       azureAuthentication: {
         azuretokenresponse: state.azureAuthentication.azuretokenresponse,
+        silentRequest: state.azureAuthentication.silentRequest,
         myInfo: state.azureAuthentication.myInfo,
         myPhoto: state.azureAuthentication.myPhoto,
         myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,

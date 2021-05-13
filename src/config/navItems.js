@@ -75,7 +75,6 @@ const routes = [
     icon: 'mdi-account-key-outline',
     name: 'Admin',
     path: '/admin',
-    beforeEnter: requireRoleAdmin,
     component: () =>
       import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
     children: [
@@ -118,7 +117,7 @@ const routes = [
 // Public Routes
 const anonymousItems = getRoutesByName(['Login']);
 // Routes for Anyone Logged In
-const userItems = getRoutesByName(['Home']);
+const userItems = getRoutesByName(['Home', 'Admin']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin']);
 // Routes used for the Toolbar in AppBar.vue

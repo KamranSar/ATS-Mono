@@ -29,25 +29,23 @@
 
 <script>
   import { signout } from '@/router/helpers/index.js';
+  import { ref } from '@vue/composition-api';
 
   export default {
     name: 'SignOut',
-    data: () => {
-      return {
-        dialog: true,
-        title: 'Are you sure?',
-        text:
-          "You'll have to re-type your email, password and re-authenticate the next time you log in.",
-      };
-    },
     components: {
       Panel: () => import('@/components/layouts/Panel'),
     },
-    methods: {
-      dismiss() {
-        this.dialog = false;
-      },
-      signout,
+    setup() {
+      const dialog = ref(true);
+      const title = 'Are you sure?';
+      const text =
+        "You'll have to re-type your email, password and re-authenticate the next time you log in.";
+
+      const dismiss = () => {
+        dialog.value = false;
+      };
+      return { dialog, title, text, dismiss, signout };
     },
   };
 </script>
