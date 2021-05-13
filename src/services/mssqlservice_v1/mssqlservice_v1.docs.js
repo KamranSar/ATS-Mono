@@ -1,5 +1,5 @@
 const serviceName = require('path').basename(__filename, '.docs.js');
-const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
+const service = require('../../index.json').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
 
 /**
  * This is the name of the ID field used by the API's {id}
@@ -9,32 +9,33 @@ const ids = ['id'];
 /**
  * This is the docs portion of this API
  */
- const schemaName = `${service.endpoint}_${service.version}`;
- const schemaNameList = `${service.endpoint}_list`;
- const docs = {
+const schemaName = `${service.name}_${service.version}`;
+const schemaNameList = `${service.name}_list`;
+const docs = {
   description: `${service.description}`,
   definitions: {
     [schemaName]: {
       type: 'object',
+      required: ['_id'],
       properties: {
-        system_time: {
-          type: 'string',
-          format: 'date-time'
-        },
-        process_pid: {
-          type: 'number',
-          format: 'int32',
-          default: '74510'
-        },
-        process_uptime: {
-          type: 'number',
-          format: 'double',
-          default: '55.810666713'
-        },
-        os_uptime: {
+        _id: {
           type: 'integer',
-          format: 'int64',
-          default: '49619'
+        },
+        lastname: {
+          type: 'string',
+          format: 'lastname',
+        },
+        firstname: {
+          type: 'string',
+          format: 'firstname',
+        },
+        createdAt: {
+          type: 'string',
+          format: 'date-time',
+        },
+        updatedAt: {
+          type: 'string',
+          format: 'date-time',
         },
       },
     },
@@ -43,10 +44,10 @@ const ids = ['id'];
       items: { $ref: `#/components/schemas/${schemaName}` },
     },
   },
+  securities: ['find', 'get', 'create', 'update', 'patch', 'remove'],
   operations: {
     find: {
-      summary: 'Returns information about the running application',
-      parameters: [],
+      summary: 'Finds one or more A_PEOPLE rows',
       responses: {
         200: {
           description: 'success',
@@ -54,7 +55,31 @@ const ids = ['id'];
             'application/json': {
               schema: {
                 type: 'object',
-                $ref: `#/components/schemas/${schemaName}`
+                properties: {
+                  // pagination => total
+                  total: {
+                    type: 'integer',
+                    format: 'int32',
+                    default: 1,
+                  },
+                  // pagination => limit
+                  limit: {
+                    type: 'integer',
+                    format: 'int32',
+                    default: 10,
+                  },
+                  // pagination => skip
+                  skip: {
+                    type: 'integer',
+                    format: 'int32',
+                    default: 0,
+                  },
+                  // pagination => data
+                  data: {
+                    type: 'array',
+                    items: { $ref: `#/components/schemas/${schemaName}` },
+                  },
+                },
               },
             },
           },
@@ -153,6 +178,28 @@ const ids = ['id'];
           }
         },
       },
+    },
+    get: {
+      summary: 'Gets an A_PEOPLE row',
+    },
+    create: {
+      summary: 'Creates an A_PEOPLE row',
+    },
+    update: {
+      summary: 'Updates an A_PEOPLE row',
+    },
+    patch: {
+      summary: 'Patches an A_PEOPLE row',
+    },
+    remove: {
+      summary: 'Removes an A_PEOPLE row',
+    },
+    all: {
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
     },
   },
 };

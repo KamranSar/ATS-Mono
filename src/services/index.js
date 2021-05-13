@@ -1,17 +1,17 @@
-//
-// Automatically load the services
-//
+const users = require('./users/users.service.js');
+const heartbeatV1 = require('./heartbeat_v1/heartbeat_v1.service.js');
 const server = require('../index.json');
 
-function load (app) {
+//
+// Automatically load the services driven by index.json file
+//
+function load(app) {
 
-  for (const service in server.services) {
+  for (const service of server.services) {
 
-    if (server.services[service].enabled) {
-      
-      const url = (server.services[service].version) ? 
-            require(`./${server.services[service].name}_${server.services[service].version}/${server.services[service].name}.service.js`) : 
-            require(`./${server.services[service].name}/${server.services[service].name}.service.js`);
+    if (service.enabled) {
+
+      const url = require(`./${service.name}_${service.version}/${service.name}_${service.version}.service.js`);
       app.configure(url);
 
     }
@@ -21,7 +21,12 @@ function load (app) {
 }
 
 module.exports = function (app) {
-  
-  load (app);
+
+  // Register Immutable services
+  app.configure(users);
+  app.configure(heartbeatV1);
+
+  // Load/Register public services that may change over time
+  load(app);
 
 };

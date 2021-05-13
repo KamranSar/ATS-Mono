@@ -1,5 +1,5 @@
 const serviceName = require('path').basename(__filename, '.docs.js');
-const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
+const service = require('../../index.json').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
 
 /**
  * This is the name of the ID field used by the API's {id}
@@ -9,38 +9,45 @@ const ids = ['id'];
 /**
  * This is the docs portion of this API
  */
- const schemaName = `${service.endpoint}_${service.version}`;
- const schemaNameList = `${service.endpoint}_list`;
- const docs = {
+const schemaName = `${service.name}_${service.version}`;
+const schemaNameList = `${service.name}_list`;
+const docs = {
   description: `${service.description}`,
   definitions: {
-    [schemaName]: { },
-    [schemaNameList]: { },
+    [schemaName]: {
+      type: 'object',
+      required: ['_id'],
+      properties: {
+        _id: {
+          type: 'integer',
+        },
+        lastname: {
+          type: 'string',
+          format: 'lastname',
+        },
+        firstname: {
+          type: 'string',
+          format: 'firstname',
+        },
+        createdAt: {
+          type: 'string',
+          format: 'date-time',
+        },
+        updatedAt: {
+          type: 'string',
+          format: 'date-time',
+        },
+      },
+    },
+    [schemaNameList]: {
+      type: 'array',
+      items: { $ref: `#/components/schemas/${schemaName}` },
+    },
   },
   securities: ['find', 'get', 'create', 'update', 'patch', 'remove'],
   operations: {
     find: {
       summary: 'Finds one or more A_PEOPLE rows',
-      parameters: [
-        {
-          required: true,
-          in: 'query',
-          name: 'lastname',
-          description: 'The last name in any combination of case (e.g. Smythe)',
-          schema: {
-            type: 'string',
-          },
-        },
-        {
-          required: true,
-          in: 'query',
-          name: 'firstname',
-          description: 'The first name in any combination of case (e.g. Joan)',
-          schema: {
-            type: 'string',
-          },
-        },
-      ],
       responses: {
         200: {
           description: 'success',
@@ -70,77 +77,7 @@ const ids = ['id'];
                   // pagination => data
                   data: {
                     type: 'array',
-                    items: {
-                      properties: {
-                        ID: {
-                          type: 'integer',
-                        },
-                        LASTNAME: {
-                          type: 'string',
-                        },
-                        FIRSTNAME: {
-                          type: 'string',
-                        },
-                        CREATEDAT: {
-                          type: 'string',
-                          format: 'date-time',
-                        },
-                        UPDATEDAT: {
-                          type: 'string',
-                          format: 'date-time',
-                        },
-                        cats: {
-                          type: 'array',
-                          items: {
-                            properties: {
-                              PEOPLE_ID: {
-                                type: 'integer',
-                              },
-                              ID: {
-                                type: 'integer',
-                              },
-                              NAME: {
-                                type: 'string',
-                              },
-                              TITLE: {
-                                type: 'string',
-                              },
-                              AGE: {
-                                type: 'integer',
-                              },
-                              SKILL: {
-                                type: 'string',
-                              },
-                            },
-                          },
-                        },
-                        dogs: {
-                          type: 'array',
-                          items: {
-                            properties: {
-                              PEOPLE_ID: {
-                                type: 'integer',
-                              },
-                              ID: {
-                                type: 'integer',
-                              },
-                              NAME: {
-                                type: 'string',
-                              },
-                              TITLE: {
-                                type: 'string',
-                              },
-                              AGE: {
-                                type: 'integer',
-                              },
-                              SKILL: {
-                                type: 'string',
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
+                    items: { $ref: `#/components/schemas/${schemaName}` },
                   },
                 },
               },
@@ -243,23 +180,19 @@ const ids = ['id'];
       },
     },
     get: {
-      summary: 'Payload for the given ID',
+      summary: 'Gets an A_PEOPLE row',
     },
     create: {
-      summary: 'Not Implemented',
-      deprecated: true,
+      summary: 'Creates an A_PEOPLE row',
     },
     update: {
-      summary: 'Not Implemented',
-      deprecated: true,
+      summary: 'Updates an A_PEOPLE row',
     },
     patch: {
-      summary: 'Not Implemented',
-      deprecated: true,
+      summary: 'Patches an A_PEOPLE row',
     },
     remove: {
-      summary: 'Not Implemented',
-      deprecated: true,
+      summary: 'Removes an A_PEOPLE row',
     },
     all: {
       security: [

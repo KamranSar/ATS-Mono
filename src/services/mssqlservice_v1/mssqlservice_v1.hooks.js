@@ -1,13 +1,18 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
 const { setNow } = require('feathers-hooks-common');
+const checkPermissions = require('feathers-permissions');
 const { logSvcMsg, setUserID } = require('cdcrhooks');
 
 module.exports = {
   before: {
     all: [
       authenticate('jwt'),
-      logSvcMsg()
+      logSvcMsg(),
+      checkPermissions({
+        roles: (context) => [context.path],
+        entity: 'apiperms',
+      }),
     ],
     find: [redisCache.before()],
     get: [redisCache.before()],

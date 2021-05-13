@@ -1,5 +1,5 @@
 const serviceName = require('path').basename(__filename, '.docs.js');
-const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
+const service = require('../../index.json').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
 
 /**
  * This is the name of the ID field used by the API's {id}
@@ -9,9 +9,9 @@ const ids = ['id'];
 /**
  * This is the docs portion of this API
  */
- const schemaName = `${service.endpoint}_${service.version}`;
- const schemaNameList = `${service.endpoint}_list`;
- const docs = {
+const schemaName = `${service.name}_${service.version}`;
+const schemaNameList = `${service.name}_list`;
+const docs = {
   description: `${service.description}`,
   definitions: {
     [schemaName]: {

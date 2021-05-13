@@ -4,7 +4,6 @@ const className = './' + serviceName + '.class';
 const hooksName = './' + serviceName + '.hooks';
 const modelName = '../../models/' + serviceName + '.model';
 const createModel = require(modelName);
-const service = require('../../index.json').services.find( obj => {return obj.name == serviceName});
 const { ServiceClass } = require(className);
 const hooks = require(hooksName);
 
@@ -18,10 +17,10 @@ module.exports = function (app) {
 
   // Initialize our service with any options it requires
   // Note: This starts with a /
-  app.use(`/${service.endpoint}`, svc);
+  app.use(`/internal/${serviceName}`, svc);
 
   // Get our initialized service so that we can register hooks
   // Note: This does not start with a /
-  const lservice = app.service(`${service.endpoint}`);
+  const lservice = app.service(`internal/${serviceName}`);
   lservice.hooks(hooks);
 };

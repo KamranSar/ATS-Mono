@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:services:rawsqlservice_v2:rawsqlservice.impl');
+const serviceName = require('path').basename(__filename, '.impl.js');
+const debug = require('debug')(`${process.env.APP_NAME}:src:services:${serviceName}:${serviceName}.impl`);
 const { GeneralError, BadRequest } = require('@feathersjs/errors');
 const { readSQLFiles, validateQueryParameters } = require('cdcrhelpers');
-const queryJSON = require('./rawsqlservice.qp.json');
-
+const queryJSON = require(`./${serviceName}.qp.json`);
 
 //
 // Load the SQL queries
