@@ -29,7 +29,7 @@ const feathersClient = feathers()
       // https://docs.feathersjs.com/api/authentication/client.html#configuration
       storage: window.localStorage,
       storageKey: process.env.VUE_APP_NAME,
-      path: '/api/auth/authentication',
+      path: '/api/auth/v1/authentication',
     })
   )
   .hooks({

@@ -10,6 +10,7 @@ import store from '@/store';
 import vuetify from '@/config/vuetify';
 import VTooltip from 'v-tooltip';
 import myApp from '@/config/myApp.js';
+import feathersClient from '@/config/private/feathers.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 
 initServiceWorker();
@@ -17,6 +18,7 @@ initServiceWorker();
 Vue.config.productionTip = true;
 
 Vue.prototype.$myApp = myApp;
+Vue.prototype.$feathers = feathersClient;
 
 Vue.use(VTooltip);
 // Vuetify tooltip is a pain.

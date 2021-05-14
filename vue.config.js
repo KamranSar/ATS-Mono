@@ -36,8 +36,15 @@ module.exports = {
     // https://webpack.js.org/configuration/dev-server/  - For options for proxying
 
     proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
+      // TODO: Does order matter?
+      '/api/auth': {
+        target: 'https://apitest.cdcr.ca.gov',
+        timeout: 6000,
+        secure: false,
+        changeOrigin: true,
+      },
+      '/api/eis': {
+        target: 'https://apitest.cdcr.ca.gov',
         timeout: 6000,
         secure: false,
         changeOrigin: true,

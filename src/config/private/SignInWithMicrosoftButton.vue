@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    :loading="authenticating"
+    :loading="loading"
     :color="$vuetify.theme.dark ? '#2F2F2F' : '#FFFFFF'"
     ripple
     :tile="true"
@@ -58,6 +58,8 @@
             this.setAlertMsg(
               'API server Authentication failed. ' + e1.message || ''
             );
+          } finally {
+            this.loading = false;
           }
         } catch (e2) {
           this.setAlertMsg(
@@ -72,9 +74,6 @@
       ...get('azureAuthentication', ['azureLoading', 'azuretokenresponse']),
       ...get('FeathersAuthentication', ['isAuthenticatePending']),
       ...sync('app', ['loading']),
-      authenticating() {
-        return this.azureLoading || this.isAuthenticatePending || this.loading;
-      },
     },
   };
 </script>
