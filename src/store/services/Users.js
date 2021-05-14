@@ -4,6 +4,7 @@ import feathersClient, {
   makeServicePlugin,
   BaseModel,
 } from '@/config/private/feathers';
+import { debug } from 'feathers-hooks-common';
 
 /**
  * User Model Class
@@ -54,9 +55,9 @@ const servicePlugin = makeServicePlugin({
 });
 
 // Setup the client-side Feathers hooks.
-feathersClient.service(servicePath).hooks({
+const Users = feathersClient.service(servicePath).hooks({
   before: {
-    all: [],
+    all: [debug('Hello world!')],
     find: [],
     get: [],
     create: [],
@@ -65,7 +66,7 @@ feathersClient.service(servicePath).hooks({
     remove: [],
   },
   after: {
-    all: [],
+    all: [debug('Goodbye world!')],
     find: [],
     get: [],
     create: [],
@@ -85,4 +86,4 @@ feathersClient.service(servicePath).hooks({
 });
 
 export default servicePlugin;
-export { servicePath };
+export { servicePath, Users };
