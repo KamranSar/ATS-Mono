@@ -46,6 +46,7 @@ module.exports = function (app) {
     for (let i = 0; !oracle.connected && i <= oracle.max; ++i) {
       setTimeout(() => {
         if (!oracle.connected) {
+          // Test if connected by sending a server check
           dbOracle
             .raw('select 1+1 as result from DUAL')
             .then(() => {
@@ -61,6 +62,22 @@ module.exports = function (app) {
     }
 
     app.set('oracleClient', dbOracle);
+
+    // Once connected, keep the connection alive with a periodic server check
+    const serverHeartbeatMS = 60 * 60 * 1000; // 60 minutes
+    setInterval(() => {
+      if (oracle.connected) {
+        dbOracle
+          .raw('select 1+1 as result from DUAL')
+          .then(() => {
+            debug(`Keepalive successfully sent to ${connInfo}`);
+          })
+          .catch((error) => {
+            logger.error('Keepalive error %s - ', connInfo, { error });
+          });
+      }
+    }, serverHeartbeatMS);
+
   }
 
   // Postgres connection
