@@ -3,7 +3,7 @@
     "name": "database-template",
     "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
     "appPath": "/api/database",
-    "docsPath": "/docs",
+    "docsPath": "/docs/database",
     "release": "R1"
   },
   "services": [
