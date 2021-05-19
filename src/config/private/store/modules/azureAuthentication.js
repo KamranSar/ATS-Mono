@@ -105,8 +105,9 @@ const graphConfig = {
   //  A photo size. The supported sizes of HD photos on Microsoft 365 are as follows:
   //  48x48, 64x64, 96x96, 120x120, 240x240, 360x360, 432x432, 504x504, and 648x648.
   //  Photos can be any dimension if they are stored in Azure Active Directory.
-  profilePhotoEndpoint: 'https://graph.microsoft.com/v1.0/me/photo/$value',
-  profilePhotoMetaEndpoint: 'https://graph.microsoft.com/v1.0/me/photo',
+  profilePhotoEndpoint:
+    'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
+  profilePhotoMetaEndpoint: 'https://graph.microsoft.com/v1.0/me/photos/48x48',
   scopes: ['openid', 'profile', 'offline_access', 'email', 'User.Read'], // https://docs.microsoft.com/en-us/graph/permissions-reference
 };
 
