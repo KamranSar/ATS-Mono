@@ -22,7 +22,6 @@ modules.forEach((key) => {
     restoreState: async (key) => {
       try {
         let data = await localForageInstance.getItem(key);
-        console.log('data: ', data);
         if (PROD_ENV) {
           data = pako.inflate(data, { level: 6 });
           data = JSON.parse(new TextDecoder('utf-8').decode(data));

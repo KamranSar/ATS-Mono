@@ -7,7 +7,8 @@ This repository is a starter project based on -
 1. Vue CLI
 2. Vuex + Pathify
 3. Vuetify + standard layouts + dashboard
-4. Axios for using APIs
+4. Feathers client for APIs
+5. vue-browser-acl for ACLs
 
 The objective is to keep things simple for simple client/server projects.
 
@@ -21,7 +22,7 @@ If you haven't already... setting up a backend is easy.
 git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/api-router-template
 cd api-router-template
 npm install
-cd /scripts
+cd scripts
 ./start_db.sh
 npm run dev
 ```
@@ -45,7 +46,7 @@ Below outlines the default directory structure the template comes with:
 
 ```
 .
-├── acl - vue-simple-acl folder
+├── acl - vue-browser-acl folder
 ├── App.vue
 ├── components - Vue components live here
 │   ├── layouts

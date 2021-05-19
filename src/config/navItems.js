@@ -82,7 +82,7 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
     meta: {
-      can: 'superadmin',
+      can: 'is-admin',
       fail: '4oh4',
     },
     children: [
@@ -90,6 +90,10 @@ const routes = [
         icon: 'mdi-account-multiple-outline',
         path: 'users',
         name: 'Users',
+        meta: {
+          can: 'is-user-admin',
+          fail: '4oh4',
+        },
         // beforeEnter: async (to, from, next) => {
         //   const getUser = async () => {
         //     await store.set('app/loading', true);
@@ -122,7 +126,7 @@ const routes = [
     path: '/cdcr-dashboard',
     name: 'CDCR Dashboard',
     beforeEnter() {
-      location.href = 'http://localhost:8081';
+      location.href = 'http://localhost:8081'; // TODO: Replace this with the cdcr dashboard URL
     },
   },
   {

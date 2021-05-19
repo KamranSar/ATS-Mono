@@ -2,20 +2,14 @@ import Vue from 'vue';
 import store from '@/store';
 import router from '@/router';
 import Acl from 'vue-browser-acl';
-
-const user = () => {
-  return store.state.users.user;
-};
+import defaultAcls from '@/config/private/acl';
+const user = () => store.state.users.user; // NOTE: Cannot do user = store.state.users.user; Must be evaluated.
 
 const acls = (acl) => {
-  // Only admin users can do admin-stuff
-  acl.rule(
-    'superadmin',
-    (user) => user && (user.approles.includes('admin') || user.isapiadmin)
-  );
+  defaultAcls(acl);
+  /*  Add your own acls here...
   acl.rule('fluffy', (user) => user && user.approles.includes('fluffy'));
   acl.rule('is-cool', (user) => {
-    console.log('User: ', user);
     return user && user.approles.includes('coolguy');
   });
   acl.rule(
@@ -30,7 +24,7 @@ const acls = (acl) => {
       user &&
       user.approles.includes('admin') &&
       user.approles.includes('coolguy')
-  );
+  ); */
 };
 
 Vue.use(Acl, user, acls, { router });

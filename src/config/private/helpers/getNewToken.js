@@ -23,7 +23,6 @@ const getNewToken = async () => {
       // Now sign into Middle Tier
       // console.log(this.isAuthenticated);
       const { user } = await feathers.authenticate(packet);
-      console.log('user: ', user);
       store.set('users/user', user);
     } catch (error) {
       store.dispatch(
