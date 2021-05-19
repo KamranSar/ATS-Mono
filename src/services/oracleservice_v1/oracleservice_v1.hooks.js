@@ -16,9 +16,9 @@ module.exports = {
     ],
     find: [redisCache.before()],
     get: [redisCache.before()],
-    create: [setUserID('UPDATEDBY'), setNow('CREATEDAT'), setNow('UPDATEDAT')],
-    update: [setUserID('UPDATEDBY'), setNow('UPDATEDAT'), discard('CREATEDAT')],
-    patch: [setUserID('UPDATEDBY'), setNow('UPDATEDAT'), discard('CREATEDAT')],
+    create: [setNow('CREATEDAT'), setNow('UPDATEDAT')],
+    update: [setNow('UPDATEDAT'), discard('CREATEDAT')],
+    patch: [setNow('UPDATEDAT'), discard('CREATEDAT')],
     remove: []
   },
 
