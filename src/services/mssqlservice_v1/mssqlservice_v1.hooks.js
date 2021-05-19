@@ -1,6 +1,6 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
-const { setNow } = require('feathers-hooks-common');
+const { discard, setNow } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
 const { logSvcMsg, setUserID } = require('cdcrhooks');
 
@@ -17,8 +17,8 @@ module.exports = {
     find: [redisCache.before()],
     get: [redisCache.before()],
     create: [setUserID('updatedby'), setNow('createdat'), setNow('updatedat')],
-    update: [setUserID('updatedby'), setNow('updatedat')],
-    patch: [setUserID('updatedby'), setNow('updatedat')],
+    update: [setUserID('updatedby'), setNow('updatedat'), discard('createdat')],
+    patch: [setUserID('updatedby'), setNow('updatedat'), discard('createdat')],
     remove: []
   },
 

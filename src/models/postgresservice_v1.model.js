@@ -21,6 +21,7 @@ module.exports = function (app) {
           table.string('firstname');
           table.timestamp('createdat').defaultTo(db.fn.now());
           table.timestamp('updatedat').defaultTo(db.fn.now());
+          table.string('updatedby').defaultTo('NO_ID');
         })
           .then(() => debug(`Created ${tableName} table`))
           .catch(e => logger.error(`Error creating ${tableName} table`, e));

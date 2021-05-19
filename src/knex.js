@@ -38,8 +38,7 @@ module.exports = function (app) {
     const connInfo = `Oracle server at: ${connection.connectString}`;
     debug(`Connecting to ${connInfo}...  `);
     const dbOracle = knex({
-      client: 'oracledb', native: false, connection, pool, acquireConnectionTimeout: connTimeout,
-      wrapIdentifier: (value, origImpl, queryContext) => value 
+      client: 'oracledb', native: false, connection, pool, acquireConnectionTimeout: connTimeout
     });
     // Test the connection
     let oracle = { max: 21, errcnt: 0, connected: false, timeout: 10000 };

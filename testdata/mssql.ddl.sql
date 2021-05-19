@@ -10,6 +10,7 @@ CREATE TABLE [dbo].[a_people]
   [location] [nvarchar](50) NOT NULL,
   [createdat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
   [updatedat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
+  [updatedby] [nvarchar](50) DEFAULT 'NO_ID',
   CONSTRAINT a_people_pk PRIMARY KEY (id) 
 );
 SET ANSI_PADDING ON;
@@ -31,6 +32,7 @@ CREATE TABLE [dbo].[a_cats]
   [skill] [nvarchar](50) NOT NULL, 
   [createdat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
   [updatedat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
+  [updatedby] [nvarchar](50) DEFAULT 'NO_ID',
   CONSTRAINT a_cats_pk PRIMARY KEY (people_id,id) 
 );
 
@@ -45,6 +47,7 @@ CREATE TABLE [dbo].[a_dogs]
   [skill] [nvarchar](50) NOT NULL, 
   [createdat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
   [updatedat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
+  [updatedby] [nvarchar](50) DEFAULT 'NO_ID',
   CONSTRAINT a_dogs_pk PRIMARY KEY (people_id,id) 
 );
 
@@ -59,6 +62,7 @@ CREATE TABLE [dbo].[a_birds]
   [skill] [nvarchar](50) NOT NULL, 
   [createdat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
   [updatedat] Datetimeoffset(6) NOT NULL DEFAULT GETDATE(),
+  [updatedby] [nvarchar](50) DEFAULT 'NO_ID',
   CONSTRAINT a_birds_pk PRIMARY KEY (people_id,id) 
 );
 

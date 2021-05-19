@@ -4,7 +4,7 @@ const {runQuery} = require(`./${serviceName}.impl.js`);
 exports.ServiceClass = class ServiceClass {
   constructor (options, app) {
     this.options = options || {};
-    this.app = app;
+    this.options.app = app;
   }
 
   async find (params) {
