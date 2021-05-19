@@ -8,9 +8,16 @@ requireModule.keys().forEach((filename) => {
   // remove the store.js extension and capitalize
   const pluginName = filename.replace(/(\.\/|\.js)/g, '');
   if (String(pluginName).toLowerCase() !== 'index') {
-    plugins.push(
-      requireModule(filename).default.plugin || requireModule(filename).plugin
-    );
+    // indexedDB is a special case because it's persisted by module name
+    if (filename.includes('indexedDB')) {
+      const module =
+        requireModule(filename).default || requireModule(filename).plugin;
+      plugins.push(...module);
+    } else {
+      plugins.push(
+        requireModule(filename).default.plugin || requireModule(filename).plugin
+      );
+    }
   }
 });
 // console.log('plugins: ', plugins);

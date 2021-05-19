@@ -1,35 +1,39 @@
 <template>
-  <v-container grid-list-md fluid>
-    Welcome Home
-    <v-btn @click="getUser()">Get Users</v-btn>
-    <v-btn @click="getHeartbeat()">Get Heartbeat</v-btn>
+  <Panel icon="mdi-view-dashboard" title="Home">
+    <template slot="content">
+      Welcome Home
+      <pre class="text-truncate">
+      <!-- {{ user }} -->
+    </pre>
+      <!-- <v-btn v-can:is-admin @click="getHeartbeat()">Get Heartbeat</v-btn> -->
+      <button v-role:is-cool>Click me if cool</button>
+      <button v-role:admin>Click me if admin</button>
 
-    <Footer app></Footer>
-  </v-container>
+      <Footer app></Footer>
+    </template>
+  </Panel>
 </template>
 
 <script>
-  import getNewToken from '@/config/private/getNewToken';
+  import Panel from '@/components/layouts/Panel';
   import Footer from '@/components/layouts/Footer';
-  import { Users } from '@/store/services/Users.js';
   import Heartbeat from '@/feathers/Heartbeat.js';
+  import { sync } from 'vuex-pathify';
   export default {
     name: 'Home',
     components: {
       Footer,
+      Panel,
     },
     methods: {
-      async getUser() {
-        await getNewToken();
-        // TODO: Create a feathers class object to export the feathers client
-        // and not have to create a global hook to check for expiration on the token
-        const users = await Users.find();
-        console.log('users: ', users);
-      },
       async getHeartbeat() {
         const heartbeat = await Heartbeat.find();
         console.log('heartbeat: ', heartbeat);
+        console.log(this);
       },
+    },
+    computed: {
+      ...sync('users', ['user']),
     },
   };
 </script>

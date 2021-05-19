@@ -7,9 +7,13 @@
  * import { anonymousItems, adminItems, userItems } from "@/config/routeItems.js";
  */
 
-import { requireToken, requireRoleAdmin } from '@/router/helpers/guards.js';
-import { checkForChildren, logout } from '@/router/helpers/index.js';
+import { requireToken } from '@/router/helpers/guards.js';
+import { checkForChildren } from '@/router/helpers/index.js';
+import logout from '@/config/private/helpers/logout';
+// import getNewToken from '@/config/private/helpers/getNewToken';
+// import Users from '@/feathers/Users';
 import Home from '@/views/Home.vue';
+// import store from '@/store';
 
 /** Filter for routes only in the list
  * @param {Array[String]} listOfRouteNames - Array of route names.
@@ -77,11 +81,27 @@ const routes = [
     path: '/admin',
     component: () =>
       import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
+    meta: {
+      can: 'superadmin',
+      fail: '4oh4',
+    },
     children: [
       {
         icon: 'mdi-account-multiple-outline',
         path: 'users',
         name: 'Users',
+        // beforeEnter: async (to, from, next) => {
+        //   const getUser = async () => {
+        //     await store.set('app/loading', true);
+        //     await getNewToken();
+        //     const users = await Users.find();
+        //     store.set('users/users', users.data);
+        //     await store.set('app/loading', false);
+        //   };
+
+        //   await getUser();
+        //   next();
+        // },
         component: () =>
           import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
         // children: [],
@@ -102,7 +122,7 @@ const routes = [
     path: '/cdcr-dashboard',
     name: 'CDCR Dashboard',
     beforeEnter() {
-      location.href = 'https://apps.cdcr.ca.gov';
+      location.href = 'http://localhost:8081';
     },
   },
   {
@@ -117,11 +137,11 @@ const routes = [
 // Public Routes
 const anonymousItems = getRoutesByName(['Login']);
 // Routes for Anyone Logged In
-const userItems = getRoutesByName(['Home', 'Admin']);
+const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName(['Home', 'Logout']);
+const userToolbarItems = getRoutesByName(['Home', 'Logout', 'CDCR Dashboard']);
 
 export {
   getRoutesByName,

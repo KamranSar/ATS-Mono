@@ -1,12 +1,9 @@
-// https://vuex.feathersjs.com/getting-started.html#feathers-client-feathers-vuex
-
 import feathers from '@feathersjs/feathers';
 import auth from '@feathersjs/authentication-client';
 // import socketio from '@feathersjs/socketio-client';
 // import io from 'socket.io-client';
 const rest = require('@feathersjs/rest-client');
 import { iff, discard } from 'feathers-hooks-common';
-import feathersVuex from 'feathers-vuex';
 
 let API_URL = window.location.origin;
 
@@ -44,20 +41,3 @@ const feathersClient = feathers()
   });
 
 export default feathersClient;
-
-// Setting up feathers-vuex
-const {
-  makeServicePlugin,
-  makeAuthPlugin,
-  BaseModel,
-  models,
-  FeathersVuex,
-} = feathersVuex(feathersClient, {
-  // https://vuex.feathersjs.com/vue-plugin.html#using-the-vue-plugin
-  enableEvents: false, // Must have socket.io wired up to enable this
-  // nameStyle: 'path', // Use full API path as Vuex name.  In order to access this, use ['api/auth/v1/service'] syntax in an array.
-  nameStyle: 'short',
-  whitelist: ['$regex', '$options'],
-});
-
-export { makeAuthPlugin, makeServicePlugin, BaseModel, models, FeathersVuex };

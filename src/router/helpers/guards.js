@@ -13,13 +13,6 @@ const requireAuth = (to, from, next) => {
   else next({ name: 'Login' });
 };
 
-const requireRoleAdmin = (to, from, next) => {
-  const payload = store.get('FeathersAuthentication/payload');
-  const user = payload.user;
-  if (user && String(user.role).toLowerCase() === 'admin') next();
-  else next({ path: '/404' });
-};
-
 let previouslyRestored = false;
 const waitForStorageToBeReady = async (to, from, next) => {
   try {
@@ -34,4 +27,4 @@ const waitForStorageToBeReady = async (to, from, next) => {
   next();
 };
 
-export { requireToken, requireAuth, requireRoleAdmin, waitForStorageToBeReady };
+export { requireToken, requireAuth, waitForStorageToBeReady };

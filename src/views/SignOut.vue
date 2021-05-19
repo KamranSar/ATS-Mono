@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import { signout } from '@/router/helpers/index.js';
+  import signout from '@/config/private/helpers/signout';
   import { ref } from '@vue/composition-api';
 
   export default {

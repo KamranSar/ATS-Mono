@@ -43,8 +43,9 @@
       </template>
     </v-list>
 
-    <v-list v-if="isOrgAdmin">
-      <template v-for="item in adminItems">
+    <!-- FIXME: v-if="isOrgAdmin" -->
+    <v-list>
+      <template v-for="item in adminItems" v-can:is-admin>
         <NavListGroup
           v-if="item.children"
           :key="item.name"
@@ -85,13 +86,11 @@
       const myPhoto = get('azureAuthentication/myPhoto');
       const displayName = get('azureAuthentication/displayName');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
-      const isOrgAdmin = get('FeathersAuthentication/isOrgAdmin');
       return {
         leftDrawOpen,
         myPhoto,
         displayName,
         isAzureLoggedIn,
-        isOrgAdmin,
         anonymousItems,
         userItems,
         adminItems,

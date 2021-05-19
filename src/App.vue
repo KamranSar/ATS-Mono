@@ -1,30 +1,22 @@
 <template>
   <v-app>
-    <Catch label="AppBar">
-      <AppBar></AppBar>
-    </Catch>
+    <AppBar></AppBar>
 
-    <Catch label="LeftNav">
-      <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
-    </Catch>
+    <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
 
-    <Catch label="RightNav">
-      <NavDrawerRight v-if="rightDrawEnabled" title="Right side Drawer">
-        <template v-slot:content>
-          <v-list>
-            <v-list-item v-for="n in 5" :key="n" link>
-              <v-list-item-content>
-                <v-list-item-title>Item {{ n }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </template>
-      </NavDrawerRight>
-    </Catch>
+    <NavDrawerRight v-if="rightDrawEnabled" title="Right side Drawer">
+      <template v-slot:content>
+        <v-list>
+          <v-list-item v-for="n in 5" :key="n" link>
+            <v-list-item-content>
+              <v-list-item-title>Item {{ n }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+    </NavDrawerRight>
 
-    <Catch label="Snackbar">
-      <Snackbar />
-    </Catch>
+    <Snackbar />
 
     <Catch label="Main">
       <v-main>
@@ -32,11 +24,9 @@
       </v-main>
     </Catch>
 
-    <Catch label="BottomNav">
-      <BottomNavBar
-        v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
-      ></BottomNavBar>
-    </Catch>
+    <BottomNavBar
+      v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
+    ></BottomNavBar>
   </v-app>
 </template>
 

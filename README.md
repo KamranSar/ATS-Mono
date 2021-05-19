@@ -45,21 +45,29 @@ Below outlines the default directory structure the template comes with:
 
 ```
 .
+├── acl - vue-simple-acl folder
 ├── App.vue
 ├── components - Vue components live here
 │   ├── layouts
 │   │   ├── navigation
 │   │   │   ├── helpers
-│   ├── mixins
-│   │   └── Install.js - PWA Install Mixin
 │   └── util
+├── compositions - Vue 3 composition functions
 ├── config - Application configuration folder
-│   ├── private - Underlying template code, DO NOT MODIFY
+│   ├── private - Underlying template code available for use but.. DO NOT MODIFY
+│   │   ├── components - Vue components
+│   │   ├── feathers.js - Access to feathers services with feathers.service(...).get()
+│   │   ├── helpers - Helper functions
+│   │   └── store
+│   │       ├── modules
+│   │       └── plugins
+├── feathers - Exported feathers services
+├── mixins
+│   └── Install.js - PWA Install Mixin
 ├── router - Vue Router folder
 │   ├── helpers
 ├── store - Vuex store uses VuexPersistence
 │   ├── modules
-│   ├── plugins
-│   └── services
+│   └── plugins
 └── views - Router Views (See config/navItems.js)
 ```

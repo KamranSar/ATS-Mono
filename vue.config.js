@@ -3,7 +3,7 @@ process.env.VUE_APP_NAME =
   process.env.VUE_APP_NAME || require('./package.json').name;
 
 module.exports = {
-  transpileDependencies: ['vuetify', 'vuex-persist', 'feathers-vuex'],
+  transpileDependencies: ['vuetify', 'vuex-persist'],
   lintOnSave: true,
   integrity: false, // enable Subresource Integrity (SRI) on <link rel="stylesheet"> and <script> tags in generated HTML.
   // crossorigin: "anonymous",
@@ -38,13 +38,13 @@ module.exports = {
     proxy: {
       // TODO: Does order matter?
       '/api/auth': {
-        target: 'https://apitest.cdcr.ca.gov',
+        target: process.env.VUE_APP_PROXY_TARGET,
         timeout: 6000,
         secure: false,
         changeOrigin: true,
       },
       '/api/eis': {
-        target: 'https://apitest.cdcr.ca.gov',
+        target: process.env.VUE_APP_PROXY_TARGET,
         timeout: 6000,
         secure: false,
         changeOrigin: true,

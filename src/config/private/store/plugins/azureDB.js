@@ -4,7 +4,6 @@
 import VuexPersistence from '@/../local_modules/vuex-persist';
 import localForage from 'localforage';
 import pako from 'pako';
-import { servicePath as usersServicePath } from '@/store/services/Users';
 
 const PROD_ENV = process.env.NODE_ENV === 'production'; // Only do compression during production
 const STORAGE_NAME = 'azureDB'; // All apps will share the same azureDB instance.
@@ -14,12 +13,6 @@ const localForageInstance = localForage.createInstance({
   name: STORAGE_NAME, // database name
   storeName: 'azureInfo', // table name
 });
-
-const modules = [
-  'azureAuthentication',
-  'FeathersAuthentication',
-  usersServicePath,
-]; // Modules you want to save to persistence
 
 const vuexPersist = new VuexPersistence({
   key: STORAGE_NAME, // The key to store the state on in the storage provider.
@@ -65,18 +58,7 @@ const vuexPersist = new VuexPersistence({
         myPhoto: state.azureAuthentication.myPhoto,
         myPhotoMetaData: state.azureAuthentication.myPhotoMetaData,
       },
-      FeathersAuthentication: {
-        accessToken: state.FeathersAuthentication.accessToken,
-        payload: state.FeathersAuthentication.payload,
-        user: state.FeathersAuthentication.user,
-      },
-      [usersServicePath]: state[usersServicePath],
     };
-  },
-  filter: (mutation) => {
-    return !modules.every((name) => {
-      return !mutation.type.includes(name + '/');
-    });
   },
 });
 

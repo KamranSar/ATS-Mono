@@ -1,10 +1,11 @@
 import myApp from '@/config/myApp';
 import store from '@/store';
+import feathers from '@/config/private/feathers';
 
 /**
  * Call this function to get a new token silently
  *
- * import getNewToken from "@/config/private/getNewToken.js";
+ * import getNewToken from "@/config/private/helpers/getNewToken.js";
  * <v-btn @click="getNewToken()">Extend current session</v-btn>
  */
 const getNewToken = async () => {
@@ -21,7 +22,9 @@ const getNewToken = async () => {
       // console.log('packet: ', packet);
       // Now sign into Middle Tier
       // console.log(this.isAuthenticated);
-      await store.dispatch('FeathersAuthentication/authenticate', packet);
+      const { user } = await feathers.authenticate(packet);
+      console.log('user: ', user);
+      store.set('users/user', user);
     } catch (error) {
       store.dispatch(
         'alert/setAlertMsg',

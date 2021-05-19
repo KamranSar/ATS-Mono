@@ -21,7 +21,7 @@
     components: {
       Panel: () => import('@/components/layouts/Panel'),
       MicrosoftLoginButton: () =>
-        import('@/config/private/SignInWithMicrosoftButton'),
+        import('@/config/private/components/SignInWithMicrosoftButton'),
     },
   };
 </script>

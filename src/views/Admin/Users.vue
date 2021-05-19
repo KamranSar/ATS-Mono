@@ -7,11 +7,12 @@
 
 <script>
   import useVuexPathify from '@/compositions/useVuexPathify';
+
   export default {
     setup(props, context) {
-      const { sync } = useVuexPathify(context);
-      const FeathersAuthentication = sync('FeathersAuthentication', ['user']);
-      return { ...FeathersAuthentication.value };
+      const { get } = useVuexPathify(context);
+      const user = get('users/user');
+      return { user };
     },
   };
 </script>
