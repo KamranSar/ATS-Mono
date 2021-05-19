@@ -2,7 +2,7 @@ const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
 const { discard, setNow } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
-const { logSvcMsg, setUserID } = require('cdcrhooks');
+const { logSvcMsg } = require('cdcrhooks');
 
 module.exports = {
   before: {
