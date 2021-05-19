@@ -96,11 +96,11 @@ VALUES
 INSERT INTO A_PEOPLE
   (ID, LASTNAME, FIRSTNAME)
 VALUES
-  (6, 'Jon', 'Wegsteen');
+  (6, 'Wegsteen', 'Jon');
 INSERT INTO A_PEOPLE
   (ID, LASTNAME, FIRSTNAME)
 VALUES
-  (7, 'Jeffery', 'Funk');
+  (7, 'Funk', 'Jeffery');
 
 -- Kevin Baroni inserts
 -- A_CATS
