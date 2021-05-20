@@ -2,7 +2,7 @@ const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
 const { discard, setNow } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
-const { logSvcMsg } = require('cdcrhooks');
+const { logSvcMsg, fixOracleQueryParams, setUserIDAsString } = require('cdcrhooks');
 
 module.exports = {
   before: {
@@ -14,11 +14,11 @@ module.exports = {
         entity: 'apiperms',
       }),
     ],
-    find: [redisCache.before()],
+    find: [redisCache.before(), fixOracleQueryParams()],
     get: [redisCache.before()],
-    create: [setNow('CREATEDAT'), setNow('UPDATEDAT')],
-    update: [setNow('UPDATEDAT'), discard('CREATEDAT')],
-    patch: [setNow('UPDATEDAT'), discard('CREATEDAT')],
+    create: [setUserIDAsString('UPDATEDBY'), setNow('CREATEDAT'), setNow('UPDATEDAT')],
+    update: [setUserIDAsString('UPDATEDBY'), setNow('UPDATEDAT'), discard('CREATEDAT')],
+    patch: [setUserIDAsString('UPDATEDBY'), setNow('UPDATEDAT'), discard('CREATEDAT')],
     remove: []
   },
 
