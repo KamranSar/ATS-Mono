@@ -11,129 +11,31 @@
       "name": "mssqlservice",
       "version": "v1",
       "enabled": true,
-      "description": "CRUD services for an MS-SQL database. The A_PEOPLE table is used for this template.",
-      "httpMethods": {
-        "find": {
-          "allowed": true,
-          "authorization": true
-        },
-        "get": {
-          "allowed": true,
-          "authorization": true
-        },
-        "create": {
-          "allowed": true,
-          "authorization": true
-        },
-        "update": {
-          "allowed": true,
-          "authorization": true
-        },
-        "patch": {
-          "allowed": true,
-          "authorization": true
-        },
-        "remove": {
-          "allowed": true,
-          "authorization": true
-        }
-      }
+      "description": "CRUD services for an MS-SQL database. The A_PEOPLE table is used for this template."
     },
     {
       "name": "oracleservice",
       "version": "v1",
       "enabled": true,
-      "description": "CRUD services for an Oracle database. The A_PEOPLE table is used for this template.",
-      "httpMethods": {
-        "find": {
-          "allowed": true,
-          "authorization": true
-        },
-        "get": {
-          "allowed": true,
-          "authorization": true
-        },
-        "create": {
-          "allowed": true,
-          "authorization": true
-        },
-        "update": {
-          "allowed": true,
-          "authorization": true
-        },
-        "patch": {
-          "allowed": true,
-          "authorization": true
-        },
-        "remove": {
-          "allowed": true,
-          "authorization": true
-        }
-      }
+      "description": "CRUD services for an Oracle database. The A_PEOPLE table is used for this template."
     },
     {
       "name": "postgresservice",
       "version": "v1",
       "enabled": true,
-      "description": "CRUD services for an Postgres database. The A_PEOPLE table is used for this template.",
-      "httpMethods": {
-        "find": {
-          "allowed": true,
-          "authorization": true
-        },
-        "get": {
-          "allowed": true,
-          "authorization": true
-        },
-        "create": {
-          "allowed": true,
-          "authorization": true
-        },
-        "update": {
-          "allowed": true,
-          "authorization": true
-        },
-        "patch": {
-          "allowed": true,
-          "authorization": true
-        },
-        "remove": {
-          "allowed": true,
-          "authorization": true
-        }
-      }
+      "description": "CRUD services for an Postgres database. The A_PEOPLE table is used for this template."
     },
     {
       "name": "rawsqlservice",
       "version": "v1",
       "enabled": true,
-      "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template.",
-      "httpMethods": {
-        "find": {
-          "allowed": true,
-          "authorization": true
-        },
-        "get": {
-          "allowed": true,
-          "authorization": true
-        }
-      }
+      "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template."
     },
     {
       "name": "rawsqlservice",
       "version": "v2",
       "enabled": true,
-      "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template.",
-      "httpMethods": {
-        "find": {
-          "allowed": true,
-          "authorization": true
-        },
-        "get": {
-          "allowed": true,
-          "authorization": true
-        }
-      }
+      "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template."
     }
   ]
 }
