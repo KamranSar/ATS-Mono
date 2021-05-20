@@ -25,6 +25,22 @@ Set vars like APP_PORT to what you need
 npm run dev
 ```
 
+### Via VS Code add/change the service(s) you will publish:
+
+```
+cd MyAppName
+code .
+a) Edit the "/MyAppName/src/index.json" file to add/change services
+b) Copy a service folder from "/MyAppName/src/services/service1_v1" to "/MyAppName/src/services/service2_v1" 
+   i) Change all filename prefixess in folder "/MyAppName/src/services/service2_v1" to service2_v1.x.js
+c) Copy a model file from "/MyAppName/src/model/service1_v1.model.js" to "/MyAppName/src/model/service2_v1.model.js" 
+   i) Modify model appropriate for your service (schema for full-CRUD or no schema for read-only)
+d) Set the appropriate hooks for your new service.
+   i) Always keep hooks related to auth and permissions.
+e) npm run dev
+
+```
+
 ## Lints and fixes files
 
 ```
