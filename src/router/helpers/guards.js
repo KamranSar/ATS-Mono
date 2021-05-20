@@ -1,5 +1,6 @@
 // https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
 import store from '@/store/index';
+import getNewToken from '@/config/private/helpers/getNewToken';
 
 const requireToken = (to, from, next) => {
   const token = store.get('azureAuthentication/azuretokenresponse');
@@ -19,6 +20,8 @@ const waitForStorageToBeReady = async (to, from, next) => {
     await Promise.all(store.restored); // Set by VuexPersist
     if (!previouslyRestored) {
       // TODO: Add your custom initialization code here : do the things you want to do only once after the store is restored
+      const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
+      if (loggedIn) await getNewToken();
       previouslyRestored = true;
     }
   } catch (e) {

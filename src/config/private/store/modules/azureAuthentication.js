@@ -1,6 +1,5 @@
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 import store from '@/store';
+import myApp from '@/config/myApp';
 
 import { make } from 'vuex-pathify';
 
@@ -142,8 +141,7 @@ const getDefaultState = () => {
     myInfo: null,
     myPhoto: null,
     myPhotoMetaData: null,
-    // appName: HtmlWebpackPlugin.options.title,
-    appName: 'CDCR Template',
+    appName: myApp.name,
   };
 };
 

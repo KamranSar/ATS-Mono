@@ -1,17 +1,15 @@
 <template>
   <Panel icon="mdi-view-dashboard" title="Home">
     <template slot="content">
-      Welcome Home
-      <pre class="text-truncate">
-      <!-- {{ user }} -->
-    </pre>
-      <!-- <v-btn v-can:is-admin @click="getHeartbeat()">Get Heartbeat</v-btn> -->
-      <button v-role:is-cool @click="toggleAlert('Cool guy eh?')">
-        Can click me if cool
-      </button>
-      <button v-role:is-admin @click="toggleAlert('Do you feel powerful?')">
+      <p>Welcome Home</p>
+
+      <v-btn
+        v-role:is-admin
+        color="success"
+        @click="toggleAlert('Do you feel powerful?')"
+      >
         Can click me if admin
-      </button>
+      </v-btn>
 
       <Footer app></Footer>
     </template>
@@ -34,10 +32,10 @@
       async getHeartbeat() {
         const heartbeat = await Heartbeat.find();
         console.log('heartbeat: ', heartbeat);
-        console.log(this);
       },
       toggleAlert(message) {
         this.setAlertMsg(message);
+        this.getHeartbeat();
         setTimeout(() => {
           this.setAlertMsg();
         }, 5000);

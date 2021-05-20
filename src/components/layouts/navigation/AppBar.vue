@@ -26,7 +26,7 @@
       </v-avatar>
     </v-app-bar-nav-icon>
 
-    <span class="title ml-1">{{ $myApp.name }}</span>
+    <span class="title ml-1">{{ $myApp.name | toTitleCase }}</span>
 
     <v-spacer></v-spacer>
 
@@ -87,6 +87,8 @@
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
+  import toTitleCase from '@/filters/toTitleCase';
+
   export default {
     components: {
       NavListItem,
@@ -117,6 +119,9 @@
         onClick,
         getRouterColor,
       };
+    },
+    filters: {
+      toTitleCase,
     },
   };
 </script>
