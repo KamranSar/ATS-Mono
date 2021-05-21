@@ -1,24 +1,26 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
-const { discard, setNow } = require('feathers-hooks-common');
+const { discard, setNow, iff } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
-const { logSvcMsg, setUserID } = require('cdcrhooks');
+const { logSvcMsg, setUserIDAsString } = require('cdcrhooks');
+const server = require('../../index.json').server;
+const authActive = (process.env.NODE_ENV != 'development' || server.authActive) ? true : false;
 
 module.exports = {
   before: {
     all: [
-      authenticate('jwt'),
+      iff(authActive, authenticate('jwt')),
       logSvcMsg(),
-      checkPermissions({
+      iff(authActive, checkPermissions({
         roles: (context) => [context.path],
         entity: 'apiperms',
-      }),
+      })),
     ],
     find: [redisCache.before()],
     get: [redisCache.before()],
-    create: [setUserID('updatedby'), setNow('createdat'), setNow('updatedat')],
-    update: [setUserID('updatedby'), setNow('updatedat'), discard('createdat')],
-    patch: [setUserID('updatedby'), setNow('updatedat'), discard('createdat')],
+    create: [setUserIDAsString('updatedby'), setNow('createdat'), setNow('updatedat')],
+    update: [setUserIDAsString('updatedby'), setNow('updatedat'), discard('createdat')],
+    patch: [setUserIDAsString('updatedby'), setNow('updatedat'), discard('createdat')],
     remove: []
   },
 

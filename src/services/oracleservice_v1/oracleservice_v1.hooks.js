@@ -1,18 +1,20 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
-const { discard, setNow } = require('feathers-hooks-common');
+const { discard, setNow, iff } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
-const { logSvcMsg, fixOracleQueryParams, setUserIDAsString } = require('cdcrhooks');
+const { logSvcMsg, setUserIDAsString, fixOracleQueryParams } = require('cdcrhooks');
+const server = require('../../index.json').server;
+const authActive = (process.env.NODE_ENV != 'development' || server.authActive) ? true : false;
 
 module.exports = {
   before: {
     all: [
-      authenticate('jwt'),
+      iff(authActive, authenticate('jwt')),
       logSvcMsg(),
-      checkPermissions({
+      iff(authActive, checkPermissions({
         roles: (context) => [context.path],
         entity: 'apiperms',
-      }),
+      })),
     ],
     find: [redisCache.before(), fixOracleQueryParams()],
     get: [redisCache.before()],
