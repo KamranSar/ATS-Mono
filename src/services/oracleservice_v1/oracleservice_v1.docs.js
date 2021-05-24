@@ -146,6 +146,37 @@ const docs = {
             }
           }
         },
+        403: {
+          description: 'forbidden or incorrect permissions',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  message: {
+                    type: 'string',
+                  },
+                  code: {
+                    type: 'integer',
+                    default: 403,
+                  },
+                  className: {
+                    type: 'string',
+                  },
+                  errors: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
+                }
+              }
+            }
+          }
+        },
         500: {
           description: 'general error',
           content: {
