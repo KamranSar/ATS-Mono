@@ -5,26 +5,34 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Dev Windows",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}\\src",
+      "outputCapture": "std",
+    },
+    {
       "type": "node",
       "request": "launch",
-      "name": "Launch Dev Build",
+      "name": "Launch Dev Linux",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/index.js",
       "outputCapture": "std",
       "env": {
         "NODE_ENV": "development"
-      }      
+      }
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Prod Build",
+      "name": "Launch Prod Linux",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/index.js",
       "outputCapture": "std",
       "env": {
         "NODE_ENV": "production"
-      } 
+      }
     }
   ]
 }
