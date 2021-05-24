@@ -1,6 +1,6 @@
 {
   "name": "database-template",
-  "description": "Template for developing Feathers Database servers for the EIS-MiddleTier.",
+  "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
   "version": "1.0.0",
   "homepage": "",
   "private": true,
