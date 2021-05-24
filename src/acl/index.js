@@ -3,7 +3,8 @@ import store from '@/store';
 import router from '@/router';
 import Acl from 'vue-browser-acl';
 import defaultAcls from '@/config/private/acl';
-const user = () => store.state.users.user; // NOTE: Cannot do user = store.state.users.user; Must be evaluated.
+
+const user = () => (store.state.users.user ? store.state.users.user : null); // NOTE: Cannot do user = store.state.users.user; Must be evaluated.
 
 const acls = (acl) => {
   defaultAcls(acl);

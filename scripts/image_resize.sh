@@ -3,8 +3,10 @@
 # Image Resizer
 # Author: Nurthin Aziz
 # This shell script takes in a single argument pointing to a .svg or .png
-# This shell script ensures that all dependencies are installed before called python3 image_resize.py $1
-# Example: ./image_resize.sh ~/Documents/Icons/logo.png
+# This shell script ensures that all dependencies are installed before executing <python3 image_resize.py ../$1>
+# Example: 
+# cd scripts
+#./image_resize.sh ~/Documents/Icons/logo.png
 
 echo "Running image resizer: "
 echo "Checking dependencies..."

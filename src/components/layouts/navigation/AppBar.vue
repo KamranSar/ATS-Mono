@@ -63,15 +63,20 @@
             ></NavListGroup>
             <NavListItem v-else :key="i" :item="item"></NavListItem>
           </template>
+          <v-list-item>
+            <v-list-item-title>Dark Mode</v-list-item-title>
+            <v-list-item-action class="pr-3">
+              <v-switch v-model="darkMode"></v-switch>
+            </v-list-item-action>
+          </v-list-item>
         </v-list>
+        <p class="text-right caption grey--text ma-0 pr-1">
+          v{{ $myApp.version }} uid-{{ $myApp.gitId }}
+        </p>
       </v-menu>
     </v-card>
 
-    <v-btn
-      v-if="rightDrawEnabled && isAzureLoggedIn"
-      @click="rightDrawOpen = !rightDrawOpen"
-      icon
-    >
+    <v-btn v-if="rightDrawEnabled" @click="rightDrawOpen = !rightDrawOpen" icon>
       <v-icon>mdi-menu</v-icon>
     </v-btn>
   </v-app-bar>
@@ -100,19 +105,23 @@
       const loading = sync('app/loading');
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
       const rightDrawOpen = sync('userPrefs/rightDrawOpen');
+      const darkMode = sync('userPrefs/darkMode');
       const leftDrawEnabled = get('appFeatures/leftDrawEnabled');
       const rightDrawEnabled = get('appFeatures/rightDrawEnabled');
       const myPhoto = get('azureAuthentication/myPhoto');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
 
       return {
+        // Data
         loading,
         leftDrawOpen,
         rightDrawOpen,
+        darkMode,
         leftDrawEnabled,
         rightDrawEnabled,
         myPhoto,
         isAzureLoggedIn,
+        // Methods
         anonymousItems,
         adminItems,
         userToolbarItems,

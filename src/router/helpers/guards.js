@@ -1,4 +1,5 @@
 // https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
+import Vue from 'vue';
 import store from '@/store/index';
 import getNewToken from '@/config/private/helpers/getNewToken';
 
@@ -22,6 +23,12 @@ const waitForStorageToBeReady = async (to, from, next) => {
       // TODO: Add your custom initialization code here : do the things you want to do only once after the store is restored
       const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
       if (loggedIn) await getNewToken();
+
+      // NOTE: Persisting userPrefs to localStorage/cookies won't work when also
+      // persisting darkMode because it of conflicts in the lifecyle
+      Vue.prototype.$vuetify.framework.theme.dark =
+        store.get('userPrefs/darkMode');
+
       previouslyRestored = true;
     }
   } catch (e) {

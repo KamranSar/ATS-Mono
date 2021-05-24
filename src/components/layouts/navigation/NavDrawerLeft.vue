@@ -5,7 +5,8 @@
     clipped
     hide-overlay
     app
-    :disable-route-watcher="true"
+    disable-resize-watcher
+    disable-route-watcher
   >
     <v-toolbar flat class="subtitle-2 grey--text" color="#ECEFF1">
       <span class="text-truncate">
@@ -43,9 +44,8 @@
       </template>
     </v-list>
 
-    <!-- FIXME: v-if="isOrgAdmin" -->
-    <v-list>
-      <template v-for="item in adminItems" v-can:is-admin>
+    <v-list v-can:is-admin>
+      <template v-for="item in adminItems">
         <NavListGroup
           v-if="item.children"
           :key="item.name"
@@ -60,9 +60,9 @@
     </v-list>
 
     <template v-slot:append>
-      <p class="text-right caption pa-1 mb-n1">
+      <div class="text-right caption pa-1">
         <router-link to="signout">Log in as another user</router-link>
-      </p>
+      </div>
     </template>
   </v-navigation-drawer>
 </template>

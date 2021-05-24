@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueCompositionAPI from '@vue/composition-api'; // Remove when upgrading to Vue 3.0
 import App from '@/App.vue';
+import vuetify from '@/config/vuetify';
 import router from '@/router';
 import store from '@/store';
-import vuetify from '@/config/vuetify';
 import VTooltip from 'v-tooltip';
 import myApp from '@/config/myApp.js';
 import feathersClient from '@/config/private/feathers.js';
@@ -17,6 +17,7 @@ Vue.config.productionTip = true;
 
 Vue.prototype.$myApp = myApp;
 Vue.prototype.$feathers = feathersClient;
+Vue.prototype.$vuetify = vuetify;
 
 Vue.use(VueCompositionAPI);
 Vue.use(VTooltip);
@@ -24,8 +25,8 @@ Vue.use(VTooltip);
 // This should be removed when Vuetify has better tooltip
 
 new Vue({
+  vuetify,
   router,
   store,
-  vuetify,
   render: (h) => h(App),
 }).$mount('#app');

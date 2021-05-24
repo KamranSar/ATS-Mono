@@ -8,14 +8,14 @@ export default (acl) => {
   // Can define app permissions using verbs
   acl.rule(
     'is-user-admin',
-    (user) => user && user.approles.includes('user-admin')
+    (user) => user.approles && user.approles.includes('user-admin')
   );
 
   // For symantics in the router meta... can use { role: 'admin' }
   acl.rule(
     'is-admin',
     (user) =>
-      user &&
+      user.approles &&
       (user.approles.includes('admin') ||
         user.approles.includes('user-admin') ||
         user.isapiadmin)

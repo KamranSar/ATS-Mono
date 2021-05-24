@@ -3,7 +3,6 @@
     <v-toolbar
       flat
       dense
-      color="#ECEFF1"
       v-if="title"
       fill-height
       class="align-center ma-0 pa-0"

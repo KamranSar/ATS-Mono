@@ -1,5 +1,13 @@
 <template>
-  <v-navigation-drawer v-model="rightDrawOpen" clipped hide-overlay app right>
+  <v-navigation-drawer
+    v-model="rightDrawOpen"
+    clipped
+    hide-overlay
+    app
+    right
+    disable-resize-watcher
+    disable-route-watcher
+  >
     <v-toolbar flat class="subtitle-2 grey--text" dense color="#ECEFF1">
       <span>
         <v-icon class="mr-2">{{ icon }}</v-icon>

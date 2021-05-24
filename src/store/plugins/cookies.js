@@ -13,12 +13,7 @@ const vuexPersist = new VuexPersistence({
       expires: 3, // Number of days to expire cookie in
     });
   },
-  modules: [...modules],
-  filter: (mutation) => {
-    return !modules.every((name) => {
-      return !mutation.type.includes(name + '/');
-    });
-  },
+  modules,
 });
 
 export default vuexPersist;

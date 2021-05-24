@@ -1,3 +1,8 @@
+/**
+ * Install Mixin:
+ * This can be used by calling the install() method or displayed in a list item...
+ * <v-list-item :item="installItem"></v-list-item>
+ */
 export default {
   data() {
     return {

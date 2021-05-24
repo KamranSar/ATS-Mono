@@ -1,59 +1,45 @@
 /**
  * This file contains all the routes used by vue-router
- * By default, all the router items are exported.
+ * By default, all the router items are exported. (See @/router/index.js)
  * import routes from "@/config/routeItems.js";
  *
- * Nav Components import by choice.
+ * Nav Components are imported explicitly.
  * import { anonymousItems, adminItems, userItems } from "@/config/routeItems.js";
  */
 
 import { requireToken } from '@/router/helpers/guards.js';
 import { checkForChildren } from '@/router/helpers/index.js';
 import logout from '@/config/private/helpers/logout';
-// import getNewToken from '@/config/private/helpers/getNewToken';
-// import Users from '@/feathers/Users';
 import Home from '@/views/Home.vue';
-// import store from '@/store';
-
-/** Filter for routes only in the list
- * @param {Array[String]} listOfRouteNames - Array of route names.
- * @returns {Array[VueRouter]} An Array of Type Vue Router
- */
-function getRoutesByName(listOfRouteNames) {
-  const routeItems = [];
-  if (
-    listOfRouteNames &&
-    Array.isArray(listOfRouteNames) &&
-    listOfRouteNames.length &&
-    routes &&
-    routes.length
-  ) {
-    const reducer = (currentValue) => String(currentValue).toLowerCase();
-    listOfRouteNames = listOfRouteNames.map(reducer);
-    routes.forEach((route) => {
-      if (listOfRouteNames.includes(String(route.name).toLowerCase())) {
-        routeItems.push(route);
-      }
-      checkForChildren(route, listOfRouteNames, routeItems);
-    });
-  }
-  return routeItems;
-}
+import store from '@/store';
+import Users from '@/feathers/Users';
 
 const routes = [
+  // {
+  //   /** custom application properties
+  //    * These can be expanded beyond the default: icon, and onClick properties.
+  //    * Just be sure the '@/components/navigation/' components are updated appropriately.
+  //    */
+  //   icon: 'mdi-home',
+  //   onClick: () => alert('Roll for initiative!'), // Set path to '' for onClick to fire.
+  //   /** vue-router properties */
+  //   path: '',
+  //   name: 'Home',
+  //   component: Home,
+  //   // beforeEnter: Vue Router Guard // Optional,
+  //   // redirect: String // Optional
+  //   /** vue-browser-acl meta */
+  //   meta: { // Optional
+  //     can: 'is-admin',
+  //     fail: '4oh4',
+  //   },
+  // },
   {
-    /** custom application properties
-     * These can be expanded beyond the default: icon, and onClick properties.
-     * Just be sure the '@/components/navigation/' components are updated appropriately.
-     */
     icon: 'mdi-home',
-    // onClick: () => {}, // Set path to '' for onClick to fire.
-    /** vue-router properties */
     path: '/',
     name: 'Home',
     component: Home,
     beforeEnter: requireToken,
-    // redirect: // Optional
   },
   {
     icon: 'mdi-login',
@@ -94,30 +80,9 @@ const routes = [
           can: 'is-user-admin',
           fail: '4oh4',
         },
-        // beforeEnter: async (to, from, next) => {
-        //   const getUser = async () => {
-        //     await store.set('app/loading', true);
-        //     await getNewToken();
-        //     const users = await Users.find();
-        //     store.set('users/users', users.data);
-        //     await store.set('app/loading', false);
-        //   };
-
-        //   await getUser();
-        //   next();
-        // },
         component: () =>
           import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
         // children: [],
-      },
-      {
-        icon: 'mdi-printer',
-        path: 'templates',
-        name: 'Export Templates',
-        component: () =>
-          import(
-            /* webpackChunkName: "template" */ '@/views/Admin/Template.vue'
-          ),
       },
     ],
   },
@@ -137,6 +102,31 @@ const routes = [
     component: () => import('@/views/NotFound.vue'),
   },
 ];
+
+/** Filter for routes only in the list
+ * @param {Array[String]} listOfRouteNames - Array of route names.
+ * @returns {Array[VueRouter]} An Array of Type Vue Router
+ */
+function getRoutesByName(listOfRouteNames) {
+  const routeItems = [];
+  if (
+    listOfRouteNames &&
+    Array.isArray(listOfRouteNames) &&
+    listOfRouteNames.length &&
+    routes &&
+    routes.length
+  ) {
+    const reducer = (currentValue) => String(currentValue).toLowerCase();
+    listOfRouteNames = listOfRouteNames.map(reducer);
+    routes.forEach((route) => {
+      if (listOfRouteNames.includes(String(route.name).toLowerCase())) {
+        routeItems.push(route);
+      }
+      checkForChildren(route, listOfRouteNames, routeItems);
+    });
+  }
+  return routeItems;
+}
 
 // Public Routes
 const anonymousItems = getRoutesByName(['Login']);
