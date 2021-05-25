@@ -9,6 +9,18 @@
   },
   "services": [
     {
+      "name": "mongodbservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "CRUD services for a MongoDB database."
+    },
+    {
+      "name": "mongooseservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "CRUD services for a MongoDB Mongoose schema database."
+    },
+    {
       "name": "mssqlservice",
       "version": "v1",
       "enabled": true,
