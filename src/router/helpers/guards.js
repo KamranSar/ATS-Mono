@@ -22,9 +22,12 @@ const waitForStorageToBeReady = async (to, from, next) => {
     await Promise.all(store.restored); // Set by VuexPersist
     if (!previouslyRestored) {
       // TODO: Add your custom initialization code here : do the things you want to do only once after the store is restored
+
+      // Usecase 1: Get a new token on a refresh if user is logged in.
       const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
       if (loggedIn) await getNewToken({ app: feathers });
 
+      // Usecase 2: Set user's theme preference on refresh
       // NOTE: Persisting userPrefs to localStorage/cookies won't work when also
       // persisting darkMode because it of conflicts in the lifecyle
       Vue.prototype.$vuetify.framework.theme.dark =

@@ -4,7 +4,6 @@ import App from '@/App.vue';
 import vuetify from '@/config/vuetify';
 import router from '@/router';
 import store from '@/store';
-import VTooltip from 'v-tooltip';
 import myApp from '@/config/myApp.js';
 import feathersClient from '@/config/private/feathers.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
@@ -20,9 +19,6 @@ Vue.prototype.$feathers = feathersClient;
 Vue.prototype.$vuetify = vuetify;
 
 Vue.use(VueCompositionAPI);
-Vue.use(VTooltip);
-// Vuetify tooltip is a pain.
-// This should be removed when Vuetify has better tooltip
 
 new Vue({
   vuetify,

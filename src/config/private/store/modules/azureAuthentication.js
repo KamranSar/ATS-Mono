@@ -49,7 +49,7 @@ class msalPlugin extends msal.PublicClientApplication {
 
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md#logger-config-options
-const azureAppID = 'c0cf535a-bb4d-4731-94fb-8a4165b1a124'; //Change this to match your application APP ID on Azure
+const azureAppID = 'c0cf535a-bb4d-4731-94fb-8a4165b1a124'; // TODO: Change this to match your application APP ID on Azure
 const tenantId = '0662477d-fa0c-4556-a8f5-c3bc62aa0d9c'; // TenantId of CDCR.
 
 const msalConfig = {

@@ -3,7 +3,7 @@ import { make } from 'vuex-pathify';
 
 const getDefaultState = () => {
   return {
-    // TODO: May want to set this per user id to support multiple user login prefs.
+    // TODO: May want to implement this per user id to support multiple user login prefs.
     leftDrawOpen: false,
     rightDrawOpen: false,
     darkMode: false, // Cannot persist userPrefs to localStorage because darkMode needs to be set on $vuetify

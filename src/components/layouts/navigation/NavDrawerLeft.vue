@@ -54,8 +54,8 @@
     </v-list>
 
     <template v-slot:append>
-      <div class="text-right caption pa-1">
-        <router-link to="signout">Log in as another user</router-link>
+      <div class="text-right caption pa-1" v-if="isAzureLoggedIn">
+        <router-link to="/signout" exact>Log in as another user</router-link>
       </div>
     </template>
   </v-navigation-drawer>

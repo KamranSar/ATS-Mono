@@ -45,24 +45,28 @@ npm run build
 Below outlines the default directory structure the template comes with:
 
 ```
-.
+src - Application Code
 ├── acl - vue-browser-acl folder
-├── App.vue
 ├── components - Vue components live here
 │   ├── layouts
 │   │   ├── navigation
 │   │   │   ├── helpers
 │   └── util
-├── compositions - Vue 3 composition functions
+├── compositions - Vue 3 ready composition functions
 ├── config - Application configuration folder
 │   ├── private - Underlying template code available for use but.. DO NOT MODIFY
+│   │   ├── acl - Template default acls (mainly for Users.vue)
 │   │   ├── components - Vue components
-│   │   ├── feathers.js - Access to feathers services with feathers.service(...).get()
 │   │   ├── helpers - Helper functions
 │   │   └── store
 │   │       ├── modules
 │   │       └── plugins
 ├── feathers - Exported feathers services
+│   ├── hooks
+│   └── services
+│       ├── heartbeat
+│       └── users
+├── filters - toTitleCase
 ├── mixins
 │   └── Install.js - PWA Install Mixin
 ├── router - Vue Router folder
@@ -71,4 +75,44 @@ Below outlines the default directory structure the template comes with:
 │   ├── modules
 │   └── plugins
 └── views - Router Views (See config/navItems.js)
+    ├── Admin - For appuserroles
+
+
+
+.
+├── src - Application Code
+│   ├── acl - vue-browser-acl folder
+│   ├── components - Vue components live here
+│   │   ├── layouts
+│   │   │   └── navigation
+│   │   │       └── helpers
+│   │   └── util
+│   ├── compositions - Vue 3 ready composition functions
+│   ├── config - Application configuration folder
+│   │   └── private - Underlying template code available for use but.. DO NOT MODIFY
+│   │       ├── acl
+│   │       ├── components
+│   │       ├── helpers
+│   │       └── store
+│   │           ├── modules
+│   │           └── plugins
+│   ├── feathers - Exported feathers services
+│   │   ├── hooks
+│   │   └── services
+│   │       ├── heartbeat
+│   │       └── users
+│   ├── filters - toTileCase
+│   ├── mixins - PWA Install Mixin
+│   ├── router - Vue Router folder
+│   │   └── helpers
+│   ├── store - Vuex store uses VuexPersistence
+│   │   ├── modules
+│   │   └── plugins
+│   └── views - Router Views (See config/navItems.js)
+│       └── Admin - For appuserroles
+└── tests - Cypress e2e testing
+    └── e2e
+        ├── plugins - Resuables tests
+        ├── specs - Test files
+        └── support - User defined helpers
 ```

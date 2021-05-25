@@ -1,6 +1,7 @@
 /** This file is imported by default in @/acl/index.js
  * Template provided acls to access user management.
  * Every application will require the 'admin' role
+ * TODO: Update this to include user-admin or whatever we call it.
  */
 
 export default (acl) => {

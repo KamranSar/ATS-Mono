@@ -9,6 +9,7 @@ var myApp = Object.freeze({
   gitID: process.env.VUE_APP_GIT_ID ? process.env.VUE_APP_GIT_ID : '1234567890',
   cdcrAppID: '12345', // TODO: Add client App ID given to you for your application
   approles: [
+    // TODO: Add your application roles here
     /* {
       name: String,
       description: String
@@ -26,7 +27,7 @@ var myApp = Object.freeze({
       description:
         'Generic application role, change this to suit your app needs',
     },
-  ], // TODO: Developer defined user application roles
+  ],
   helpers: {
     // reverseText: function (text) {
     //   return text.split('').reverse().join('');

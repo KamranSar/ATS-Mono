@@ -68,7 +68,7 @@
           </v-list-item>
         </v-list>
         <p class="text-right caption grey--text ma-0 pr-1">
-          v{{ $myApp.version }} uid-{{ $myApp.gitId }}
+          v{{ $myApp.version }} uid-{{ $myApp.gitID }}
         </p>
       </v-menu>
     </v-card>

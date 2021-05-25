@@ -99,6 +99,7 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
+            :disabled="!selectedUsers[0]"
             :loading="loading"
             color="primary"
             class="ma-2 white--text"
