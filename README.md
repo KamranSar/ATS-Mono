@@ -29,9 +29,10 @@ npm run dev
 
 Now back in your `cdcr-client-template` folder
 
-```
+```sh
 npm install
 npm run serve
+# See HOWTO.md on starting your development.
 ```
 
 ### Compiles and minifies for production and PWA testing
