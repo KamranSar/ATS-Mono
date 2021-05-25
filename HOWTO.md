@@ -1,4 +1,4 @@
-### Starting your development
+### Start your development
 - [ ] Change the name in `package.json`
 - [ ] Change vuetify to the theme of your app in `@/config/vuetify.js`
 - [ ] *If you have one*, convert your logo to the appropriate sizes
