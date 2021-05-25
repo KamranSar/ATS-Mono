@@ -45,40 +45,6 @@ npm run build
 Below outlines the default directory structure the template comes with:
 
 ```
-src - Application Code
-├── acl - vue-browser-acl folder
-├── components - Vue components live here
-│   ├── layouts
-│   │   ├── navigation
-│   │   │   ├── helpers
-│   └── util
-├── compositions - Vue 3 ready composition functions
-├── config - Application configuration folder
-│   ├── private - Underlying template code available for use but.. DO NOT MODIFY
-│   │   ├── acl - Template default acls (mainly for Users.vue)
-│   │   ├── components - Vue components
-│   │   ├── helpers - Helper functions
-│   │   └── store
-│   │       ├── modules
-│   │       └── plugins
-├── feathers - Exported feathers services
-│   ├── hooks
-│   └── services
-│       ├── heartbeat
-│       └── users
-├── filters - toTitleCase
-├── mixins
-│   └── Install.js - PWA Install Mixin
-├── router - Vue Router folder
-│   ├── helpers
-├── store - Vuex store uses VuexPersistence
-│   ├── modules
-│   └── plugins
-└── views - Router Views (See config/navItems.js)
-    ├── Admin - For appuserroles
-
-
-
 .
 ├── src - Application Code
 │   ├── acl - vue-browser-acl folder
