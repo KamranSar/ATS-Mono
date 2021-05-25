@@ -1,3 +1,10 @@
+/**
+ * Feathers client instance to allow for easy service calls.
+ * Points to localhost:3000 during development.
+ *
+ * import feathers from "@/config/private/feathers.js"
+ * await feather.service(...).get(...)
+ */
 import feathers from '@feathersjs/feathers';
 import auth from '@feathersjs/authentication-client';
 // import socketio from '@feathersjs/socketio-client';

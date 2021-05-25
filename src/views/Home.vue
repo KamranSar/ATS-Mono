@@ -19,7 +19,7 @@
 <script>
   import Panel from '@/components/layouts/Panel';
   import Footer from '@/components/layouts/Footer';
-  import Heartbeat from '@/feathers/Heartbeat.js';
+  import Heartbeat from '@/feathers/services/heartbeat/heartbeat.service.js';
   import { call } from 'vuex-pathify';
   export default {
     name: 'Home',

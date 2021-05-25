@@ -3,9 +3,11 @@ import router from '@/router';
 import logout from '@/config/private/helpers/logout';
 
 /**
- * Template provided helper to sign the user out of the microsoft web space.
- * This includes teams, outlook, word, powerpoint, and any other microsoft related products.
- * This function eventually pushes the user to the login page.
+ * Call this function to sign out of the app
+ * This will remove their auth from all other connected cdcr and microsoft apps.
+ *
+ * import signout from "@/config/private/helpers/signout.js";
+ * <v-btn @click="signout()">Sign Out</v-btn>
  */
 async function signout() {
   try {

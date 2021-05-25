@@ -10,16 +10,10 @@
   >
     <v-toolbar flat class="subtitle-2 grey--text" color="#ECEFF1">
       <span class="text-truncate">
-        <v-avatar class="mr-2" v-if="isAzureLoggedIn">
-          <v-img
-            v-if="myPhoto"
-            max-height="46"
-            max-width="46"
-            :src="myPhoto"
-          ></v-img>
-          <v-icon v-else>mdi-account-circle</v-icon>
-        </v-avatar>
-        <span>{{ displayName ? displayName : 'Currently Logged Out' }}</span>
+        <UserAvatar v-if="isAzureLoggedIn"></UserAvatar>
+        <span class="ml-2">{{
+          displayName ? displayName : 'Currently Logged Out'
+        }}</span>
       </span>
     </v-toolbar>
 
@@ -70,12 +64,14 @@
 <script>
   import { anonymousItems, userItems, adminItems } from '@/config/navItems';
   import Install from '@/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
+  import UserAvatar from '@/components/util/UserAvatar.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
     name: 'NavDrawerLeft',
     components: {
+      UserAvatar,
       NavListItem,
       NavListGroup,
     },
@@ -83,12 +79,10 @@
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
-      const myPhoto = get('azureAuthentication/myPhoto');
       const displayName = get('azureAuthentication/displayName');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
       return {
         leftDrawOpen,
-        myPhoto,
         displayName,
         isAzureLoggedIn,
         anonymousItems,

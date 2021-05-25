@@ -1,18 +1,11 @@
 /**
- * This file contains all the routes used by vue-router
- * By default, all the router items are exported. (See @/router/index.js)
- * import routes from "@/config/routeItems.js";
- *
- * Nav Components are imported explicitly.
- * import { anonymousItems, adminItems, userItems } from "@/config/routeItems.js";
+ * This file contains all the routes used by vue-router and the navigation components
  */
 
 import { requireToken } from '@/router/helpers/guards.js';
 import { checkForChildren } from '@/router/helpers/index.js';
 import logout from '@/config/private/helpers/logout';
 import Home from '@/views/Home.vue';
-import store from '@/store';
-import Users from '@/feathers/Users';
 
 const routes = [
   // {

@@ -47,10 +47,7 @@
       <v-menu offset-y persistent :close-on-content-click="false">
         <template v-slot:activator="{ on }">
           <v-btn text icon v-on="on">
-            <v-avatar v-if="myPhoto">
-              <v-img max-height="32" max-width="32" :src="myPhoto"></v-img>
-            </v-avatar>
-            <v-icon v-else color="darker">mdi-account-circle</v-icon>
+            <UserAvatar></UserAvatar>
           </v-btn>
         </template>
 
@@ -89,6 +86,7 @@
     adminItems,
     userToolbarItems,
   } from '@/config/navItems';
+  import UserAvatar from '@/components/util/UserAvatar.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
@@ -96,6 +94,7 @@
 
   export default {
     components: {
+      UserAvatar,
       NavListItem,
       NavListGroup,
     },
@@ -108,7 +107,6 @@
       const darkMode = sync('userPrefs/darkMode');
       const leftDrawEnabled = get('appFeatures/leftDrawEnabled');
       const rightDrawEnabled = get('appFeatures/rightDrawEnabled');
-      const myPhoto = get('azureAuthentication/myPhoto');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
 
       return {
@@ -119,7 +117,6 @@
         darkMode,
         leftDrawEnabled,
         rightDrawEnabled,
-        myPhoto,
         isAzureLoggedIn,
         // Methods
         anonymousItems,

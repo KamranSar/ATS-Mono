@@ -3,8 +3,10 @@ import router from '@/router';
 import myApp from '@/config/myApp';
 
 /**
- * Template provided helper to logout out of azure and feathers.
- * This function eventually pushes the user to the login page.
+ * Call this function to log out of the app
+ *
+ * import logout from "@/config/private/helpers/logout.js";
+ * <v-btn @click="logout()">Logout</v-btn>
  */
 async function logout() {
   const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');

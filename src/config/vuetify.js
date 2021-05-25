@@ -1,3 +1,9 @@
+/**
+ * Global vuetify preset
+ * Vuetify is accessible by default via this.$vuetify
+ *
+ * https://vuetifyjs.com/en/features/presets/
+ */
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 

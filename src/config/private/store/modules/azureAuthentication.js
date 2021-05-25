@@ -1,3 +1,7 @@
+/**
+ * Auto imported vuex module under the namespace "azureAuthentication"
+ * This is persisted by default for all applications in the azureDB idB.
+ */
 import store from '@/store';
 import myApp from '@/config/myApp';
 
