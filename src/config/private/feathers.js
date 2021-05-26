@@ -10,7 +10,6 @@ import auth from '@feathersjs/authentication-client';
 // import socketio from '@feathersjs/socketio-client';
 // import io from 'socket.io-client';
 const rest = require('@feathersjs/rest-client');
-import { iff, discard } from 'feathers-hooks-common';
 
 let API_URL = window.location.origin;
 
@@ -38,12 +37,7 @@ const feathersClient = feathers()
   )
   .hooks({
     before: {
-      all: [
-        iff(
-          (context) => ['create', 'update', 'patch'].includes(context.method),
-          discard('__id', '__isTemp')
-        ),
-      ],
+      // all: [getNewToken],
     },
   });
 

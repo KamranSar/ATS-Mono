@@ -28,6 +28,7 @@
   import Panel from '@/components/layouts/Panel';
   import Footer from '@/components/layouts/Footer';
   import Heartbeat from '@/feathers/services/heartbeat/heartbeat.service.js';
+  import findAll from '@/config/private/helpers/findAll';
   import { call } from 'vuex-pathify';
   export default {
     name: 'Home',
@@ -37,6 +38,13 @@
     },
     methods: {
       ...call('alert', ['setAlertMsg']),
+      async getAppUserRoles() {
+        const ROLES_SVC_PATH = '/api/auth/v1/appuserroles';
+
+        const appUserRoles = await findAll(ROLES_SVC_PATH, 2);
+        console.log('appUserRoles: ', appUserRoles);
+        return appUserRoles;
+      },
       async getHeartbeat() {
         const heartbeat = await Heartbeat.find();
         console.log('heartbeat: ', heartbeat);
@@ -48,6 +56,9 @@
           this.setAlertMsg();
         }, 5000);
       },
+    },
+    async mounted() {
+      await this.getAppUserRoles();
     },
   };
 </script>
