@@ -4,11 +4,19 @@
       <p>Welcome Home</p>
 
       <v-btn
-        v-role:is-admin
+        v-can:if-example-role
         color="success"
         @click="toggleAlert('Do you feel powerful?')"
       >
-        Can click me if admin
+        Can click me if example-role
+      </v-btn>
+
+      <v-btn
+        v-can:if-guest
+        color="success"
+        @click="toggleAlert('Are you lost?')"
+      >
+        Can click me if guest user
       </v-btn>
 
       <Footer app></Footer>

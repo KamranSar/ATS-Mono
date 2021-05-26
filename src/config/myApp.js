@@ -1,3 +1,4 @@
+import defaultRoles from '@/config/private/acl/roles.js';
 /**
  * This config file is exposed by default as this.$myApp
  * Can also import myApp into a lib file like so:
@@ -14,16 +15,9 @@ var myApp = Object.freeze({
       name: String,
       description: String
     } */
+    ...defaultRoles,
     {
-      name: 'user-admin',
-      description: 'Gives admin access to manager users in /admin/users',
-    },
-    {
-      name: 'admin',
-      description: 'Generic application adminstrator',
-    },
-    {
-      name: 'user',
+      name: 'example-role',
       description:
         'Generic application role, change this to suit your app needs',
     },

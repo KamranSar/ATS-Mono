@@ -18,12 +18,9 @@ async function getUserRoles(context) {
   });
   const userIds = [...mappedUsers.keys()];
 
-  // TODO: Will this path need to change for consistency?
-  // TODO: Should I expect developers to run feathers distributed
-  // TODO: for consitency of calling the /api/appname endpoint?
-
   if (feathers.service) {
     // Get the roles and add them to the user
+    // TODO: Loop to grab all if total is greater than what's returned.
     const roles = await feathers.service(ROLES_SVC_PATH).find({
       query: {
         userId: {

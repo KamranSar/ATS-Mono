@@ -33,6 +33,12 @@ const waitForStorageToBeReady = async (to, from, next) => {
       Vue.prototype.$vuetify.framework.theme.dark =
         store.get('userPrefs/darkMode');
 
+      // Usecase 3: Set the current route path in localstorage
+      // If doing a auth, user is directed to dashboard,
+      // and dashboard will read the redirect key in localstorage
+      // TODO: Test me if this works...
+      window.localStorage.setItem('redirect', JSON.stringify(from.fullPath));
+
       previouslyRestored = true;
     }
   } catch (e) {

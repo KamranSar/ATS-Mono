@@ -1,4 +1,4 @@
-# cdcr-client-template
+# vue-client-template
 
 ## What is this?
 
@@ -18,16 +18,18 @@ The objective is to keep things simple for simple client/server projects.
 
 If you haven't already... setting up a backend is easy.
 
+TODO: Add the docker images for api-auth and api-admin
+
 ```sh
-git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/api-router-template
-cd api-router-template
+git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template
+cd data-template
 npm install
 cd scripts
 ./start_db.sh
 npm run dev
 ```
 
-Now back in your `cdcr-client-template` folder
+Now back in your `**vue**-client-template` folder
 
 ```sh
 npm install

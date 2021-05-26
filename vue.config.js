@@ -8,7 +8,7 @@ module.exports = {
   integrity: false, // enable Subresource Integrity (SRI) on <link rel="stylesheet"> and <script> tags in generated HTML.
   // crossorigin: "anonymous",
   // crossorigin: "use-credentials",
-  publicPath: '/',
+  publicPath: `/`, // ${process.env.VUE_APP_NAME}
   productionSourceMap: false,
 
   devServer: {

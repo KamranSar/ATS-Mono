@@ -23,7 +23,7 @@ const routes = [
   //   // redirect: String // Optional
   //   /** vue-browser-acl meta */
   //   meta: { // Optional
-  //     can: 'is-admin',
+  //     can: 'if-admin',
   //     fail: '4oh4',
   //   },
   // },
@@ -61,23 +61,22 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
     meta: {
-      can: 'is-admin',
+      can: 'if-admin',
       fail: '4oh4',
     },
-    children: [
-      {
-        icon: 'mdi-account-multiple-outline',
-        path: 'users',
-        name: 'Users',
-        meta: {
-          can: 'is-user-admin',
-          fail: '4oh4',
-        },
-        component: () =>
-          import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
-        // children: [],
-      },
-    ],
+  },
+  // Displayed by default in NavDrawerLeft.vue for admins and user-managers
+  {
+    icon: 'mdi-account-multiple-outline',
+    path: '/users',
+    name: 'Users',
+    meta: {
+      can: 'if-user-manager',
+      fail: '4oh4',
+    },
+    component: () =>
+      import(/* webpackChunkName: "users" */ '@/views/Users.vue'),
+    // children: [],
   },
   {
     icon: 'mdi-apps',
