@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-const debug = require('debug')(`${process.env.APP_NAME}:`+'src:knex:dbname');
+const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:knex:dbname');
 const { logger } = require('cdcrhelpers');
 const knex = require('knex');
+const serverData = require('./index.json').server;
 
 module.exports = function (app) {
   // MS-SQL connection
-  {
+  if (serverData.mssqlEnabled) {
     const { connection, pool, connTimeout } = app.get('mssql');
     const connInfo = `MS-SQL server for (${connection.database}) database at: ${connection.server}:${connection.options.port}`;
     debug(`Connecting to ${connInfo}...`);
@@ -33,12 +34,16 @@ module.exports = function (app) {
   }
 
   // Oracle connection
-  {
+  if (serverData.oracleEnabled) {
     const { connection, pool, connTimeout } = app.get('oracledb');
     const connInfo = `Oracle server at: ${connection.connectString}`;
     debug(`Connecting to ${connInfo}...  `);
     const dbOracle = knex({
-      client: 'oracledb', native: false, connection, pool, acquireConnectionTimeout: connTimeout
+      client: 'oracledb',
+      native: false,
+      connection,
+      pool,
+      acquireConnectionTimeout: connTimeout,
     });
     // Test the connection
     let oracle = { max: 21, errcnt: 0, connected: false, timeout: 10000 };
@@ -76,11 +81,10 @@ module.exports = function (app) {
           });
       }
     }, serverHeartbeatMS);
-
   }
 
   // Postgres connection
-  {
+  if (serverData.postgresEnabled) {
     const { connection, pool, connTimeout } = app.get('postgres');
     const connInfo = `Postgres SQL server for (${connection.database}) database at: ${connection.server}:${connection.options.port}`;
     debug(`Connecting to ${connInfo}...`);

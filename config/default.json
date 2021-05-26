@@ -14,9 +14,7 @@
     "entity": "user",
     "service": "internal/users",
     "secret": "JWT_SALT_SECRET",
-    "authStrategies": [
-      "jwt"
-    ],
+    "authStrategies": ["jwt"],
     "jwtOptions": {
       "header": {
         "typ": "access"
@@ -37,7 +35,8 @@
   "mongodb": {
     "server": "MONGO_SVR",
     "port": "MONGO_PORT",
-    "database": "midtier",
+    "database": "yourdatabasename",
+    "midtierdatabase": "midtier",
     "statsdatabase": "midtierstats",
     "connectTimeoutMS": 10000,
     "poolSize": 5
@@ -95,8 +94,13 @@
         "'self'",
         "*.msauth.net",
         "*.microsoftonline.com",
+        "*.microsoft.com",
         "*.msftauth.net",
-        "'unsafe-inline'"
+        "*.jsdelivr.net",
+        "*.cloudflare.com",
+        "unpkg.com",
+        "'unsafe-inline'",
+        "'unsafe-eval'"
       ]
     }
   }

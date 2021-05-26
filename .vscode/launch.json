@@ -21,7 +21,7 @@
       "name": "Launch Dev Windows",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\src",
-      "outputCapture": "std",
+      "outputCapture": "std"
     },
     {
       "type": "node",

@@ -5,20 +5,25 @@
     "appPath": "/api/database",
     "docsPath": "/docs/database",
     "release": "R1",
-    "authActive": true
+    "authActive": true,
+    "mongodbEnabled": true,
+    "mongooseEnabled": true,
+    "mssqlEnabled": true,
+    "oracleEnabled": true,
+    "postgresEnabled": true
   },
   "services": [
     {
       "name": "mongodbservice",
       "version": "v1",
       "enabled": true,
-      "description": "CRUD services for a MongoDB database."
+      "description": "Example of a CRUD services for a MongoDB database."
     },
     {
       "name": "mongooseservice",
       "version": "v1",
       "enabled": true,
-      "description": "CRUD services for a MongoDB Mongoose schema database."
+      "description": "example of a CRUD services for a MongoDB Mongoose schema database."
     },
     {
       "name": "mssqlservice",
@@ -49,6 +54,12 @@
       "version": "v2",
       "enabled": true,
       "description": "CRUD services for a Custom database server. Complex queries and payloads used for this template."
+    },
+    {
+      "name": "customservice",
+      "version": "v1",
+      "enabled": true,
+      "description": "Example of a basic Custom service."
     }
   ]
 }
