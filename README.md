@@ -29,7 +29,7 @@ cd scripts
 npm run dev
 ```
 
-Now back in your `**vue**-client-template` folder
+Now back in your `vue-client-template` folder
 
 ```sh
 npm install
