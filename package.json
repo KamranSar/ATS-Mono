@@ -55,9 +55,9 @@
     "cdcrhelpers": "file:local_modules/cdcrhelpers",
     "cdcrhooks": "file:local_modules/cdcrhooks",
     "cors": "^2.8.5",
-    "dotenv": "^9.0.0",
+    "dotenv": "^10.0.0",
     "feathers-authentication-hooks": "^1.0.2",
-    "feathers-hooks-common": "^5.0.5",
+    "feathers-hooks-common": "^5.0.6",
     "feathers-knex": "^7.1.1",
     "feathers-mongodb": "^6.3.0",
     "feathers-mongoose": "^8.3.3",
@@ -69,9 +69,9 @@
     "https": "^1.0.0",
     "jwt-decode": "^3.1.2",
     "knex": "^0.21.18",
-    "mongodb": "^3.6.6",
+    "mongodb": "^3.6.9",
     "mongodb-core": "^3.2.7",
-    "mongoose": "^5.12.7",
+    "mongoose": "^5.12.11",
     "mssql": "^6.3.1",
     "oracledb": "^5.1.0",
     "pg": "^8.5.1",
@@ -81,8 +81,8 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "eslint": "^7.25.0",
-    "mocha": "^8.3.2",
+    "eslint": "^7.27.0",
+    "mocha": "^8.4.0",
     "nodemon": "^2.0.7"
   }
 }
