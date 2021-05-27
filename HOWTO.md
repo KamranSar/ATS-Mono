@@ -9,9 +9,10 @@ Table of Contents
   - [Resize your logo for PWA](#resize-your-logo-for-pwa)
   - [Create your first route and component.](#create-your-first-route-and-component)
 - [Optional Toolkits](#optional-toolkits)
-  - [Vuex](#vuex)
-    - [Use vuex-pathify to easily interact with vuex modules](#use-vuex-pathify-to-easily-interact-with-vuex-modules)
-  - [Feathers](#feathers)
+  - [Creating a Vuex module](#creating-a-vuex-module)
+  - [Persist your Vuex Module](#persist-your-vuex-module)
+  - [Use vuex-pathify](#use-vuex-pathify)
+  - [Accessing your Feathers Service](#accessing-your-feathers-service)
 
 # Directory Structure
 
@@ -130,10 +131,13 @@ import { requireToken } from '@/router/helpers/guards.js';
 
 # Optional Toolkits
 
-## Vuex
+## Creating a Vuex module
 
-- [ ] Copy `@/store/modules/example.js` to create your first vuex module
-- [ ] _If you want to_, persist it by adding it to the `modules` array in `cookies.js`, `indexedDB.js`, or `localStorage.js` under `@/store/plugins/`
+- [ ] Copy `@/store/modules/example.js` to create your first vuex module.
+
+These are automatically imported into `@/store/modules/index.js`.
+
+You can access it using `vuex-pathify`.
 
 ```javascript
 // @/store/modules/example.js
@@ -171,7 +175,17 @@ export default {
 };
 ```
 
-### Use vuex-pathify to easily interact with vuex modules
+## Persist your Vuex Module
+
+**These are automatically encrypted by compression during production!**
+
+- [ ] _If you want to_, persist it by adding it to the `modules` array in `cookies.js`, `indexedDB.js`, or `localStorage.js` under `@/store/plugins/`
+
+## Use vuex-pathify
+
+Using `vuex-pathify`, modifying and accessing state is easy!
+
+See more at [vuex-pathify](https://davestewart.github.io/vuex-pathify/#/api/component?id=api).
 
 ```javascript
 import { sync, get } from "vuex-pathify";
@@ -190,20 +204,18 @@ methods: {
 }
 ```
 
-## Feathers
+## Accessing your Feathers Service
 
-- [ ] Create a feathers service to hook into and call APIs with
+- [ ] Create a backend feathers service to hook into and call APIs with
 
-1. Create a new directory named after your service under @/feathers/services
-2. Copy @/feathers/services/heartbeat/heatbeat.service.js into your new directory
-3. Rename the file {servicename}.service.js
-4. Change the servicePath to match yours in the file.
-5. Use it like so in Vue
+- [ ] Copy the folder `@/feathers/services/example` and change the file names and the `servicePath` variable in `example.service.js`
+
+Use it like so in Vue
 
 ```javascript
-import myservice from "@/feathers/services/my/my.service.js";
+import exampleService from "@/feathers/services/example/example.service.js";
 async mounted() {
-    this.myData = await myservice.find({
+    this.myData = await exampleService.find({
         query: {
             stale: false,
             dataId: {

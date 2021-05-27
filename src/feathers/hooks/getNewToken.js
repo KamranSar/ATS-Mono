@@ -11,12 +11,12 @@ import getMidTierToken from '@/config/private/helpers/getMidTierToken';
  * @returns The context with approles appended to users
  */
 const getNewToken = async (context) => {
-  if (
-    !context.path ||
-    context.path === context.app.authentication.options.path
-  ) {
-    return context;
-  }
+  // if (
+  //   !context.path ||
+  //   context.path === context.app.authentication.options.path
+  // ) {
+  //   return context;
+  // }
 
   try {
     // Conditional around AzureAuthentication to check if expired.
@@ -30,14 +30,13 @@ const getNewToken = async (context) => {
 
     if (feathersTokenExpiration()) {
       const midTierToken = await getMidTierToken();
-      const response = await context.app.authenticate(midTierToken);
 
-      if (!response.authentication) {
+      if (!midTierToken.authentication) {
         throw Error('Failed to authenticate, please try again.');
       }
 
-      let { user } = response;
-      const { authentication } = response;
+      let { user } = midTierToken;
+      const { authentication } = midTierToken;
       store.set('users/authentication', authentication);
       store.set('users/user', user);
     }

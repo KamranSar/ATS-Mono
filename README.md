@@ -33,13 +33,22 @@ npm run dev
 
 TODO: Add instructions for creating an cdcrAppID for test and adding api permissions for the app.
 
-### Setup your local frontend
+### Setup your local frontend (BE SURE TO FORK NOT CLONE)
 
 Now back in your `vue-frontend-template` folder
 
 ```sh
 npm install
 npm run serve
+```
+
+Add a remote called `upstream` that points to the forked repository.
+You can then pull down the latest changes from the template like so.
+
+```
+git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+git fetch upstream main
+git merge --squash upstream/main
 ```
 
 ### Starting your development

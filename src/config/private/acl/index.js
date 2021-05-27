@@ -24,6 +24,10 @@ export default (acl) => {
   // If user is at least a user-manager
   // Can define app permissions using verbs
   acl.rule('if-user-manager', (user) => {
+    if (user.isapiadmin) {
+      return true;
+    }
+
     let validated = false;
     if (user.approles && user.approles.length) {
       ['admin', 'user-manager'].forEach((role) => {

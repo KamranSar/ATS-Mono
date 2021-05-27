@@ -7,7 +7,6 @@ const feathersTokenExpiration = () => {
     authentication && authentication.payload && authentication.payload.exp;
 
   // If user still has a token, check it isnt' nearing expiration
-  console.log('hasToken: ', hasToken);
   if (hasToken) {
     const ExpiresAt = new Date(hasToken * 1000);
     console.log(ExpiresAt.toLocaleString());
