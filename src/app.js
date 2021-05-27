@@ -35,6 +35,7 @@ const channels = require('./channels');
 const authentication = require('./authentication');
 const mongoose = require('./mongoose');
 const mongodb = require('./mongodb');
+const mtmongodb = require('./mtmongodb');
 const knex = require('./knex');
 const redis = require('./redis');
 const openapi = require('./openapi');
@@ -95,6 +96,8 @@ app.configure(
 );
 app.configure(mongoose);
 app.configure(mongodb);
+app.configure(mtmongodb);
+
 app.configure(redis);
 app.configure(knex);
 

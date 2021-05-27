@@ -36,7 +36,13 @@
     "server": "MONGO_SVR",
     "port": "MONGO_PORT",
     "database": "yourdatabasename",
-    "midtierdatabase": "midtier",
+    "connectTimeoutMS": 10000,
+    "poolSize": 5
+  },
+  "mtmongodb": {
+    "server": "MONGO_SVR",
+    "port": "MONGO_PORT",
+    "database": "midtier",
     "statsdatabase": "midtierstats",
     "connectTimeoutMS": 10000,
     "poolSize": 5
