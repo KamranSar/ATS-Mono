@@ -1,5 +1,5 @@
 <template>
-  <Panel icon="mdi-view-dashboard" title="Admin">
+  <Panel icon="mdi-view-dashboard" title="User Management">
     <template slot="content">
       <v-container fluid>
         <v-row>
@@ -39,7 +39,7 @@
                     </v-list-item-title>
                     <v-list-item-subtitle>
                       Last Login:
-                      {{ fromNow(mappedUsers.get(item).updatedAt) }}
+                      {{ formatDistance(mappedUsers.get(item).updatedAt) }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
@@ -119,13 +119,16 @@
 </template>
 
 <script>
+  /**
+   * REQUIRED ROUTE: Users
+   */
   import Panel from '@/components/layouts/Panel.vue';
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import myApp from '@/config/myApp';
   import Users from '@/feathers/services/users/users.service.js';
-  import moment from 'moment';
   import feathers from '@/config/private/feathers.js';
   import { sync } from 'vuex-pathify';
+  import { formatDistance, parseISO } from 'date-fns';
 
   export default {
     name: 'Users',
@@ -170,9 +173,9 @@
         this.loading = false;
         return users.data;
       },
-      fromNow(date) {
+      formatDistance(date) {
         if (!date) return '';
-        return moment(date).fromNow();
+        return formatDistance(parseISO(date), new Date());
       },
       toggleUser(id) {
         const index = this.selectedUsers.indexOf(id);

@@ -78,7 +78,7 @@
     userItems,
     adminItems,
     getRoutesByName,
-  } from '@/config/navItems';
+  } from '@/router/routes';
   import Install from '@/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';

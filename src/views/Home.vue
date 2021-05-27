@@ -25,6 +25,11 @@
 </template>
 
 <script>
+  /**
+   * REQUIRED ROUTE: Home
+   * This should be the first page a user sees when logging in.
+   * Proceed by tearing this apart and make it your own.
+   */
   import Panel from '@/components/layouts/Panel';
   import Footer from '@/components/layouts/Footer';
   import Heartbeat from '@/feathers/services/heartbeat/heartbeat.service.js';
@@ -58,7 +63,7 @@
       },
     },
     async mounted() {
-      await this.getAppUserRoles();
+      // await this.getAppUserRoles();
     },
   };
 </script>

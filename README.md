@@ -1,4 +1,6 @@
-# vue-client-template
+<img src="./public/img/logo.svg" alt="CDCR Logo" width="64" height="64" />
+
+# vue-frontend-template
 
 ## What is this?
 
@@ -14,74 +16,38 @@ The objective is to keep things simple for simple client/server projects.
 
 ## Project setup
 
-### Setup your local backend
+### Setup your local backend (_If you haven't already_)
 
-If you haven't already... setting up a backend is easy.
+Setting up a backend is easy.
 
 TODO: Add the docker images for api-auth and api-admin
 
 ```sh
 git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template
-cd data-template
+cd database-template
 npm install
 cd scripts
 ./start_db.sh
 npm run dev
 ```
 
-Now back in your `vue-client-template` folder
+TODO: Add instructions for creating an cdcrAppID for test and adding api permissions for the app.
+
+### Setup your local frontend
+
+Now back in your `vue-frontend-template` folder
 
 ```sh
 npm install
 npm run serve
-# See HOWTO.md on starting your development.
 ```
+
+### Starting your development
+
+Follow the HOWTO.md on starting your development.
 
 ### Compiles and minifies for production and PWA testing
 
 ```
 npm run build
-```
-
-## Directory Structure
-
-Below outlines the default directory structure the template comes with:
-
-```
-.
-├── src - Application Code
-│   ├── acl - vue-browser-acl folder
-│   ├── components - Vue components live here
-│   │   ├── layouts
-│   │   │   └── navigation
-│   │   │       └── helpers
-│   │   └── util
-│   ├── compositions - Vue 3 ready composition functions
-│   ├── config - Application configuration folder
-│   │   └── private - Underlying template code available for use but.. DO NOT MODIFY
-│   │       ├── acl
-│   │       ├── components
-│   │       ├── helpers
-│   │       └── store
-│   │           ├── modules
-│   │           └── plugins
-│   ├── feathers - Exported feathers services
-│   │   ├── hooks
-│   │   └── services
-│   │       ├── heartbeat
-│   │       └── users
-│   ├── filters - toTileCase
-│   ├── mixins - PWA Install Mixin
-│   ├── router - Vue Router folder
-│   │   └── helpers
-│   ├── store - Vuex store uses VuexPersistence
-│   │   ├── modules
-│   │   └── plugins
-│   └── views - Router Views (See config/navItems.js)
-│       └── Admin - For appuserroles
-└── tests - Cypress e2e testing
-    └── e2e
-        ├── plugins - Resuables tests
-        ├── specs - Test files
-        └── support - User defined helpers
 ```

@@ -26,7 +26,7 @@
       </v-avatar>
     </v-app-bar-nav-icon>
 
-    <span class="title ml-1">{{ $myApp.name | toTitleCase }}</span>
+    <span class="title ml-1">{{ $myApp.name }}</span>
 
     <v-spacer></v-spacer>
 
@@ -85,7 +85,7 @@
     anonymousItems,
     adminItems,
     userToolbarItems,
-  } from '@/config/navItems';
+  } from '@/router/routes';
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';

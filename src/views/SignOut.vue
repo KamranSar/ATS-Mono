@@ -28,6 +28,9 @@
 </template>
 
 <script>
+  /**
+   * REQUIRED ROUTE: Signout
+   */
   import signout from '@/config/private/helpers/signout';
   import { ref } from '@vue/composition-api';
 

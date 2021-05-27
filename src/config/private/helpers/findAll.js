@@ -4,6 +4,7 @@ import store from '@/store';
  * @param {String} servicepath - The service path of your API end point. Ex. /api/auth/v1/appuserroles
  * @param {Number=2} limit - The number of records to return at a time. Default: 2
  * @param {String=_id} key - The id field in the record to set as the key in the Map returned. Default=_id
+ * @returns {Map} map A map of keys storing each record
  */
 const findAll = async (servicepath, limit = 2, key = '_id') => {
   // Call once explitly to get total;

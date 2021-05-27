@@ -19,6 +19,7 @@ async function logout() {
         color: 'success',
       });
       window.localStorage.removeItem(myApp.name);
+      store.commit('users/resetState');
     }
   } catch (e) {
     console.error(e);

@@ -1,13 +1,13 @@
 import feathersClient from '@/config/private/feathers.js';
 // import { debug } from 'feathers-hooks-common';
 import { getUserRoles } from '@/feathers/services/users/users.hooks.js';
-import getNewToken from '@/feathers/hooks/getNewToken.js';
+// import getNewToken from '@/feathers/hooks/getNewToken.js';
 
 const servicePath = 'api/auth/v1/users';
 const service = feathersClient.service(servicePath);
 service.hooks({
   before: {
-    all: [getNewToken],
+    // all: [getNewToken],
     find: [],
     get: [],
     create: [],

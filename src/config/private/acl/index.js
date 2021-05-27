@@ -27,14 +27,11 @@ export default (acl) => {
     let validated = false;
     if (user.approles && user.approles.length) {
       ['admin', 'user-manager'].forEach((role) => {
-        console.log('role: ', role);
-        console.log('user roles: ', user.approles);
         if (user.approles.includes(role)) {
           validated = true;
         }
       });
     }
-    console.log('is user manager: ', validated);
     return validated;
   });
 

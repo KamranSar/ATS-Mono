@@ -190,7 +190,7 @@ const actions = {
 
         // myMSALObj.setActiveAccount(newTokenResponse.account);
         // There is an existing token, we authentify the user
-        // We add the access token as an authorization header for our Axios requests to our API
+        // We add the access token as an authorization header for our fetch requests to our API
         if (graphConfig.myInfoEndpoint) {
           // The graph is set, we check if the user has already a picture in the local storage
           // if he does not we grab a token silently for our graph scope and call Microsoft graph to get the picture
@@ -420,34 +420,7 @@ const getters = {
     return null;
   },
 
-  tokenExpiration: () => {
-    const token = store.get('azureAuthentication/azuretokenresponse');
-    const hasToken = !!token && !!token.expiresOn;
-    if (hasToken) {
-      const ExpiresAt = token.expiresOn;
-      // console.log(ExpiresAt.toLocaleString());
-      return ExpiresAt;
-    } else {
-      return null;
-    }
-  },
-
-  isTokenExpired: () => {
-    const expDate = store.get('azureAuthentication/tokenExpiration');
-    if (expDate) {
-      const now = new Date();
-      if (now >= expDate) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  },
-
   isAzureLoggedIn: (state) => {
-    // return !store.get('azureAuthentication/isTokenExpired');
     const loggedIn = !!state.azuretokenresponse;
     return loggedIn;
   },

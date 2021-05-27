@@ -3,7 +3,7 @@ import Vue from 'vue';
 import store from '@/store/index';
 import VueRouter from 'vue-router';
 import { waitForStorageToBeReady } from '@/router/helpers/guards.js';
-import routes from '@/config/navItems.js';
+import routes from '@/router/routes.js';
 
 // Supress navigation guard uncaught errors
 // https://github.com/vuejs/vue-router/issues/2881#issuecomment-520554378

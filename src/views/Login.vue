@@ -17,6 +17,9 @@
 </template>
 
 <script>
+  /**
+   * REQUIRED ROUTE: Login
+   */
   export default {
     components: {
       Panel: () => import('@/components/layouts/Panel'),

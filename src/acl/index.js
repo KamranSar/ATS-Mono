@@ -11,7 +11,7 @@ const acls = (acl) => {
   // Add your own acls here...
   acl.rule(
     'if-example-role',
-    (user) => user && user.approles.includes('example-role')
+    (user) => user && user.approles && user.approles.includes('example-role')
   );
 };
 

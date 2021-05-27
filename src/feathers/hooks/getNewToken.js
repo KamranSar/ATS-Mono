@@ -1,5 +1,7 @@
-import myApp from '@/config/myApp.js';
 import store from '@/store';
+import azureTokenExpiration from '@/config/private/helpers/azureTokenExpiration';
+import feathersTokenExpiration from '@/config/private/helpers/feathersTokenExpiration';
+import getMidTierToken from '@/config/private/helpers/getMidTierToken';
 
 /**
  * We need this because doing a users.find() returns all the users but without approles
@@ -9,34 +11,40 @@ import store from '@/store';
  * @returns The context with approles appended to users
  */
 const getNewToken = async (context) => {
+  if (
+    !context.path ||
+    context.path === context.app.authentication.options.path
+  ) {
+    return context;
+  }
+
   try {
-    await store.dispatch('azureAuthentication/AzureAuthentication');
-    const _azuretokenresponse =
-      store.state['azureAuthentication'].azuretokenresponse;
-    try {
-      const packet = {
-        strategy: 'azuretoken_v1',
-        accessToken: _azuretokenresponse.accessToken, // Need the token from Azure to log into middle tier
-        cdcrAppID: myApp.cdcrAppID,
-      };
-      // console.log('packet: ', packet);
-      // Now sign into Middle Tier
-      // console.log(this.isAuthenticated);
-      const { user } = await context.app.authenticate(packet);
-      store.set('users/user', user);
-      return context;
-    } catch (error) {
-      store.dispatch(
-        'alert/setAlertMsg',
-        'API server Authentication failed. ' + error.message || ''
-      );
-      return context;
+    // Conditional around AzureAuthentication to check if expired.
+    if (azureTokenExpiration()) {
+      await store.dispatch('azureAuthentication/AzureAuthentication');
     }
+
+    // console.log('packet: ', packet);
+    // Now sign into Middle Tier
+    // console.log(this.isAuthenticated);
+
+    if (feathersTokenExpiration()) {
+      const midTierToken = await getMidTierToken();
+      const response = await context.app.authenticate(midTierToken);
+
+      if (!response.authentication) {
+        throw Error('Failed to authenticate, please try again.');
+      }
+
+      let { user } = response;
+      const { authentication } = response;
+      store.set('users/authentication', authentication);
+      store.set('users/user', user);
+    }
+
+    return context;
   } catch (error) {
-    store.dispatch(
-      'alert/setAlertMsg',
-      'Sign in with Microsoft failed. ' + error.errorMessage || ''
-    );
+    store.dispatch('alert/setAlertMsg', error.message || '');
     return context;
   }
 };

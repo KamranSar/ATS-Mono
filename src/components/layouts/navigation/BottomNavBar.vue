@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import { anonymousItems, userItems } from '@/config/navItems';
+  import { anonymousItems, userItems } from '@/router/routes';
   import { onClick, getRouterColor } from '@/router/helpers/index.js';
   import useVuexPathify from '@/compositions/useVuexPathify';
   export default {

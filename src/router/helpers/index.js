@@ -5,18 +5,17 @@ import router from '@/router/index.js';
  * any children in the route until no child is left behind.
  * @param {VueRouter} route
  * @param {Array} listOfRouteNames
- * @param {Array} matchedRoutes
  */
-function checkForChildren(route, listOfRouteNames, matchedRoutes) {
+function checkForChildren(route, listOfRouteNames) {
   if (route.children && route.children.length) {
     route.children.forEach((route) => {
+      const routeName = String(route.name).toLowerCase();
       if (listOfRouteNames.includes(String(route.name).toLowerCase())) {
-        matchedRoutes.push(route);
+        const idx = Array(listOfRouteNames).indexOf(routeName);
+        listOfRouteNames[idx] = route;
       }
-      checkForChildren(route, listOfRouteNames, matchedRoutes);
+      checkForChildren(route, listOfRouteNames);
     });
-  } else {
-    return matchedRoutes;
   }
 }
 

@@ -1,12 +1,16 @@
 import defaultRoles from '@/config/private/acl/roles.js';
+import toTitleCase from '@/filters/toTitleCase.js';
+
 /**
  * This config file is exposed by default as this.$myApp
  * Can also import myApp into a lib file like so:
  * import myApp from "@/config/myApp.js";
  */
 var myApp = Object.freeze({
-  name: process.env.VUE_APP_NAME ? process.env.VUE_APP_NAME : '',
-  version: process.env.VUE_APP_VERSION ? process.env.VUE_APP_VERSION : 'v???',
+  // Name in package.json is used by default and added as an environment variable
+  // The filter toTitleCase is used to convert the name, default delimitter is '-'.
+  name: process.env.VUE_APP_NAME ? toTitleCase(process.env.VUE_APP_NAME) : '',
+  version: process.env.VUE_APP_VERSION ? process.env.VUE_APP_VERSION : 'v???', // Update using `npm version major|minor|patch`
   gitID: process.env.VUE_APP_GIT_ID ? process.env.VUE_APP_GIT_ID : '1234567890',
   cdcrAppID: '12345', // TODO: Add client App ID given to you for your application
   approles: [

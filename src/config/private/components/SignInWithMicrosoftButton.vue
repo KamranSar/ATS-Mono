@@ -64,7 +64,7 @@
           }
         } catch (e2) {
           this.setAlertMsg(
-            'Sign in with Microsoft failed. ' + e2.errorMessage || ''
+            'Sign in with Microsoft failed. ' + e2.message || ''
           );
         } finally {
           this.loading = false;

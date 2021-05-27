@@ -2,8 +2,9 @@
 
 # Image Resizer
 # Author: Nurthin Aziz
-# This shell script takes in a single argument pointing to a .svg or .png
-# This shell script ensures that all dependencies are installed before executing <python3 image_resize.py ../$1>
+# This script creates a directory called image_resizer inside scripts.
+# It expects a single argument pointing to a .svg or .png and converts
+# them to the appropriate size for PWA.
 # Example: 
 # cd scripts
 #./image_resize.sh ~/Documents/Icons/logo.png
@@ -32,8 +33,9 @@ fi
 
 git clone https://cdcr@dev.azure.com/cdcr/Common/_git/image_resize image_resize
 cd image_resize
-python3 ./image_resize.py ../$1
+python3 ./image_resize.py $1
 cd ..
+echo  "Take the converted images in /src/scripts/image_resize and move them to /public/img/icons"
 
 
 

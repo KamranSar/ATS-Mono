@@ -7,6 +7,7 @@
  */
 import feathers from '@feathersjs/feathers';
 import auth from '@feathersjs/authentication-client';
+import getNewToken from '@/feathers/hooks/getNewToken.js';
 // import socketio from '@feathersjs/socketio-client';
 // import io from 'socket.io-client';
 const rest = require('@feathersjs/rest-client');
@@ -38,6 +39,12 @@ const feathersClient = feathers()
   .hooks({
     before: {
       // all: [getNewToken],
+      // all: [
+      //   async (context) => {
+      //     debugger;
+      //     return context;
+      //   },
+      // ],
     },
   });
 
