@@ -40,8 +40,8 @@
     "poolSize": 5
   },
   "mtmongodb": {
-    "server": "MONGO_SVR",
-    "port": "MONGO_PORT",
+    "server": "MTMONGO_SVR",
+    "port": "MTMONGO_PORT",
     "database": "midtier",
     "statsdatabase": "midtierstats",
     "connectTimeoutMS": 10000,
