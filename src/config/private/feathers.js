@@ -38,7 +38,7 @@ const feathersClient = feathers()
   )
   .hooks({
     before: {
-      // all: [getNewToken],
+      all: [getNewToken],
       // all: [
       //   async (context) => {
       //     debugger;

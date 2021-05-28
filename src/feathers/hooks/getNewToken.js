@@ -12,21 +12,17 @@ import getMidTierToken from '@/config/private/helpers/getMidTierToken';
  */
 const getNewToken = async (context) => {
   try {
-    // When calling getNewToken directory, no path is passed int
-    // Let it run to completion
-    if (!context.path) {
-      // Conditional around AzureAuthentication to check if expired.
-      if (azureTokenExpiration()) {
-        await store.dispatch('azureAuthentication/AzureAuthentication');
-      }
+    // Conditional around AzureAuthentication to check if expired.
+    if (azureTokenExpiration()) {
+      await store.dispatch('azureAuthentication/AzureAuthentication');
+    }
 
-      // Skip if path does not equal auth when path exists.
-      if (
-        context.path &&
-        context.path !== context.app.authentication.options.path
-      ) {
-        return context;
-      } else if (feathersTokenExpiration()) {
+    // When calling getNewToken directly, path does not exist
+    // If the context.path is not already authentication... authenticate
+    const authPath = context.app.authentication.options.path.substr(1);
+    if (!context.path || (context.path && context.path !== authPath)) {
+      const expired = feathersTokenExpiration();
+      if (expired) {
         const midTierToken = await getMidTierToken();
 
         if (!midTierToken.authentication) {
@@ -38,9 +34,8 @@ const getNewToken = async (context) => {
         store.set('users/authentication', authentication);
         store.set('users/user', user);
       }
-
-      return context;
     }
+    return context;
   } catch (error) {
     store.dispatch('alert/setAlertMsg', error.message || '');
     return context;
