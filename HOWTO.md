@@ -160,7 +160,6 @@ var myApp = Object.freeze({
       name: String,
       description: String
     } */
-    ...defaultRoles,
     {
       name: 'example-role',
       description:
@@ -191,7 +190,6 @@ NOTE: The defaults can be found in `@/config/private/acl/roles.js`.
 ...
 
 const acls = (acl) => {
-  defaultAcls(acl);
   // Add your own acls here...
   acl.rule(
     'if-example-role',

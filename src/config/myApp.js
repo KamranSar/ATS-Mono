@@ -1,4 +1,3 @@
-import defaultRoles from '@/config/private/acl/roles.js';
 import toTitleCase from '@/filters/toTitleCase.js';
 
 /**
@@ -19,7 +18,14 @@ var myApp = Object.freeze({
       name: String,
       description: String
     } */
-    ...defaultRoles,
+    {
+      name: 'user-manager',
+      description: 'Gives admin access to manager users in /users',
+    },
+    {
+      name: 'admin',
+      description: 'Generic application adminstrator',
+    },
     {
       name: 'example-role',
       description:

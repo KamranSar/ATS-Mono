@@ -11,37 +11,36 @@ import getMidTierToken from '@/config/private/helpers/getMidTierToken';
  * @returns The context with approles appended to users
  */
 const getNewToken = async (context) => {
-  // if (
-  //   !context.path ||
-  //   context.path === context.app.authentication.options.path
-  // ) {
-  //   return context;
-  // }
-
   try {
-    // Conditional around AzureAuthentication to check if expired.
-    if (azureTokenExpiration()) {
-      await store.dispatch('azureAuthentication/AzureAuthentication');
-    }
-
-    // console.log('packet: ', packet);
-    // Now sign into Middle Tier
-    // console.log(this.isAuthenticated);
-
-    if (feathersTokenExpiration()) {
-      const midTierToken = await getMidTierToken();
-
-      if (!midTierToken.authentication) {
-        throw Error('Failed to authenticate, please try again.');
+    // When calling getNewToken directory, no path is passed int
+    // Let it run to completion
+    if (!context.path) {
+      // Conditional around AzureAuthentication to check if expired.
+      if (azureTokenExpiration()) {
+        await store.dispatch('azureAuthentication/AzureAuthentication');
       }
 
-      let { user } = midTierToken;
-      const { authentication } = midTierToken;
-      store.set('users/authentication', authentication);
-      store.set('users/user', user);
-    }
+      // Skip if path does not equal auth when path exists.
+      if (
+        context.path &&
+        context.path !== context.app.authentication.options.path
+      ) {
+        return context;
+      } else if (feathersTokenExpiration()) {
+        const midTierToken = await getMidTierToken();
 
-    return context;
+        if (!midTierToken.authentication) {
+          throw Error('Failed to authenticate, please try again.');
+        }
+
+        let { user } = midTierToken;
+        const { authentication } = midTierToken;
+        store.set('users/authentication', authentication);
+        store.set('users/user', user);
+      }
+
+      return context;
+    }
   } catch (error) {
     store.dispatch('alert/setAlertMsg', error.message || '');
     return context;
