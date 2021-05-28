@@ -8,6 +8,14 @@ Table of Contents
   - [Customizing your app theme](#customizing-your-app-theme)
   - [Resize your logo for PWA](#resize-your-logo-for-pwa)
   - [Create your first route and component.](#create-your-first-route-and-component)
+  - [Adding Users to your App.](#adding-users-to-your-app)
+  - [Adding roles to your App](#adding-roles-to-your-app)
+  - [Assigning roles to users](#assigning-roles-to-users)
+  - [Creating ACLS to work with your roles](#creating-acls-to-work-with-your-roles)
+  - [Using roles to protect your app](#using-roles-to-protect-your-app)
+    - [Protecting your route](#protecting-your-route)
+    - [Protect your buttons](#protect-your-buttons)
+    - [Protect it with JavaScript](#protect-it-with-javascript)
 - [Optional Toolkits](#optional-toolkits)
   - [Creating a Vuex module](#creating-a-vuex-module)
   - [Persist your Vuex Module](#persist-your-vuex-module)
@@ -127,6 +135,113 @@ import { requireToken } from '@/router/helpers/guards.js';
     fail: '4oh4',
   },
 },
+```
+
+## Adding Users to your App.
+
+- [ ] Users will be able to log in with their cdcr credentials (`first.last@cdcr.ca.gov`), but they will not be assigned a role.
+
+## Adding roles to your App
+
+In `@/config/myApp.js` you'll find `approles`.
+
+- [ ] Define your own application roles by providing an object with a name and description.
+
+```javascript
+// @/config/myApp.js
+
+...
+
+var myApp = Object.freeze({
+  ...
+  approles: [
+    // TODO: Add your application roles here
+    /* {
+      name: String,
+      description: String
+    } */
+    ...defaultRoles,
+    {
+      name: 'example-role',
+      description:
+        'Generic application role, change this to suit your app needs',
+    },
+  ],
+});
+
+...
+```
+
+NOTE: The defaults can be found in `@/config/private/acl/roles.js`.
+
+## Assigning roles to users
+
+- [ ] When you log in with your `a_first.last@cdcr.ca.gov` account, you automatically have the correct permissions to manage users and their roles.
+- [ ] With your `a_...` account will give you access to the page `/Users` in the application.
+
+- This view shows all the users that have logged in at least once into the application and the roles that they come with.
+
+## Creating ACLS to work with your roles
+
+`approles` in `myApp` should couple with the acls you define in `@/acls/index.js`
+
+```javascript
+// @/acl/index.js
+
+...
+
+const acls = (acl) => {
+  defaultAcls(acl);
+  // Add your own acls here...
+  acl.rule(
+    'if-example-role',
+    (user) => user && user.approles && user.approles.includes('example-role')
+  );
+};
+
+...
+```
+
+## Using roles to protect your app
+
+`approles` in `myApp` should couple with the acls defined in `@/acls/index.js`
+
+You can learn more about the usage of these acls from [vue-browser-acl](https://github.com/mblarsen/vue-browser-acl#usage)
+
+### Protecting your route
+
+You can protect a route from being accessed without the proper acl with the `meta` property in `@/router/routes.js`
+
+```javascript
+{
+  icon: 'mdi-lock',
+  path: '/secret',
+  name: 'Secret',
+  component: () => import(/* webpackChunkName: "secret" */ '@/views/Secret.vue'),
+  beforeEnter: requireToken, // If user has a token(is logged in.)
+  /** vue-browser-acl meta */
+  meta: { // Optional
+    can: 'if-example-role',
+    fail: '4oh4',
+  },
+}
+```
+
+### Protect your buttons
+
+You can make it so any HTML can be hidden, similar to `v-if`.
+
+```html
+<button v-can="['is-admin', 'is-user-manager']">Update Roles</button>
+<button v-can="'is-admin'">Create</button>
+```
+
+### Protect it with JavaScript
+
+```javascript
+if (this.$can('is-admin')) {
+  this.$feathers.service(...).find({query: {...}});
+}
 ```
 
 # Optional Toolkits
