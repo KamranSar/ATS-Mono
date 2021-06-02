@@ -42,7 +42,6 @@ Below outlines the default directory structure the template comes with:
 │   ├── compositions - Vue 3 ready composition functions
 │   ├── config - Application configuration folder (myApp.js)
 │   │   └── private - Underlying template code available for use but.. DO NOT MODIFY
-│   │       ├── acl - Default roles and acls
 │   │       ├── components
 │   │       ├── helpers
 │   │       ├── router - Default routes
@@ -50,8 +49,8 @@ Below outlines the default directory structure the template comes with:
 │   │           ├── modules
 │   │           └── plugins
 │   ├── feathers - Exported feathers services
-│   │   ├── hooks
 │   │   └── services
+│   │       ├── example
 │   │       ├── heartbeat
 │   │       └── users
 │   ├── filters - toTileCase
@@ -66,9 +65,9 @@ Below outlines the default directory structure the template comes with:
 │       └── Admin - For appuserroles
 └── tests - Cypress e2e testing
     └── e2e
-        ├── plugins - Resuables tests
-        ├── specs - Test files
-        └── support - User defined helpers
+        ├── plugins
+        ├── specs
+        └── support
 ```
 
 # Start your development
