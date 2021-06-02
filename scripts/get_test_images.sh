@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "."
-echo "Retrieving DB Images from Docker repo registry server..."
+echo "Retrieving Testing Images from Docker repo registry server..."
 echo "."
 # Make sure we're in the root project folder
 CWD=$(pwd)
@@ -9,20 +9,40 @@ if [[ $CWD == *"scripts" ]]; then
 fi
 # Set env variables to be passed into the Docker repo:
 set -o allexport
-. scripts/repo_env
+. scripts/test_env
 set +o allexport
 # Login to the Docker repo registry server
-echo docker login ${IMAGE_REPO_URL}
-docker login ${IMAGE_REPO_URL} --username ${IMAGE_REPO_USER} --password ${IMAGE_REPO_PSWD}
-# Run the DB pulls from the on-prem image repo
-echo docker pull root DB images
-# echo docker pull ${IMAGE_REPO_URL}image-name${IMAGE_VER}
-docker pull ${IMAGE_REPO_URL}mongodb${IMAGE_VER}
-docker pull ${IMAGE_REPO_URL}mssql${IMAGE_VER}
-docker pull ${IMAGE_REPO_URL}mysql${IMAGE_VER}
-docker pull ${IMAGE_REPO_URL}postgres${IMAGE_VER}
-docker pull ${IMAGE_REPO_URL}oracle${IMAGE_VER}
-docker pull ${IMAGE_REPO_URL}redis${IMAGE_VER}
+echo docker login ${IMAGE_REPO_DOMAIN}
+docker login ${IMAGE_REPO_DOMAIN} --username ${IMAGE_REPO_USER} --password ${IMAGE_REPO_PSWD}
+# Run the Auth & DB pulls from the on-prem image repo
+echo "."
+IMAGE_NAME="mongodb"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="mssql"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="mysql"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="postgres"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="oracle"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="redis"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="mt-auth"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 # # Pull the root/public images local
 # docker pull bitnami/mongodb:latest
 # docker pull mcr.microsoft.com/mssql/server:2017-latest
@@ -77,5 +97,5 @@ sudo chmod -R 777 /var/local/log/
 # Return from whence we came
 cd "$CWD"
 echo "."
-echo "Completed DB Image Pulls"
+echo "Completed Testing Image Pulls"
 echo "."

@@ -1,0 +1,60 @@
+#=============================
+## Harbor Image Repo settings
+#=============================
+# Harbor Repo Server
+#-------------------
+IMAGE_REPO_DOMAIN=fdctwebharbor.accounts.cdcr.ca.gov
+#
+# Harbor Repo Credentials
+#------------------------
+IMAGE_REPO_USER=admin
+IMAGE_REPO_PSWD=Harbor12345
+#
+# Harbor Repo Folders & Version
+#------------------------------
+# App servers always default to eismt-dev
+IMAGE_ENV_APP=eismt-dev
+# Database servers always default to eismt-core
+IMAGE_ENV_CORE=eismt-core
+# Version defaults to "latest"
+IMAGE_VER=latest
+#
+#=============================
+## Auth Server Settings
+#=============================
+NODE_ENV=development
+AUTH_DOMAIN=https://apidev.cdcr.ca.gov
+DOC_HOST=testApiServer
+APP_HOST=localhost
+APP_PORT=3000
+PROXY_USER_AGENT=cdcr_midtier_api_auth
+#
+## Debugging settings
+# =============================
+DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*
+DEBUG_COLORS=true
+DEBUG_HIDE_DATE=false
+DEBUG_SHOW_HIDDEN=false
+#
+## JWT Authentication 
+# =============================
+JWT_SALT_SECRET=m4L65xpHaRavfc36c+vh26pdS6A=
+#
+## MiddleTier Mongo Server
+# =============================
+MONGO_SVR=localhost
+MONGO_PORT=27017
+#
+# REDIS Settings
+# =============================
+REDIS_SVR=localhost
+REDIS_PORT=6379
+REDIS_SESSION_SECRET="o9i#q3#xNi!oqQc)kA!elNY5YIRW@+:A8fJ+C+Ec8f0S!7DW(PI+pLPH60Jhm##1"
+ENABLE_REDIS_CACHE_LOGGER=true
+DISABLE_REDIS_CACHE=true
+#
+# FEATHERS DISTRIBUTION CONFIGURATION
+# ===================================
+BASE_PORT=10000
+HIGHEST_PORT=65535
+COTE_DELAY=1000

@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 echo "."
-echo "Stop DB Containers..."
+echo "Stop Testing Containers..."
 echo "."
 # Make sure we're in the root project folder
 CWD=$(pwd)
@@ -18,8 +18,10 @@ echo docker container stop postgres
 docker container stop postgres
 echo docker container stop redis
 docker container stop redis
-# Delete the old DB containers, if desired (comment out if not):
-# echo "Deleting previous DB containers..."
+echo docker container stop mt-auth
+docker container stop mt-auth
+# Delete the old Testing Containers, if desired (comment out if not):
+# echo "Deleting previous Testing Containers..."
 #echo docker container rm --force mongodb
 #docker container rm --force mongodb
 #echo docker container rm --force mssql
@@ -30,8 +32,10 @@ docker container stop redis
 #docker container rm --force postgres
 #echo docker container rm --force redis
 #docker container rm --force redis
+echo docker container rm --force mt-auth
+docker container rm --force mt-auth
 # Return from whence we came
 cd "$CWD"
 echo "."
-echo "DB Containers stopped"
+echo "Testing Containers stopped"
 echo "."
