@@ -20,6 +20,35 @@ IMAGE_ENV_CORE=eismt-core
 IMAGE_VER=latest
 #
 #=============================
+## Local DB Server settings
+#=============================
+#
+## Oracle Docker Server
+ORACLE_SVR_PORT=1521
+ORACLE_GUI_PORT=5500
+ORACLE_USER=system
+ORACLE_PASSWORD=Oradoc_db1
+ORACLE_CONNSTR=localhost:1521/ORCLPDB1.localdomain
+#
+## MS SQL Docker Server
+MSSQL_PORT=1433
+MSSQL_DB=master
+MSSQL_USER=SA
+MSSQL_PASSWORD=msSql2017@
+#
+# POSTGRES Server
+POSTGRESQL_PORT=5432
+POSTGRESQL_USERNAME=postgres
+POSTGRESQL_POSTGRES_PASSWORD=postgres
+POSTGRESQL_DATABASE=midtier
+#
+## MiddleTier Mongo Server
+MTMONGO_PORT=27017
+#
+## MiddleTier mySQL Server
+MYSQL_PORT=3306
+#
+#=============================
 ## Auth Server Settings
 #=============================
 NODE_ENV=development

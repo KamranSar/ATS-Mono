@@ -68,7 +68,7 @@ else
   --env PATH=$PATH:/opt/mssql-tools/bin/ \
   --volume /var/local/db/mssql:/var/opt/mssql \
   --name $IMAGE_NAME \
-  --detach ${IMAGE_REPO_URL}mssql:latest
+  --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 fi
 # mysql
 # IMAGE_NAME="mysql"
@@ -85,7 +85,7 @@ fi
 #   --env MYSQL_DATABASE=midtier \
 #   --volume /var/local/db/mysql:/bitnami/mysql \
 #   --name $IMAGE_NAME \
-#   --detach ${IMAGE_REPO_URL}mysql:latest
+#   --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 # fi
 # oracle
 IMAGE_NAME="oracle"
@@ -104,7 +104,7 @@ else
   --env DB_MEMORY=2G \
   --volume /var/local/db/oracle:/ORCL \
   --name $IMAGE_NAME \
-  --detach ${IMAGE_REPO_URL}oracle:latest
+  --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 fi
 # postgres
 IMAGE_NAME="postgres"
@@ -124,7 +124,7 @@ else
   --env POSTGRES_HOST_AUTH_METHOD=trust \
   --volume /var/local/db/postgres:/bitnami/postgresql \
   --name $IMAGE_NAME \
-  --detach ${IMAGE_REPO_URL}postgres:latest
+  --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 fi
 # mt-auth
 IMAGE_NAME="mt-auth"

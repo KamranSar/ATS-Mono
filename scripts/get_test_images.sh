@@ -28,11 +28,11 @@ docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 # echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 # docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 echo "."
-IMAGE_NAME="postgres"
+IMAGE_NAME="oracle"
 echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 echo "."
-IMAGE_NAME="oracle"
+IMAGE_NAME="postgres"
 echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
 echo "."
