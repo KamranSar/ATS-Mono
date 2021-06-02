@@ -22,6 +22,8 @@ echo docker container stop redis
 docker container stop redis
 echo docker container stop mt-auth
 docker container stop mt-auth
+echo docker container stop mt-eis-common
+docker container stop mt-eis-common
 # Delete the old Testing Containers, if desired (comment out if not):
 # echo "Deleting previous Testing Containers..."
 #echo docker container rm --force mongodb
@@ -38,6 +40,8 @@ docker container stop mt-auth
 #docker container rm --force redis
 echo docker container rm --force mt-auth
 docker container rm --force mt-auth
+echo docker container rm --force mt-eis-common
+docker container rm --force mt-eis-common
 # Return from whence we came
 cd "$CWD"
 echo "."

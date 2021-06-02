@@ -20,6 +20,13 @@ IMAGE_ENV_CORE=eismt-core
 IMAGE_VER=latest
 #
 #=============================
+## MT Server Listening Ports
+#=============================
+#
+MT_AUTH_PORT=3000
+MT_EIS_COMMON_PORT=51401
+#
+#=============================
 ## Local DB Server settings
 #=============================
 #
@@ -54,13 +61,12 @@ MYSQL_PORT=3306
 NODE_ENV=development
 AUTH_DOMAIN=https://apidev.cdcr.ca.gov
 DOC_HOST=testApiServer
-APP_HOST=localhost
-APP_PORT=3000
 PROXY_USER_AGENT=cdcr_midtier_api_auth
 #
 ## Debugging settings
 # =============================
 DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*
+#DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*,feathers-distributed*
 DEBUG_COLORS=true
 DEBUG_HIDE_DATE=false
 DEBUG_SHOW_HIDDEN=false

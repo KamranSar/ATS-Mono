@@ -43,6 +43,10 @@ echo "."
 IMAGE_NAME="mt-auth"
 echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
+echo "."
+IMAGE_NAME="mt-eis-common"
+echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
+docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 # # Pull the root/public images local
 # docker pull bitnami/mongodb:latest
 # docker pull mcr.microsoft.com/mssql/server:2017-latest
