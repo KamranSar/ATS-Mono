@@ -2,16 +2,14 @@ import store from '@/store';
 
 const azureTokenExpiration = () => {
   const token = store.get('azureAuthentication/azuretokenresponse');
-  const hasToken = !!token && !!token.expiresOn;
   let expDate = null;
-  if (hasToken) {
-    const ExpiresAt = token.expiresOn;
-    // console.log(ExpiresAt.toLocaleString());
-    expDate = ExpiresAt;
+  if (!!token && !!token.expiresOn) {
+    expDate = token.expiresOn;
+    // console.log('\t\tAzure Token Expires At: ', expDate.toLocaleString());
   }
 
-  if (expDate) {
-    const now = new Date();
+  if (expDate && expDate.getTime) {
+    const now = Date.now();
     const minutes = 1; // Alert the user this many minutes before their session expires
     const newExpDate = new Date(expDate.getTime() - minutes * 60000);
     if (now >= newExpDate) {

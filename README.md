@@ -45,7 +45,8 @@ npm run serve
 Add a remote called `upstream` that points to the forked repository.
 You can then pull down the latest changes from the template like so.
 
-```
+```sh
+git remote -v # Check that you don't already have it
 git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
 git fetch upstream main
 git merge --squash upstream/main

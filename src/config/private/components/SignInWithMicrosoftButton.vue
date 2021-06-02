@@ -26,8 +26,7 @@
 
 <script>
   import { call, get, sync } from 'vuex-pathify';
-  import getNewToken from '@/feathers/hooks/getNewToken';
-  import feathers from '@/config/private/feathers.js';
+  import getNewToken from '@/config/private/helpers/getNewToken';
 
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
@@ -47,7 +46,7 @@
           // Sign in with azure
           await this.AzureAuthentication();
           try {
-            await getNewToken({ app: feathers });
+            await getNewToken();
             await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for the authentication to finish or we get router errors
             this.$router.push({ name: 'Home' });
 

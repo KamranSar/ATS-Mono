@@ -197,6 +197,12 @@
         let message = err ? err.message : 'unknown error';
         let stack = err ? err.stack : null;
         let timestamp = `${new Date().toDateString()} ${new Date().toTimeString()}`;
+        // Add any errors that shouldn't throw
+        const errorExceptions = [
+          'failed to update a serviceworker',
+          'jwt expired',
+          'not authenticated',
+        ];
 
         let error = {
           id,
@@ -214,10 +220,7 @@
         console.error(`Error Caught: ${message}`, error);
 
         // see if we should ignore the error
-        if (
-          message &&
-          message.toLowerCase().includes('failed to update a serviceworker')
-        ) {
+        if (message && errorExceptions.includes(message.toLowerCase())) {
           error = null;
         }
 

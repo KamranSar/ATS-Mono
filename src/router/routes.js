@@ -3,7 +3,7 @@
  */
 
 import { checkForChildren } from '@/router/helpers/index.js';
-import defaultRoutes from '@/config/private/router/routes.js';
+import defaultRoutes from '@/config/private/router/routes.js'; // [Home, Login Logout, Sign Out, Users, 4oh4]
 
 const routes = [
   ...defaultRoutes,

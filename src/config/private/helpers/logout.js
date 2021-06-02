@@ -1,6 +1,7 @@
 import store from '@/store';
 import router from '@/router';
 import myApp from '@/config/myApp';
+import feathers from '@/config/private/feathers';
 
 /**
  * Call this function to log out of the app
@@ -18,7 +19,10 @@ async function logout() {
         message: `Logged out of ${myApp.name} successfully.`,
         color: 'success',
       });
-      window.localStorage.removeItem(myApp.name);
+      window.localStorage.removeItem(process.env.VUE_APP_NAME);
+      feathers.authentication.removeAccessToken();
+      feathers.authentication.reset();
+      store.set('azureAuthentication/azuretokenresponse', null);
       store.commit('users/resetState');
     }
   } catch (e) {

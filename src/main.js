@@ -7,6 +7,7 @@ import store from '@/store';
 import myApp from '@/config/myApp.js';
 import feathersClient from '@/config/private/feathers.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
+import getNewToken from '@/config/private/helpers/getNewToken';
 
 import '@/acl/index.js';
 
@@ -26,3 +27,8 @@ new Vue({
   store,
   render: (h) => h(App),
 }).$mount('#app');
+
+// Get a new token every 5 seconds.
+setInterval(() => {
+  getNewToken();
+}, 5 * 1000);

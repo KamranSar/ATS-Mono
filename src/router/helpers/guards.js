@@ -1,18 +1,11 @@
 // https://router.vuejs.org/guide/advanced/navigation-guards.html#global-before-guards
 import Vue from 'vue';
 import store from '@/store/index';
-import feathers from '@/config/private/feathers.js';
-import getNewToken from '@/feathers/hooks/getNewToken';
+import getNewToken from '@/config/private/helpers/getNewToken';
 
 const requireToken = (to, from, next) => {
   const token = store.get('azureAuthentication/azuretokenresponse');
   if (token) next();
-  else next({ name: 'Login' });
-};
-
-const requireAuth = (to, from, next) => {
-  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
-  if (loggedIn) next();
   else next({ name: 'Login' });
 };
 
@@ -25,7 +18,7 @@ const waitForStorageToBeReady = async (to, from, next) => {
 
       // Usecase 1: Get a new token on a refresh if user is logged in.
       const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
-      if (loggedIn) await getNewToken({ app: feathers });
+      if (loggedIn) await getNewToken();
 
       // Usecase 2: Set user's theme preference on refresh
       // NOTE: Persisting userPrefs to localStorage/cookies won't work when also
@@ -47,4 +40,4 @@ const waitForStorageToBeReady = async (to, from, next) => {
   next();
 };
 
-export { requireToken, requireAuth, waitForStorageToBeReady };
+export { requireToken, waitForStorageToBeReady };

@@ -319,6 +319,8 @@ methods: {
 
 ## Accessing your Feathers Service
 
+[Feathers Querying Doc](https://docs.feathersjs.com/api/databases/querying.html)
+
 - [ ] Create a backend feathers service to hook into and call APIs with
 
 - [ ] Copy the folder `@/feathers/services/example` and change the file names and the `servicePath` variable in `example.service.js`

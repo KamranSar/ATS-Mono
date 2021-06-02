@@ -13,7 +13,7 @@
               chips
               color="blue-grey lighten-2"
               label="Selected users"
-              item-text="displayname"
+              item-text="username"
               item-value="_id"
               multiple
               clearable
@@ -164,14 +164,20 @@
     },
     methods: {
       async getUser() {
-        this.loading = true;
-        const users = await Users.find({
-          query: {
-            disabled: false,
-          },
-        });
-        this.loading = false;
-        return users.data;
+        try {
+          this.loading = true;
+          const users = await Users.find({
+            query: {
+              disabled: false,
+            },
+          });
+          return users.data;
+        } catch (error) {
+          console.error('getUser: ', error);
+          return [];
+        } finally {
+          this.loading = false;
+        }
       },
       formatDistance(date) {
         if (!date) return '';
@@ -214,8 +220,8 @@
       // TODO: Add warnings when adding/removing all roles from a user
       async saveRoles() {
         this.loading = true;
-        console.log('Saving these roles: ', this.selectedRoles);
-        console.log('To these users: ', this.selectedUsers);
+        // console.log('Saving these roles: ', this.selectedRoles);
+        // console.log('To these users: ', this.selectedUsers);
 
         const promisesArray = [];
         this.selectedUsers.forEach((userId) => {
@@ -241,8 +247,7 @@
           }
         });
 
-        const results = await Promise.all(promisesArray);
-        console.log('results:', results);
+        await Promise.all(promisesArray);
 
         this.listOfUsers = await this.getUser();
         this.loading = false;
