@@ -12,6 +12,8 @@ echo docker container stop mongodb
 docker container stop mongodb
 echo docker container stop mssql
 docker container stop mssql
+# echo docker container stop mysql
+# docker container stop mysql
 echo docker container stop oracle
 docker container stop oracle
 echo docker container stop postgres
@@ -26,6 +28,8 @@ docker container stop mt-auth
 #docker container rm --force mongodb
 #echo docker container rm --force mssql
 #docker container rm --force mssql
+#echo docker container rm --force mysql
+#docker container rm --force mysql
 #echo docker container rm --force oracle
 #docker container rm --force oracle
 #echo docker container rm --force postgres

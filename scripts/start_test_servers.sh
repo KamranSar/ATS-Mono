@@ -71,22 +71,22 @@ else
   --detach ${IMAGE_REPO_URL}mssql:latest
 fi
 # mysql
-IMAGE_NAME="mysql"
-if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
-  echo docker start $IMAGE_NAME
-  docker start $IMAGE_NAME
-else
-  echo docker run --name $IMAGE_NAME...
-  docker run \
-  --network host \
-  --expose ${MYSQL_PORT} \
-  --env ALLOW_EMPTY_PASSWORD=yes \
-  --env MYSQL_PORT_NUMBER=${MYSQL_PORT} \
-  --env MYSQL_DATABASE=midtier \
-  --volume /var/local/db/mysql:/bitnami/mysql \
-  --name $IMAGE_NAME \
-  --detach ${IMAGE_REPO_URL}mysql:latest
-fi
+# IMAGE_NAME="mysql"
+# if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
+#   echo docker start $IMAGE_NAME
+#   docker start $IMAGE_NAME
+# else
+#   echo docker run --name $IMAGE_NAME...
+#   docker run \
+#   --network host \
+#   --expose ${MYSQL_PORT} \
+#   --env ALLOW_EMPTY_PASSWORD=yes \
+#   --env MYSQL_PORT_NUMBER=${MYSQL_PORT} \
+#   --env MYSQL_DATABASE=midtier \
+#   --volume /var/local/db/mysql:/bitnami/mysql \
+#   --name $IMAGE_NAME \
+#   --detach ${IMAGE_REPO_URL}mysql:latest
+# fi
 # oracle
 IMAGE_NAME="oracle"
 if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
