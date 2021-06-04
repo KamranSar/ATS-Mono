@@ -5,7 +5,7 @@ const hooksName = './' + serviceName + '.hooks';
 const docsName = './' + serviceName + '.docs';
 const modelName = '../../models/' + serviceName + '.model';
 const createModel = require(modelName);
-const service = require('../../index.json').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
+const service = require('../../service-config').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
 const apppath = (process.env.APP_PATH.substr(0, 1) == '/' ? process.env.APP_PATH.substr(1) : process.env.APP_PATH);
 const appUrl = `${apppath}/${service.version}/${service.name}`;
 const { ServiceClass } = require(className);

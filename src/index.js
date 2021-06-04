@@ -1,4 +1,4 @@
-const serverData = require('./index.json').server;
+const serverData = require('./service-config').server;
 
 // Server parameters go into process env
 process.env.APP_NAME = serverData.name;

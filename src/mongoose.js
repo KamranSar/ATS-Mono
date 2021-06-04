@@ -2,7 +2,7 @@
 const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:mongoose:dbname');
 const { logger } = require('cdcrhelpers');
 const mongoose = require('mongoose');
-const serverData = require('./index.json').server;
+const serverData = require('./service-config').server;
 
 module.exports = function (app) {
   if (serverData.mongooseEnabled) {

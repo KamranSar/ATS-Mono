@@ -1,5 +1,5 @@
 const { Service } = require('feathers-mongodb');
-const serverInfo = require('../../index.json').server;
+const serverInfo = require('../../service-config').server;
 
 exports.ServiceClass = class ServiceClass extends Service {
   constructor(options, app) {

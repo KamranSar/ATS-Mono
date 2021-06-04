@@ -77,9 +77,9 @@ else
     cp env.sample .env 
 fi
 
-# Change the replaceable values in the index.html file with values from index.json
-serverName=$(cat src/index.json | jsonValue name 1 | tr -d '[:space:]')
-docsPath1=$(cat src/index.json | jsonValue docsPath 1 | tr -d '[:space:]')
+# Change the replaceable values in the index.html file with values from service-config.js
+serverName=$(cat src/service-config.js | jsonValue name 1 | tr -d '[:space:]')
+docsPath1=$(cat src/service-config.js | jsonValue docsPath 1 | tr -d '[:space:]')
 docsPath2=${docsPath1//\//\\\/}
 # Only change index.html file if not a template
 if [[ $serverName != *"-template" ]]; then

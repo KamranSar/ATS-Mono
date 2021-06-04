@@ -30,8 +30,8 @@ npm run dev
 ```
 cd MyAppName
 code .
-a) Edit the "/MyAppName/package.json" file to change the server name.
-b) Edit the "/MyAppName/src/index.json" file to add/change services and to change the server name.
+a) Edit the "/MyAppName/package.json" file to change the server name and description.
+b) Edit the "/MyAppName/src/service-config.js" file to set api/docs paths and to add/change services.
 c) Copy a service folder from "/MyAppName/src/services/service1_v1" to "/MyAppName/src/services/service2_v1" 
    i) Change all filename prefixess in folder "/MyAppName/src/services/service2_v1" to service2_v1.x.js
 d) Copy a model file from "/MyAppName/src/model/service1_v1.model.js" to "/MyAppName/src/model/service2_v1.model.js" 

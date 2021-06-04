@@ -2,7 +2,7 @@
 const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:knex:dbname');
 const { logger } = require('cdcrhelpers');
 const knex = require('knex');
-const serverData = require('./index.json').server;
+const serverData = require('./service-config').server;
 
 module.exports = function (app) {
   // MS-SQL connection

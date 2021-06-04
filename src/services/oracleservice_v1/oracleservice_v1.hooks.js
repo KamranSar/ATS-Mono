@@ -3,7 +3,7 @@ const redisCache = require('feathers-redis-cache').hooks;
 const { discard, setNow, iff } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
 const { logSvcMsg, setUserIDAsString, fixOracleQueryParams } = require('cdcrhooks');
-const server = require('../../index.json').server;
+const server = require('../../service-config').server;
 const authActive = (process.env.NODE_ENV != 'development' || server.authActive) ? true : false;
 
 module.exports = {

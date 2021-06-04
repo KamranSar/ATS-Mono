@@ -1,9 +1,9 @@
 const users = require('./users/users.service.js');
 const heartbeatV1 = require('./heartbeat_v1/heartbeat_v1.service.js');
-const server = require('../index.json');
+const server = require('../service-config');
 
 //
-// Automatically load the services in the index.json file
+// Automatically load the services in the service-config.js file
 //
 function load(app) {
 

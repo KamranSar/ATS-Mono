@@ -1,7 +1,7 @@
 {
   "name": "database-template",
   "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "homepage": "",
   "private": true,
   "main": "src",
@@ -31,6 +31,8 @@
     "dev": "NODE_ENV=development nodemon src/",
     "prod": "NODE_ENV=production nodemon src/",
     "perf": "echo 'Performance Testing Profile\n'; export NODE_ENV=perf; node src/",
+    "clean": "rm -rf *_modules package-lock.json .env ",
+    "cleaninstall": "npm run clean;\nnpm install",
     "start": "node src/",
     "mocha": "mocha test/ --recursive --exit"
   },

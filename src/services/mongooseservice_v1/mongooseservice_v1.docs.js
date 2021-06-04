@@ -1,5 +1,5 @@
 const serviceName = require('path').basename(__filename, '.docs.js');
-const service = require('../../index.json').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
+const service = require('../../service-config').services.find(obj => { return (obj.name + '_' + obj.version) == serviceName; });
 
 /**
  * This is the name of the ID field used by the API's {id}

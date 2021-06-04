@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:mongodb:dbname');
 const { logger } = require('cdcrhelpers');
-const serverData = require('./index.json').server;
+const serverData = require('./service-config').server;
 
 module.exports = function (app) {
   // Mongodb connection for this app server.
