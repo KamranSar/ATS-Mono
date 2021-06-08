@@ -28,6 +28,7 @@ cd database-template
 npm install
 cd scripts
 ./start_db.sh
+cd ..
 npm run dev
 ```
 
