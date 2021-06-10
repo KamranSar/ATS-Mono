@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:knex:dbname');
-const { logger } = require('cdcrhelpers');
+const { logger, base64ToString } = require('cdcrhelpers');
 const knex = require('knex');
 const serverData = require('./service-config').server;
 
@@ -8,6 +8,24 @@ module.exports = function (app) {
   // MS-SQL connection
   if (serverData.mssqlEnabled) {
     const { connection, pool, connTimeout } = app.get('mssql');
+    // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
+    if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
+      const username = (connection.user == 'SA') ? connection.user: base64ToString(connection.user);
+      if (username !== connection.user) connection.user = username;
+      const password = base64ToString(connection.password);
+      if (password !== connection.password) connection.password = password;
+    }
+    else {
+      logger.error('knex: MS-SQL username or password is missing or incomplete');
+      process.exit(1);
+    }
+    // If the server, port, or database strings are missing or incomplete, we cannot open the DB server.
+    if (!connection.server || connection.server.length < 7 ||
+      !connection.options.port || connection.options.port.length < 4 ||
+      !connection.database || connection.database.length < 1) {
+      logger.error('knex: MS-SQL server, port, or database strings are missing or incomplete');
+      process.exit(1);
+    }
     const connInfo = `MS-SQL server for (${connection.database}) database at: ${connection.server}:${connection.options.port}`;
     debug(`Connecting to ${connInfo}...`);
     const dbMssql = knex({ client: 'mssql', connection, pool, acquireConnectionTimeout: connTimeout });
@@ -36,6 +54,23 @@ module.exports = function (app) {
   // Oracle connection
   if (serverData.oracleEnabled) {
     const { connection, pool, connTimeout } = app.get('oracledb');
+    // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
+    if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
+      const username = (connection.user == 'Oradoc_db1') ? connection.user: base64ToString(connection.user);
+      if (username !== connection.user) connection.user = username;
+      const password = base64ToString(connection.password);
+      if (password !== connection.password) connection.password = password;
+    }
+    else {
+      logger.error('knex: Oracle username or password is missing or incomplete');
+      process.exit(1);
+    }
+    // If the connection string is missing or too short, we cannot open the DB server.
+    if (!connection.connectString || connection.connectString.length < 15) {
+      logger.error('knex: Oracle connection string is missing or incomplete');
+      process.exit(1);
+    }
+
     const connInfo = `Oracle server at: ${connection.connectString}`;
     debug(`Connecting to ${connInfo}...  `);
     const dbOracle = knex({
@@ -86,6 +121,24 @@ module.exports = function (app) {
   // Postgres connection
   if (serverData.postgresEnabled) {
     const { connection, pool, connTimeout } = app.get('postgres');
+    // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
+    if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
+      const username = (connection.user == 'postgres') ? connection.user: base64ToString(connection.user);
+      if (username !== connection.user) connection.user = username;
+      const password = base64ToString(connection.password);
+      if (password !== connection.password) connection.password = password;
+    }
+    else {
+      logger.error('knex: Postgres SQL username or password is missing or incomplete');
+      process.exit(1);
+    }
+    // If the server, port, or database strings are missing or incomplete, we cannot open the DB server.
+    if (!connection.server || connection.server.length < 7 ||
+      !connection.options.port || connection.options.port.length < 4 ||
+      !connection.database || connection.database.length < 1) {
+      logger.error('knex: Postgres SQL server, port, or database strings are missing or incomplete');
+      process.exit(1);
+    }
     const connInfo = `Postgres SQL server for (${connection.database}) database at: ${connection.server}:${connection.options.port}`;
     debug(`Connecting to ${connInfo}...`);
     const connString = `postgresql://${connection.user}:${connection.password}@${connection.server}:${connection.options.port}/${connection.database}`;
