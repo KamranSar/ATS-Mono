@@ -3,7 +3,7 @@ const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:mtmongodb:dbnam
 const { logger, configureMongoSvcStatConnection } = require('cdcrhelpers');
 
 module.exports = function (app) {
-  const { server, port, database, statsdatabase, connectTimeoutMS, poolSize } = app.get('mtmongodb');
+  const { server, port, database, connectTimeoutMS, poolSize } = app.get('mtmongodb');
   if (!server || server.length < 1 || !port || port.length < 1) {
     logger.error('MongoDb server or port must be specified in configuration, exiting...');
     process.exit(1);
@@ -30,5 +30,5 @@ module.exports = function (app) {
   app.set('midtierMongoClient', mongoClient); // Used only for user authentication with JWTs.  See services/users/user.class.js
 
   // Configure the Stats database for the logging middleware
-  configureMongoSvcStatConnection(app, server, port, statsdatabase, connectTimeoutMS, poolSize);
+  configureMongoSvcStatConnection(app, server, port, database, connectTimeoutMS, poolSize);
 };

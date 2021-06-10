@@ -43,7 +43,6 @@
     "server": "MTMONGO_SVR",
     "port": "MTMONGO_PORT",
     "database": "midtier",
-    "statsdatabase": "midtierstats",
     "connectTimeoutMS": 10000,
     "poolSize": 5
   },

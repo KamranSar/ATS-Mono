@@ -14,7 +14,7 @@ module.exports =
     //* authActive values: true = authentication activated, false = authentication deactivated meaning no auth required for all services.
     'authActive': true,
     //* Database enable/disable flags:
-    //* mongooseEnabled is required, all other flags are optional and can be removed along with their associated code if not used.
+    //* All DB flags are optional and can be removed along with their associated code if not used.
     'mongooseEnabled': true,
     'mongodbEnabled': true,
     'mssqlEnabled': true,
