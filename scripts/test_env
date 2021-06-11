@@ -43,17 +43,13 @@ MSSQL_DB=master
 MSSQL_USER=SA
 MSSQL_PASSWORD=msSql2017@
 #
-# POSTGRES Server
+## POSTGRES Server
 POSTGRESQL_PORT=5432
 POSTGRESQL_USERNAME=postgres
 POSTGRESQL_POSTGRES_PASSWORD=postgres
 POSTGRESQL_DATABASE=midtier
 #
-## MiddleTier Mongo Server
-MTMONGO_SVR=localhost
-MTMONGO_PORT=27017
-#
-## MiddleTier mySQL Server
+## mySQL Server
 MYSQL_PORT=3306
 #
 #=============================
@@ -76,8 +72,10 @@ DEBUG_SHOW_HIDDEN=false
 # =============================
 JWT_SALT_SECRET=m4L65xpHaRavfc36c+vh26pdS6A=
 #
-## MiddleTier Mongo Server
+## MiddleTier & App Mongo Servers
 # =============================
+MTMONGO_SVR=localhost
+MTMONGO_PORT=27017
 MONGO_SVR=localhost
 MONGO_PORT=27017
 #
