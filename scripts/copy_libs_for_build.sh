@@ -78,7 +78,7 @@ else
 fi
 
 # Change the replaceable values in the index.html file with values from service-config.js
-serverName=$(cat src/service-config.js | jsonValue name 1 | tr -d '[:space:]')
+serverName=$(cat package.json | jsonValue name 1 | tr -d '[:space:]')
 docsPath1=$(cat src/service-config.js | jsonValue docsPath 1 | tr -d '[:space:]')
 docsPath2=${docsPath1//\//\\\/}
 # Only change index.html file if not a template
