@@ -56,7 +56,12 @@ clone_cdcr_library() {
 jsonValue() {
   KEY=$1
   num=$2
-  awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p
+  delim=$3
+  if [ $delim = '1' ]; then
+     awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p
+  else
+     awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\047/){print $(i+1)}}}' | tr -d "'" | sed -n ${num}p
+  fi
 }
 
 echo "."
@@ -78,8 +83,8 @@ else
 fi
 
 # Change the replaceable values in the index.html file with values from service-config.js
-serverName=$(cat package.json | jsonValue name 1 | tr -d '[:space:]')
-docsPath1=$(cat src/service-config.js | jsonValue docsPath 1 | tr -d '[:space:]')
+serverName=$(cat package.json | jsonValue name 1 1 | tr -d '[:space:]')
+docsPath1=$(cat src/service-config.js | jsonValue docsPath 1 2 | tr -d '[:space:]')
 docsPath2=${docsPath1//\//\\\/}
 # Only change index.html file if not a template
 if [[ $serverName != *"-template" ]]; then
