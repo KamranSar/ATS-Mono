@@ -10,6 +10,12 @@
 #./image_resize.sh ~/Documents/Icons/logo.png
 
 echo "Running image resizer: "
+
+CWD=$(pwd)
+if [[ $CWD == *"scripts" ]]; then
+  cd ..
+fi
+
 echo "Checking dependencies..."
 # Check that pip3 is installed
 pip3 --version
@@ -33,7 +39,7 @@ fi
 
 git clone https://cdcr@dev.azure.com/cdcr/Common/_git/image_resize image_resize
 cd image_resize
-python3 ./image_resize.py $1
+python3 image_resize.py $1
 cd ..
 echo  "Take the converted images in /src/scripts/image_resize and move them to /public/img/icons"
 

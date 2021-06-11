@@ -27,7 +27,6 @@
 <script>
   import { call, get, sync } from 'vuex-pathify';
   import getNewToken from '@/config/private/helpers/getNewToken';
-
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
     name: 'SignInWithMicrosoftButton',

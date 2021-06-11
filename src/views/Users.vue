@@ -126,7 +126,7 @@
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import myApp from '@/config/myApp';
   import Users from '@/feathers/services/users/users.service.js';
-  import feathers from '@/config/private/feathers.js';
+  import feathers from '@/feathers/index.js';
   import { sync } from 'vuex-pathify';
   import { formatDistance, parseISO } from 'date-fns';
 

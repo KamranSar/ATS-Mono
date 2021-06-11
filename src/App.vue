@@ -18,11 +18,11 @@
 
     <Snackbar />
 
-    <Catch label="Main">
-      <v-main>
-        <router-view :key="$route.fullPath" />
-      </v-main>
-    </Catch>
+    <!-- <Catch label="Main"> -->
+    <v-main>
+      <router-view :key="$route.fullPath" />
+    </v-main>
+    <!-- </Catch> -->
 
     <BottomNavBar
       v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
@@ -37,7 +37,7 @@
   import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
   import Snackbar from '@/components/util/Snackbar.vue';
   import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
-  import Catch from '@/components/util/Catch.vue';
+  // import Catch from '@/components/util/Catch.vue';
 
   // https://v3.vuejs.org/guide/composition-api-setup.html#setup
   export default {
@@ -47,7 +47,7 @@
       NavDrawerRight,
       Snackbar,
       BottomNavBar,
-      Catch,
+      // Catch,
     },
     computed: {
       ...get('appFeatures', [

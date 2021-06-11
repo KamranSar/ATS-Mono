@@ -1,4 +1,4 @@
-import feathersClient from '@/config/private/feathers.js';
+import feathersClient from '@/feathers/index.js';
 import { debug } from 'feathers-hooks-common';
 const servicePath = 'api/auth/v1/heartbeat';
 

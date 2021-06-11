@@ -1,5 +1,4 @@
-import feathersClient from '@/config/private/feathers.js';
-// import { debug } from 'feathers-hooks-common';
+import feathersClient from '@/feathers/index.js';
 import { getUserRoles } from '@/feathers/services/users/users.hooks.js';
 
 const servicePath = 'api/auth/v1/users';

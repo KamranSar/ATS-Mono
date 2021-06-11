@@ -32,7 +32,7 @@
       const { get } = useVuexPathify(context);
 
       const myPhoto = get('azureAuthentication/myPhoto');
-      const myUser = get('users/user');
+      const myUser = get('users/loggedInUser');
       const myInitials = computed(() => {
         return (
           String(myUser.value.lastname).charAt(0) +

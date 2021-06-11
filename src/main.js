@@ -5,7 +5,7 @@ import vuetify from '@/plugins/vuetify';
 import router from '@/router';
 import store from '@/store';
 import myApp from '@/config/myApp.js';
-import feathersClient from '@/config/private/feathers.js';
+import feathersClient from '@/feathers/index.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 import getNewToken from '@/config/private/helpers/getNewToken';
 
@@ -29,6 +29,25 @@ new Vue({
 }).$mount('#app');
 
 // Get a new token every 5 seconds.
-setInterval(() => {
-  getNewToken();
-}, 5 * 1000);
+let keepAliveInterval = null;
+const createKeepAlive = () => {
+  keepAliveInterval = setInterval(() => {
+    if (window.navigator.onLine) {
+      getNewToken();
+    }
+  }, 20 * 1000);
+};
+
+// Create the first one, and toggle it between visibility changes.
+createKeepAlive();
+
+// console.log('Created First Interval: ', keepAliveInterval);
+window.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    createKeepAlive();
+    console.log('Visibility Toggled: ', keepAliveInterval);
+  } else if (keepAliveInterval) {
+    clearInterval(keepAliveInterval);
+    console.log('Visibility Hidden: ', keepAliveInterval);
+  }
+});

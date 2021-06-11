@@ -2,13 +2,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 // Manually pull in template provided modules/plugins/services or middleware
-import azureAuthentication from '@/config/private/store/modules/azureAuthentication';
+import azureAuthentication from '@/config/private/store/modules/azure/index.js';
 import azureDB from '@/config/private/store/plugins/azureDB';
 
 // Auto import all modules, plugins and services
 import modules from '@/store/modules';
 import plugins from '@/store/plugins';
-// import services from '@/store/services';
 
 // Attach vuex to the vue instance
 Vue.use(Vuex);
@@ -27,6 +26,7 @@ store.dispatch('azureAuthentication/init');
 store.dispatch('snackbar/init');
 store.dispatch('userPrefs/init');
 
+// TODO: How to guarantee application data during refresh.
 if (process.env.NODE_ENV === 'development') {
   window.store = store; // Make store available from the console.
 }

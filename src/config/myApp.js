@@ -12,6 +12,7 @@ var myApp = Object.freeze({
   version: process.env.VUE_APP_VERSION ? process.env.VUE_APP_VERSION : 'v???', // Update using `npm version major|minor|patch`
   gitID: process.env.VUE_APP_GIT_ID ? process.env.VUE_APP_GIT_ID : '1234567890',
   cdcrAppID: '12345', // TODO: Add client App ID given to you for your application
+  useWebSocketConnection: true, // Set to True to switch from REST to Web Sockets
   approles: [
     // TODO: Add your application roles here
     /* {
@@ -21,6 +22,7 @@ var myApp = Object.freeze({
     {
       name: 'user-manager',
       description: 'Gives admin access to manager users in /users',
+      // validFor: Number,
     },
     {
       name: 'admin',

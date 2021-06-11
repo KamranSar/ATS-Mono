@@ -7,6 +7,7 @@
     app
     disable-resize-watcher
     disable-route-watcher
+    :key="loggedInUser.logincount"
   >
     <v-toolbar flat class="subtitle-2 grey--text" color="#ECEFF1">
       <span class="text-truncate">
@@ -60,6 +61,20 @@
       </template>
     </v-list>
 
+    <!-- Add your own v-list below -->
+    <!--
+    <v-list>
+      <template v-for="item in items">
+        <NavListGroup
+          v-if="item.children"
+          :key="item.name"
+          :group="item"
+        ></NavListGroup>
+        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
+      </template>
+    </v-list>
+    -->
+
     <v-list v-if="!isRunningPWA()">
       <NavListItem :key="installItem.name" :item="installItem"></NavListItem>
     </v-list>
@@ -98,6 +113,8 @@
       const displayName = get('azureAuthentication/displayName');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
       const userMgmtItems = getRoutesByName(['Users']);
+      const loggedInUser = get('users/loggedInUser');
+
       return {
         leftDrawOpen,
         displayName,
@@ -106,6 +123,7 @@
         userItems,
         adminItems,
         userMgmtItems,
+        loggedInUser,
       };
     },
   };

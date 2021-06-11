@@ -1,9 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { make } from 'vuex-pathify';
 
 const getDefaultState = () => {
   return {
-    user: {}, // Required
-    authentication: {},
+    loggedInUser: {}, // Required
   };
 };
 
@@ -17,12 +17,18 @@ const mutations = {
   },
 };
 
+// https://docs.feathersjs.com/api/services.html#service-methods
 const actions = {
   ...make.actions(state),
-  // eslint-disable-next-line no-unused-vars
   init: async ({ dispatch }) => {
     //
   },
+  find: async (context, params) => {},
+  get: async (context, id, params) => {},
+  create: async (context, data, params) => {},
+  update: async (context, id, data, params) => {},
+  patch: async (context, id, data, params) => {},
+  remove: async (context, id, params) => {},
 };
 
 const getters = {};

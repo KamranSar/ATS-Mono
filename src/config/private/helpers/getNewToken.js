@@ -3,7 +3,7 @@ import router from '@/router';
 import azureTokenExpiration from '@/config/private/helpers/azureTokenExpiration';
 import feathersTokenExpiration from '@/config/private/helpers/feathersTokenExpiration';
 import getMidTierToken from '@/config/private/helpers/getMidTierToken';
-import feathers from '@/config/private/feathers';
+import feathers from '@/feathers/index.js';
 
 /**
  * We need this because doing a users.find() returns all the users but without approles
@@ -22,20 +22,18 @@ const getNewToken = async () => {
 
     // Conditional around AzureAuthentication to check if expired.
     if (azureTokenExpiration()) {
-      await store.dispatch('azureAuthentication/getAccessTokenPopup');
+      await store.dispatch('azureAuthentication/getTokenPopup');
     }
 
-    if (!feathers.authentication.authenticated || feathersTokenExpiration()) {
+    if (feathersTokenExpiration()) {
       const midTierToken = await getMidTierToken();
 
       if (!midTierToken.authentication) {
         throw Error('Failed to authenticate, please try again.');
       }
 
-      let { user } = midTierToken;
-      const { authentication } = midTierToken;
-      store.set('users/authentication', authentication);
-      store.set('users/user', user);
+      const { user, authentication } = midTierToken;
+      store.set('users/loggedInUser', { ...user, authentication });
     }
     return feathers;
   } catch (error) {

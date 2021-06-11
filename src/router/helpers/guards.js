@@ -4,9 +4,12 @@ import store from '@/store/index';
 import getNewToken from '@/config/private/helpers/getNewToken';
 
 const requireToken = (to, from, next) => {
-  const token = store.get('azureAuthentication/azuretokenresponse');
-  if (token) next();
-  else next({ name: 'Login' });
+  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
+  if (loggedIn) next();
+  else {
+    console.log('router guard - no token - redirect to Login screen');
+    next({ name: 'Login' });
+  }
 };
 
 let previouslyRestored = false;
@@ -18,6 +21,7 @@ const waitForStorageToBeReady = async (to, from, next) => {
 
       // Usecase 1: Get a new token on a refresh if user is logged in.
       const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
+      console.log('loggedIn at startup ', loggedIn);
       if (loggedIn) await getNewToken();
 
       // Usecase 2: Set user's theme preference on refresh

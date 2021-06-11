@@ -2,7 +2,8 @@ import Vue from 'vue';
 import store from '@/store';
 import router from '@/router';
 import Acl from 'vue-browser-acl';
-const user = () => (store.state.users.user ? store.state.users.user : null); // NOTE: Cannot do user = store.state.users.user; Must be evaluated.
+const user = () =>
+  store.state.users.loggedInUser ? store.state.users.loggedInUser : null; // NOTE: Cannot do user = store.state.users.loggedInUser; Must be evaluated.
 
 const acls = (acl) => {
   // For symantics in the router meta... can use { role: 'admin' }
@@ -13,7 +14,9 @@ const acls = (acl) => {
 
     let validated = false;
     if (user.approles && user.approles.length) {
-      ['admin'].forEach((role) => {
+      const allowedRoles = ['admin'];
+
+      allowedRoles.forEach((role) => {
         if (user.approles.includes(role)) {
           validated = true;
         }
@@ -31,7 +34,9 @@ const acls = (acl) => {
 
     let validated = false;
     if (user.approles && user.approles.length) {
-      ['admin', 'user-manager'].forEach((role) => {
+      const allowedRoles = ['admin', 'user-manager'];
+
+      allowedRoles.forEach((role) => {
         if (user.approles.includes(role)) {
           validated = true;
         }

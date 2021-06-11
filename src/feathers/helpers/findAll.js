@@ -1,4 +1,4 @@
-import feathers from '@/config/private/feathers.js';
+import feathers from '@/feathers/index.js';
 import store from '@/store';
 /**
  * This helper fetches all the results with a default $limit of 10.

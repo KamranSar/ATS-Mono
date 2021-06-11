@@ -33,7 +33,7 @@
   import Panel from '@/components/layouts/Panel';
   import Footer from '@/components/layouts/Footer';
   import Heartbeat from '@/feathers/services/heartbeat/heartbeat.service.js';
-  import findAll from '@/config/private/helpers/findAll';
+  import findAll from '@/feathers/helpers/findAll';
   import { call } from 'vuex-pathify';
   export default {
     name: 'Home',

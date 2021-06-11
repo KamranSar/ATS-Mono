@@ -4,6 +4,8 @@ Table of Contents
 
 - [Directory Structure](#directory-structure)
 - [Start your development](#start-your-development)
+  - [Creating a CDCR App ID](#creating-a-cdcr-app-id)
+  - [Adding API Permissions](#adding-api-permissions)
   - [Change the app name](#change-the-app-name)
   - [Customizing your app theme](#customizing-your-app-theme)
   - [Resize your logo for PWA](#resize-your-logo-for-pwa)
@@ -21,6 +23,13 @@ Table of Contents
   - [Persist your Vuex Module](#persist-your-vuex-module)
   - [Use vuex-pathify](#use-vuex-pathify)
   - [Accessing your Feathers Service](#accessing-your-feathers-service)
+- [FAQ](#faq)
+  - [When to Fork vs Clone?](#when-to-fork-vs-clone)
+  - [What's the difference between a git `clone` and `fork`.](#whats-the-difference-between-a-git-clone-and-fork)
+  - [How to pull in updates from vue-frontend-template](#how-to-pull-in-updates-from-vue-frontend-template)
+    - [Tips:](#tips)
+  - [How to update the application version in package.json](#how-to-update-the-application-version-in-packagejson)
+  - [Why am I getting errors from `api/auth/v1/authentication`](#why-am-i-getting-errors-from-apiauthv1authentication)
 
 # Directory Structure
 
@@ -49,6 +58,7 @@ Below outlines the default directory structure the template comes with:
 │   │           ├── modules
 │   │           └── plugins
 │   ├── feathers - Exported feathers services
+│   │   ├── helpers - findAll helper
 │   │   └── services
 │   │       ├── example
 │   │       ├── heartbeat
@@ -71,6 +81,42 @@ Below outlines the default directory structure the template comes with:
 ```
 
 # Start your development
+
+## Creating a CDCR App ID
+
+- Default is 12345.
+- Every application requires one.
+- Developers can recycle them as needed.
+  - The moment you check it in, every other developer will have to start using that as well.
+
+* [ ] Visit http://localhost:3000
+
+- This will take you to our local backend server.
+- Make sure you have your `database-template` running
+  - See README.md
+
+* [ ] Sign in to Azure with your admin account. (ex. `a_nurthin.aziz@cdcr.ca.gov`)
+* [ ] Get MT Access Token
+* [ ] Generate New App ID
+* [ ] Give it a description
+* [ ] Save the App ID to your `@/config/myApp.js` file.
+
+## Adding API Permissions
+
+All developers that do not have the following account can request one from the Network team.
+
+With your admin account logged in (ex. `a_nurthin.aziz@cdcr.ca.gov`)..
+
+- [ ] Click `Get API Master List`
+
+* A checkbox with the text `auth` should show on the left, and a empty list view on the right.
+  - Clicking `auth` will expand the panel to render a tree view.
+  - This should be empty for your generated app id.
+
+- [ ] Select the APIs that your application requires.
+- Expand the API to see its `find`, `get`, `create`, `update`, `patch`, and `remove` permissions.
+- [ ] Click `Update/Create API Permissions` to save changes.
+- [ ] Log out and log back into your frontend application to get its new token and api permissions.
 
 ## Change the app name
 
@@ -338,4 +384,81 @@ async mounted() {
         }
     });
 }
+```
+
+# FAQ
+
+## When to Fork vs Clone?
+
+- **Fork** - when you're creating a project in devops for the first time.
+
+- **Clone** - when you're pulling down the project you just forked in devops to your local machine.
+  - Because a `git clone` does not bring down any upstream branches, git will tell you to run the command below:
+
+```
+git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+```
+
+## What's the difference between a git `clone` and `fork`.
+
+Creating a fork will link your newly created repository and the repository you forked from.
+
+- The benefit to this is when creating a `Pull Request`, devops is smart enough to your repository was forked.
+  - This allows you to pull in changes bi-directionally.
+  - This is great for pulling in updates.
+
+```
+git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+```
+
+Doing a `git clone https://...` of a project will only provide you a copy.
+
+- This is great for testing or working on a project.
+- Does not bring in any remote upstreams
+- If the project is forked, `git clone` will give you the command to add it if available.
+
+## How to pull in updates from vue-frontend-template
+
+```sh
+# 1. Check that you don't already have an upstream remote pointing to:
+# https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+git remote -v
+
+# 2. Add it otherwise
+git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+
+# 3. Merge in changes from vue-frontend-template.
+git fetch upstream main
+git merge --squash upstream/main # Resolve any merge conflicts
+```
+
+### Tips:
+
+- Use `git fetch upstream main` to check for updates.
+- Select the **Accept all incoming.** option when dealing with merge conflicts in `@/config/private/`.
+- All other merge conflicts should be handled normally.
+
+## How to update the application version in package.json
+
+```sh
+# Starting from version 0.0.1 in package.json
+npm version patch # Bumps to 0.0.2
+npm version minor # Bumps to 0.1.0
+npm version major # Bumps to 1.0.0
+# When you're ready, and it's been pushed. Tag it directly in devops.
+```
+
+## Why am I getting errors from `api/auth/v1/authentication`
+
+_Assuming you're on your local machine..._
+
+Make sure you have the MT server running and try again.
+
+```sh
+# Navigate to your database-template
+cd ~/code/database-template
+git pull
+npm install
+./scripts/start_test_servers.sh
+npm run dev
 ```

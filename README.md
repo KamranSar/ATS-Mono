@@ -20,15 +20,11 @@ The objective is to keep things simple for simple client/server projects.
 
 Setting up a backend is easy.
 
-TODO: Add the docker images for api-auth and api-admin
-
 ```sh
 git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template
 cd database-template
 npm install
-cd scripts
-./start_db.sh
-cd ..
+./scripts/start_test_servers.sh
 npm run dev
 ```
 
@@ -57,8 +53,17 @@ git merge --squash upstream/main
 
 Follow the HOWTO.md on starting your development.
 
-### Compiles and minifies for production and PWA testing
+### Compiles and minifies for production
 
 ```
 npm run build
 ```
+
+### Test PWA Install
+
+1. `npm run build`
+2. Download and and run `Web Server For Chrome`
+
+   https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
+
+3. Running `Web Server For Chrome`, choose the `/dist` folder in your project.
