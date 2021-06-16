@@ -24,7 +24,7 @@
     "npm": ">= 7.0.0"
   },
   "scripts": {
-    "preinstall": "chmod +x scripts/*.sh; scripts/copy_libs_for_build.sh",
+    "preinstall": "chmod +x scripts/*.sh; scripts/get_preinstall_scripts.sh",
     "test": "npm run lint && npm run mocha",
     "fix": "eslint src/. test/. --config .eslintrc.json --fix",
     "lint": "eslint src/. test/. --config .eslintrc.json --fix",
