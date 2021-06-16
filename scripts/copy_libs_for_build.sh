@@ -1,98 +1,53 @@
 #!/bin/bash
 #####################################################################################################
-# This script allows us to install our EIS-MiddleTier libraries as local npm packages.
-# This allows for much simpler access of package assets within our code.
+# This script clones/pulls the preinstall script used for backend server npm package installs.
 #####################################################################################################
 
-# Make & move into local_modules & cdcr folders
-CWD=$(pwd)
-CDCR_LIB_FOLDER=local_modules
-EISMT_LIB_URL=https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git
-
+# Clone or pull preinstall repo
 echo "."
-echo "Making sure local EIS-MiddleTier library folders exist"
-[ ! -d "$CDCR_LIB_FOLDER" ] && mkdir -p "$CDCR_LIB_FOLDER"
-
-# This function checks out a CDCR library
-# the double ,, convert the variable to lowercase
-# First param is the library to clone
-# Second optional param is the branch
-clone_cdcr_library() {
-    local LIBNAME=$1
-    local BRANCHNAME=$2
-    cd "$CWD"
-    cd "$CDCR_LIB_FOLDER"
-    if [ -d "${LIBNAME,,}" ];
-    then
-        cd ${LIBNAME,,}
-        echo "Pulling changes for $LIBNAME"
-        echo "."
-        git pull --all
-    else
-        if [ -z "${BRANCHNAME}" ];
-        then
-            #empty branch name
-            echo "Cloning $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}"
-            echo "."
-            git clone $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}
-        else
-            echo "Cloning branch ${BRANCHNAME} for $EISMT_LIB_URL/$aLIBNAME ${LIBNAME,,}"
-            echo "."
-            #git clone -b ${BRANCHNAME} $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}
-            git clone $EISMT_LIB_URL/$LIBNAME ${LIBNAME,,}
-            git checkout ${BRANCHNAME}
-        fi
-        cd ${LIBNAME,,}
-    fi
-    echo "."
-    if [ -e package.json ]
-    then
-       echo "Installing library $LIBNAME"
-       npm install
-    fi
-}
-# This function parses a JSON string to extract a property value. If the string contains multiple 
-# occurrances of the same key, then you can request a specific property instance value to be returned.
-jsonValue() {
-  KEY=$1
-  num=$2
-  delim=$3
-  if [ $delim = '1' ]; then
-     awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p
-  else
-     awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\047/){print $(i+1)}}}' | tr -d "'" | sed -n ${num}p
-  fi
-}
-
-echo "."
-echo "Clone our EIS-MiddleTier libraries locally..."
-echo "."
-clone_cdcr_library CDCRHelpers
-clone_cdcr_library CDCRHooks
-clone_cdcr_library cdcr-remote-service
+echo "Retrieving Backend preinstall script"
 echo "."
 
-# Return to the project root
-cd "$CWD"
-if [ -f ".env" ];
+# Set variables to be used throughout preinstall scripts
+PROJECT_FOLDER=$(pwd)
+SCRIPTS_FOLDER=${PROJECT_FOLDER}/scripts
+PREINSTALL_FOLDER=${SCRIPTS_FOLDER}/preinstall
+EISMT_LIB_URL=https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/preinstall-backend
+
+# If local_modules folder does not exist (clean install), then remove the preinstall folder as well.
+if [ ! -d "${PROJECT_FOLDER}/local_modules" ];
 then
-    echo ".env file exists."
+   rm -rf ${PREINSTALL_FOLDER}
+fi
+
+# Go to scripts folder
+cd ${SCRIPTS_FOLDER}
+
+# If preinstall folder already exists, pull the repo. Otherwise, clone the repo.
+if [ -d "${PREINSTALL_FOLDER}" ];
+then
+    # Preinstall folder exists, do a pull
+    cd ${PREINSTALL_FOLDER}
+    echo "Pulling changes for $PREINSTALL_FOLDER"
+    echo "."
+    git pull --all
 else
-    echo "Copying env.sample to .env. Remember to make changes to .env before running the server"
-    cp env.sample .env 
+    # Preinstall folder does not exist, do a clone
+    echo "Cloning $EISMT_LIB_URL to $PREINSTALL_FOLDER"
+    echo "."
+    git clone $EISMT_LIB_URL  $PREINSTALL_FOLDER
+    cd ${PREINSTALL_FOLDER}
 fi
 
-# Change the replaceable values in the index.html file with values from service-config.js
-serverName=$(cat package.json | jsonValue name 1 1 | tr -d '[:space:]')
-docsPath1=$(cat src/service-config.js | jsonValue docsPath 1 2 | tr -d '[:space:]')
-docsPath2=${docsPath1//\//\\\/}
-# Only change index.html file if not a template
-if [[ $serverName != *"-template" ]]; then
-    sed -i "s/DOCS_TITLE/${serverName}/" public/index.html
-    sed -i "s/DOCS_PATH/${docsPath2}/" public/index.html
-fi
-unset serverName docsPath1 docsPath2
+# Ensure preinstall scripts have the correct permissions
+chmod +x ${PREINSTALL_FOLDER}/*.sh
 
+# Execute backend preinstall script (propogate env variables)
 echo "."
-echo "EIS-MiddleTier library installs completed"
+echo "Running Backend preinstall script"
 echo "."
+. preinstall.sh
+echo "."
+
+# Ensure return to the project root
+cd ${PROJECT_FOLDER}

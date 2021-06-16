@@ -129,40 +129,36 @@ fi
 # mt-auth
 IMAGE_NAME="mt-auth"
 if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
-  echo docker start $IMAGE_NAME
-  docker start $IMAGE_NAME
-else
-  echo docker run --name $IMAGE_NAME...
-  docker run \
-  --network host \
-  --env-file scripts/test_env \
-  --env APP_HOST=localhost \
-  --env APP_PORT=${MT_AUTH_PORT} \
-  --expose ${MT_AUTH_PORT} \
-  --name $IMAGE_NAME \
-  --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
+  docker container rm --force $IMAGE_NAME
 fi
+echo docker run --name $IMAGE_NAME...
+docker run \
+--network host \
+--env-file scripts/test_env \
+--env APP_HOST=localhost \
+--env APP_PORT=${MT_AUTH_PORT} \
+--expose ${MT_AUTH_PORT} \
+--name $IMAGE_NAME \
+--detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 # mt-eis-common
 IMAGE_NAME="mt-eis-common"
 if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
-  echo docker start $IMAGE_NAME
-  docker start $IMAGE_NAME
-else
-  echo docker run --name $IMAGE_NAME...
-  docker run \
-  --network host \
-  --env-file scripts/test_env \
-  --env APP_HOST=localhost \
-  --env APP_PORT=${MT_EIS_COMMON_PORT} \
-  --env ORACLE_SVR_PORT=1521 \
-  --env ORACLE_GUI_PORT=5500 \
-  --env ORACLE_USER=aW50ZXJmYWNlX3VzZXJbZW9taXNfcm9fdXNlcl0= \
-  --env ORACLE_PASSWORD=VVNFUmlmIyMyMDIw \
-  --env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest1.vcx \
-  --expose ${MT_EIS_COMMON_PORT} \
-  --name $IMAGE_NAME \
-  --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
+  docker container rm --force $IMAGE_NAME
 fi
+echo docker run --name $IMAGE_NAME...
+docker run \
+--network host \
+--env-file scripts/test_env \
+--env APP_HOST=localhost \
+--env APP_PORT=${MT_EIS_COMMON_PORT} \
+--env ORACLE_SVR_PORT=1521 \
+--env ORACLE_GUI_PORT=5500 \
+--env ORACLE_USER=aW50ZXJmYWNlX3VzZXJbZW9taXNfcm9fdXNlcl0= \
+--env ORACLE_PASSWORD=VVNFUmlmIyMyMDIw \
+--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest1.vcx \
+--expose ${MT_EIS_COMMON_PORT} \
+--name $IMAGE_NAME \
+--detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 #
 # Return from whence we came
 cd "$CWD"
