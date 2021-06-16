@@ -37,6 +37,7 @@ local_modules/
 node_modules/
 jspm_packages/
 instantclient*
+scripts/preinstall/
 
 # TypeScript v1 declaration files
 typings/
