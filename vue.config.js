@@ -1,6 +1,7 @@
-process.env.VUE_APP_VERSION = require('./package.json').version;
 process.env.VUE_APP_NAME =
   process.env.VUE_APP_NAME || require('./package.json').name;
+process.env.VUE_APP_VERSION = require('./package.json').version;
+process.env.VUE_APP_PUBLIC_PATH = require('./package.json').publicPath;
 
 module.exports = {
   transpileDependencies: ['vuetify', 'vuex-persist'],
@@ -8,7 +9,7 @@ module.exports = {
   integrity: false, // enable Subresource Integrity (SRI) on <link rel="stylesheet"> and <script> tags in generated HTML.
   // crossorigin: "anonymous",
   // crossorigin: "use-credentials",
-  publicPath: `/`, // ${process.env.VUE_APP_NAME}
+  publicPath: process.env.VUE_APP_PUBLIC_PATH,
   productionSourceMap: false,
 
   devServer: {

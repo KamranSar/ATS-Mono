@@ -11,7 +11,9 @@ var myApp = Object.freeze({
   name: process.env.VUE_APP_NAME ? toTitleCase(process.env.VUE_APP_NAME) : '',
   version: process.env.VUE_APP_VERSION ? process.env.VUE_APP_VERSION : 'v???', // Update using `npm version major|minor|patch`
   gitID: process.env.VUE_APP_GIT_ID ? process.env.VUE_APP_GIT_ID : '1234567890',
+  azureAppID: 'c0cf535a-bb4d-4731-94fb-8a4165b1a124', // This is your azure app id requested from Network Engr
   cdcrAppID: '12345', // TODO: Add client App ID given to you for your application
+  publicPath: process.env.VUE_APP_PUBLIC_PATH, // TODO: Define the publicPath in package.json
   useWebSocketConnection: true, // Set to True to switch from REST to Web Sockets
   approles: [
     // TODO: Add your application roles here

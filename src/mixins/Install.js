@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       deferredPrompt: null,
+      installedByPrompt: false, // Will always be false when already running in standalone Mode.
     };
   },
   computed: {
@@ -35,6 +36,7 @@ export default {
       });
       window.addEventListener('appinstalled', () => {
         this.deferredPrompt = null;
+        this.installedByPrompt = true;
       });
     } else {
       // Else go back to where you came from
@@ -57,9 +59,11 @@ export default {
     },
     // Add Install Item only if app is not already installed
     isRunningPWA() {
-      return ['fullscreen', 'standalone', 'minimal-ui'].some(
-        (displayMode) =>
-          window.matchMedia('(display-mode: ' + displayMode + ')').matches
+      return (
+        ['fullscreen', 'standalone', 'minimal-ui'].some(
+          (displayMode) =>
+            window.matchMedia('(display-mode: ' + displayMode + ')').matches
+        ) || this.installedByPrompt
       );
     },
   },

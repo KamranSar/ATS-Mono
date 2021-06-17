@@ -24,11 +24,9 @@ Setting up a backend is easy.
 git clone https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template
 cd database-template
 npm install
-./scripts/start_test_servers.sh
+./scripts/start_test_servers.sh # The first time, you'll want to be on VPN.****
 npm run dev
 ```
-
-TODO: Add instructions for creating an cdcrAppID for test and adding api permissions for the app.
 
 ### Setup your local frontend (BE SURE TO FORK NOT CLONE)
 
@@ -60,6 +58,8 @@ npm run build
 ```
 
 ### Test PWA Install
+
+This will not work properly if you've set up a publicPath other than `'/'` _unless_ your app has already been registered for CDCR Apps in Azure.
 
 1. `npm run build`
 2. Download and and run `Web Server For Chrome`

@@ -5,6 +5,7 @@ Table of Contents
 - [Directory Structure](#directory-structure)
 - [Start your development](#start-your-development)
   - [Creating a CDCR App ID](#creating-a-cdcr-app-id)
+  - [Adding your public path](#adding-your-public-path)
   - [Adding API Permissions](#adding-api-permissions)
   - [Change the app name](#change-the-app-name)
   - [Customizing your app theme](#customizing-your-app-theme)
@@ -30,6 +31,17 @@ Table of Contents
     - [Tips:](#tips)
   - [How to update the application version in package.json](#how-to-update-the-application-version-in-packagejson)
   - [Why am I getting errors from `api/auth/v1/authentication`](#why-am-i-getting-errors-from-apiauthv1authentication)
+  - [Why does the app name in the browser title show up with delimitters?](#why-does-the-app-name-in-the-browser-title-show-up-with-delimitters)
+- [Other Source Documentation](#other-source-documentation)
+  - [Git Fork](#git-fork)
+  - [Vuetify](#vuetify)
+  - [Vue Router](#vue-router)
+  - [Vue Browser ACL](#vue-browser-acl)
+  - [Vuex](#vuex)
+  - [Vuex Persist](#vuex-persist)
+  - [Vuex Pathify](#vuex-pathify)
+  - [Feathers Client](#feathers-client)
+  - [date-fns](#date-fns)
 
 # Directory Structure
 
@@ -101,6 +113,14 @@ Below outlines the default directory structure the template comes with:
 * [ ] Give it a description
 * [ ] Save the App ID to your `@/config/myApp.js` file.
 
+## Adding your public path
+
+Every application requires a `publicPath`, the URI (Unique Resource Identifier). The `publicPath` variable in `package.json` is there for you to define.
+
+- Remember to include the '/' in the publicPath.
+- Example: `"/rarts"`, `"/vimo"`, or `"/leads"`
+- You'll have to register your app in Azure for PWA Install to work on a path other than `'/'`.
+
 ## Adding API Permissions
 
 All developers that do not have the following account can request one from the Network team.
@@ -144,14 +164,10 @@ NOTE: _As you change the color property on the navigation components directly, b
 - [ ] _If you have one_, convert your logo to the appropriate sizes
 
 ```sh
-# This creates a directory called image_resize inside scripts.
-# It expects a single argument pointing to a .svg or .png and converts
-# them to the appropriate size for PWA.
-cd scripts
-chmod +x image_resize.sh # Give the script permissions to execute
-
-./image_resize.sh ~/Documents/Icons/logo.png
-# Take the converted images in image_resize and move them to /public/img/icons
+# This script takes in a single argument pointing to your .svg or .png file.
+# A backup of your old public/img/icons folder is created.
+# The final product is an updated public/img/icons folder with all the appropriate sizes for PWA.
+./scripts/image_resize.sh ~/Documents/Icons/logo.png
 ```
 
 ## Create your first route and component.
@@ -249,8 +265,6 @@ const acls = (acl) => {
 
 `approles` in `myApp` should couple with the acls defined in `@/acls/index.js`
 
-You can learn more about the usage of these acls from [vue-browser-acl](https://github.com/mblarsen/vue-browser-acl#usage)
-
 ### Protecting your route
 
 You can protect a route from being accessed without the proper acl with the `meta` property in `@/router/routes.js`
@@ -343,8 +357,6 @@ export default {
 
 Using `vuex-pathify`, modifying and accessing state is easy!
 
-See more at [vuex-pathify](https://davestewart.github.io/vuex-pathify/#/api/component?id=api).
-
 ```javascript
 import { sync, get } from "vuex-pathify";
 computed: {
@@ -363,8 +375,6 @@ methods: {
 ```
 
 ## Accessing your Feathers Service
-
-[Feathers Querying Doc](https://docs.feathersjs.com/api/databases/querying.html)
 
 - [ ] Create a backend feathers service to hook into and call APIs with
 
@@ -462,3 +472,62 @@ npm install
 ./scripts/start_test_servers.sh
 npm run dev
 ```
+
+_If this is the first time you're running the MT server..._
+
+- [ ] Connect to F5
+- [ ] Bring down the latest images from database-template
+
+```sh
+./scripts/get_test_images.sh
+```
+
+- [ ] Try running it again
+
+```sh
+./scripts/start_test_servers.sh
+npm run dev
+```
+
+## Why does the app name in the browser title show up with delimitters?
+
+This is because of the following code in `/public/index.html`
+
+Webpack automatically pulls the title from the variable `name` in `package.json`.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    ...
+  </head>
+</html>
+```
+
+If you want to correct this without the delimitters you can hard code it like so:
+
+```html
+<title>My App Name</title>
+```
+
+# Other Source Documentation
+
+## [Git Fork](https://docs.microsoft.com/en-us/azure/devops/repos/git/forks?view=azure-devops&tabs=visual-studio)
+
+## [Vuetify](https://vuetifyjs.com/en/features/theme/#customizing)
+
+## [Vue Router](https://router.vuejs.org/guide/advanced/meta.html#route-meta-fields)
+
+## [Vue Browser ACL](https://blog.cheesefi.com/blog/vue-user-permissions-through-directives/)
+
+## [Vuex](https://vuex.vuejs.org/guide/#the-simplest-store)
+
+## [Vuex Persist](https://championswimmer.in/vuex-persist/)
+
+## [Vuex Pathify](https://davestewart.github.io/vuex-pathify/#/?id=home)
+
+## [Feathers Client](https://docs.feathersjs.com/api/databases/querying.html)
+
+## [date-fns](https://date-fns.org/docs/Getting-Started)
