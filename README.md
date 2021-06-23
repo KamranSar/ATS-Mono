@@ -78,7 +78,7 @@ code .
 ## Before your first 'git push'
 
 ```
-# Check that you don't already have it
+# Check that you don't already have the upstream repo:
 git remote -v
 # Add the upstream repo that this fork is based on:
 git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template
