@@ -17,7 +17,7 @@
       ></v-progress-circular>
       <v-avatar v-else>
         <v-img
-          src="/img/logo.svg"
+          src="img/logo.svg"
           contain
           max-height="36"
           max-width="36"
