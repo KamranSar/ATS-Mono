@@ -75,12 +75,14 @@ code .
 6. npm run dev
 ```
 #
+
 ## Before your first 'git push'
+## Forked Repo - How to Pull Changes From the Upstream/Parent Repo
 
 ```
-# Check that you don't already have the upstream repo:
+# Check that you don't already have the upstream/parent repo:
 git remote -v
-# Add the upstream repo that this fork is based on:
+# Add a remote called "upstream" that points to the Forked/Parent repository:
 git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template
 # Fetch all changes from the "upstream" repo and the "main" branch:
 git fetch upstream main
