@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 echo "."
-echo "Stop All Testing Containers"
+echo "Restart Testing Containers..."
 echo "."
 # Make sure we're in the root project folder
 RED='\033[1;31m'
@@ -20,18 +20,15 @@ OPT_ContainerArray=("oracle" "mssql" "postgres")
 #*** DO NOT MODIFY THE CODE BELOW THIS LINE ***#
 
 # First Stop all containers
+echo "."
+echo "Stopping All Test Containers..."
+echo "."
 ALL_ContainerArray=(${REQ_ContainerArray[*]} ${OPT_ContainerArray[*]})
 for containerName in "${ALL_ContainerArray[@]}"
 do
   if docker container ls -a | grep -Fq "$containerName" 1>/dev/null; then
-     # If container name starts with "mt-", then it's an MT object and must be removed
-     if [[ $containerName = "mt-"* ]]; then
-        echo docker container rm --force ${containerName}
-        docker container rm --force ${containerName}
-     else
-        echo docker container stop ${containerName}
-        docker container stop ${containerName}
-     fi
+     echo docker container stop ${containerName}
+     docker container stop ${containerName}
      echo "."
   else
      echo -e "${RED}Container (${containerName}) Not Found!${NC}"
@@ -41,11 +38,24 @@ done
 echo "All Test containers should now be stopped...waiting a few seconds to make sure:"
 sleep 4s
 echo "."
+docker container ls -a
+echo "."
+echo "Starting All Test Containers..."
+echo "."
+# Then Start all containers
+for containerName in "${ALL_ContainerArray[@]}"
+do
+  if docker container ls -a | grep -Fq "$containerName" 1>/dev/null; then
+     echo docker start ${containerName}
+     docker start ${containerName}
+  fi
+done
+echo "."
 echo docker container ls -a
 docker container ls -a
 
 # Return from whence we came
 cd "$CWD"
 echo "."
-echo "Testing Containers stopped"
+echo "Testing Containers Restarted"
 echo "."
