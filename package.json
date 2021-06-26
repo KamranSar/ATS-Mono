@@ -28,7 +28,7 @@
     "test": "npm run lint && npm run mocha",
     "fix": "eslint src/. test/. --config .eslintrc.json --fix",
     "lint": "eslint src/. test/. --config .eslintrc.json --fix",
-    "dev": "AUTHACTIVE=false NODE_ENV=development nodemon src/",
+    "dev": "AUTHACTIVE=true NODE_ENV=development nodemon src/",
     "prod": "AUTHACTIVE=true NODE_ENV=production nodemon src/",
     "perf": "echo 'Performance Testing Profile\n'; export AUTHACTIVE=true; export NODE_ENV=perf; node src/",
     "clean": "rm -rf *_modules package-lock.json .env ",
