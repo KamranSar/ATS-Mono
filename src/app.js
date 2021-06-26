@@ -102,7 +102,8 @@ app.configure(redis);
 app.configure(knex);
 
 // Load the OpenAPI specs
-app.configure(openapi);
+if (process.env.PUBLISH_DOCS && process.env.PUBLISH_DOCS.toLowerCase() === 'true')
+  app.configure(openapi);
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);

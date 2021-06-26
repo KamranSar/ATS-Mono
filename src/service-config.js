@@ -74,3 +74,5 @@ module.exports =
     }
   ]
 };
+module.exports.server.authActive = (process.env.NODE_ENV === 'production') ? 'true' :
+  (process.env.AUTHACTIVE && process.env.AUTHACTIVE.length > 0) ? process.env.AUTHACTIVE.toLowerCase() : 'false';

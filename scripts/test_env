@@ -56,6 +56,8 @@ MYSQL_PORT=3306
 ## Auth Server Settings
 #=============================
 NODE_ENV=development
+AUTHACTIVE=true
+PUBLISH_DOCS=true
 AUTH_DOMAIN=https://apidev.cdcr.ca.gov
 DOC_HOST=testApiServer
 PROXY_USER_AGENT=cdcr_midtier_api_auth
