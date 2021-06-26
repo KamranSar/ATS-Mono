@@ -118,4 +118,6 @@ app.use(express.errorHandler({ logger }));
 
 app.hooks(appHooks);
 
+debug('Service Authorization is (%s)', (require('./service-config').server.authActive === 'true') ? 'ACTIVE' : 'DEACTIVATED');
+
 module.exports = app;
