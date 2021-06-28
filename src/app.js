@@ -75,14 +75,20 @@ app.use('/', express.static(app.get('public')));
 
 // Set up Plugins and providers (databases)
 app.configure(express.rest());
-app.configure(socketio());
+app.configure(
+  socketio({
+    // support for React Native applications so they don't time out
+    pingInterval: 10000,
+    pingTimeout: 50000,
+  })
+);
 const { disableInternalServiceCalls } = require('cdcrhooks');
 app.configure(
   distribution({
     hooks: {
       before: {
         all: [
-          // Don't allow remote internal API calls to be called
+          // Don't allow external calls to internal API's.
           disableInternalServiceCalls(),
         ],
       },
@@ -94,6 +100,7 @@ app.configure(
     key: process.env.APP_NAME,
   })
 );
+
 app.configure(mongoose);
 app.configure(mongodb);
 app.configure(mtmongodb);
@@ -102,8 +109,7 @@ app.configure(redis);
 app.configure(knex);
 
 // Load the OpenAPI specs
-if (process.env.PUBLISH_DOCS && process.env.PUBLISH_DOCS.toLowerCase() === 'true')
-  app.configure(openapi);
+if (process.env.PUBLISH_DOCS && process.env.PUBLISH_DOCS.toLowerCase() === 'true') app.configure(openapi);
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
@@ -118,6 +124,9 @@ app.use(express.errorHandler({ logger }));
 
 app.hooks(appHooks);
 
-debug('Service Authorization is (%s)', (require('./service-config').server.authActive === 'true') ? 'ACTIVE' : 'DEACTIVATED');
+debug(
+  'Service Authorization is (%s)',
+  require('./service-config').server.authActive === 'true' ? 'ACTIVE' : 'DEACTIVATED'
+);
 
 module.exports = app;
