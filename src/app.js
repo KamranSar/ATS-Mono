@@ -104,7 +104,6 @@ app.configure(
 app.configure(mongoose);
 app.configure(mongodb);
 app.configure(mtmongodb);
-
 app.configure(redis);
 app.configure(knex);
 
@@ -124,9 +123,8 @@ app.use(express.errorHandler({ logger }));
 
 app.hooks(appHooks);
 
-debug(
-  'Service Authorization is (%s)',
-  require('./service-config').server.authActive === 'true' ? 'ACTIVE' : 'DEACTIVATED'
+debug('Service Authorization is (%s)',
+  (require('./service-config').server.authActive === 'true') ? 'ACTIVE' : 'DEACTIVATED'
 );
 
 module.exports = app;

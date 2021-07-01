@@ -1,7 +1,6 @@
 const debug = require('debug')(`${process.env.APP_NAME}:`+'src:redis:dbname');
 const { logger } = require('cdcrhelpers');
 const redisCache = require('feathers-redis-cache');
-// const sync = require('feathers-sync');
 const redis = require('redis');
 const { promisify } = require('util');
 
@@ -31,43 +30,37 @@ module.exports = function (app) {
   const redis_port = process.env.REDIS_PORT ? process.env.REDIS_PORT : '6379';
   redis_cfg.url = `redis://${redis_svr}:${redis_port}`;
   app.set('redis', redis_cfg);
-  debug('Connecting to REDIS server at %s ', redis_cfg.url);
   app.configure(redisCache.client({ errorLogger: logger.error }));
 
-  // If the REDIS connection fails, REDIS forces a process exit
-  const redis_client = app.get('redisClient');
-  if (redis_client) {
-    let redis = { max: 5, errcnt: 0, connected: false };
-    redis_client
-      .on('ready', function () {
-        redis.connected = true;
-        debug('Successfully connected to REDIS server at %s ', redis_cfg.url);
-        const redis_client = app.get('redisClient');
-        redis_client.options.prefix = redis_cfg.prefix; // Change the default key prefix so it sorts better in Redis client tools.
-        app.set('redisClient', redis_client);
-      })
-      .on('error', (error) => {
-        logger.error('REDIS error #%d at %s - ', ++redis.errcnt, redis_cfg.url, { error });
-        if (redis.errcnt == redis.max) process.exit(1);
-      });
-  }
+  // REDIS only cares if the DISABLE_REDIS_CACHE param is present or not, value is irrelevant. If present, cache is disabled
+  debug('DISABLE_REDIS_CACHE param (%s)', (process.env.DISABLE_REDIS_CACHE) ? process.env.DISABLE_REDIS_CACHE : 'undefined');
 
-  // Configure the REDIS cache
-  // The cache can be bypassed by setting query param $skipCacheHook to true on a cached service call
-  const { cachePathPrefix } = redis_cfg;
-  app.configure(redisCache.services({ pathPrefix: cachePathPrefix }));
+  if (!process.env.DISABLE_REDIS_CACHE || process.env.DISABLE_REDIS_CACHE !== 'true') {
+    debug('Connecting to REDIS Service Cache server at %s ', redis_cfg.url);
+    // If the REDIS connection fails, REDIS forces a process exit
+    const redisSvcClient = app.get('redisClient');
+    if (redisSvcClient) {
+      let redisConn = { maxErrors: 5, errorCnt: 0 };
+      redisSvcClient
+        .on('ready', function () {
+          debug('Successfully connected to REDIS Service Cache server at %s ', redis_cfg.url);
+          const redisSvcClient = app.get('redisClient');
+          redisSvcClient.options.prefix = redis_cfg.prefix; // Change the default key prefix so it sorts better in Redis client tools.
+          app.set('redisClient', redisSvcClient);
+        })
+        .on('error', (error) => {
+          logger.error('REDIS Service Cache connection error #%d at %s -', ++redisConn.errorCnt, redis_cfg.url, { error: error.message || error });
+          if (redisConn.errorCnt == redisConn.maxErrors) process.exit(1);
+        });
+    }
 
-  // Feathers websocket sync via REDIS
-  // app.configure(
-  //   sync({
-  //     uri: redis_cfg.url,
-  //   })
-  // );
+    // Configure the REDIS cache
+    // The cache can be bypassed by setting query param $skipCacheHook to true on a cached service call
+    const { cachePathPrefix } = redis_cfg;
+    app.configure(redisCache.services({ pathPrefix: cachePathPrefix }));
 
-  // Need to remove the unauthenticated api routes created by the redis cache.
-  // They will be reimplemented as protected feathers api services.
-  const { DISABLE_REDIS_CACHE } = process.env;
-  if (!DISABLE_REDIS_CACHE) {
+    // Need to remove the unauthenticated api routes created by the redis cache.
+    // They will be reimplemented as protected feathers api services.
     // https://github.com/sarkistlt/feathers-redis-cache/blob/master/src/services.ts
     removeRestService(app, `${cachePathPrefix}/clear/single`);
     removeRestService(app, `${cachePathPrefix}/clear/group`);
@@ -75,22 +68,35 @@ module.exports = function (app) {
     removeRestService(app, `${cachePathPrefix}/flashdb`);
   }
 
-  app.set('redisCacheClient', redisCache);
-
-  // Create and set a REDIS client for anyone who needs a redis connection
-  const client = redis.createClient({ url: redis_cfg.url });
-  client.on('error', function (error) {
-    logger.error('REDIS error #%d at %s - ', redis_cfg.url, { error });
-  });
-  // Promise wrapper for Redis client
-  const redisClient = {
-    client: client,
-    get: promisify(client.get.bind(client)),
-    set: promisify(client.set.bind(client)),
-    del: promisify(client.del.bind(client)),
-    exists: promisify(client.exists.bind(client)),
-    expireat: promisify(client.exists.bind(client)),
-  };
-
-  app.set('redisRawClient', redisClient);
+  // Create and set a REDIS General Use client for anyone who needs a REDIS connection
+  debug('Connecting to REDIS General Use server at %s ', redis_cfg.url);
+  const redisGeneralUseClient = redis.createClient({ url: redis_cfg.url });
+  if (redisGeneralUseClient) {
+    let redisConn = { maxErrors: 6, errorCnt: 0, errorInterval: null, intervalMS: 5000 };
+    redisGeneralUseClient
+      .on('ready', function () {
+        // If the REDIS connection was retried previously, then delete the interval.
+        if (redisConn.errorInterval) clearInterval(redisConn.errorInterval);
+        debug('Successfully connected to REDIS General Use server at %s ', redis_cfg.url);
+        // Promise wrapper for Raw Redis redisGeneralUseClient
+        const redisClient = {
+          client: redisGeneralUseClient,
+          get: promisify(redisGeneralUseClient.get.bind(redisGeneralUseClient)),
+          set: promisify(redisGeneralUseClient.set.bind(redisGeneralUseClient)),
+          del: promisify(redisGeneralUseClient.del.bind(redisGeneralUseClient)),
+          exists: promisify(redisGeneralUseClient.exists.bind(redisGeneralUseClient)),
+          expireat: promisify(redisGeneralUseClient.exists.bind(redisGeneralUseClient)),
+        };
+        app.set('redisRawClient', redisClient);
+      })
+      .on('error', (error) => {
+        if (!redisConn.errorInterval) {
+          redisConn.errorInterval = setInterval(() => {
+            logger.error('REDIS General Use connection error #%d at %s -', ++redisConn.errorCnt, redis_cfg.url, { error: error.message || error });
+            // If we've tried to connect to REDIS for (redisConn.maxErrors * redisConn.intervalMS), then stop the server.
+            if (redisConn.errorCnt == redisConn.maxErrors) process.exit(1);
+          }, redisConn.intervalMS);
+        }
+      });
+  }
 };

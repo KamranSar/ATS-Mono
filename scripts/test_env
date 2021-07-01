@@ -1,4 +1,13 @@
 #=============================
+## Test Server Arrays
+#=============================
+# Define the test servers/containers your MT server is using.
+#* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
+REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common")
+#* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
+OPT_ContainerArray=("oracle" "mssql" "postgres")
+#
+#=============================
 ## Harbor Image Repo settings
 #=============================
 # Harbor Repo Server
@@ -86,6 +95,7 @@ MONGO_PORT=27017
 REDIS_SVR=localhost
 REDIS_PORT=6379
 REDIS_SESSION_SECRET="o9i#q3#xNi!oqQc)kA!elNY5YIRW@+:A8fJ+C+Ec8f0S!7DW(PI+pLPH60Jhm##1"
+# To enable redis caching, comment out the next line:
 ENABLE_REDIS_CACHE_LOGGER=true
 DISABLE_REDIS_CACHE=true
 #

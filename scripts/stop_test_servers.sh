@@ -11,15 +11,14 @@ if [[ $CWD == *"scripts" ]]; then
   cd ..
 fi
 
-# Define the test servers/containers your MT server is using.
-#* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
-REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common")
-#* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
-OPT_ContainerArray=("oracle" "mssql" "postgres")
-
 #*** DO NOT MODIFY THE CODE BELOW THIS LINE ***#
 
-# First Stop all containers
+# Set env variables to be passed into the Docker image:
+set -o allexport
+. scripts/test_env
+set +o allexport
+
+# Stop all containers
 ALL_ContainerArray=(${REQ_ContainerArray[*]} ${OPT_ContainerArray[*]})
 for containerName in "${ALL_ContainerArray[@]}"
 do

@@ -17,20 +17,19 @@ echo docker login ${IMAGE_REPO_DOMAIN}
 docker login ${IMAGE_REPO_DOMAIN} --username ${IMAGE_REPO_USER} --password ${IMAGE_REPO_PSWD}
 echo "."
 
-# Define the test servers/containers your MT server is using.
-#* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
-REQ_ImageArray=("redis" "mongodb" "mt-auth" "mt-eis-common")
-#* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
-OPT_ImageArray=("oracle" "mssql" "postgres")
-
 #*** DO NOT MODIFY THE CODE BELOW THIS LINE ***#
+
+# Set env variables to be passed into the Docker image:
+set -o allexport
+. scripts/test_env
+set +o allexport
 
 echo "."
 echo "Retrieving Testing Images from Docker Image repo server..."
 echo "."
 
 # Run the MT & DB pulls from the on-prem image repo
-ALL_ImageArray=(${REQ_ImageArray[*]} ${OPT_ImageArray[*]})
+ALL_ImageArray=(${REQ_ContainerArray[*]} ${OPT_ContainerArray[*]})
 for imageName in "${ALL_ImageArray[@]}"
 do
     if [[ $imageName = "mt-"* ]]; then
