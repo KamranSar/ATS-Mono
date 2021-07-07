@@ -1,6 +1,6 @@
 import store from '@/store';
 import feathers from '@/feathers/index.js';
-import myApp from '@/config/myApp';
+import { defaultAdminRole, myApp } from '@/config/myApp';
 
 const getMidTierToken = async () => {
   const _azuretokenresponse =
@@ -15,6 +15,7 @@ const getMidTierToken = async () => {
     strategy: 'azuretoken_v1',
     accessToken: _azuretokenresponse.accessToken, // Need the token from Azure to log into middle tier
     cdcrAppID: myApp.cdcrAppID,
+    defaultRole: defaultAdminRole.name, // Gets ignored after the first user creation
   };
   try {
     const response = await feathers.authenticate(packet);
