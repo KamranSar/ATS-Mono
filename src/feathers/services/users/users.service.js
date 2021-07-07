@@ -1,5 +1,4 @@
 import feathersClient from '@/feathers/index.js';
-import { getUserRoles } from '@/feathers/services/users/users.hooks.js';
 
 const servicePath = 'api/auth/v1/users';
 const service = feathersClient.service(servicePath);
@@ -15,8 +14,8 @@ service.hooks({
   },
   after: {
     all: [],
-    find: [getUserRoles],
-    get: [getUserRoles],
+    find: [],
+    get: [],
     create: [],
     update: [],
     patch: [],

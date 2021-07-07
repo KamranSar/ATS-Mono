@@ -108,7 +108,9 @@
       const leftDrawEnabled = get('appFeatures/leftDrawEnabled');
       const rightDrawEnabled = get('appFeatures/rightDrawEnabled');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
-
+      const toggleDarkMode = () => {
+        context.root.$vuetify.theme.dark = darkMode.value;
+      };
       return {
         // Data
         loading,
@@ -124,10 +126,22 @@
         userToolbarItems,
         onClick,
         getRouterColor,
+        toggleDarkMode,
       };
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.toggleDarkMode();
+      });
     },
     filters: {
       toTitleCase,
+    },
+    watch: {
+      darkMode: {
+        immediate: true,
+        handler: 'toggleDarkMode',
+      },
     },
   };
 </script>

@@ -35,22 +35,6 @@ module.exports = {
     },
     stats: { colors: true },
     // https://webpack.js.org/configuration/dev-server/  - For options for proxying
-
-    proxy: {
-      // TODO: Does order matter?
-      '/api/auth': {
-        target: process.env.VUE_APP_PROXY_TARGET,
-        timeout: 6000,
-        secure: false,
-        changeOrigin: true,
-      },
-      '/api/eis': {
-        target: process.env.VUE_APP_PROXY_TARGET,
-        timeout: 6000,
-        secure: false,
-        changeOrigin: true,
-      },
-    },
   },
 
   pluginOptions: {

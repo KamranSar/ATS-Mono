@@ -1,7 +1,7 @@
 <template>
   <v-avatar
     size="36px"
-    :color="stringToColour(user ? userInitials : myInitials)"
+    :color="stringToColour(user ? user.displayName : myUser.displayName)"
   >
     <!-- If a user object is passed in then just display initials -->
     <span v-if="user" class="white--text">{{ userInitials }}</span>
@@ -19,6 +19,10 @@
    *
    * Returns the initials in an avatar if no photo available,
    * default behavior for user prop.
+   *
+   * Example:
+   * import UserAvatar from "@/components/util/UserAvatar.vue";
+   * <UserAvatar :user="user"></UserAvatar>
    */
   import useVuexPathify from '@/compositions/useVuexPathify';
   import { computed } from '@vue/composition-api';
@@ -30,13 +34,18 @@
     },
     setup(props, context) {
       const { get } = useVuexPathify(context);
-
       const myPhoto = get('azureAuthentication/myPhoto');
       const myUser = get('users/loggedInUser');
+
+      // FIXME: Remove the case fixing when it's fixed in the Backend.
+      myUser.value.displayName = myUser.value.displayname;
+      myUser.value.lastName = myUser.value.lastname;
+      myUser.value.firstName = myUser.value.firstname;
+
       const myInitials = computed(() => {
         return (
-          String(myUser.value.lastname).charAt(0) +
-          String(myUser.value.firstname).charAt(0)
+          String(myUser.value.lastName).charAt(0) +
+          String(myUser.value.firstName).charAt(0)
         );
       });
 
@@ -44,8 +53,8 @@
         if (!props.user) return '';
 
         return (
-          String(props.user.lastname).charAt(0) +
-          String(props.user.firstname).charAt(0)
+          String(props.user.lastName).charAt(0) +
+          String(props.user.firstName).charAt(0)
         );
       });
 

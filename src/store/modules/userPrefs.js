@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { make } from 'vuex-pathify';
 
 const getDefaultState = () => {
@@ -6,7 +5,7 @@ const getDefaultState = () => {
     // TODO: May want to implement this per user id to support multiple user login prefs.
     leftDrawOpen: false,
     rightDrawOpen: false,
-    darkMode: false, // Cannot persist userPrefs to localStorage because darkMode needs to be set on $vuetify
+    darkMode: false,
   };
 };
 
@@ -14,11 +13,6 @@ const state = getDefaultState();
 
 const mutations = {
   ...make.mutations(state),
-
-  SET_DARK_MODE(state, value) {
-    state.darkMode = value;
-    Vue.prototype.$vuetify.framework.theme.dark = value;
-  },
 
   resetState(state) {
     Object.assign(state, getDefaultState());

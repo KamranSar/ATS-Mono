@@ -32,6 +32,7 @@ Table of Contents
   - [How to update the application version in package.json](#how-to-update-the-application-version-in-packagejson)
   - [Why am I getting errors from `api/auth/v1/authentication`](#why-am-i-getting-errors-from-apiauthv1authentication)
   - [Why does the app name in the browser title show up with delimitters?](#why-does-the-app-name-in-the-browser-title-show-up-with-delimitters)
+  - [How can I access my Vue app through dev tools?](#how-can-i-access-my-vue-app-through-dev-tools)
 - [Other Source Documentation](#other-source-documentation)
   - [Git Fork](#git-fork)
   - [Vuetify](#vuetify)
@@ -489,6 +490,16 @@ _If this is the first time you're running the MT server..._
 npm run dev
 ```
 
+_If you've recently lost connection to F5_
+
+You'll need to do a fast restart of your servers.
+
+- [ ] Run the fast restart script in your server directory
+
+```sh
+./scripts/fast_restart.sh
+```
+
 ## Why does the app name in the browser title show up with delimitters?
 
 This is because of the following code in `/public/index.html`
@@ -510,6 +521,25 @@ If you want to correct this without the delimitters you can hard code it like so
 
 ```html
 <title>My App Name</title>
+```
+
+## How can I access my Vue app through dev tools?
+
+By default the Vue application is mounted to an element with the id app.
+
+- [ ] Open DevTools with `Ctrl + Shift + I`
+      In the prompt you can create a variable and assign it to app.
+
+This will give you access to the all the components currently rendered via the `<v-main></v-main>` tag in `App.vue`
+
+```javascript
+const app = document.getElementById('app').__vue__;
+const mainChildren = app.$children.find((c) => c.$refs['main']).$children;
+const usersComponent = mainChildren[0]; // Assuming only only component and it's Users.vue
+// You can now do something like this...
+usersComponent.loading = true;
+usersComponent.listOfUsers.forEach((u) => console.log(u));
+// ... Directly in dev tools
 ```
 
 # Other Source Documentation

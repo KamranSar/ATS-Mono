@@ -1,5 +1,11 @@
 import toTitleCase from '@/filters/toTitleCase.js';
 
+// TODO: Define a default role for the first logged in user.
+const defaultAdminRole = {
+  name: 'System Administrator',
+  description: 'Gives access to manage users in the application',
+};
+
 /**
  * This config file is exposed by default as this.$myApp
  * Can also import myApp into a lib file like so:
@@ -21,17 +27,9 @@ var myApp = Object.freeze({
       name: String,
       description: String
     } */
+    defaultAdminRole,
     {
-      name: 'user-manager',
-      description: 'Gives admin access to manager users in /users',
-      // validFor: Number,
-    },
-    {
-      name: 'admin',
-      description: 'Generic application adminstrator',
-    },
-    {
-      name: 'example-role',
+      name: 'Example Role',
       description:
         'Generic application role, change this to suit your app needs',
     },
@@ -44,3 +42,5 @@ var myApp = Object.freeze({
 });
 
 export default myApp;
+
+export { defaultAdminRole, myApp };

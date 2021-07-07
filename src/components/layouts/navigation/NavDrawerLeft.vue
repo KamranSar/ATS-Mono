@@ -50,8 +50,8 @@
       </template>
     </v-list>
 
-    <v-list v-can:if-user-manager>
-      <template v-for="item in userMgmtItems">
+    <v-list v-can:if-user-admin>
+      <template v-for="item in userAdminItems">
         <NavListGroup
           v-if="item.children"
           :key="item.name"
@@ -80,7 +80,21 @@
     </v-list>
 
     <template v-slot:append>
-      <div class="text-right caption pa-1" v-if="isAzureLoggedIn">
+      <div
+        class="text-right caption pa-1"
+        v-if="
+          isAzureLoggedIn &&
+          loggedInUser.approles &&
+          loggedInUser.approles.roles.length
+        "
+      >
+        <span
+          v-for="role in loggedInUser.approles.roles"
+          :key="role"
+          class="text-right"
+        >
+          {{ role }} <br />
+        </span>
         <router-link to="/signout" exact>Log in as another user</router-link>
       </div>
     </template>
@@ -112,7 +126,7 @@
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
       const displayName = get('azureAuthentication/displayName');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
-      const userMgmtItems = getRoutesByName(['Users']);
+      const userAdminItems = getRoutesByName(['Users']);
       const loggedInUser = get('users/loggedInUser');
 
       return {
@@ -122,7 +136,7 @@
         anonymousItems,
         userItems,
         adminItems,
-        userMgmtItems,
+        userAdminItems,
         loggedInUser,
       };
     },

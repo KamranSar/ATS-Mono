@@ -35,16 +35,16 @@ const routes = [
     path: '/cdcr-dashboard',
     name: 'CDCR Dashboard',
     beforeEnter() {
-      location.href = 'http://localhost:8081'; // TODO: Replace this with the cdcr dashboard URL
+      location.href = window.location.origin;
     },
   },
-  // Displayed by default in NavDrawerLeft.vue for admins and user-managers
+  // Displayed by default in NavDrawerLeft.vue for admins
   {
     icon: 'mdi-account-multiple-outline',
     path: '/users',
     name: 'Users',
     meta: {
-      can: 'if-user-manager',
+      can: 'if-user-admin',
       fail: '4oh4',
     },
     component: () =>

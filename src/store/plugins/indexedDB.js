@@ -5,7 +5,7 @@ import pako from 'pako';
 const APP_NAME = process.env.VUE_APP_NAME;
 const PROD_ENV = process.env.NODE_ENV === 'production';
 
-const modules = ['users', 'userPrefs']; // TODO: Add any modules you want to save to persistence
+const modules = ['users']; // TODO: Add any modules you want to save to persistence
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({

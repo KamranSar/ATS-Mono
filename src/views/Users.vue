@@ -2,61 +2,70 @@
   <Panel icon="mdi-view-dashboard" title="User Management">
     <template slot="content">
       <v-container fluid>
-        <v-row>
-          <!-- First column to display users -->
-          <v-col sm="12" md="4" lg="4">
+        <v-data-table
+          :headers="headers"
+          :items="listOfUsers"
+          :search="search"
+          :disabled="loading"
+          :loading="loading"
+        >
+          <!-- Top: Institution & User Search -->
+          <template v-slot:top>
+            <v-row no-gutters class="px-3">
+              <v-col :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
+                ><v-autocomplete
+                  v-model="selectedInstitution"
+                  :disabled="loading"
+                  :items="listOfInstitutions"
+                  color="blue-grey lighten-2"
+                  label="Select an institution"
+                  item-text="institutionName"
+                  item-value="institutionPartyId"
+                  prepend-icon="mdi-bank"
+                  clearable
+                  single-line
+                  hide-details
+                >
+                </v-autocomplete
+              ></v-col>
+              <v-spacer></v-spacer>
+              <v-col :cols="$vuetify.breakpoint.mdAndDown ? 12 : 2"
+                ><v-text-field
+                  v-model="search"
+                  :disabled="loading"
+                  prepend-icon="mdi-account"
+                  append-icon="mdi-magnify"
+                  label="Search user"
+                  single-line
+                  hide-details
+                ></v-text-field></v-col
+            ></v-row>
+          </template>
+
+          <template v-slot:item.displayName="{ item }">
+            <UserAvatar :user="item"></UserAvatar>
+            {{ item.displayName }}
+          </template>
+
+          <!-- Last Login Column -->
+          <template v-slot:item.appsession.updatedAt="{ item }">
+            <v-chip
+              v-if="item && item.appsession && item.appsession.updatedAt"
+              color="primary"
+            >
+              {{ formatDistanceToNow(item.appsession.updatedAt) }}
+            </v-chip>
+            <v-chip v-else> Never </v-chip>
+          </template>
+
+          <!-- Roles Column -->
+          <template v-slot:item.approles="{ item }">
             <v-autocomplete
-              v-model="selectedUsers"
+              v-if="item.approles && item.approles.roles"
+              v-model="item.approles.roles"
+              @change="setSelectedUser(item)"
               :disabled="loading"
-              :items="listOfUsers"
-              filled
-              chips
-              color="blue-grey lighten-2"
-              label="Selected users"
-              item-text="username"
-              item-value="_id"
-              multiple
-              clearable
-            >
-            </v-autocomplete>
-
-            <!-- TODO: Fill the entire height -->
-            <!-- Scroll list of selected users. Not shown on small devices -->
-            <v-virtual-scroll
-              v-if="$vuetify.breakpoint.mdAndUp"
-              :items="selectedUsers"
-              height="300"
-              item-height="64"
-            >
-              <template v-slot:default="{ item }">
-                <v-list-item @click="toggleUser(item)" two-line>
-                  <v-list-item-avatar>
-                    <UserAvatar :user="mappedUsers.get(item)"></UserAvatar>
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      {{ mappedUsers.get(item).username }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      Last Login:
-                      {{ formatDistance(mappedUsers.get(item).updatedAt) }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-action>
-                    <v-btn icon> <v-icon>mdi-close</v-icon></v-btn>
-                  </v-list-item-action>
-                </v-list-item>
-              </template>
-            </v-virtual-scroll>
-          </v-col>
-
-          <!-- Second column to display roles -->
-          <v-col sm="12" md="8" lg="8">
-            <v-autocomplete
-              v-model="selectedRoles"
-              v-bind:disabled="loading"
-              v-bind:items="appRoles"
-              filled
+              :items="appRoles"
               chips
               color="blue-grey lighten-2"
               label="Selected Roles"
@@ -64,54 +73,33 @@
               item-value="name"
               multiple
               clearable
+              hide-details
             >
             </v-autocomplete>
-            <!-- TODO: Make this scrollable -->
-            <v-list two-line>
-              <v-list-item
-                v-for="role in appRoles"
-                :key="role.name"
-                @click="toggleRole(role.name)"
-              >
-                <v-list-item-action>
-                  <v-checkbox
-                    color="primary accent-4"
-                    :value="selectedRoles.includes(role.name)"
-                  ></v-checkbox>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ role.name }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ role.description }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-            <v-row no-gutters>
-              <v-btn
-                color="secondary"
-                class="ma-2"
-                @click="updateRoles(true)"
-                :disabled="loading"
-              >
-                Reset
-                <v-icon right dark> mdi-refresh </v-icon>
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn
-                :disabled="!selectedUsers[0]"
-                :loading="loading"
-                color="primary"
-                class="ma-2 white--text"
-                @click="saveRoles()"
-              >
-                Save Roles
-                <v-icon right dark> mdi-cloud-upload </v-icon>
-              </v-btn>
-            </v-row>
-          </v-col>
+          </template>
+        </v-data-table>
+
+        <!-- Reset and Save Roles Button -->
+        <v-row no-gutters>
+          <v-btn
+            color="secondary"
+            class="ma-2"
+            @click="resetRoles()"
+            :disabled="loading"
+          >
+            Reset
+            <v-icon right dark> mdi-refresh </v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            :disabled="!selectedUsers.length || loading"
+            color="primary"
+            class="ma-2 white--text"
+            @click="saveRoles()"
+          >
+            Save Roles
+            <v-icon right dark> mdi-cloud-upload </v-icon>
+          </v-btn>
         </v-row>
       </v-container>
     </template></Panel
@@ -122,141 +110,241 @@
   /**
    * REQUIRED ROUTE: Users
    */
-  import Panel from '@/components/layouts/Panel.vue';
   import UserAvatar from '@/components/util/UserAvatar.vue';
-  import myApp from '@/config/myApp';
-  import Users from '@/feathers/services/users/users.service.js';
+  import { formatDistanceToNow } from 'date-fns';
+  import Panel from '@/components/layouts/Panel.vue';
+  import { myApp, defaultAdminRole } from '@/config/myApp';
   import feathers from '@/feathers/index.js';
-  import { sync } from 'vuex-pathify';
-  import { formatDistance, parseISO } from 'date-fns';
+  import findAll from '@/feathers/helpers/findAll.js';
+  import { get, sync } from 'vuex-pathify';
 
+  /**
+   * Set this to true if you want to get users by institution
+   * Otherwise set to false to get users in the app.
+   */
   export default {
     name: 'Users',
     components: {
-      Panel,
       UserAvatar,
+      Panel,
     },
     data: () => {
       return {
+        search: '',
+        headers: [
+          {
+            text: 'Name',
+            align: 'start',
+            value: 'displayName',
+          },
+          // {
+          //   text: 'User Principal Name',
+          //   value: 'userPrincipalName',
+          // },
+          { text: 'Roles', value: 'approles', align: 'start' },
+          {
+            text: 'Last Login',
+            value: 'appsession.updatedAt',
+            align: 'end',
+          },
+        ],
         listOfUsers: [],
+        listOfInstitutions: [],
         selectedUsers: [],
-        selectedRoles: [],
+        selectedInstitution: '',
         appRoles: myApp.approles,
       };
     },
     computed: {
+      ...get('users', ['loggedInUser']),
       ...sync('app', ['loading']),
-      // User list mapped by id
-      mappedUsers() {
-        const mappedUsers = new Map();
-        this.listOfUsers.forEach((user) => {
-          mappedUsers.set(user._id, user);
-        });
-
-        return mappedUsers;
-      },
-      items() {
-        return Array.from({ length: 700 }, (k, v) => v + 1);
-      },
     },
     async mounted() {
-      this.listOfUsers = await this.getUser();
+      this.listOfInstitutions = await this.getInstitutions();
     },
     methods: {
+      /**
+       * @param date - A valid date object or string
+       * @returns A human readable date comparison.
+       */
+      formatDistanceToNow(date) {
+        return formatDistanceToNow(new Date(date), { addSuffix: true });
+      },
+      /**
+       * @param user - The selected user in listOfUsers
+       */
+      setSelectedUser(user) {
+        const alreadySelected = this.selectedUsers.find(
+          (u) => u.staffId === user.staffId
+        );
+
+        // Don't push what's already been selected.
+        if (!alreadySelected) {
+          this.selectedUsers.push(user);
+        }
+      },
+      /**
+       * getUser function
+       * @returns All the users from the selected institution
+       */
       async getUser() {
+        this.listOfUsers = [];
+        this.selectedUsers = [];
+
         try {
           this.loading = true;
-          const users = await Users.find({
+          const users = await findAll('/api/auth/v1/somsaccounts', {
             query: {
-              disabled: false,
+              organizationId: this.selectedInstitution,
+              $sort: {
+                lastName: 1,
+                firstName: 1,
+              },
             },
           });
-          return users.data;
+
+          this.listOfUsers = [...users.values()];
+          return this.listOfUsers;
         } catch (error) {
           console.error('getUser: ', error);
+          this.listOfUsers = [];
+          this.selectedUsers = [];
           return [];
         } finally {
           this.loading = false;
         }
       },
-      formatDistance(date) {
-        if (!date) return '';
-        return formatDistance(parseISO(date), new Date());
-      },
-      toggleUser(id) {
-        const index = this.selectedUsers.indexOf(id);
-        if (index >= 0) {
-          this.selectedUsers.splice(index, 1);
-        } else {
-          this.selectedUsers.push(id);
-        }
-      },
-      toggleRole(name) {
-        const index = this.selectedRoles.indexOf(name);
-        if (index >= 0) {
-          this.selectedRoles.splice(index, 1);
-        } else {
-          this.selectedRoles.push(name);
+      /**
+       * getInstitutions function
+       * @returns - All the institutions if you are the default admin role, otherwise it grabs your logged in institution
+       */
+      async getInstitutions() {
+        try {
+          this.loading = true;
+          const queryObject = {
+            query: {
+              $sort: {
+                institutionName: 1,
+              },
+            },
+          };
+
+          if (
+            this.loggedInUser &&
+            this.loggedInUser.approles &&
+            this.loggedInUser.approles.roles.length &&
+            !this.loggedInUser.approles.roles.includes(defaultAdminRole.name)
+          ) {
+            queryObject.query['institutionPartyId'] =
+              this.loggedInUser.somsinfo.organizationId;
+          }
+
+          const institutions = await findAll(
+            '/api/eis/common/v1/institution',
+            queryObject
+          );
+
+          this.listOfInstitutions = [...institutions.values()];
+          return this.listOfInstitutions;
+        } catch (error) {
+          console.error('getInstitutions: ', error);
+          this.listOfInstitutions = [];
+          return [];
+        } finally {
+          this.loading = false;
         }
       },
       /**
-       * NOTE: When unselected a user, those permissions that may have come with it stay.
-       * @param {Boolean} reset - When a true Boolean is passed in, selectedRoles gets reset.
+       * resetRoles function
+       * Makes an API call to fetch and reset back to
+       * the roles that have been captured by this.selectedUsers
        */
-      updateRoles(reset = false) {
-        if (typeof reset === 'boolean' && reset) this.selectedRoles = [];
+      async resetRoles() {
+        try {
+          this.loading = true;
 
-        this.selectedUsers.forEach((userId) => {
-          const user = this.mappedUsers.get(userId);
-          if (user.approles && user.approles.length) {
-            user.approles.forEach((role) => {
-              if (!this.selectedRoles.includes(role)) {
-                this.selectedRoles.push(role);
-              }
-            });
+          for (let index = 0; index < this.selectedUsers.length; index++) {
+            const organizationId = this.selectedInstitution;
+            const user = this.selectedUsers[index];
+            const { userPrincipalName } = user;
+
+            const response = await feathers
+              .service('/api/auth/v1/somsaccounts')
+              .find({
+                query: {
+                  organizationId,
+                  userPrincipalName,
+                  $sort: {
+                    lastName: 1,
+                    firstName: 1,
+                  },
+                },
+              });
+
+            // Update approles directly so template can update too!
+            user.approles =
+              response.data && response.data[0] && response.data[0].approles
+                ? response.data[0].approles
+                : [];
           }
-        });
+
+          this.selectedUsers = [];
+        } catch (error) {
+          console.log('resetRoles error: ', error);
+        } finally {
+          this.loading = false;
+        }
       },
-      // TODO: Add warnings when adding/removing all roles from a user
+      /**
+       * saveRoles function
+       * Calls either a patch or create for the selected user to update their roles in appuserroles collection.
+       */
       async saveRoles() {
-        this.loading = true;
-        // console.log('Saving these roles: ', this.selectedRoles);
-        // console.log('To these users: ', this.selectedUsers);
+        try {
+          this.loading = true;
 
-        const promisesArray = [];
-        this.selectedUsers.forEach((userId) => {
-          const user = this.mappedUsers.get(userId);
-          if (user.approles) {
-            // Update if roles already exist
-            promisesArray.push(
-              feathers
-                .service('/api/auth/v1/appuserroles')
-                .patch(user.approleid, {
-                  roles: this.selectedRoles,
+          const promiseArray = [];
+          this.selectedUsers.forEach((user) => {
+            if (user.approles) {
+              // Update if roles already exist
+              promiseArray.push(
+                feathers
+                  .service('/api/auth/v1/appuserroles')
+                  .patch(user.approles._id, {
+                    roles: user.approles.roles,
+                  })
+              );
+            } else {
+              // Create the 'create' call
+              promiseArray.push(
+                feathers.service('/api/auth/v1/appuserroles').create({
+                  userId: user._id,
+                  appid: this.$myApp.cdcrAppID,
+                  roles: user.approles.roles,
                 })
-            );
-          } else {
-            // Create the 'create' call
-            promisesArray.push(
-              feathers.service('/api/auth/v1/appuserroles').create({
-                userId,
-                appid: this.$myApp.cdcrAppID,
-                roles: this.selectedRoles,
-              })
-            );
-          }
-        });
+              );
+            }
+          });
 
-        await Promise.all(promisesArray);
+          await Promise.all(promiseArray);
 
-        this.listOfUsers = await this.getUser();
-        this.loading = false;
+          await this.resetRoles(); // Just pull the ones that have been updated..
+        } catch (error) {
+          console.log('SaveRoles: ', error);
+        } finally {
+          this.loading = false;
+        }
       },
     },
     watch: {
-      selectedUsers: {
-        immediate: true,
-        handler: 'updateRoles',
+      /**
+       * selectedInstitution watcher
+       * Update the listOfUsers when selecting a new institution.
+       */
+      async selectedInstitution(newVal, oldVal) {
+        if (newVal && newVal !== oldVal) {
+          await this.getUser();
+        }
       },
     },
   };
