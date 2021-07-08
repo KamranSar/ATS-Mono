@@ -3,6 +3,8 @@
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md#logger-config-options
 import myApp from '@/config/myApp.js';
+import { getRoutesByName } from '@/router/routes.js';
+
 const azureTenantId = '0662477d-fa0c-4556-a8f5-c3bc62aa0d9c'; // TenantId of CDCR.
 
 // Config object to be passed to Msal on creation
@@ -10,11 +12,11 @@ const msalConfig = {
   auth: {
     clientId: myApp.azureAppID,
     authority: `https://login.microsoftonline.com/${azureTenantId}`,
-    // redirectUri: window.location.origin, // You must register this URI on Azure Portal/App Registration. Defaults to "window.location.href".
-    // redirectUri: window.location.href,
-    redirectUri: window.location.origin + myApp.publicPath,
+    redirectUri:
+      window.location.origin +
+      myApp.publicPath +
+      getRoutesByName('Login')[0].path,
     postLogoutRedirectUri: window.location.href, // This is the default behavior
-    // navigateToLoginRequestUrl: false,
     navigateToLoginRequestUrl: true,
   },
   cache: {
