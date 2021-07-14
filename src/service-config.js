@@ -75,11 +75,8 @@ module.exports =
   ]
 };
 //*** DO NOT MODIFY THIS CODE ***//
-if (process.env.NODE_ENV === 'production')
-  module.exports.server.authActive = true;
-else {
-  if (process.env.AUTHACTIVE)
-    if (process.env.AUTHACTIVE.toLowerCase() === 'true') module.exports.server.authActive = true;
-    else
-      module.exports.server.authActive = false;
-}
+if (process.env.NODE_ENV === 'production') module.exports.server.authActive = true;
+else if (process.env.AUTHACTIVE) {
+  // set based on env variable if defined
+  module.exports.server.authActive = process.env.AUTHACTIVE.toLowerCase() === 'true';
+} // otherwise, use the setting from above
