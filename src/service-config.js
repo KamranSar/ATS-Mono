@@ -74,5 +74,12 @@ module.exports =
     }
   ]
 };
-module.exports.server.authActive = (process.env.NODE_ENV === 'production') ? 'true' :
-  (process.env.AUTHACTIVE && process.env.AUTHACTIVE.length > 0) ? process.env.AUTHACTIVE.toLowerCase() : 'false';
+//*** DO NOT MODIFY THIS CODE ***//
+if (process.env.NODE_ENV === 'production')
+  module.exports.server.authActive = true;
+else {
+  if (process.env.AUTHACTIVE)
+    if (process.env.AUTHACTIVE.toLowerCase() === 'true') module.exports.server.authActive = true;
+    else
+      module.exports.server.authActive = false;
+}
