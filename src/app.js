@@ -14,8 +14,8 @@ if (process.env.NODE_ENV === 'production') {
   delete process.env.DEBUG;
   console.log = function () {};
 } else {
-  // If the DEBUG variable is populated, then add this app to those requested.
-  if (process.env.DEBUG && process.env.DEBUG.length > 1) process.env.DEBUG += `,${process.env.APP_NAME}:*`;
+  // If the DEBUG variable is populated, then add this app to those requested if not already present.
+  if (process.env.DEBUG && process.env.DEBUG.length > 1 && !process.env.DEBUG.includes(process.env.APP_NAME)) process.env.DEBUG += `,${process.env.APP_NAME}:*`;
 }
 
 const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:app');
