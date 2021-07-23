@@ -53,13 +53,18 @@ function getRoutesByName(listOfRouteNames) {
 }
 
 // Public Routes
-const anonymousItems = getRoutesByName(['Login']);
+const anonymousItems = getRoutesByName(['Login', 'Settings']);
 // Routes for Anyone Logged In
 const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin']);
 // Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName(['Home', 'Logout', 'CDCR Dashboard']);
+const userToolbarItems = getRoutesByName([
+  'Home',
+  'Logout',
+  'Settings',
+  'CDCR Dashboard',
+]);
 
 export {
   getRoutesByName,

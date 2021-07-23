@@ -11,16 +11,20 @@ const getMidTierToken = async () => {
       'Sign in with Azure failed. Network unavailable, please try again.'
     );
   }
+  const impersonatedSomsUPN = sessionStorage
+    .getItem('impersonatedSomsUPN')
+    .toUpperCase();
   const packet = {
     strategy: 'azuretoken_v1',
     accessToken: _azuretokenresponse.accessToken, // Need the token from Azure to log into middle tier
-    cdcrAppID: myApp.cdcrAppID,
+    cdcrAppID: myApp.azureAppID,
     defaultRole: defaultAdminRole.name, // Gets ignored after the first user creation
+    impersonatedSomsUPN,
   };
   try {
     const response = await feathers.authenticate(packet);
     // Set the app id as a session token to be used by the middle tier
-    document.cookie = `x-cdcr-appid=${myApp.cdcrAppID};`;
+    document.cookie = `x-cdcr-appid=${myApp.azureAppID};`;
 
     return response;
   } catch (error) {

@@ -43,35 +43,35 @@
       </v-btn-toggle>
     </v-card>
 
-    <v-card color="transparent" flat v-if="isAzureLoggedIn">
-      <v-menu offset-y persistent :close-on-content-click="false">
-        <template v-slot:activator="{ on }">
-          <v-btn text icon v-on="on">
-            <UserAvatar></UserAvatar>
-          </v-btn>
-        </template>
+    <v-menu
+      offset-y
+      persistent
+      :close-on-content-click="false"
+      v-if="isAzureLoggedIn"
+    >
+      <template v-slot:activator="{ on }">
+        <v-btn text icon v-on="on">
+          <UserAvatar></UserAvatar>
+        </v-btn>
+      </template>
 
-        <v-list>
-          <template v-for="(item, i) in userToolbarItems">
-            <NavListGroup
-              v-if="item.children"
-              :key="i"
-              :group="item"
-            ></NavListGroup>
-            <NavListItem v-else :key="i" :item="item"></NavListItem>
-          </template>
-          <v-list-item>
-            <v-list-item-title>Dark Mode</v-list-item-title>
-            <v-list-item-action class="pr-3">
-              <v-switch v-model="darkMode"></v-switch>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list>
-        <p class="text-right caption grey--text ma-0 pr-1">
-          v{{ $myApp.version }} uid-{{ $myApp.gitID }}
-        </p>
-      </v-menu>
-    </v-card>
+      <v-list>
+        <template v-for="(item, i) in userToolbarItems">
+          <NavListGroup
+            v-if="item.children"
+            :key="i"
+            :group="item"
+          ></NavListGroup>
+          <NavListItem v-else :key="i" :item="item"></NavListItem>
+        </template>
+        <v-list-item>
+          <v-list-item-title>Dark Mode</v-list-item-title>
+          <v-list-item-action>
+            <v-switch v-model="darkMode"></v-switch>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
     <v-btn v-if="rightDrawEnabled" @click="rightDrawOpen = !rightDrawOpen" icon>
       <v-icon>mdi-menu</v-icon>

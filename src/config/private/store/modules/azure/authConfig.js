@@ -6,16 +6,18 @@ import myApp from '@/config/myApp.js';
 import { getRoutesByName } from '@/router/routes.js';
 
 const azureTenantId = '0662477d-fa0c-4556-a8f5-c3bc62aa0d9c'; // TenantId of CDCR.
+const loginPath =
+  window.location.origin +
+  myApp.publicPath +
+  (myApp.publicPath === '/' ? '' : getRoutesByName('Login')[0].path);
+// console.log({ loginPath });
 
 // Config object to be passed to Msal on creation
 const msalConfig = {
   auth: {
     clientId: myApp.azureAppID,
     authority: `https://login.microsoftonline.com/${azureTenantId}`,
-    redirectUri:
-      window.location.origin +
-      myApp.publicPath +
-      getRoutesByName('Login')[0].path,
+    redirectUri: loginPath,
     postLogoutRedirectUri: window.location.href, // This is the default behavior
     navigateToLoginRequestUrl: true,
   },

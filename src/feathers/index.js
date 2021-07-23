@@ -12,9 +12,11 @@ import io from 'socket.io-client';
 import myApp from '@/config/myApp';
 
 let API_URL = window.location.origin;
+// console.log('start', { API_URL });
 if (window.location.hostname === 'localhost') {
   API_URL = 'http://localhost:3000';
 }
+// console.log({ API_URL });
 
 // Create the Feathers client
 const feathersClient = feathers();

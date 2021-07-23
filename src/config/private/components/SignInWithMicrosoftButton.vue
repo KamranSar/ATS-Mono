@@ -7,6 +7,7 @@
     height="48px"
     elevation="3"
     @click="signinButtonClicked"
+    v-bind="$attrs"
   >
     <v-img
       max-height="25px"

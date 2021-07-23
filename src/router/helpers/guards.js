@@ -23,7 +23,7 @@ const waitForStorageToBeReady = async (to, from, next) => {
 
       // Usecase 1: Get a new token on a refresh if user is logged in.
       const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
-      console.log('loggedIn at startup ', loggedIn);
+      // console.log('loggedIn at startup ', loggedIn);
       if (loggedIn) await getNewToken();
 
       previouslyRestored = true;

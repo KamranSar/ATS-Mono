@@ -9,7 +9,11 @@
     disable-route-watcher
     :key="loggedInUser.logincount"
   >
-    <v-toolbar flat class="subtitle-2 grey--text" color="#ECEFF1">
+    <v-toolbar
+      flat
+      class="text-capitalize subtitle-2 grey--text"
+      color="#ECEFF1"
+    >
       <span class="text-truncate">
         <UserAvatar v-if="isAzureLoggedIn"></UserAvatar>
         <span class="ml-2">{{
@@ -17,7 +21,6 @@
         }}</span>
       </span>
     </v-toolbar>
-
     <v-list v-if="isAzureLoggedIn">
       <template v-for="item in userItems">
         <NavListGroup
@@ -84,18 +87,26 @@
         class="text-right caption pa-1"
         v-if="
           isAzureLoggedIn &&
-          loggedInUser.approles &&
-          loggedInUser.approles.roles.length
+          loggedInUser &&
+          loggedInUser.appuserroles &&
+          loggedInUser.appuserroles.roles
         "
       >
-        <span
-          v-for="role in loggedInUser.approles.roles"
-          :key="role"
-          class="text-right"
-        >
-          {{ role }} <br />
-        </span>
+        <div v-if="loggedInUser.appuserroles.roles.length">
+          <span
+            v-for="role in loggedInUser.appuserroles.roles"
+            :key="role"
+            class="text-right"
+          >
+            {{ role }} <br />
+          </span>
+        </div>
+
         <router-link to="/signout" exact>Log in as another user</router-link>
+      </div>
+
+      <div class="text-right caption pa-1 font-weight-regular">
+        {{ gitVersion }}
       </div>
     </template>
   </v-navigation-drawer>
@@ -113,6 +124,8 @@
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
+  import { myApp } from '@/config/myApp';
+  import { computed } from '@vue/composition-api';
   export default {
     name: 'NavDrawerLeft',
     components: {
@@ -124,10 +137,39 @@
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
-      const displayName = get('azureAuthentication/displayName');
+      // const displayName = get('azureAuthentication/displayName');
       const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
       const userAdminItems = getRoutesByName(['Users']);
       const loggedInUser = get('users/loggedInUser');
+      const version = myApp.version;
+      const gitVersion = myApp.gitVersion;
+
+      const impersonatingSOMS = computed(() => {
+        if (
+          loggedInUser.value.appuserroles &&
+          loggedInUser.value.appuserroles.soms_upn &&
+          loggedInUser.value.appuserroles.upn &&
+          loggedInUser.value.appuserroles.soms_upn.toUpperCase() !==
+            loggedInUser.value.appuserroles.upn.toUpperCase()
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      const displayName = computed(() => {
+        if (
+          loggedInUser.value &&
+          loggedInUser.value.somsinfo &&
+          loggedInUser.value.somsinfo.displayName &&
+          impersonatingSOMS.value
+        ) {
+          return loggedInUser.value.somsinfo.displayName;
+        } else {
+          return loggedInUser.value.displayName;
+        }
+      });
 
       return {
         leftDrawOpen,
@@ -138,6 +180,9 @@
         adminItems,
         userAdminItems,
         loggedInUser,
+        version,
+        gitVersion,
+        impersonatingSOMS,
       };
     },
   };

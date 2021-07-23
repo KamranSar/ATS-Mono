@@ -13,9 +13,9 @@ const acls = (acl) => {
     let validated = false;
     const allowedRoles = [defaultAdminRole.name];
 
-    if (user.approles && user.approles.roles.length) {
+    if (user.appuserroles && user.appuserroles.roles.length) {
       allowedRoles.forEach((role) => {
-        if (user.approles.roles.includes(role)) {
+        if (user.appuserroles.roles.includes(role)) {
           validated = true;
         }
       });
@@ -26,7 +26,7 @@ const acls = (acl) => {
 
   // If the user does not have any roles
   acl.rule('if-guest', (user) => {
-    return user && (!user.approles || user.approles.roles.length === 0);
+    return user && (!user.appuserroles || user.appuserroles.roles.length === 0);
   });
 };
 

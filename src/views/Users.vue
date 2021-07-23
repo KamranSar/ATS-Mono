@@ -12,22 +12,6 @@
           <!-- Top: Institution & User Search -->
           <template v-slot:top>
             <v-row no-gutters class="px-3">
-              <v-col :cols="$vuetify.breakpoint.mdAndDown ? 12 : 4"
-                ><v-autocomplete
-                  v-model="selectedInstitution"
-                  :disabled="loading"
-                  :items="listOfInstitutions"
-                  color="blue-grey lighten-2"
-                  label="Select an institution"
-                  item-text="institutionName"
-                  item-value="institutionPartyId"
-                  prepend-icon="mdi-bank"
-                  clearable
-                  single-line
-                  hide-details
-                >
-                </v-autocomplete
-              ></v-col>
               <v-spacer></v-spacer>
               <v-col :cols="$vuetify.breakpoint.mdAndDown ? 12 : 2"
                 ><v-text-field
@@ -42,27 +26,32 @@
             ></v-row>
           </template>
 
+          <!-- Last DisplayName Column -->
           <template v-slot:item.displayName="{ item }">
-            <UserAvatar :user="item"></UserAvatar>
-            {{ item.displayName }}
+            <UserAvatar :user="item" :showTooltip="true"></UserAvatar>
+            {{
+              item.somsinfo ? item.somsinfo.displayName : item.user.displayName
+            }}
+          </template>
+
+          <template v-slot:item.soms_upn="{ item }">
+            <span class="text-caption">{{ item.soms_upn || item.upn }}</span>
           </template>
 
           <!-- Last Login Column -->
-          <template v-slot:item.appsession.updatedAt="{ item }">
-            <v-chip
-              v-if="item && item.appsession && item.appsession.updatedAt"
-              color="primary"
-            >
-              {{ formatDistanceToNow(item.appsession.updatedAt) }}
+          <template v-slot:item.updatedAt="{ item }">
+            <v-chip v-if="item && item.updatedAt" color="primary">
+              {{ formatDistanceToNow(item.updatedAt) }}
             </v-chip>
             <v-chip v-else> Never </v-chip>
           </template>
 
           <!-- Roles Column -->
-          <template v-slot:item.approles="{ item }">
+          <template v-slot:item.appuserroles="{ item }">
+            <!-- If Default Admin -->
             <v-autocomplete
-              v-if="item.approles && item.approles.roles"
-              v-model="item.approles.roles"
+              v-if="isDefaultAdmin() || isInstitutionUser(item)"
+              v-model="item.roles"
               @change="setSelectedUser(item)"
               :disabled="loading"
               :items="appRoles"
@@ -76,6 +65,7 @@
               hide-details
             >
             </v-autocomplete>
+            <span v-else>{{ item.roles.join(', ') }}</span>
           </template>
         </v-data-table>
 
@@ -137,19 +127,22 @@
             align: 'start',
             value: 'displayName',
           },
-          // {
-          //   text: 'User Principal Name',
-          //   value: 'userPrincipalName',
-          // },
-          { text: 'Roles', value: 'approles', align: 'start' },
+          {
+            text: 'User Principal Name',
+            value: 'soms_upn',
+          },
+          {
+            text: 'Institution Name',
+            value: 'somsinfo.organizationName',
+          },
+          { text: 'Roles', value: 'appuserroles', align: 'start' },
           {
             text: 'Last Login',
-            value: 'appsession.updatedAt',
+            value: 'updatedAt',
             align: 'end',
           },
         ],
         listOfUsers: [],
-        listOfInstitutions: [],
         selectedUsers: [],
         selectedInstitution: '',
         appRoles: myApp.approles,
@@ -160,9 +153,36 @@
       ...sync('app', ['loading']),
     },
     async mounted() {
-      this.listOfInstitutions = await this.getInstitutions();
+      this.listOfUsers = await this.getUser();
     },
     methods: {
+      isDefaultAdmin() {
+        if (
+          this.loggedInUser &&
+          this.loggedInUser.appuserroles &&
+          this.loggedInUser.appuserroles.roles &&
+          this.loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      isInstitutionUser(institution) {
+        if (
+          institution &&
+          institution.somsinfo &&
+          institution.somsinfo.organizationName &&
+          this.loggedInUser.somsinfo &&
+          this.loggedInUser.somsinfo.organizationName &&
+          this.loggedInUser.somsinfo.organizationName ===
+            institution.somsinfo.organizationName
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       /**
        * @param date - A valid date object or string
        * @returns A human readable date comparison.
@@ -174,9 +194,9 @@
        * @param user - The selected user in listOfUsers
        */
       setSelectedUser(user) {
-        const alreadySelected = this.selectedUsers.find(
-          (u) => u.staffId === user.staffId
-        );
+        const alreadySelected = this.selectedUsers.find((u) => {
+          return u.userId === user.userId;
+        });
 
         // Don't push what's already been selected.
         if (!alreadySelected) {
@@ -193,12 +213,14 @@
 
         try {
           this.loading = true;
-          const users = await findAll('/api/auth/v1/somsaccounts', {
+          const users = await findAll('/api/auth/v1/accountsbyapp', {
             query: {
-              organizationId: this.selectedInstitution,
+              appid: this.$myApp.azureAppID,
+              soms_upn: {
+                $search: this.search,
+              },
               $sort: {
-                lastName: 1,
-                firstName: 1,
+                soms_upn: 1,
               },
             },
           });
@@ -214,46 +236,7 @@
           this.loading = false;
         }
       },
-      /**
-       * getInstitutions function
-       * @returns - All the institutions if you are the default admin role, otherwise it grabs your logged in institution
-       */
-      async getInstitutions() {
-        try {
-          this.loading = true;
-          const queryObject = {
-            query: {
-              $sort: {
-                institutionName: 1,
-              },
-            },
-          };
 
-          if (
-            this.loggedInUser &&
-            this.loggedInUser.approles &&
-            this.loggedInUser.approles.roles.length &&
-            !this.loggedInUser.approles.roles.includes(defaultAdminRole.name)
-          ) {
-            queryObject.query['institutionPartyId'] =
-              this.loggedInUser.somsinfo.organizationId;
-          }
-
-          const institutions = await findAll(
-            '/api/eis/common/v1/institution',
-            queryObject
-          );
-
-          this.listOfInstitutions = [...institutions.values()];
-          return this.listOfInstitutions;
-        } catch (error) {
-          console.error('getInstitutions: ', error);
-          this.listOfInstitutions = [];
-          return [];
-        } finally {
-          this.loading = false;
-        }
-      },
       /**
        * resetRoles function
        * Makes an API call to fetch and reset back to
@@ -264,28 +247,19 @@
           this.loading = true;
 
           for (let index = 0; index < this.selectedUsers.length; index++) {
-            const organizationId = this.selectedInstitution;
             const user = this.selectedUsers[index];
-            const { userPrincipalName } = user;
 
-            const response = await feathers
-              .service('/api/auth/v1/somsaccounts')
-              .find({
-                query: {
-                  organizationId,
-                  userPrincipalName,
-                  $sort: {
-                    lastName: 1,
-                    firstName: 1,
-                  },
-                },
-              });
+            try {
+              const response = await feathers
+                .service('/api/auth/v1/appuserroles')
+                .get(user._id);
 
-            // Update approles directly so template can update too!
-            user.approles =
-              response.data && response.data[0] && response.data[0].approles
-                ? response.data[0].approles
-                : [];
+              // Update approles directly so template can update too!
+              user.roles = response && response.roles;
+            } catch (error) {
+              console.error(error);
+              user.roles = [];
+            }
           }
 
           this.selectedUsers = [];
@@ -304,23 +278,22 @@
           this.loading = true;
 
           const promiseArray = [];
+          const appRoles = this.appRoles.map((role) => role.name);
           this.selectedUsers.forEach((user) => {
-            if (user.approles) {
+            if (user.roles) {
+              for (let index = user.roles.length - 1; index >= 0; index--) {
+                const role = user.roles[index];
+
+                // If that role is no longer part of appRoles
+                if (!appRoles.includes(role)) {
+                  user.roles.splice(index, 1);
+                }
+              }
+
               // Update if roles already exist
               promiseArray.push(
-                feathers
-                  .service('/api/auth/v1/appuserroles')
-                  .patch(user.approles._id, {
-                    roles: user.approles.roles,
-                  })
-              );
-            } else {
-              // Create the 'create' call
-              promiseArray.push(
-                feathers.service('/api/auth/v1/appuserroles').create({
-                  userId: user._id,
-                  appid: this.$myApp.cdcrAppID,
-                  roles: user.approles.roles,
+                feathers.service('/api/auth/v1/appuserroles').patch(user._id, {
+                  roles: user.roles,
                 })
               );
             }

@@ -1,7 +1,48 @@
 <template>
+  <v-tooltip top v-if="showTooltip">
+    <template v-slot:activator="{ on, attrs }">
+      <v-avatar
+        size="36px"
+        :color="
+          stringToColour(
+            user
+              ? user.user
+                ? user.user.displayName
+                : user.displayName
+              : myUser.displayName
+          )
+        "
+        v-bind="attrs"
+        v-on="on"
+      >
+        <!-- If a user object is passed in then just display initials -->
+        <span v-if="user" class="white--text">{{ userInitials }}</span>
+
+        <!-- Otherwise display currently logged in user -->
+        <v-img v-else-if="myPhoto" :src="myPhoto"></v-img>
+        <span v-else class="white--text">{{ myInitials }}</span>
+      </v-avatar>
+    </template>
+    <span>{{
+      user
+        ? user.user
+          ? user.user.displayName
+          : user.displayName
+        : myUser.displayName
+    }}</span>
+  </v-tooltip>
   <v-avatar
+    v-else
     size="36px"
-    :color="stringToColour(user ? user.displayName : myUser.displayName)"
+    :color="
+      stringToColour(
+        user
+          ? user.user
+            ? user.user.displayName
+            : user.displayName
+          : myUser.displayName
+      )
+    "
   >
     <!-- If a user object is passed in then just display initials -->
     <span v-if="user" class="white--text">{{ userInitials }}</span>
@@ -31,16 +72,13 @@
     name: 'UserAvatar',
     props: {
       user: { type: Object, required: false },
+      showTooltip: { type: Boolean, required: false, default: false },
     },
     setup(props, context) {
       const { get } = useVuexPathify(context);
       const myPhoto = get('azureAuthentication/myPhoto');
       const myUser = get('users/loggedInUser');
-
-      // FIXME: Remove the case fixing when it's fixed in the Backend.
-      myUser.value.displayName = myUser.value.displayname;
-      myUser.value.lastName = myUser.value.lastname;
-      myUser.value.firstName = myUser.value.firstname;
+      const user = props.user;
 
       const myInitials = computed(() => {
         return (
@@ -50,11 +88,11 @@
       });
 
       const userInitials = computed(() => {
-        if (!props.user) return '';
-
+        if (!user) return '';
+        const userObj = user.user ? user.user : user;
         return (
-          String(props.user.lastName).charAt(0) +
-          String(props.user.firstName).charAt(0)
+          String(userObj.lastName).charAt(0) +
+          String(userObj.firstName).charAt(0)
         );
       });
 

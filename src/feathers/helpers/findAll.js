@@ -60,7 +60,7 @@ const findAll = async (servicepath, query = null) => {
 
     return dataMap;
   } catch (error) {
-    console.error(`findAll(${servicepath})`, query, error);
+    console.error(`findAll(${servicepath})`, { query }, { error });
     return new Map();
   } finally {
     store.set('app/loading', false);

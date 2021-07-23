@@ -2,6 +2,9 @@ process.env.VUE_APP_NAME =
   process.env.VUE_APP_NAME || require('./package.json').name;
 process.env.VUE_APP_VERSION = require('./package.json').version;
 process.env.VUE_APP_PUBLIC_PATH = require('./package.json').publicPath;
+const { gitDescribeSync } = require('git-describe');
+process.env.VUE_APP_GIT_RAW = gitDescribeSync().raw;
+const { themes } = require('./src/plugins/themes.js');
 
 module.exports = {
   transpileDependencies: ['vuetify', 'vuex-persist'],
@@ -54,8 +57,8 @@ module.exports = {
 
   pwa: {
     name: process.env.VUE_APP_NAME,
-    themeColor: '#0200FF',
-    msTileColor: '#4A90E2',
+    themeColor: themes.light.primary,
+    msTileColor: themes.light.accent,
     appleMobileWebAppStatusBarStyle: 'default',
     appleMobileWebAppCapable: 'yes',
     assetsVersion: '',
