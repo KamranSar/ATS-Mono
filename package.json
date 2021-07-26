@@ -14,7 +14,8 @@
     "prod": "http-server -p 8090 --proxy http://localhost:8090? ./dist",
     "gitversion": "git log -n 1 --pretty=format:'GIT_COMMIT=%H%nGIT_HASH=%h%nGIT_DATE=%aD'",
     "start-backend": "bash ./scripts/start_test_servers.sh",
-    "stop-backend": "bash ./scripts/stop_test_servers.sh"
+    "stop-backend": "bash ./scripts/stop_test_servers.sh",
+    "restart-backend": "bash ./scripts/fast_restart.sh"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.15.0",

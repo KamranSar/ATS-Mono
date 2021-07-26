@@ -14,11 +14,10 @@
           :disable-pagination="loading"
           multi-sort
         >
-          <!-- Top: Institution & User Search -->
           <template v-slot:top>
-            <v-row no-gutters class="px-3">
-              <v-spacer></v-spacer>
-              <v-col :cols="$vuetify.breakpoint.mdAndDown ? 12 : 2"
+            <v-row no-gutters class="pa-2">
+              <!-- User Search Field -->
+              <v-col :cols="$vuetify.breakpoint.mdAndDown ? 6 : 2"
                 ><v-text-field
                   v-model="search"
                   :disabled="loading"
@@ -27,8 +26,80 @@
                   label="Search user"
                   single-line
                   hide-details
-                ></v-text-field></v-col
-            ></v-row>
+                  clearable
+                  @click:append="getUsers"
+                  @keyup.enter="getUsers"
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-spacer></v-spacer>
+
+              <!-- Reset Sort Button -->
+              <v-btn
+                class="mt-3"
+                color="primary lighten-1"
+                text
+                @click="resetSort()"
+                ><v-icon class="pr-1">mdi-sort-variant-remove</v-icon>Reset
+                Sort</v-btn
+              >
+
+              <!-- Filter Columns Button -->
+              <v-menu
+                offset-y
+                :close-on-content-click="false"
+                max-height="350px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="mt-3"
+                    v-bind="attrs"
+                    v-on="on"
+                    color="primary lighten-1"
+                    text
+                    ><v-icon class="pr-1">mdi-filter</v-icon>Columns</v-btn
+                  >
+                </template>
+                <v-list class="column-header">
+                  <v-list-item @click="resetColumns()">
+                    <v-list-item-icon>
+                      <v-icon>mdi-filter-remove</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Reset Columns</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider></v-divider>
+
+                  <v-list-item
+                    v-for="(header, index) in headers"
+                    :key="header.value"
+                  >
+                    <v-list-item-action>
+                      <v-checkbox v-model="header.display"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ header.text }}</v-list-item-title>
+                    </v-list-item-content>
+                    <v-btn
+                      v-if="index"
+                      icon
+                      small
+                      @click="moveHeader(header, index, index - 1)"
+                      ><v-icon> mdi-arrow-up</v-icon></v-btn
+                    >
+                    <v-btn
+                      v-if="index !== headers.length - 1"
+                      icon
+                      small
+                      @click="moveHeader(header, index, index + 1)"
+                      ><v-icon>mdi-arrow-down</v-icon></v-btn
+                    >
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-row>
           </template>
           <!-- Header: displayName -->
           <template v-slot:item.somsinfo.displayName="{ item }">
@@ -46,6 +117,15 @@
           <template v-slot:item.soms_upn="{ item }">
             <div>
               <span class="text-caption">{{ item.soms_upn || item.upn }}</span>
+            </div>
+          </template>
+
+          <template v-slot:item.createdAt="{ item }">
+            <div>
+              <v-chip v-if="item && item.createdAt" color="primary">
+                {{ formatDistanceToNow(item.createdAt) }}
+              </v-chip>
+              <v-chip v-else> Never </v-chip>
             </div>
           </template>
 
@@ -92,7 +172,7 @@
             @click="resetRoles()"
             :disabled="loading"
           >
-            Reset
+            Reset Roles
             <v-icon right dark> mdi-refresh </v-icon>
           </v-btn>
           <v-spacer></v-spacer>
@@ -122,86 +202,11 @@
   import feathers from '@/feathers/index.js';
   import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync } from 'vuex-pathify';
-
-  const HEADERS = [
-    /*   {
-    text: string,
-    value: string,
-    align?: 'start' | 'center' | 'end',
-    sortable?: boolean,
-    filterable?: boolean,
-    groupable?: boolean,
-    divider?: boolean,
-    class?: string | string[],
-    cellClass?: string | string[],
-    width?: string | number,
-    filter?: (value: any, search: string, item: any) => boolean,
-    sort?: (a: any, b: any) => number
-  }, */
-    {
-      text: 'Name',
-      align: 'start',
-      value: 'somsinfo.displayName',
-      display: {
-        header: true,
-        query: true,
-      },
-    },
-    {
-      text: 'User Principal Name',
-      value: 'soms_upn',
-      display: {
-        header: true,
-        query: true,
-      },
-    },
-    {
-      text: 'Institution Name',
-      value: 'somsinfo.organizationName',
-      display: {
-        header: true,
-        query: true,
-      },
-    },
-    {
-      text: 'Roles',
-      value: 'appuserroles',
-      align: 'start',
-      display: {
-        header: true,
-        query: true,
-      },
-    },
-    {
-      text: 'Last Login',
-      value: 'updatedAt',
-      align: 'end',
-      display: {
-        header: true,
-        query: true,
-      },
-    },
-  ];
-
-  const OPTIONS = {
-    groupBy: [],
-    groupDes: [],
-    itemsPerPage: 10,
-    multiSort: true,
-    mustSort: false,
-    page: 1,
-    sortBy: ['updatedAt'],
-    sortDesc: [true, true, true],
-  };
-
-  const PAGINATION = {
-    page: 1,
-    itemsPerPage: 10,
-    pageStart: null,
-    pageStop: null,
-    pageCount: null,
-    itemsLength: null,
-  };
+  import {
+    HEADERS,
+    OPTIONS,
+    PAGINATION,
+  } from '@/components/Users/constants.js';
 
   /**
    * Set this to true if you want to get users by institution
@@ -209,6 +214,24 @@
    */
   import cloneDeep from 'lodash.clonedeep';
   import AccountsByApp from '@/feathers/services/accountsbyapp/accountsbyapp.service';
+
+  /**
+   * Builds the $sort param into the query object passed in
+   *
+   * @param {Object} query - Query object to continue building from
+   * @param {Object} options - The options object returned from :options.sync in v-data-table
+   */
+  const _buildSortQuery = (query, options) => {
+    if (options.sortBy.length && options.sortDesc.length) {
+      query.$sort = {};
+
+      // Loop through each sorted field
+      options.sortBy.forEach((sortField, index) => {
+        query.$sort[sortField] = !options.sortDesc[index];
+      });
+    }
+  };
+
   export default {
     name: 'Users',
     components: {
@@ -217,11 +240,11 @@
     },
     data: () => {
       return {
-        search: '', // FIXME: Nurthin Aziz 2021-07-26: Currently does not work
+        search: '',
         // ******* State options and pagination are tightly coupled...
         // ******* they help build the v-data-table for search
-        options: OPTIONS,
-        pagination: PAGINATION,
+        options: cloneDeep(OPTIONS),
+        pagination: cloneDeep(PAGINATION),
         headers: cloneDeep(Object.values(HEADERS)),
         listOfUsers: [],
         selectedUsers: [],
@@ -232,13 +255,21 @@
       ...get('users', ['loggedInUser']),
       ...sync('app', ['loading']),
       visibleHeaders() {
-        return this.headers.filter((h) => h.display && h.display.header);
+        return this.headers.filter((h) => h.display);
       },
     },
     async mounted() {
-      this.listOfUsers = await this.getUsers();
+      await this.getUsers();
     },
     methods: {
+      /**
+       * isDefaultAdmin function
+       *
+       * This could be a computed but kept as a method
+       * to be consistent with it's cousin isInstitutionUser(institution)
+       *
+       * @returns {Boolean} true|false
+       */
       isDefaultAdmin() {
         if (
           this.loggedInUser &&
@@ -251,6 +282,13 @@
           return false;
         }
       },
+
+      /**
+       * isInstitutionUser(institution) function
+       *
+       * Takes in the institutuion object and compares it to the loggedInUsers organization Name
+       * @param {Object} - Institution object
+       */
       isInstitutionUser(institution) {
         if (
           institution &&
@@ -266,6 +304,7 @@
           return false;
         }
       },
+
       /**
        * @param date - A valid date object or string
        * @returns A human readable date comparison.
@@ -273,6 +312,7 @@
       formatDistanceToNow(date) {
         return formatDistanceToNow(new Date(date), { addSuffix: true });
       },
+
       /**
        * @param user - The selected user in listOfUsers
        */
@@ -292,6 +332,7 @@
           this.selectedUsers.push(user);
         }
       },
+
       /**
        * getUsers function
        * @returns All the users from the selected institution
@@ -310,11 +351,8 @@
             soms_upn: {
               $search: this.search,
             },
-            $sort: {
-              soms_upn: 1,
-            },
           };
-          // _buildSortQuery(query, this.options); // FIXME: Nurthin Aziz 2021-07-26: Currently does not support $sort
+          _buildSortQuery(query, this.options);
           const users = await findAll(
             AccountsByApp,
             {
@@ -349,6 +387,36 @@
       },
 
       /**
+       * resetSort function
+       * Makes an API call with the default sortBy and sortDesc set.
+       */
+      async resetSort() {
+        this.options.sortBy = OPTIONS.sortBy;
+        this.options.sortDesc = OPTIONS.sortDesc;
+        await this.getUsers();
+      },
+
+      /**
+       * resetColumns function
+       * Sets the default display values for our headers
+       */
+      resetColumns() {
+        this.headers = cloneDeep(Object.values(HEADERS));
+      },
+
+      /**
+       * moveHeader function
+       * Allows the re-ordering of headers within the table.
+       * The newIndex is passed in to determine the new position
+       */
+      moveHeader(header, index, newIndex) {
+        var temp = this.headers[newIndex]; // Hold the one above
+        // Swap the two
+        this.$set(this.headers, newIndex, header);
+        this.$set(this.headers, index, temp);
+      },
+
+      /**
        * resetRoles function
        * Makes an API call to fetch and reset back to
        * the roles that have been captured by this.selectedUsers
@@ -380,6 +448,7 @@
           this.loading = false;
         }
       },
+
       /**
        * saveRoles function
        * Calls either a patch or create for the selected user to update their roles in appuserroles collection.
@@ -421,10 +490,8 @@
       },
     },
     watch: {
-      watch: {
-        options: {
-          handler: 'getUsers',
-        },
+      options: {
+        handler: 'getUsers',
       },
     },
   };
