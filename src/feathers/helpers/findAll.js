@@ -9,16 +9,33 @@ import store from '@/store';
  *
  * To get all the values: [...results.values()]
  *
- * @param {String} servicepath - The service path of your API end point. Ex. /api/auth/v1/appuserroles
+ * @param {Object|String} servicepath - The service or path of your API end point. Ex. /api/auth/v1/appuserroles
  * @param {Object} query - A complete feathers query object. Ex. { query: { ... } }
+ * @param {Object} [options={type: 'JSON'}] - Available options for return
+ *
+ * {
+ *  type: "JSON", // Valid Types: "JSON", "Array", "Map"
+ * }
+ *
  * @returns {Map} results - A map of keys storing each record
  */
-const findAll = async (servicepath, query = null) => {
+const findAll = async (
+  servicepath,
+  query = null,
+  options = {
+    type: 'JSON', // Valid Types: "JSON", "Array", "Map"
+  }
+) => {
   try {
     store.set('app/loading', true);
 
     if (!servicepath) throw Error('servicepath required');
 
+    if (servicepath && servicepath.base && servicepath.name) {
+      servicepath = servicepath.name;
+    }
+
+    // *NOTE: It's easier to convert a Map to a JSON or Array.
     // Create the dataMap to return
     let dataMap = new Map();
 
@@ -58,10 +75,32 @@ const findAll = async (servicepath, query = null) => {
       queryObject.query['$skip'] = dataMap.size;
     }
 
-    return dataMap;
+    switch (options.type.toUpperCase()) {
+      case 'JSON':
+        return {
+          ...response, // Contains limit, skip, total
+          data: [...dataMap.values()],
+        };
+      case 'MAP':
+        return dataMap;
+      case 'ARRAY':
+        return [...dataMap.values()];
+    }
   } catch (error) {
     console.error(`findAll(${servicepath})`, { query }, { error });
-    return new Map();
+    switch (options.type.toUpperCase()) {
+      case 'JSON':
+        return {
+          limit: null, // Contains limit, skip, total
+          skip: null,
+          total: null,
+          data: [],
+        };
+      case 'MAP':
+        return new Map();
+      case 'ARRAY':
+        return [];
+    }
   } finally {
     store.set('app/loading', false);
   }

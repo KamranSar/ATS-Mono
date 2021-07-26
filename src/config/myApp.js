@@ -37,6 +37,7 @@ var myApp = Object.freeze({
   isTst,
   isPoc,
   isPrd: !isLcl && !isDev && !isTst, // (internal only until Tim updates the VIP route) TODO: Nurthin Aziz 2021-07-22 UPDATE THIS COMMENT.
+  allowMultipleRoles: false, // This flag allows assigning multiple roles to a user.
   approles: [
     // TODO: Add your application roles here
     /* {

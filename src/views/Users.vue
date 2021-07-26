@@ -3,11 +3,16 @@
     <template slot="content">
       <v-container fluid>
         <v-data-table
-          :headers="headers"
           :items="listOfUsers"
           :search="search"
           :disabled="loading"
           :loading="loading"
+          :headers="visibleHeaders"
+          :options.sync="options"
+          :server-items-length.sync="pagination.itemsLength"
+          :page.sync="pagination.page"
+          :disable-pagination="loading"
+          multi-sort
         >
           <!-- Top: Institution & User Search -->
           <template v-slot:top>
@@ -25,47 +30,57 @@
                 ></v-text-field></v-col
             ></v-row>
           </template>
-
-          <!-- Last DisplayName Column -->
-          <template v-slot:item.displayName="{ item }">
-            <UserAvatar :user="item" :showTooltip="true"></UserAvatar>
-            {{
-              item.somsinfo ? item.somsinfo.displayName : item.user.displayName
-            }}
+          <!-- Header: displayName -->
+          <template v-slot:item.somsinfo.displayName="{ item }">
+            <div>
+              <UserAvatar :user="item" :showTooltip="true"></UserAvatar>
+              {{
+                item.somsinfo
+                  ? item.somsinfo.displayName
+                  : item.user.displayName
+              }}
+            </div>
           </template>
 
+          <!-- Header: soms_upn -->
           <template v-slot:item.soms_upn="{ item }">
-            <span class="text-caption">{{ item.soms_upn || item.upn }}</span>
+            <div>
+              <span class="text-caption">{{ item.soms_upn || item.upn }}</span>
+            </div>
           </template>
 
-          <!-- Last Login Column -->
+          <!-- Header: updatedAt -->
           <template v-slot:item.updatedAt="{ item }">
-            <v-chip v-if="item && item.updatedAt" color="primary">
-              {{ formatDistanceToNow(item.updatedAt) }}
-            </v-chip>
-            <v-chip v-else> Never </v-chip>
+            <div>
+              <v-chip v-if="item && item.updatedAt" color="primary">
+                {{ formatDistanceToNow(item.updatedAt) }}
+              </v-chip>
+              <v-chip v-else> Never </v-chip>
+            </div>
           </template>
 
-          <!-- Roles Column -->
+          <!-- Header: appuserroles -->
           <template v-slot:item.appuserroles="{ item }">
-            <!-- If Default Admin -->
-            <v-autocomplete
-              v-if="isDefaultAdmin() || isInstitutionUser(item)"
-              v-model="item.roles"
-              @change="setSelectedUser(item)"
-              :disabled="loading"
-              :items="appRoles"
-              chips
-              color="blue-grey lighten-2"
-              label="Selected Roles"
-              item-text="name"
-              item-value="name"
-              multiple
-              clearable
-              hide-details
-            >
-            </v-autocomplete>
-            <span v-else>{{ item.roles.join(', ') }}</span>
+            <div>
+              <!-- If Default Admin || Institution User -->
+              <v-autocomplete
+                v-if="isDefaultAdmin() || isInstitutionUser(item)"
+                v-model="item.roles"
+                @change="setSelectedUser(item)"
+                :disabled="loading"
+                :items="appRoles"
+                chips
+                color="blue-grey lighten-2"
+                label="Selected Roles"
+                item-text="name"
+                item-value="name"
+                multiple
+                clearable
+                hide-details
+              >
+              </v-autocomplete>
+              <span v-else>{{ item.roles.join(', ') }}</span>
+            </div>
           </template>
         </v-data-table>
 
@@ -108,10 +123,92 @@
   import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync } from 'vuex-pathify';
 
+  const HEADERS = [
+    /*   {
+    text: string,
+    value: string,
+    align?: 'start' | 'center' | 'end',
+    sortable?: boolean,
+    filterable?: boolean,
+    groupable?: boolean,
+    divider?: boolean,
+    class?: string | string[],
+    cellClass?: string | string[],
+    width?: string | number,
+    filter?: (value: any, search: string, item: any) => boolean,
+    sort?: (a: any, b: any) => number
+  }, */
+    {
+      text: 'Name',
+      align: 'start',
+      value: 'somsinfo.displayName',
+      display: {
+        header: true,
+        query: true,
+      },
+    },
+    {
+      text: 'User Principal Name',
+      value: 'soms_upn',
+      display: {
+        header: true,
+        query: true,
+      },
+    },
+    {
+      text: 'Institution Name',
+      value: 'somsinfo.organizationName',
+      display: {
+        header: true,
+        query: true,
+      },
+    },
+    {
+      text: 'Roles',
+      value: 'appuserroles',
+      align: 'start',
+      display: {
+        header: true,
+        query: true,
+      },
+    },
+    {
+      text: 'Last Login',
+      value: 'updatedAt',
+      align: 'end',
+      display: {
+        header: true,
+        query: true,
+      },
+    },
+  ];
+
+  const OPTIONS = {
+    groupBy: [],
+    groupDes: [],
+    itemsPerPage: 10,
+    multiSort: true,
+    mustSort: false,
+    page: 1,
+    sortBy: ['updatedAt'],
+    sortDesc: [true, true, true],
+  };
+
+  const PAGINATION = {
+    page: 1,
+    itemsPerPage: 10,
+    pageStart: null,
+    pageStop: null,
+    pageCount: null,
+    itemsLength: null,
+  };
+
   /**
    * Set this to true if you want to get users by institution
    * Otherwise set to false to get users in the app.
    */
+  import cloneDeep from 'lodash.clonedeep';
+  import AccountsByApp from '@/feathers/services/accountsbyapp/accountsbyapp.service';
   export default {
     name: 'Users',
     components: {
@@ -120,40 +217,26 @@
     },
     data: () => {
       return {
-        search: '',
-        headers: [
-          {
-            text: 'Name',
-            align: 'start',
-            value: 'displayName',
-          },
-          {
-            text: 'User Principal Name',
-            value: 'soms_upn',
-          },
-          {
-            text: 'Institution Name',
-            value: 'somsinfo.organizationName',
-          },
-          { text: 'Roles', value: 'appuserroles', align: 'start' },
-          {
-            text: 'Last Login',
-            value: 'updatedAt',
-            align: 'end',
-          },
-        ],
+        search: '', // FIXME: Nurthin Aziz 2021-07-26: Currently does not work
+        // ******* State options and pagination are tightly coupled...
+        // ******* they help build the v-data-table for search
+        options: OPTIONS,
+        pagination: PAGINATION,
+        headers: cloneDeep(Object.values(HEADERS)),
         listOfUsers: [],
         selectedUsers: [],
-        selectedInstitution: '',
         appRoles: myApp.approles,
       };
     },
     computed: {
       ...get('users', ['loggedInUser']),
       ...sync('app', ['loading']),
+      visibleHeaders() {
+        return this.headers.filter((h) => h.display && h.display.header);
+      },
     },
     async mounted() {
-      this.listOfUsers = await this.getUser();
+      this.listOfUsers = await this.getUsers();
     },
     methods: {
       isDefaultAdmin() {
@@ -198,37 +281,65 @@
           return u.userId === user.userId;
         });
 
+        // Empty the set if we don't allow multiple
+        if (!this.$myApp.allowMultipleRoles) {
+          const role = user.roles.pop();
+          user.roles = [role];
+        }
+
         // Don't push what's already been selected.
         if (!alreadySelected) {
           this.selectedUsers.push(user);
         }
       },
       /**
-       * getUser function
+       * getUsers function
        * @returns All the users from the selected institution
        */
-      async getUser() {
+      async getUsers() {
         this.listOfUsers = [];
         this.selectedUsers = [];
 
         try {
           this.loading = true;
-          const users = await findAll('/api/auth/v1/accountsbyapp', {
-            query: {
-              appid: this.$myApp.azureAppID,
-              soms_upn: {
-                $search: this.search,
-              },
-              $sort: {
-                soms_upn: 1,
-              },
-            },
-          });
 
-          this.listOfUsers = [...users.values()];
+          const query = {
+            $limit: this.options.itemsPerPage,
+            $skip: (this.options.page - 1) * this.options.itemsPerPage,
+            appid: this.$myApp.azureAppID,
+            soms_upn: {
+              $search: this.search,
+            },
+            $sort: {
+              soms_upn: 1,
+            },
+          };
+          // _buildSortQuery(query, this.options); // FIXME: Nurthin Aziz 2021-07-26: Currently does not support $sort
+          const users = await findAll(
+            AccountsByApp,
+            {
+              query,
+            },
+            {
+              type: 'JSON',
+            }
+          );
+          // console.log('users: ', users);
+          this.listOfUsers = users.data;
+          this.pagination = {
+            page: this.options.page,
+            itemsPerPage: this.options.itemsPerPage,
+            pageStart: (this.options.page - 1) * this.options.itemsPerPage,
+            pageStop:
+              (this.options.page - 1) * this.options.itemsPerPage +
+              this.options.itemsPerPage,
+            pageCount: Math.ceil(users.total / this.options.itemsPerPage),
+            itemsLength: users.total,
+          };
+
           return this.listOfUsers;
         } catch (error) {
-          console.error('getUser: ', error);
+          console.error('getUsers: ', error);
           this.listOfUsers = [];
           this.selectedUsers = [];
           return [];
@@ -310,14 +421,10 @@
       },
     },
     watch: {
-      /**
-       * selectedInstitution watcher
-       * Update the listOfUsers when selecting a new institution.
-       */
-      async selectedInstitution(newVal, oldVal) {
-        if (newVal && newVal !== oldVal) {
-          await this.getUser();
-        }
+      watch: {
+        options: {
+          handler: 'getUsers',
+        },
       },
     },
   };

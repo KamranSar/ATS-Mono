@@ -12,7 +12,9 @@
     "fix": "vue-cli-service lint --fix",
     "preinstall": "npm run build-vuex-persist",
     "prod": "http-server -p 8090 --proxy http://localhost:8090? ./dist",
-    "gitversion": "git log -n 1 --pretty=format:'GIT_COMMIT=%H%nGIT_HASH=%h%nGIT_DATE=%aD'"
+    "gitversion": "git log -n 1 --pretty=format:'GIT_COMMIT=%H%nGIT_HASH=%h%nGIT_DATE=%aD'",
+    "start-backend": "bash ./scripts/start_test_servers.sh",
+    "stop-backend": "bash ./scripts/stop_test_servers.sh"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.15.0",
@@ -29,6 +31,7 @@
     "js-cookie": "^2.2.1",
     "jwt-decode": "^3.1.2",
     "localforage": "^1.9.0",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "pako": "^2.0.3",
     "register-service-worker": "^1.7.2",
