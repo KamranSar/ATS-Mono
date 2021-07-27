@@ -140,13 +140,12 @@
           </template>
 
           <!-- Header: appuserroles -->
-          <template v-slot:item.appuserroles="{ item }">
+          <template v-slot:item.appuserroles="{ item: user }">
             <div>
               <!-- If Default Admin || Institution User -->
               <v-autocomplete
-                v-if="isDefaultAdmin() || isInstitutionUser(item)"
-                v-model="item.roles"
-                @change="setSelectedUser(item)"
+                v-if="isDefaultAdmin() || isInstitutionUser(user)"
+                v-model="user.roles"
                 :disabled="loading"
                 :items="appRoles"
                 chips
@@ -158,8 +157,23 @@
                 clearable
                 hide-details
               >
+                <template v-slot:item="{ item: role }">
+                  <v-list-item @click="setSelectedUser(user, role)">
+                    <v-list-item-action>
+                      <v-checkbox
+                        :input-value="user.roles.includes(role.name)"
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ role.name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{
+                        role.description
+                      }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
               </v-autocomplete>
-              <span v-else>{{ item.roles.join(', ') }}</span>
+              <span v-else>{{ user.roles.join(', ') }}</span>
             </div>
           </template>
         </v-data-table>
@@ -198,7 +212,7 @@
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import { formatDistanceToNow } from 'date-fns';
   import Panel from '@/components/layouts/Panel.vue';
-  import { myApp, defaultAdminRole } from '@/config/myApp';
+  import { defaultAdminRole } from '@/config/myApp';
   import feathers from '@/feathers/index.js';
   import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync } from 'vuex-pathify';
@@ -253,22 +267,38 @@
     computed: {
       ...get('users', ['loggedInUser']),
       ...sync('app', ['loading']),
-      appRoles() {
-        // Sort myApp.approles and appUserRoles by priority levels
-        let appRoles = myApp.approles.sort((a, b) => a.priority - b.priority);
+      /**
+       * Sorted the loggedInUser appuserroles by priority
+       * @returns {Array} - A JSON array of roles
+       */
+      appUserRoles() {
         let appUserRoles =
           this.loggedInUser &&
           this.loggedInUser.appuserroles &&
           this.loggedInUser.appuserroles.roles
             ? this.loggedInUser.appuserroles.roles
             : [];
-        appUserRoles.sort((a, b) => a.priority - b.priority);
+
+        appUserRoles = appUserRoles
+          .map((userRoleName) =>
+            this.$myApp.approles.find((r) => r.name === userRoleName)
+          )
+          .sort((a, b) => a.priority - b.priority);
+        return appUserRoles;
+      },
+      /**
+       * Sorted array of appRoles defined in "@/config/myApp.js"
+       * @return {Array} - An array of sorted roles defined in myApp.js
+       */
+      appRoles() {
+        // Sort myApp.approles and appUserRoles by priority levels
+        let appRoles = this.$myApp.approles;
+        appRoles.sort((a, b) => a.priority - b.priority);
 
         // Get user role and highest priority
-        const highestAppUserRole = appUserRoles[0];
-        const highestPriorityLevel = appRoles.find(
-          (role) => role.name === highestAppUserRole
-        ).priority;
+        const highestPriorityLevel = this.appUserRoles.length
+          ? this.appUserRoles[0].priority
+          : 9999; // It's over 9000!!!!
 
         // Filter out any roles that are of higher priority
         // Keep only roles of equal or lower priority
@@ -282,7 +312,6 @@
 
         // console.log({ appRoles });
         // console.log({ appUserRoles });
-        // console.log({ highestAppUserRole });
         // console.log({ highestPriorityLevel });
 
         return appRoles;
@@ -345,22 +374,22 @@
       formatDistanceToNow(date) {
         return formatDistanceToNow(new Date(date), { addSuffix: true });
       },
-
       /**
        * @param user - The selected user in listOfUsers
        */
-      setSelectedUser(user) {
+      setSelectedUser(user, role) {
         const alreadySelected = this.selectedUsers.find((u) => {
           return u.userId === user.userId;
         });
 
+        user.roles.push(role.name);
+
         // Empty the set if we don't allow multiple
-        if (!this.$myApp.allowMultipleRoles) {
-          const role = user.roles.pop();
-          user.roles = [role];
+        if (!this.$myApp.allowMultipleRoles && user.roles.length) {
+          user.roles = [role.name];
         }
 
-        // Don't push what's already been selected.
+        // Don't push who's already been selected.
         if (!alreadySelected) {
           this.selectedUsers.push(user);
         }

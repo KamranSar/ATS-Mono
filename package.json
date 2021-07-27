@@ -1,6 +1,6 @@
 {
   "name": "vue-frontend-template",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "publicPath": "/app",
   "private": true,
   "scripts": {

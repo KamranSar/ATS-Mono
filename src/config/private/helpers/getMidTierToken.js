@@ -19,7 +19,7 @@ const getMidTierToken = async () => {
     accessToken: _azuretokenresponse.accessToken, // Need the token from Azure to log into middle tier
     cdcrAppID: myApp.azureAppID,
     defaultRole: defaultAdminRole.name, // Gets ignored after the first user creation
-    appType: 'PWA',
+    appType: myApp.appType,
     impersonatedSomsUPN,
   };
   try {
