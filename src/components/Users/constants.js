@@ -54,11 +54,18 @@ const HEADERS = [
     display: false,
   },
   {
-    text: 'Last Login',
-    value: 'updatedAt',
-    align: 'end',
-    display: true,
+    text: 'Work Assignment',
+    value: 'somsinfo.workAssignment',
+    align: 'start',
+    display: false,
   },
+  {
+    text: 'Staff Type',
+    value: 'somsinfo.staffType',
+    align: 'start',
+    display: false,
+  },
+  { text: 'Last Login', value: 'updatedAt', align: 'end', display: true },
 ];
 
 const itemsPerPage = 10;

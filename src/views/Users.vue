@@ -116,7 +116,9 @@
           <!-- Header: soms_upn -->
           <template v-slot:item.soms_upn="{ item }">
             <div>
-              <span class="text-caption">{{ item.soms_upn || item.upn }}</span>
+              <span class="text-lowercase">{{
+                item.soms_upn || item.upn
+              }}</span>
             </div>
           </template>
 
@@ -136,6 +138,13 @@
                 {{ formatDistanceToNow(item.updatedAt) }}
               </v-chip>
               <v-chip v-else> Never </v-chip>
+            </div>
+          </template>
+
+          <!-- Header: email -->
+          <template v-slot:item.user.email="{ item }">
+            <div>
+              <span class="text-lowercase">{{ item.user.email }}</span>
             </div>
           </template>
 
@@ -174,6 +183,22 @@
                 </template>
               </v-autocomplete>
               <span v-else>{{ user.roles.join(', ') }}</span>
+            </div>
+          </template>
+
+          <!-- Header: workAssignment -->
+          <template v-slot:item.somsinfo.workAssignment="{ item }">
+            <div>
+              {{ item.somsinfo.workAssignment }} -
+              {{ item.somsinfo.workAssignmentDescription }}
+            </div>
+          </template>
+
+          <!-- Header: staffType -->
+          <template v-slot:item.somsinfo.staffType="{ item }">
+            <div>
+              {{ item.somsinfo.staffType }} -
+              {{ item.somsinfo.staffTypeDescription }}
             </div>
           </template>
         </v-data-table>
