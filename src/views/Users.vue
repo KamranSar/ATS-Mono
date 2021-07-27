@@ -248,12 +248,45 @@
         headers: cloneDeep(Object.values(HEADERS)),
         listOfUsers: [],
         selectedUsers: [],
-        appRoles: myApp.approles,
       };
     },
     computed: {
       ...get('users', ['loggedInUser']),
       ...sync('app', ['loading']),
+      appRoles() {
+        // Sort myApp.approles and appUserRoles by priority levels
+        let appRoles = myApp.approles.sort((a, b) => a.priority - b.priority);
+        let appUserRoles =
+          this.loggedInUser &&
+          this.loggedInUser.appuserroles &&
+          this.loggedInUser.appuserroles.roles
+            ? this.loggedInUser.appuserroles.roles
+            : [];
+        appUserRoles.sort((a, b) => a.priority - b.priority);
+
+        // Get user role and highest priority
+        const highestAppUserRole = appUserRoles[0];
+        const highestPriorityLevel = appRoles.find(
+          (role) => role.name === highestAppUserRole
+        ).priority;
+
+        // Filter out any roles that are of higher priority
+        // Keep only roles of equal or lower priority
+        appRoles = appRoles.filter((role) => {
+          if (!highestPriorityLevel) {
+            return false;
+          }
+
+          return role.priority >= highestPriorityLevel;
+        });
+
+        // console.log({ appRoles });
+        // console.log({ appUserRoles });
+        // console.log({ highestAppUserRole });
+        // console.log({ highestPriorityLevel });
+
+        return appRoles;
+      },
       visibleHeaders() {
         return this.headers.filter((h) => h.display);
       },

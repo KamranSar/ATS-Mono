@@ -9,6 +9,7 @@ const isPoc = window.location.hostname.includes('poc'); // (internal and externa
 const defaultAdminRole = {
   name: 'System Administrator',
   description: 'Gives access to manage users in the application',
+  priority: 1, // Default: 1 - Highest priority level
 };
 
 const appVersion = process.env.VUE_APP_VERSION
@@ -42,13 +43,15 @@ var myApp = Object.freeze({
     // TODO: Add your application roles here
     /* {
       name: String,
-      description: String
+      description: String,
+      priority: Number, // Default: 1 - Highest priority level; NOTE: Cannot assign roles of a higher priority level than your own
     } */
     defaultAdminRole,
     {
       name: 'Example Role',
       description:
         'Generic application role, change this to suit your app needs',
+      priority: 999,
     },
   ],
   helpers: {
