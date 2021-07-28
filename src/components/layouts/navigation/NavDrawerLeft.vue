@@ -15,13 +15,13 @@
       color="#ECEFF1"
     >
       <span class="text-truncate">
-        <UserAvatar v-if="isAzureLoggedIn"></UserAvatar>
+        <UserAvatar v-if="displayName"></UserAvatar>
         <span class="ml-2">{{
           displayName ? displayName : 'Currently Logged Out'
         }}</span>
       </span>
     </v-toolbar>
-    <v-list v-if="isAzureLoggedIn">
+    <v-list v-if="displayName">
       <template v-for="item in userItems">
         <NavListGroup
           v-if="item.children"
@@ -86,7 +86,6 @@
       <div
         class="text-right caption pa-1"
         v-if="
-          isAzureLoggedIn &&
           loggedInUser &&
           loggedInUser.appuserroles &&
           loggedInUser.appuserroles.roles
@@ -138,7 +137,6 @@
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
       // const displayName = get('azureAuthentication/displayName');
-      const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
       const userAdminItems = getRoutesByName(['Users']);
       const loggedInUser = get('users/loggedInUser');
       const version = myApp.version;
@@ -166,15 +164,16 @@
           impersonatingSOMS.value
         ) {
           return loggedInUser.value.somsinfo.displayName;
-        } else {
+        } else if (loggedInUser.value && loggedInUser.value.displayName) {
           return loggedInUser.value.displayName;
+        } else {
+          return '';
         }
       });
 
       return {
         leftDrawOpen,
         displayName,
-        isAzureLoggedIn,
         anonymousItems,
         userItems,
         adminItems,

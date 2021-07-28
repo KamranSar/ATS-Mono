@@ -37,7 +37,15 @@ module.exports = {
       Vary: 'origin',
     },
     stats: { colors: true },
-    // https://webpack.js.org/configuration/dev-server/  - For options for proxying
+    // https://webpack.js.org/configuration/dev-server/  - Options for proxying
+    proxy: {
+      '^/api': {
+        changeOrigin: true,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '',
+        target: process.env.VUE_APP_PROXY_TARGET,
+      },
+    },
   },
 
   pluginOptions: {

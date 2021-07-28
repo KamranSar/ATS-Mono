@@ -124,7 +124,11 @@
 
           <template v-slot:item.createdAt="{ item }">
             <div>
-              <v-chip v-if="item && item.createdAt" color="primary">
+              <v-chip
+                small
+                v-if="item && item.createdAt"
+                color="primary darken-1"
+              >
                 {{ formatDistanceToNow(item.createdAt) }}
               </v-chip>
               <v-chip v-else> Never </v-chip>
@@ -134,7 +138,11 @@
           <!-- Header: updatedAt -->
           <template v-slot:item.updatedAt="{ item }">
             <div>
-              <v-chip v-if="item && item.updatedAt" color="primary">
+              <v-chip
+                small
+                v-if="item && item.updatedAt"
+                color="primary darken-1"
+              >
                 {{ formatDistanceToNow(item.updatedAt) }}
               </v-chip>
               <v-chip v-else> Never </v-chip>
@@ -171,6 +179,16 @@
                     <v-list-item-action>
                       <v-checkbox
                         :input-value="user.roles.includes(role.name)"
+                        :on-icon="
+                          $myApp.allowMultipleRoles
+                            ? 'mdi-checkbox-marked'
+                            : 'mdi-radiobox-marked'
+                        "
+                        :off-icon="
+                          $myApp.allowMultipleRoles
+                            ? 'mdi-checkbox-blank-outline'
+                            : 'mdi-radiobox-blank'
+                        "
                       ></v-checkbox>
                     </v-list-item-action>
                     <v-list-item-content>
@@ -239,7 +257,6 @@
   import Panel from '@/components/layouts/Panel.vue';
   import { defaultAdminRole } from '@/config/myApp';
   import feathers from '@/feathers/index.js';
-  import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync } from 'vuex-pathify';
   import {
     HEADERS,
@@ -345,9 +362,6 @@
         return this.headers.filter((h) => h.display);
       },
     },
-    async mounted() {
-      await this.getUsers();
-    },
     methods: {
       /**
        * isDefaultAdmin function
@@ -406,8 +420,12 @@
         const alreadySelected = this.selectedUsers.find((u) => {
           return u.userId === user.userId;
         });
-
-        user.roles.push(role.name);
+        const roleSelected = user.roles.indexOf(role.name);
+        if (roleSelected === -1) {
+          user.roles.push(role.name);
+        } else {
+          user.roles.splice(roleSelected, 1);
+        }
 
         // Empty the set if we don't allow multiple
         if (!this.$myApp.allowMultipleRoles && user.roles.length) {
@@ -440,15 +458,9 @@
             },
           };
           _buildSortQuery(query, this.options);
-          const users = await findAll(
-            AccountsByApp,
-            {
-              query,
-            },
-            {
-              type: 'JSON',
-            }
-          );
+          const users = await AccountsByApp.find({
+            query,
+          });
           // console.log('users: ', users);
           this.listOfUsers = users.data;
           this.pagination = {
