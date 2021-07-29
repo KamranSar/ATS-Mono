@@ -9,7 +9,7 @@ Table of Contents
 
 - [Directory Structure](#directory-structure)
 - [Starting from scratch...](#starting-from-scratch)
-    - [CREATING A BRANCH NEW PROJECT](#creating-a-branch-new-project)
+  - [CREATING A BRANCH NEW PROJECT](#creating-a-branch-new-project)
 - [Start your development](#start-your-development)
   - [Name your application](#name-your-application)
   - [Apply your application themes](#apply-your-application-themes)
@@ -138,7 +138,7 @@ git clone `GIT_URL`
 
 ```sh
 npm install # install any package.json dependencies
-npm run start-backend # Start the local mt backend with the start-backend script in package.json
+npm run start-servers # Start the local mt backend with the start-servers script in package.json
 npm run serve # Start the local frontend webserver with the serve script in package.json
 ```
 

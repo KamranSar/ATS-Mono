@@ -1,6 +1,6 @@
 {
   "name": "vue-frontend-template",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "publicPath": "/app",
   "azureAppID": "c0cf535a-bb4d-4731-94fb-8a4165b1a124",
   "private": true,
@@ -14,9 +14,9 @@
     "preinstall": "npm run build-vuex-persist",
     "prod": "http-server -p 8090 --proxy http://localhost:8090? ./dist",
     "gitversion": "git log -n 1 --pretty=format:'GIT_COMMIT=%H%nGIT_HASH=%h%nGIT_DATE=%aD'",
-    "start-backend": "bash ./scripts/start_test_servers.sh",
-    "stop-backend": "bash ./scripts/stop_test_servers.sh",
-    "restart-backend": "bash ./scripts/fast_restart.sh"
+    "start-servers": "bash ./scripts/start_test_servers.sh",
+    "stop-servers": "bash ./scripts/stop_test_servers.sh",
+    "restart-servers": "bash ./scripts/fast_restart.sh"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.16.0",

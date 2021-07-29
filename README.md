@@ -8,7 +8,7 @@
 
 ```sh
 npm install
-npm run start-backend
+npm run start-servers
 npm run serve
 ```
 
