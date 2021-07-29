@@ -11,9 +11,12 @@ const getMidTierToken = async () => {
       'Sign in with Azure failed. Network unavailable, please try again.'
     );
   }
-  const impersonatedSomsUPN = sessionStorage
-    .getItem('impersonatedSomsUPN')
-    .toUpperCase();
+  let impersonatedSomsUPN = sessionStorage.getItem('impersonatedSomsUPN') || '';
+  if (impersonatedSomsUPN) {
+    impersonatedSomsUPN = impersonatedSomsUPN.toUpperCase();
+  } else {
+    impersonatedSomsUPN = '';
+  }
   const packet = {
     strategy: 'azuretoken_v1',
     accessToken: _azuretokenresponse.accessToken, // Need the token from Azure to log into middle tier

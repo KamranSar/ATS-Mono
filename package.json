@@ -1,11 +1,12 @@
 {
   "name": "vue-frontend-template",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "publicPath": "/app",
+  "azureAppID": "c0cf535a-bb4d-4731-94fb-8a4165b1a124",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "git checkout -- package-lock.json && vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "build-vuex-persist": "cd local_modules/vuex-persist && npm install && npm run build",

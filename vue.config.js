@@ -2,6 +2,7 @@ process.env.VUE_APP_NAME =
   process.env.VUE_APP_NAME || require('./package.json').name;
 process.env.VUE_APP_VERSION = require('./package.json').version;
 process.env.VUE_APP_PUBLIC_PATH = require('./package.json').publicPath;
+process.env.VUE_APP_AZURE_APP_ID = require('./package.json').azureAppID;
 const { gitDescribeSync } = require('git-describe');
 process.env.VUE_APP_GIT_RAW = gitDescribeSync().raw;
 const { themes } = require('./src/plugins/themes.js');

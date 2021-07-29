@@ -207,16 +207,24 @@
           <!-- Header: workAssignment -->
           <template v-slot:item.somsinfo.workAssignment="{ item }">
             <div>
-              {{ item.somsinfo.workAssignment }} -
-              {{ item.somsinfo.workAssignmentDescription }}
+              {{ item && item.somsinfo ? item.somsinfo.workAssignment : '' }}
+              {{ item && item.somsinfo ? ' - ' : '' }}
+              {{
+                item && item.somsinfo
+                  ? item.somsinfo.workAssignmentDescription
+                  : ''
+              }}
             </div>
           </template>
 
           <!-- Header: staffType -->
           <template v-slot:item.somsinfo.staffType="{ item }">
             <div>
-              {{ item.somsinfo.staffType }} -
-              {{ item.somsinfo.staffTypeDescription }}
+              {{ item && item.somsinfo ? item.somsinfo.staffType : '' }}
+              {{ item && item.somsinfo ? ' - ' : '' }}
+              {{
+                item && item.somsinfo ? item.somsinfo.staffTypeDescription : ''
+              }}
             </div>
           </template>
         </v-data-table>

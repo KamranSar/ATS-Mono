@@ -30,6 +30,18 @@ const HEADERS = [
     display: true,
   },
   {
+    text: 'Staff Type',
+    value: 'somsinfo.staffType',
+    align: 'start',
+    display: false,
+  },
+  {
+    text: 'Work Assignment',
+    value: 'somsinfo.workAssignment',
+    align: 'start',
+    display: false,
+  },
+  {
     text: 'Roles',
     value: 'appuserroles',
     align: 'start',
@@ -54,18 +66,11 @@ const HEADERS = [
     display: false,
   },
   {
-    text: 'Work Assignment',
-    value: 'somsinfo.workAssignment',
-    align: 'start',
-    display: false,
+    text: 'Last Login',
+    value: 'updatedAt',
+    align: 'end',
+    display: true,
   },
-  {
-    text: 'Staff Type',
-    value: 'somsinfo.staffType',
-    align: 'start',
-    display: false,
-  },
-  { text: 'Last Login', value: 'updatedAt', align: 'end', display: true },
 ];
 
 const itemsPerPage = 10;

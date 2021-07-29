@@ -1,16 +1,30 @@
 <img src="./public/img/logo.svg" alt="CDCR Logo" width="64" height="64" />
 
+```
+At the time of this writing....
+This HOWTO.md is up to date with template version 0.4.5
+```
+
 Table of Contents
 
 - [Directory Structure](#directory-structure)
+- [Starting from scratch...](#starting-from-scratch)
+    - [CREATING A BRANCH NEW PROJECT](#creating-a-branch-new-project)
 - [Start your development](#start-your-development)
-  - [Creating a CDCR App ID](#creating-a-cdcr-app-id)
-  - [Adding your public path](#adding-your-public-path)
-  - [Adding API Permissions](#adding-api-permissions)
-  - [Change the app name](#change-the-app-name)
-  - [Customizing your app theme](#customizing-your-app-theme)
-  - [Resize your logo for PWA](#resize-your-logo-for-pwa)
-  - [Create your first route and component.](#create-your-first-route-and-component)
+  - [Name your application](#name-your-application)
+  - [Apply your application themes](#apply-your-application-themes)
+  - [Adding your logo to the app](#adding-your-logo-to-the-app)
+  - [Create your first commit and push the changes:](#create-your-first-commit-and-push-the-changes)
+  - [Application routing and how to](#application-routing-and-how-to)
+    - [Navigating and viewing the available routes:](#navigating-and-viewing-the-available-routes)
+    - [Creating your first route.](#creating-your-first-route)
+  - [Creating a Vuex module](#creating-a-vuex-module)
+  - [Using vuex-pathify to access your module states.](#using-vuex-pathify-to-access-your-module-states)
+  - [Persist your Vuex Module](#persist-your-vuex-module)
+  - [Creating a feathers service](#creating-a-feathers-service)
+  - [Accessing your Feathers Service](#accessing-your-feathers-service)
+  - [Request/Register your `azureAppID` and `publicPath`](#requestregister-your-azureappid-and-publicpath)
+  - [Giving your application API permissions](#giving-your-application-api-permissions)
   - [Adding Users to your App.](#adding-users-to-your-app)
   - [Adding roles to your App](#adding-roles-to-your-app)
   - [Assigning roles to users](#assigning-roles-to-users)
@@ -19,11 +33,7 @@ Table of Contents
     - [Protecting your route](#protecting-your-route)
     - [Protect your buttons](#protect-your-buttons)
     - [Protect it with JavaScript](#protect-it-with-javascript)
-- [Optional Toolkits](#optional-toolkits)
-  - [Creating a Vuex module](#creating-a-vuex-module)
-  - [Persist your Vuex Module](#persist-your-vuex-module)
-  - [Use vuex-pathify](#use-vuex-pathify)
-  - [Accessing your Feathers Service](#accessing-your-feathers-service)
+    - [Updating your application template](#updating-your-application-template)
 - [FAQ](#faq)
   - [When to Fork vs Clone?](#when-to-fork-vs-clone)
   - [What's the difference between a git `clone` and `fork`.](#whats-the-difference-between-a-git-clone-and-fork)
@@ -60,6 +70,7 @@ Below outlines the default directory structure the template comes with:
 │   │   ├── layouts
 │   │   │   └── navigation
 │   │   │       └── helpers
+│   │   ├── Users - User Management page
 │   │   └── util
 │   ├── compositions - Vue 3 ready composition functions
 │   ├── config - Application configuration folder (myApp.js)
@@ -73,6 +84,7 @@ Below outlines the default directory structure the template comes with:
 │   ├── feathers - Exported feathers services
 │   │   ├── helpers - findAll helper
 │   │   └── services
+│   │       ├── accountsbyapp
 │   │       ├── example
 │   │       ├── heartbeat
 │   │       └── users
@@ -93,76 +105,90 @@ Below outlines the default directory structure the template comes with:
         └── support
 ```
 
+# Starting from scratch...
+
+These steps will walk you through starting a brand new application from scratch.\
+The end result is everything that comes out of the box with the `vue-frontend-template`.\
+Check out [Start your development](#start-your-development) section after, to get started on making it your own.
+
+### CREATING A BRANCH NEW PROJECT
+
+- [ ] Navigate to https://dev.azure.com/cdcr and click the `+ New Project` button
+  - Give it a project name and description
+- [ ] Navigate to the following URL:
+      https://dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+- [ ] Click the verticle ellipsis to bring up the `Fork` option
+- [ ] Select `Fork` and save it in your new Project.
+  - Branches to include:
+    - Only the default branch (main)
+- [ ] After forking it will take you to the new repository.
+  - We're ready to clone.. click `Clone`
+- [ ] Copy the `GIT_URL` next to `HTTPS|SSH`
+- [ ] In a terminal paste the following:
+
+- Remember to replace `GIT_URL` with your own.
+
+```sh
+git clone `GIT_URL`
+```
+
+8. `cd` into your project directory after `git clone...`
+
+- Run the following in your project folder.
+
+```sh
+npm install # install any package.json dependencies
+npm run start-backend # Start the local mt backend with the start-backend script in package.json
+npm run serve # Start the local frontend webserver with the serve script in package.json
+```
+
+9. Navigate to http://localhost:8080/app
+
 # Start your development
 
-## Creating a CDCR App ID
+This section will focus first on getting you up and running for frontend development.\
+Towards the end of the section, we will focus on everything MiddleTier... App Registration, API Permissions, Database templates etc.
 
-- Default is 12345.
-- Every application requires one.
-- Developers can recycle them as needed.
-  - The moment you check it in, every other developer will have to start using that as well.
+## Name your application
 
-* [ ] Visit http://localhost:3000
+- [ ] Change your `name` in `package.json`
 
-- This will take you to our local backend server.
-- Make sure you have your `database-template` running
-  - See README.md
+- By default the `name` as it's shown in your application is derived from `package.json`
+- If this does not suffice, you can also change it explicitly in `myApp.js`
+- Regardless of `myApp.name` the `public/index.html` will always reference `package.json`, you may also explicitly change this if desired in `public/index.html`.
+- `package.json` has a boundary requiring the `name` to pass the following regex:
+  - https://regex101.com/r/hFKllG/1
 
-* [ ] Sign in to Azure with your admin account. (ex. `a_nurthin.aziz@cdcr.ca.gov`)
-* [ ] Get MT Access Token
-* [ ] Generate New App ID
-* [ ] Give it a description
-* [ ] Save the App ID to your `@/config/myApp.js` file.
+```
+^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*$
+```
 
-## Adding your public path
-
-Every application requires a `publicPath`, the URI (Unique Resource Identifier). The `publicPath` variable in `package.json` is there for you to define.
-
-- Remember to include the '/' in the publicPath.
-- Example: `"/rarts"`, `"/vimo"`, or `"/leads"`
-- You'll have to register your app in Azure for PWA Install to work on a path other than `'/'`.
-
-## Adding API Permissions
-
-All developers that do not have the following account can request one from the Network team.
-
-With your admin account logged in (ex. `a_nurthin.aziz@cdcr.ca.gov`)..
-
-- [ ] Click `Get API Master List`
-
-* A checkbox with the text `auth` should show on the left, and a empty list view on the right.
-  - Clicking `auth` will expand the panel to render a tree view.
-  - This should be empty for your generated app id.
-
-- [ ] Select the APIs that your application requires.
-- Expand the API to see its `find`, `get`, `create`, `update`, `patch`, and `remove` permissions.
-- [ ] Click `Update/Create API Permissions` to save changes.
-- [ ] Log out and log back into your frontend application to get its new token and api permissions.
-
-## Change the app name
-
-- [ ] Change the name in `package.json`
-
-- Because of the name limitations on package.json, the template uses a filter `@/filters/toTitleCase` with a default delimitter of `'-'`. You can find where it's being used at `@/config/myApp.js`
-
-This can then be accessed via `this.$myApp` or imported in another JavaScript file:
+- [ ] Change `vue-frontend-template` in `README.md` for your project name.
+- [ ] Access it in a `.vue` file with `this.$myApp` or import in another `.js` file:
 
 ```javascript
 import myApp from '@/config/myApp.js';
 console.log('myApp: ', myApp.name);
 ```
 
-## Customizing your app theme
+- **NOTE**: Do not change the `publicPath` in `package.json` until you've registered your `azureAppID` in `"@/config/myApp.js"` with it.
 
-- [ ] Change vuetify to the theme of your app in `@/plugins/vuetify.js`
+## Apply your application themes
 
-- If you desire to change the bar colors, you can do so in the navigation components, `@/components/layouts/navigation/`. There you will find `AppBar.vue`, `BottomNavBar.vue`, `NavDrawerLeft.vue`, and `NavDrawerRight.vue`.
+Light and Dark themes are derives from the file `"@/plugins/themes.js"`
 
-NOTE: _As you change the color property on the navigation components directly, be sure to see what it looks like in dark mode and if the front color is still legible._
+- [ ] Change the `primary,secondary,accent,error,info,success and warning` colors as needed.
+- If you want to change the bar colors, you can do so in:
+  - `@/components/layouts/navigation/AppBar.vue`
+  - `@/components/layouts/navigation/BottomNavBar.vue`
+  - `@/components/layouts/navigation/NavDrawerLeft.vue`
+  - `@/components/layouts/navigation/NavDrawerRight.vue`
 
-## Resize your logo for PWA
+NOTE: _Remember to see what it also looks like in dark mode before settling on a theme._
 
-- [ ] _If you have one_, convert your logo to the appropriate sizes
+## Adding your logo to the app
+
+- [ ] _If you have one_, add your logo to the app with the following script:
 
 ```sh
 # This script takes in a single argument pointing to your .svg or .png file.
@@ -171,12 +197,32 @@ NOTE: _As you change the color property on the navigation components directly, b
 ./scripts/image_resize.sh ~/Documents/Icons/logo.png
 ```
 
-## Create your first route and component.
+## Create your first commit and push the changes:
 
-- [ ] Start by creating a new route in `@/router/routes.js`.
-  - [ ] Add it to `anonymousItems`, `userItems`, `adminItems`, or `userToolbarItems` at the bottom of `@/router/routes.js`.
+Now is a good time to `stage` all of our changes, give it a good `commit` message and `push` them to devops.
+
+- [ ] Run the following in a terminal:
+
+```sh
+git add .
+git commit -m "Updated application name, applied application themes, and added logo."
+git push
+```
+
+## Application routing and how to
+
+### Navigating and viewing the available routes:
+
+- [ ] Launch the app for the first time you're routed to `@/views/Login.vue`.
+- [ ] Click `Sign in with Microsoft` and you'll be routed to `@/views/Home.vue`.
+- [ ] Click the app logo or your `UserAvatar` to reveal the navigation items derived from `@/router/routes.js` and `@/config/private/router/routes.js`
+
+### Creating your first route.
+
+- [ ] Start by copying the structure below and modying the property values as needed:
 
 ```javascript
+// VueRouter Object Structure:
 import { requireToken } from '@/router/helpers/guards.js';
 {
   /** custom application properties
@@ -193,11 +239,125 @@ import { requireToken } from '@/router/helpers/guards.js';
   // redirect: String // Optional
   /** vue-browser-acl meta */
   meta: { // Optional
-    can: 'if-admin',
+    can: 'if-user-admin',
     fail: '4oh4',
   },
 },
 ```
+
+- [ ] Add it to the `routes` array at the top of `@/router/routes.js`.
+- [ ] Add it to `anonymousItems`, `userItems`, `adminItems`, or `userToolbarItems` at the bottom of `@/router/routes.js`.
+- [ ] Create the component's `.vue` file in `@/views/`
+
+## Creating a Vuex module
+
+`Vuex` is used for state management of your data between components.\
+Click [Vuex](#vuex) for documentation.
+
+- [ ] Copy `@/store/modules/example.js` to create your first vuex module.
+- [ ] Rename the file to your module name.
+- It is also possible to move it into a folder and rename the file `index.js`\
+  - The importer will use the foldername as the name of your module.
+- These are automatically imported via `@/store/modules/index.js`.
+
+## Using vuex-pathify to access your module states.
+
+Use `vuex-pathify` to make modifying and accessing state easy!\
+Click [Vuex Persist](#vuex-persist) for documentation.
+
+```javascript
+// In any .vue file...
+import { sync, get } from "vuex-pathify";
+computed: {
+    ...sync("app", ["loading"]), // @/store/modules/app.js
+    ...get("users", ["user"]), // @/store/modules/users.js
+},
+methods: {
+    onClick() {
+        this.loading = true;
+        setTimeout(() => {
+            console.log("User: ", user);
+            this.loading = false;
+        }, 300)
+    }
+}
+```
+
+## Persist your Vuex Module
+
+- [ ] Add your `vuex module name` to the `modules` array in any of these files:
+- `@/store/plugins/cookies.js`
+- `@/store/plugins/indexedDB.js`
+- `@/store/plugins/localStorage.js`\
+  NOTE: _Only `indexedDB` is automatically encrypted by compression during production!_
+
+## Creating a feathers service
+
+TODO:
+
+## Accessing your Feathers Service
+
+- [ ] Create a backend feathers service to hook into and call APIs with
+
+- [ ] Copy the folder `@/feathers/services/example` and change the file names and the `servicePath` variable in `example.service.js`
+
+Use it like so in Vue
+
+```javascript
+import exampleService from "@/feathers/services/example/example.service.js";
+async mounted() {
+    this.myData = await exampleService.find({
+        query: {
+            stale: false,
+            dataId: {
+                $in: [ 1, 3, 4, 5]
+            }
+        }
+    });
+}
+```
+
+## Request/Register your `azureAppID` and `publicPath`
+
+- Default is `c0cf535a-bb4d-4731-94fb-8a4165b1a124` and `/app`
+
+  - DO NOT USE THE DEFAULT FOR PRODUCTION.
+  - EVERY APPLICATION REQUIRES ONE.
+  - The moment you check it in, every other developer will have to start using it as well.
+  - Save the `azureAppID` to your `@/config/myApp.js` file.
+  - Save the `publicPath` to the `package.json`
+  - `package.json` has a boundary requiring the `publicPath` to pass the following regex:
+    - https://regex101.com/r/hFKllG/1
+
+```
+^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?[a-z0-9-~][a-z0-9-._~]*$
+```
+
+- **NOTE**: Do not change the `publicPath` in `package.json` until you've registered your `azureAppID` with it.
+
+- [ ] Visit the URL below to request your App ID from Networking Engineering
+
+- TODO: Add the URL to the APP ID form.
+
+## Giving your application API permissions
+
+- [ ] Visit http://localhost:3000
+
+* This will take you to our local backend server.
+
+- [ ] Click `Sign in to Azure`
+- [ ] Click `Get MT Access Token`
+- [ ] Give it your App ID
+- [ ] Click `Get API Master List`
+
+* A tree view should appear on the left with `auth` and `eis` unchecked.
+  - Clicking either API endpoint will expand the tree.
+  - This should be empty for your generated app id.
+
+- [ ] Select the APIs that your application requires.
+- Expand the API to see its `find`, `get`, `create`, `update`, `patch`, and `remove` permissions.
+- [ ] Click `Update/Create API Permissions` to save changes.
+- [ ] Refresh and sign back in to get a new token with your updated API permissions.
 
 ## Adding Users to your App.
 
@@ -302,99 +462,16 @@ if (this.$can('is-admin')) {
 }
 ```
 
-# Optional Toolkits
+### Updating your application template
 
-## Creating a Vuex module
+Add a remote called `upstream` that points to the forked repository.
+You can then pull down the latest changes from the template like so.
 
-- [ ] Copy `@/store/modules/example.js` to create your first vuex module.
-
-These are automatically imported into `@/store/modules/index.js`.
-
-You can access it using `vuex-pathify`.
-
-```javascript
-// @/store/modules/example.js
-import { make } from 'vuex-pathify';
-
-const getDefaultState = () => {
-  return {
-    exampleData: { foo: 1, bar: 2 },
-  };
-};
-
-const state = getDefaultState();
-
-const mutations = {
-  ...make.mutations(state),
-  resetState(state) {
-    Object.assign(state, getDefaultState());
-  },
-};
-
-const actions = {
-  ...make.actions(state),
-  // eslint-disable-next-line no-unused-vars
-  init: async ({ dispatch }) => {
-    //
-  },
-};
-
-// Vuex Store
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions,
-};
-```
-
-## Persist your Vuex Module
-
-**These are automatically encrypted by compression during production!**
-
-- [ ] _If you want to_, persist it by adding it to the `modules` array in `cookies.js`, `indexedDB.js`, or `localStorage.js` under `@/store/plugins/`
-
-## Use vuex-pathify
-
-Using `vuex-pathify`, modifying and accessing state is easy!
-
-```javascript
-import { sync, get } from "vuex-pathify";
-computed: {
-    ...sync("app", ["loading"]), // @/store/modules/app.js
-    ...get("users", ["user"]), // @/store/modules/users.js
-},
-methods: {
-    onClick() {
-        this.loading = true;
-        setTimeout(() => {
-            console.log("User: ", user);
-            this.loading = false;
-        }, 300)
-    }
-}
-```
-
-## Accessing your Feathers Service
-
-- [ ] Create a backend feathers service to hook into and call APIs with
-
-- [ ] Copy the folder `@/feathers/services/example` and change the file names and the `servicePath` variable in `example.service.js`
-
-Use it like so in Vue
-
-```javascript
-import exampleService from "@/feathers/services/example/example.service.js";
-async mounted() {
-    this.myData = await exampleService.find({
-        query: {
-            stale: false,
-            dataId: {
-                $in: [ 1, 3, 4, 5]
-            }
-        }
-    });
-}
+```sh
+git remote -v # Check that you don't already have it
+git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
+git fetch upstream main
+git merge --squash upstream/main
 ```
 
 # FAQ

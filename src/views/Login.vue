@@ -110,7 +110,8 @@
       };
     },
     created() {
-      this.impersonatedSomsUPN = sessionStorage.getItem('impersonatedSomsUPN');
+      this.impersonatedSomsUPN =
+        sessionStorage.getItem('impersonatedSomsUPN') || '';
     },
     computed: {
       ...sync('app', ['loading']),
