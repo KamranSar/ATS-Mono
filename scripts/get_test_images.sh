@@ -19,11 +19,6 @@ echo "."
 
 #*** DO NOT MODIFY THE CODE BELOW THIS LINE ***#
 
-# Set env variables to be passed into the Docker image:
-set -o allexport
-. scripts/test_env
-set +o allexport
-
 echo "."
 echo "Retrieving Testing Images from Docker Image repo server..."
 echo "."
