@@ -8,6 +8,13 @@ REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common")
 OPT_ContainerArray=("oracle" "mssql" "postgres")
 #
 #=============================
+## Language & Timezone Settings
+#=============================
+LANG=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+TZ=US/Pacific
+#
+#=============================
 ## Harbor Image Repo settings
 #=============================
 # Harbor Repo Server
