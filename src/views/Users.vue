@@ -8,6 +8,8 @@
           :disabled="loading"
           :loading="loading"
           :headers="visibleHeaders"
+          loading-text="Loading... Please wait"
+          :footer-props="{ 'items-per-page-options': [5, 10, 25, 50] }"
           :options.sync="options"
           :server-items-length.sync="pagination.itemsLength"
           :page.sync="pagination.page"
@@ -484,7 +486,7 @@
 
           return this.listOfUsers;
         } catch (error) {
-          console.error('getUsers: ', error);
+          // console.error('getUsers: ', error);
           this.listOfUsers = [];
           this.selectedUsers = [];
           return [];
@@ -543,6 +545,7 @@
               // Update approles directly so template can update too!
               user.roles = response && response.roles;
             } catch (error) {
+              /* eslint-disable-next-line */
               console.error(error);
               user.roles = [];
             }
@@ -550,6 +553,7 @@
 
           this.selectedUsers = [];
         } catch (error) {
+          /* eslint-disable-next-line */
           console.log('resetRoles error: ', error);
         } finally {
           this.loading = false;
@@ -590,6 +594,7 @@
 
           await this.resetRoles(); // Just pull the ones that have been updated..
         } catch (error) {
+          /* eslint-disable-next-line */
           console.log('SaveRoles: ', error);
         } finally {
           this.loading = false;

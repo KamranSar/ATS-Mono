@@ -3,10 +3,6 @@
 import * as msal from '@azure/msal-browser';
 import { msalConfig, loginRequest } from './authConfig';
 
-function showWelcomeMessage(message) {
-  console.log('Weclome Message -> ', message);
-}
-
 // Browser check variables
 // If you support IE, our recommendation is that you sign-in using Redirect APIs
 // If you as a developer are testing using Edge InPrivate mode, please add "isEdge" to the if check
@@ -37,7 +33,6 @@ async function handleResponse(resp) {
   if (resp !== null) {
     accountId = resp.account.homeAccountId;
     myMSALObj.setActiveAccount(resp.account);
-    showWelcomeMessage(resp);
     return resp;
     // return resp.account;
   } else {
@@ -51,14 +46,12 @@ async function handleResponse(resp) {
       myMSALObj.setActiveAccount(activeAccount);
       accountId = activeAccount.homeAccountId;
       const acct = await getTokenPopup(activeAccount);
-      showWelcomeMessage(acct);
       return acct;
     } else if (currentAccounts.length === 1) {
       const activeAccount = currentAccounts[0];
       myMSALObj.setActiveAccount(activeAccount);
       accountId = activeAccount.homeAccountId;
       const acct = await getTokenPopup(activeAccount);
-      showWelcomeMessage(acct);
       return acct;
     } else {
       return null;

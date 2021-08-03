@@ -5,7 +5,7 @@ const azureTokenExpiration = () => {
   let expDate = null;
   if (!!token && !!token.expiresOn) {
     expDate = token.expiresOn;
-    console.log('\t\tAzure Token Expires At: ', expDate.toLocaleString());
+    // console.log('\t\tAzure Token Expires At: ', expDate.toLocaleString());
   }
 
   if (expDate && expDate.getTime) {
@@ -13,12 +13,14 @@ const azureTokenExpiration = () => {
     const minutes = 1; // Alert the user this many minutes before their session expires
     const newExpDate = new Date(expDate.getTime() - minutes * 60000);
     if (now >= newExpDate) {
+      /* eslint-disable-next-line */
       console.log('azure token expired');
       return true;
     } else {
       return false;
     }
   } else {
+    /* eslint-disable-next-line */
     console.log('azure token expired');
     return true;
   }

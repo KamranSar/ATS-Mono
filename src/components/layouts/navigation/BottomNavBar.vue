@@ -28,11 +28,11 @@
     name: 'BottomNavBar',
     setup(props, context) {
       const { get } = useVuexPathify(context);
-      const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
+      const isUserLoggedIn = get('users/isUserLoggedIn');
       const loading = get('app/loading');
 
       return {
-        isAzureLoggedIn,
+        isUserLoggedIn,
         loading,
         anonymousItems,
         userItems,

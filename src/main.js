@@ -28,13 +28,20 @@ new Vue({
   render: (h) => h(App),
 }).$mount('#app');
 
-// Get a new token every 5 seconds.
+// Get a new token every 20 seconds.
 let keepAliveInterval = null;
+let appInitialized = false;
 const createKeepAlive = () => {
+  // handle the case where the visibility changes.
+  // When we come back, we must check for a token before anything
+  // else happens in the app or API's could fail
+  // Skip this for page refreshes. It's handled in the router guards (guards.js)
+  if (appInitialized) {
+    getNewToken();
+  }
+  appInitialized = true;
   keepAliveInterval = setInterval(() => {
-    if (window.navigator.onLine) {
-      getNewToken();
-    }
+    getNewToken();
   }, 20 * 1000);
 };
 
@@ -45,9 +52,9 @@ createKeepAlive();
 window.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
     createKeepAlive();
-    console.log('Visibility Toggled: ', keepAliveInterval);
+    console.log('Visible Activated: ', keepAliveInterval);
   } else if (keepAliveInterval) {
     clearInterval(keepAliveInterval);
-    console.log('Visibility Hidden: ', keepAliveInterval);
+    console.log('Visible Hidden: ', keepAliveInterval);
   }
 });

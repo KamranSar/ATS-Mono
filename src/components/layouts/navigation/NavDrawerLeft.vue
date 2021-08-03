@@ -14,14 +14,15 @@
       class="text-capitalize subtitle-2 grey--text"
       color="#ECEFF1"
     >
-      <span class="text-truncate">
-        <UserAvatar v-if="displayName"></UserAvatar>
-        <span class="ml-2">{{
-          displayName ? displayName : 'Currently Logged Out'
-        }}</span>
+      <span class="text-truncate" v-if="isUserLoggedIn">
+        <UserAvatar></UserAvatar>
+        <span class="ml-2">{{ displayName }}</span>
+      </span>
+      <span class="text-truncate" v-else>
+        <span class="ml-2">Currently Logged Out</span>
       </span>
     </v-toolbar>
-    <v-list v-if="displayName">
+    <v-list v-if="isUserLoggedIn">
       <template v-for="item in userItems">
         <NavListGroup
           v-if="item.children"
@@ -136,9 +137,9 @@
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
-      // const displayName = get('azureAuthentication/displayName');
       const userAdminItems = getRoutesByName(['Users']);
       const loggedInUser = get('users/loggedInUser');
+      const isUserLoggedIn = get('users/isUserLoggedIn');
       const version = myApp.version;
       const gitVersion = myApp.gitVersion;
 
@@ -179,6 +180,7 @@
         adminItems,
         userAdminItems,
         loggedInUser,
+        isUserLoggedIn,
         version,
         gitVersion,
         impersonatingSOMS,

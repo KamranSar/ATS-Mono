@@ -31,7 +31,7 @@
     <v-spacer></v-spacer>
 
     <v-card color="transparent" class="hidden-md-and-down" flat>
-      <v-btn-toggle group v-if="!isAzureLoggedIn">
+      <v-btn-toggle group v-if="!isUserLoggedIn">
         <span v-for="(item, index) in anonymousItems" :key="index">
           <v-btn @click="onClick(item)" text :key="index">
             <v-icon :key="$route.fullPath" :color="getRouterColor(item)">{{
@@ -47,7 +47,7 @@
       offset-y
       persistent
       :close-on-content-click="false"
-      v-if="isAzureLoggedIn"
+      v-if="isUserLoggedIn"
     >
       <template v-slot:activator="{ on }">
         <v-btn text icon v-on="on">
@@ -91,7 +91,6 @@
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
   import toTitleCase from '@/filters/toTitleCase';
-
   export default {
     components: {
       UserAvatar,
@@ -100,14 +99,13 @@
     },
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
-
       const loading = sync('app/loading');
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
       const rightDrawOpen = sync('userPrefs/rightDrawOpen');
       const darkMode = sync('userPrefs/darkMode');
       const leftDrawEnabled = get('appFeatures/leftDrawEnabled');
       const rightDrawEnabled = get('appFeatures/rightDrawEnabled');
-      const isAzureLoggedIn = get('azureAuthentication/isAzureLoggedIn');
+      const isUserLoggedIn = get('users/isUserLoggedIn');
       const toggleDarkMode = () => {
         context.root.$vuetify.theme.dark = darkMode.value;
       };
@@ -119,7 +117,7 @@
         darkMode,
         leftDrawEnabled,
         rightDrawEnabled,
-        isAzureLoggedIn,
+        isUserLoggedIn,
         // Methods
         anonymousItems,
         adminItems,

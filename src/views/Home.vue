@@ -47,12 +47,13 @@
         const ROLES_SVC_PATH = '/api/auth/v1/appuserroles';
 
         const appUserRoles = await findAll(ROLES_SVC_PATH, 2);
-        console.log('appUserRoles: ', appUserRoles);
+        // console.log('appUserRoles: ', appUserRoles);
         return appUserRoles;
       },
       async getHeartbeat() {
+        /* eslint-disable-next-line */
         const heartbeat = await Heartbeat.find();
-        console.log('heartbeat: ', heartbeat);
+        // console.log('heartbeat: ', heartbeat);
       },
       toggleAlert(message) {
         this.setAlertMsg(message);

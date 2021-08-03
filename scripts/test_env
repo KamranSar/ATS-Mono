@@ -1,4 +1,13 @@
 #=============================
+## Test Server Arrays
+#=============================
+# Define the test servers/containers your MT server is using.
+#* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
+REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common")
+#* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
+OPT_ContainerArray=()
+#
+#=============================
 ## Harbor Image Repo settings
 #=============================
 # Harbor Repo Server
@@ -25,6 +34,8 @@ IMAGE_VER=latest
 #
 MT_AUTH_PORT=3000
 MT_EIS_COMMON_PORT=51401
+MT_EDS_RARTS_PORT=51402
+MT_RARTS_FORM_SERVER_PORT=51403
 #
 #=============================
 ## Local DB Server settings
@@ -42,15 +53,6 @@ MSSQL_PORT=1433
 MSSQL_DB=master
 MSSQL_USER=SA
 MSSQL_PASSWORD=msSql2017@
-#
-## POSTGRES Server
-POSTGRESQL_PORT=5432
-POSTGRESQL_USERNAME=postgres
-POSTGRESQL_POSTGRES_PASSWORD=postgres
-POSTGRESQL_DATABASE=midtier
-#
-## mySQL Server
-MYSQL_PORT=3306
 #
 #=============================
 ## Auth Server Settings

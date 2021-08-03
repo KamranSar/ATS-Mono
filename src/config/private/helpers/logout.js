@@ -10,7 +10,7 @@ import feathers from '@/feathers/index.js';
  * <v-btn @click="logout()">Logout</v-btn>
  */
 async function logout() {
-  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
+  const loggedIn = store.get('users/isUserLoggedIn');
   try {
     if (loggedIn) {
       await store.dispatch('azureAuthentication/logout'); // And always remove the Azure login token.

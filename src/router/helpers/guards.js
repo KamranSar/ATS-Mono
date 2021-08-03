@@ -4,10 +4,10 @@ import store from '@/store/index';
 import getNewToken from '@/config/private/helpers/getNewToken';
 
 const requireToken = (to, from, next) => {
-  const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
+  const loggedIn = store.get('users/isUserLoggedIn');
   if (loggedIn) next();
   else {
-    console.log('router guard - no token - redirect to Login screen');
+    // console.log('router guard - no token - redirect to Login screen');
     next({ name: 'Login' });
   }
 };
@@ -21,10 +21,9 @@ const waitForStorageToBeReady = async (to, from, next) => {
     if (!previouslyRestored) {
       // TODO: Add your custom initialization code here : do the things you want to do only once after the store is restored
 
-      // Usecase 1: Get a new token on a refresh if user is logged in.
-      const loggedIn = store.get('azureAuthentication/isAzureLoggedIn');
-      // console.log('loggedIn at startup ', loggedIn);
-      if (loggedIn) await getNewToken();
+      // Usecase 1: Get a new token on a page refresh if user is logged in.
+      // When a page received focus or is hidden, get a new token in main.js
+      await getNewToken();
 
       previouslyRestored = true;
     }

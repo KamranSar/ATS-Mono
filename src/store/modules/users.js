@@ -31,7 +31,15 @@ const actions = {
   remove: async (context, id, params) => {},
 };
 
-const getters = {};
+const getters = {
+  isUserLoggedIn: (state) => {
+    if (state.loggedInUser && state.loggedInUser.displayName) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+};
 
 // Vuex Store
 export default {

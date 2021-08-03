@@ -51,7 +51,7 @@ const actions = {
   // Authenticate the user with Azure Active Directory
   AzureAuthentication: async ({ state }) => {
     try {
-      store.set('azureAuthentication/azureLoading', true);
+      store.set('app/loading', true);
       let newTokenResponse = null;
       // The user has already logged in. We try to get his token silently
       if (state.azuretokenresponse && state.azuretokenresponse.account) {
@@ -103,7 +103,7 @@ const actions = {
       }
       throw error; // Someone else may need to know about this error
     } finally {
-      store.set('azureAuthentication/azureLoading', false);
+      store.set('app/loading', false);
     }
   },
 
@@ -130,10 +130,10 @@ const actions = {
   },
 
   getTokenPopup: async ({ state }) => {
-    store.set('azureAuthentication/azureLoading', true);
+    store.set('app/loading', true);
     const newTokenResponse = await getTokenPopup(state.azuretokenresponse);
     store.set('azureAuthentication/azuretokenresponse', newTokenResponse);
-    store.set('azureAuthentication/azureLoading', false);
+    store.set('app/loading', false);
     return newTokenResponse;
   },
 };

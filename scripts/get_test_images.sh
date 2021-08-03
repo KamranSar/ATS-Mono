@@ -17,12 +17,6 @@ echo docker login ${IMAGE_REPO_DOMAIN}
 docker login ${IMAGE_REPO_DOMAIN} --username ${IMAGE_REPO_USER} --password ${IMAGE_REPO_PSWD}
 echo "."
 
-# Define the test servers/containers your MT server is using.
-#* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
-REQ_ImageArray=("redis" "mongodb" "mt-eis-common" "mt-auth")
-#* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
-OPT_ImageArray=()
-
 #*** DO NOT MODIFY THE CODE BELOW THIS LINE ***#
 
 echo "."
@@ -30,7 +24,7 @@ echo "Retrieving Testing Images from Docker Image repo server..."
 echo "."
 
 # Run the MT & DB pulls from the on-prem image repo
-ALL_ImageArray=(${REQ_ImageArray[*]} ${OPT_ImageArray[*]})
+ALL_ImageArray=(${REQ_ContainerArray[*]} ${OPT_ContainerArray[*]})
 for imageName in "${ALL_ImageArray[@]}"
 do
     if [[ $imageName = "mt-"* ]]; then
@@ -56,6 +50,18 @@ fi
 if [ ! -d "/var/local/db/mongodb" ]; then
 sudo -S <<< "cdcr"  mkdir -p /var/local/db/mongodb
 fi
+if [ ! -d "/var/local/db/mssql" ]; then
+sudo -S <<< "cdcr"  mkdir -p /var/local/db/mssql
+fi
+if [ ! -d "/var/local/db/mysql" ]; then
+sudo -S <<< "cdcr"  mkdir -p /var/local/db/mysql
+fi
+if [ ! -d "/var/local/db/oracle" ]; then
+sudo -S <<< "cdcr"  mkdir -p /var/local/db/oracle
+fi
+if [ ! -d "/var/local/db/postgres" ]; then
+sudo -S <<< "cdcr"  mkdir -p /var/local/db/postgres
+fi
 if [ ! -d "/var/local/db/redis" ]; then
 sudo -S <<< "cdcr"  mkdir -p /var/local/db/redis
 fi
@@ -63,6 +69,8 @@ sudo -S <<< "cdcr"  chown -R root:root /var/local/cfg/
 sudo -S <<< "cdcr"  chown -R root:root /var/local/log/
 sudo -S <<< "cdcr"  chown -R root:root /var/local/db/
 sudo -S <<< "cdcr"  chown -R 1001:1001 /var/local/db/mongodb
+sudo -S <<< "cdcr"  chown -R 1001:1001 /var/local/db/mysql
+sudo -S <<< "cdcr"  chown -R 1001:1001 /var/local/db/postgres
 sudo -S <<< "cdcr"  chown -R 1001:1001 /var/local/db/redis
 sudo -S <<< "cdcr"  chmod -R 777 /var/local/cfg/
 sudo -S <<< "cdcr"  chmod -R 777 /var/local/db/

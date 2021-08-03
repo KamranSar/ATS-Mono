@@ -32,8 +32,8 @@ const getMidTierToken = async () => {
 
     return response;
   } catch (error) {
-    console.error('Error getting feathers token ', error);
-    throw error;
+    // console.error('Error getting feathers token ', error);
+    return error;
   }
 };
 

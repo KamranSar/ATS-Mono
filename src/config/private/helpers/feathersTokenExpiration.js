@@ -22,7 +22,7 @@ const feathersTokenExpiration = () => {
     // If user still has a token, check it isnt' nearing expiration
     if (decodedToken && decodedToken.exp) {
       const expDate = new Date(decodedToken.exp * 1000);
-      console.log('\t\tFeathers Token Expires At: ', expDate.toLocaleString());
+      // console.log('\t\tFeathers Token Expires At: ', expDate.toLocaleString());
 
       const now = new Date();
       const minutes = 1; // Alert the user this many minutes before their session expires
@@ -36,9 +36,10 @@ const feathersTokenExpiration = () => {
         retval = false;
       }
     }
-  } else {
-    console.error('Feathers authentication not configured');
   }
+  // else {
+  //   console.error('Feathers authentication not configured');
+  // }
   return retval;
 };
 

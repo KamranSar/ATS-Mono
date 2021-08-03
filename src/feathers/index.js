@@ -49,6 +49,9 @@ feathersClient
     before: {
       all: [
         async (context) => {
+          if (!window.navigator.onLine) {
+            throw new Error('Currently offline.');
+          }
           return context;
         },
       ],
