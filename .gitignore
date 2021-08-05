@@ -1,8 +1,12 @@
+# Dependency directories
 .DS_Store
+local_modules
 node_modules
 /dist
+scripts/preinstall/
 
 # local env files
+.env
 .env.local
 .env.*.local
 

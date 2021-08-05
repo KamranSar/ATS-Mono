@@ -1,21 +1,23 @@
 #!/bin/bash
 #####################################################################################################
-# This script clones/pulls the preinstall script used for backend server npm package installs.
+# This script clones/pulls the preinstall script used for frontend server npm package installs.
 #####################################################################################################
 
 # Clone or pull preinstall repo
 echo "."
-echo "Retrieving Backend preinstall script"
+echo "Retrieving Frontend preinstall script"
 echo "."
+date
 
 # Set variables to be used throughout preinstall scripts
 PROJECT_FOLDER=$(pwd)
 SCRIPTS_FOLDER=${PROJECT_FOLDER}/scripts
 PREINSTALL_FOLDER=${SCRIPTS_FOLDER}/preinstall
-EISMT_LIB_URL=https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/preinstall-backend
+CDCR_LIB_FOLDER=local_modules
+PREINSTALL_LIB_URL=https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/preinstall-frontend
 
 # If local_modules folder does not exist (clean install), then remove the preinstall folder as well.
-if [ ! -d "${PROJECT_FOLDER}/local_modules" ];
+if [ ! -d "${PROJECT_FOLDER}/${CDCR_LIB_FOLDER}" ];
 then
    rm -rf ${PREINSTALL_FOLDER}
 fi
@@ -33,18 +35,18 @@ then
     git pull --all
 else
     # Preinstall folder does not exist, do a clone
-    echo "Cloning $EISMT_LIB_URL to $PREINSTALL_FOLDER"
+    echo "Cloning $PREINSTALL_LIB_URL to $PREINSTALL_FOLDER"
     echo "."
-    git clone $EISMT_LIB_URL  $PREINSTALL_FOLDER
+    git clone $PREINSTALL_LIB_URL  $PREINSTALL_FOLDER
     cd ${PREINSTALL_FOLDER}
 fi
 
 # Ensure preinstall scripts have the correct permissions
 chmod +x ${PREINSTALL_FOLDER}/*.sh
 
-# Execute backend preinstall script (propogate env variables)
+# Execute frontend preinstall script (propogate env variables)
 echo "."
-echo "Running Backend preinstall script"
+echo "Running Frontend preinstall script"
 echo "."
 . preinstall.sh
 echo "."

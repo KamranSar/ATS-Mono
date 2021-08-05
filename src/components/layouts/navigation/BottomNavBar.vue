@@ -1,6 +1,6 @@
 <template>
   <v-bottom-navigation app grow :key="$route.currentPath">
-    <template v-if="isAzureLoggedIn">
+    <template v-if="isUserLoggedIn">
       <v-btn v-for="(item, i) in userItems" :key="i" @click="onClick(item)">
         <span :class="`${getRouterColor(item)}--text`">{{ item.name }}</span>
         <v-icon :color="getRouterColor(item)">{{ item.icon }} </v-icon>

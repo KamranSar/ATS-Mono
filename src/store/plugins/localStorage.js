@@ -1,4 +1,4 @@
-import VuexPersistence from '@/../local_modules/vuex-persist';
+import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 
 // Modules you want to save to persistence
 const modules = ['userPrefs']; // TODO: Add peristed modules here to localstorage CAUTION: Persisted in plain-text

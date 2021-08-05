@@ -1,7 +1,7 @@
 /**
  * All apps will share the same azureDB iDB Collection to avoid storing duplicate data.
  */
-import VuexPersistence from '@/../local_modules/vuex-persist';
+import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 import localForage from 'localforage';
 import pako from 'pako';
 

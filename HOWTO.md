@@ -2,15 +2,16 @@
 
 ```
 At the time of this writing....
-This HOWTO.md is up to date with template version 0.4.5
+This HOWTO.md is up to date with template version 0.5
 ```
 
 Table of Contents
 
-- [Directory Structure](#directory-structure)
-- [Starting from scratch...](#starting-from-scratch)
+- [What is this? :information_desk_person:](#what-is-this-information_desk_person)
+- [Directory Structure :open_file_folder:](#directory-structure-open_file_folder)
+- [Starting from scratch... :hatching_chick:](#starting-from-scratch-hatching_chick)
   - [CREATING A BRANCH NEW PROJECT](#creating-a-branch-new-project)
-- [Start your development](#start-your-development)
+- [Start your development :running:](#start-your-development-running)
   - [Name your application](#name-your-application)
   - [Apply your application themes](#apply-your-application-themes)
   - [Adding your logo to the app](#adding-your-logo-to-the-app)
@@ -22,6 +23,8 @@ Table of Contents
   - [Using vuex-pathify to access your module states.](#using-vuex-pathify-to-access-your-module-states)
   - [Persist your Vuex Module](#persist-your-vuex-module)
   - [Creating a feathers service](#creating-a-feathers-service)
+    - [Creating a MongoDB Service](#creating-a-mongodb-service)
+    - [Creating a Mongoose Service.](#creating-a-mongoose-service)
   - [Accessing your Feathers Service](#accessing-your-feathers-service)
   - [Request/Register your `azureAppID` and `publicPath`](#requestregister-your-azureappid-and-publicpath)
   - [Giving your application API permissions](#giving-your-application-api-permissions)
@@ -34,7 +37,7 @@ Table of Contents
     - [Protect your buttons](#protect-your-buttons)
     - [Protect it with JavaScript](#protect-it-with-javascript)
     - [Updating your application template](#updating-your-application-template)
-- [FAQ](#faq)
+- [FAQ :question:](#faq-question)
   - [When to Fork vs Clone?](#when-to-fork-vs-clone)
   - [What's the difference between a git `clone` and `fork`.](#whats-the-difference-between-a-git-clone-and-fork)
   - [How to pull in updates from vue-frontend-template](#how-to-pull-in-updates-from-vue-frontend-template)
@@ -43,7 +46,7 @@ Table of Contents
   - [Why am I getting errors from `api/auth/v1/authentication`](#why-am-i-getting-errors-from-apiauthv1authentication)
   - [Why does the app name in the browser title show up with delimitters?](#why-does-the-app-name-in-the-browser-title-show-up-with-delimitters)
   - [How can I access my Vue app through dev tools?](#how-can-i-access-my-vue-app-through-dev-tools)
-- [Other Source Documentation](#other-source-documentation)
+- [Other Source Documentation :information_source:](#other-source-documentation-information_source)
   - [Git Fork](#git-fork)
   - [Vuetify](#vuetify)
   - [Vue Router](#vue-router)
@@ -54,7 +57,31 @@ Table of Contents
   - [Feathers Client](#feathers-client)
   - [date-fns](#date-fns)
 
-# Directory Structure
+# What is this? :information_desk_person:
+
+This repository is a starter project based on -
+
+1. Vue CLI
+2. Vue Router
+3. Vuex + Vuex Pathify + Vuex Persist
+4. Vuetify
+5. Feathers Client for APIs
+6. vue-browser-acl for ACLs
+7. date-fns
+
+The template is put together to provide out of the box:
+
+1. Light/Dark Mode
+2. MFA
+3. Navigation/Routing
+4. Data Encryption
+5. Persistence to disk
+6. Easy CRUDS for API
+7. Auto-registration of vuex modules
+8. Auto registration of routes\
+   and more...
+
+# Directory Structure :open_file_folder:
 
 Below outlines the default directory structure the template comes with:
 
@@ -105,13 +132,13 @@ Below outlines the default directory structure the template comes with:
         └── support
 ```
 
-# Starting from scratch...
+# Starting from scratch... :hatching_chick:
 
 These steps will walk you through starting a brand new application from scratch.\
 The end result is everything that comes out of the box with the `vue-frontend-template`.\
 Check out [Start your development](#start-your-development) section after, to get started on making it your own.
 
-### CREATING A BRANCH NEW PROJECT
+## CREATING A BRANCH NEW PROJECT
 
 - [ ] Navigate to https://dev.azure.com/cdcr and click the `+ New Project` button
   - Give it a project name and description
@@ -144,7 +171,7 @@ npm run serve # Start the local frontend webserver with the serve script in pack
 
 9. Navigate to http://localhost:8080/app
 
-# Start your development
+# Start your development :running:
 
 This section will focus first on getting you up and running for frontend development.\
 Towards the end of the section, we will focus on everything MiddleTier... App Registration, API Permissions, Database templates etc.
@@ -292,6 +319,52 @@ methods: {
   NOTE: _Only `indexedDB` is automatically encrypted by compression during production!_
 
 ## Creating a feathers service
+
+There are many connections made available to us by _The Great Sorcerers of the Middle Tier_.\
+This guide aids you as an apprentice in the steps required to conjuring your own connections to different server realms such as `MongoDB, Mongoose, MSSQL, Oracle, POSTGRES and others...`
+
+To keep the training simple, we will go over the steps for only `MongoDB and Mongoose`.
+
+### Creating a MongoDB Service
+
+- [ ] Navigate to the [database-template](https://dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/database-template) repo.
+  - [ ] Follow `Project Setup` section in the `README.md` file.
+- [ ] Switch to the directory in VS Code.
+- [ ] Name your MongoDB database in `config/default.json`
+- [ ] Navigate to `service-config.js`, your `appPath, docsPath, server and services` section should be updated accordingly like below:
+
+```javascript
+// service.config.js
+
+appPath: '/api/servername',
+docsPath: '/docs/servername',
+server: {
+  ...
+    mongooseEnabled: false,
+    mongodbEnabled: true,
+    mssqlEnabled: false,
+    oracleEnabled: false,
+    postgresEnabled: false,
+  },
+services: [
+    {
+      name: 'myservicename',
+      version: 'v1',
+      enabled: true,
+      description: 'My First Service',
+    },
+]
+```
+
+- [ ] Copy the `src/services/mongodbservice_v1` folder
+- [ ] Rename the folder and all associated files.
+
+* It is important the folder and file names follow the same naming convention so they can map back to the `name` and `version` under `services` in `service-config.js`
+
+- [ ] Update the `dbCollectionName` appropriately in the `<name>_<version>.class.js` file
+- [ ] Move to the [Accessing your Feathers Service](#accessing-your-feathers-service) section to continue
+
+### Creating a Mongoose Service.
 
 TODO:
 
@@ -474,7 +547,7 @@ git fetch upstream main
 git merge --squash upstream/main
 ```
 
-# FAQ
+# FAQ :question:
 
 ## When to Fork vs Clone?
 
@@ -619,7 +692,7 @@ usersComponent.listOfUsers.forEach((u) => console.log(u));
 // ... Directly in dev tools
 ```
 
-# Other Source Documentation
+# Other Source Documentation :information_source:
 
 ## [Git Fork](https://docs.microsoft.com/en-us/azure/devops/repos/git/forks?view=azure-devops&tabs=visual-studio)
 

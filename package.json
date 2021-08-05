@@ -1,17 +1,16 @@
 {
   "name": "vue-frontend-template",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publicPath": "/app",
   "azureAppID": "c0cf535a-bb4d-4731-94fb-8a4165b1a124",
   "private": true,
   "scripts": {
+    "preinstall": "chmod +x scripts/*.sh; scripts/get_preinstall_scripts.sh",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "build-vuex-persist": "cd local_modules/vuex-persist && npm ci && npm run build",
     "fix": "vue-cli-service lint --fix",
-    "preinstall": "npm run build-vuex-persist",
     "prod": "http-server -p 8090 --proxy http://localhost:8090? ./dist",
     "gitversion": "git log -n 1 --pretty=format:'GIT_COMMIT=%H%nGIT_HASH=%h%nGIT_DATE=%aD'",
     "start-servers": "bash ./scripts/start_test_servers.sh",
@@ -19,12 +18,12 @@
     "restart-servers": "bash ./scripts/fast_restart.sh"
   },
   "dependencies": {
-    "@azure/msal-browser": "^2.16.0",
+    "@azure/msal-browser": "^2.16.1",
     "@feathersjs/authentication-client": "^4.5.11",
     "@feathersjs/feathers": "^4.5.11",
     "@feathersjs/rest-client": "^4.5.11",
     "@feathersjs/socketio-client": "^4.5.11",
-    "@vue/composition-api": "^1.0.3",
+    "@vue/composition-api": "^1.0.5",
     "core-js": "^3.15.2",
     "date-fns": "^2.23.0",
     "eslint-config-prettier": "^6.10.1",
@@ -35,15 +34,15 @@
     "localforage": "^1.9.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
-    "pako": "^2.0.3",
+    "pako": "^2.0.4",
     "register-service-worker": "^1.7.2",
     "socket.io-client": "^2.4.0",
     "vue": "^2.6.14",
     "vue-browser-acl": "^0.15.2",
     "vue-router": "^3.5.2",
-    "vuetify": "^2.5.7",
+    "vuetify": "^2.5.8",
     "vuex": "^3.6.2",
-    "vuex-pathify": "^1.4.5"
+    "vuex-pathify": "^1.5.0"
   },
   "devDependencies": {
     "@types/webpack-env": "^1.16.0",
