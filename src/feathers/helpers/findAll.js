@@ -3,11 +3,7 @@ import store from '@/store';
 /**
  * This helper fetches all the results with a default $limit of 50.
  *
- * The return is a Map of the matched results
- *
- * To get all the keys: [...results.keys()]
- *
- * To get all the values: [...results.values()]
+ * The default return type is 'JSON'
  *
  * @param {Object|String} servicepath - The service or path of your API end point. Ex. /api/auth/v1/appuserroles
  * @param {Object} query - A complete feathers query object. Ex. { query: { ... } }
@@ -17,7 +13,7 @@ import store from '@/store';
  *  type: "JSON", // Valid Types: "JSON", "Array", "Map"
  * }
  *
- * @returns {Map} results - A map of keys storing each record
+ * @returns {JSON|Array|Map} results
  */
 const findAll = async (
   servicepath,

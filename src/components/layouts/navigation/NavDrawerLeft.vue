@@ -83,6 +83,10 @@
       <NavListItem :key="installItem.name" :item="installItem"></NavListItem>
     </v-list>
 
+    <v-list v-if="updateExists">
+      <NavListItem :key="updateItem.name" :item="updateItem"></NavListItem>
+    </v-list>
+
     <template v-slot:append>
       <div
         class="text-right caption pa-1"
@@ -120,6 +124,7 @@
     getRoutesByName,
   } from '@/router/routes';
   import Install from '@/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
+  import Update from '@/mixins/Update.js'; // Data(): updateExists; Function: update(), []:updateItem
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
@@ -133,7 +138,7 @@
       NavListItem,
       NavListGroup,
     },
-    mixins: [Install],
+    mixins: [Install, Update],
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');

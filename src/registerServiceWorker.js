@@ -21,8 +21,11 @@ function initServiceWorker() {
       updatefound() {
         console.log('New content is downloading.');
       },
-      updated() {
+      updated(registration) {
         console.log('New content is available; please refresh.');
+        document.dispatchEvent(
+          new CustomEvent('swUpdated', { detail: registration })
+        );
       },
       offline() {
         console.log(
