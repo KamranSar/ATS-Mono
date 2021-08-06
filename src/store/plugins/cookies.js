@@ -9,16 +9,21 @@ const modules = []; // TODO: Add peristed modules here to localstorage
 const vuexPersist = new VuexPersistence({
   key: process.env.VUE_APP_NAME, // The key to store the state on in the storage provider.
   restoreState: (key) => {
-    const data = JSON.parse(Cookies.get(key));
+    const cookieData = Cookies.get(key);
+    const data = cookieData ? JSON.parse(cookieData) : null;
     // console.log('Restore: ', data);
     return data;
   },
   saveState: (key, state) => {
-    const data = Cookies.set(key, JSON.stringify(state), {
-      expires: 3, // Number of days to expire cookie in
-    });
-    // console.log('Save: ', data);
-    return data;
+    // console.log({ state });
+    if (state && Object.keys(state).length) {
+      const cookieData = JSON.stringify(state);
+      const data = Cookies.set(key, cookieData, {
+        expires: 3, // Number of days to expire cookie in
+      });
+      // console.log('Save: ', data);
+      return data;
+    }
   },
   modules,
 });
