@@ -7,6 +7,7 @@ import myApp from '@/config/myApp.js';
  * hasAppRoles
  * This is a guard helper to check for user has roles before continuing
  */
+// eslint-disable-next-line
 const hasAppRoles = (to, from, next) => {
   const loggedInUser = store.get('users/loggedInUser');
   let validRoles = false;
