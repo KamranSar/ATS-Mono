@@ -250,7 +250,6 @@ git push
 
 ```javascript
 // VueRouter Object Structure:
-import { requireToken } from '@/router/helpers/guards.js';
 {
   /** custom application properties
    * These can be expanded beyond the default: icon, and onClick properties.
@@ -262,7 +261,7 @@ import { requireToken } from '@/router/helpers/guards.js';
   path: '/home',
   name: 'Home',
   component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
-  beforeEnter: requireToken, // If user has a token(is logged in.)
+  // beforeEnter: RouterGuard, // Optional
   // redirect: String // Optional
   /** vue-browser-acl meta */
   meta: { // Optional
@@ -509,7 +508,6 @@ You can protect a route from being accessed without the proper acl with the `met
   path: '/secret',
   name: 'Secret',
   component: () => import(/* webpackChunkName: "secret" */ '@/views/Secret.vue'),
-  beforeEnter: requireToken, // If user has a token(is logged in.)
   /** vue-browser-acl meta */
   meta: { // Optional
     can: 'if-example-role',

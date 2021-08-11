@@ -1,6 +1,5 @@
 import Vue from 'vue';
 
-import store from '@/store/index';
 import VueRouter from 'vue-router';
 import { waitForStorageToBeReady } from '@/router/helpers/guards.js';
 import routes from '@/router/routes.js';
@@ -22,15 +21,6 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeResolve((to, from, next) => {
-  if (to.name) store.set('app/loading', true);
-  next();
-});
-
 router.beforeEach(waitForStorageToBeReady);
-
-router.afterEach(() => {
-  store.set('app/loading', false);
-});
 
 export default router;

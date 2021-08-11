@@ -21,7 +21,6 @@ const store = new Vuex.Store({
 // Adding await to the beginning of one makes it synchronous
 store.dispatch('alert/init');
 store.dispatch('app/init');
-store.dispatch('appFeatures/init');
 store.dispatch('azureAuthentication/init');
 store.dispatch('snackbar/init');
 store.dispatch('userPrefs/init');

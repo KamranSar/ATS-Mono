@@ -12,15 +12,19 @@
     <v-toolbar
       flat
       class="text-capitalize subtitle-2 grey--text"
+      dense
       color="#ECEFF1"
     >
-      <span class="text-truncate" v-if="isUserLoggedIn">
+      <span class="text-truncate mr-auto" v-if="isUserLoggedIn">
         <UserAvatar></UserAvatar>
         <span class="ml-2">{{ displayName }}</span>
       </span>
-      <span class="text-truncate" v-else>
-        <span class="ml-2">Currently Logged Out</span>
+      <span class="text-truncate mr-auto" v-else>
+        <span>Currently Logged Out</span>
       </span>
+      <v-btn icon small @click="leftDrawOpen = !leftDrawOpen">
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-list v-if="isUserLoggedIn">
       <template v-for="item in userItems">
@@ -43,19 +47,14 @@
       </template>
     </v-list>
 
-    <v-list v-can:if-admin>
+    <v-list
+      v-if="
+        loggedInUser &&
+        loggedInUser.appuserroles &&
+        loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
+      "
+    >
       <template v-for="item in adminItems">
-        <NavListGroup
-          v-if="item.children"
-          :key="item.name"
-          :group="item"
-        ></NavListGroup>
-        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
-      </template>
-    </v-list>
-
-    <v-list v-can:if-user-admin>
-      <template v-for="item in userAdminItems">
         <NavListGroup
           v-if="item.children"
           :key="item.name"
@@ -117,12 +116,8 @@
 </template>
 
 <script>
-  import {
-    anonymousItems,
-    userItems,
-    adminItems,
-    getRoutesByName,
-  } from '@/router/routes';
+  import { anonymousItems, userItems, adminItems } from '@/router/routes';
+  import { defaultAdminRole } from '@/config/myApp.js';
   import Install from '@/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
   import Update from '@/mixins/Update.js'; // Data(): updateExists; Function: update(), []:updateItem
   import UserAvatar from '@/components/util/UserAvatar.vue';
@@ -142,7 +137,6 @@
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
-      const userAdminItems = getRoutesByName(['Users']);
       const loggedInUser = get('users/loggedInUser');
       const isUserLoggedIn = get('users/isUserLoggedIn');
       const version = myApp.version;
@@ -183,7 +177,7 @@
         anonymousItems,
         userItems,
         adminItems,
-        userAdminItems,
+        defaultAdminRole,
         loggedInUser,
         isUserLoggedIn,
         version,

@@ -8,9 +8,17 @@
     disable-resize-watcher
     disable-route-watcher
   >
-    <v-toolbar flat class="subtitle-2 grey--text" dense color="#ECEFF1">
+    <v-toolbar
+      flat
+      class="text-captialize subtitle-2 grey--text"
+      dense
+      color="#ECEFF1"
+    >
+      <v-btn icon small @click="rightDrawOpen = !rightDrawOpen">
+        <v-icon>mdi-chevron-right</v-icon>
+      </v-btn>
       <span>
-        <v-icon class="mr-2">{{ icon }}</v-icon>
+        <v-icon class="mr-auto">{{ icon }}</v-icon>
         <span>{{ title }}</span>
       </span>
     </v-toolbar>

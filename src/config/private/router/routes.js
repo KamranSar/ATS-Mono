@@ -1,4 +1,3 @@
-import { requireToken } from '@/router/helpers/guards.js';
 import logout from '@/config/private/helpers/logout';
 import Home from '@/views/Home.vue';
 
@@ -8,7 +7,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    beforeEnter: requireToken,
   },
   {
     icon: 'mdi-login',
@@ -64,6 +62,13 @@ const routes = [
     name: '4oh4',
     alias: '/404',
     component: () => import('@/views/NotFound.vue'),
+  },
+  // No Access route for users with no roles
+  {
+    path: '/noaccess',
+    name: 'No Access',
+    component: () =>
+      import(/* webpackChunkName: "NoAccess" */ '@/views/NoAccess.vue'),
   },
 ];
 

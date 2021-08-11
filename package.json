@@ -1,6 +1,6 @@
 {
   "name": "vue-frontend-template",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "publicPath": "/app",
   "azureAppID": "c0cf535a-bb4d-4731-94fb-8a4165b1a124",
   "private": true,

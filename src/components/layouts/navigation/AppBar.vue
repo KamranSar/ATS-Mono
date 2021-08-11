@@ -6,24 +6,8 @@
     app
     min-height="65"
   >
-    <v-app-bar-nav-icon
-      v-if="leftDrawEnabled"
-      @click="leftDrawOpen = !leftDrawOpen"
-    >
-      <v-progress-circular
-        color="primary"
-        indeterminate
-        v-if="loading"
-      ></v-progress-circular>
-      <v-avatar v-else>
-        <v-img
-          src="img/logo.svg"
-          contain
-          max-height="36"
-          max-width="36"
-          alt="logo"
-        />
-      </v-avatar>
+    <v-app-bar-nav-icon @click="leftDrawOpen = !leftDrawOpen">
+      <AppLogo></AppLogo>
     </v-app-bar-nav-icon>
 
     <span class="title ml-1">{{ $myApp.name }}</span>
@@ -73,7 +57,7 @@
       </v-list>
     </v-menu>
 
-    <v-btn v-if="rightDrawEnabled" @click="rightDrawOpen = !rightDrawOpen" icon>
+    <v-btn @click="rightDrawOpen = !rightDrawOpen" icon>
       <v-icon>mdi-menu</v-icon>
     </v-btn>
   </v-app-bar>
@@ -87,6 +71,7 @@
     userToolbarItems,
   } from '@/router/routes';
   import UserAvatar from '@/components/util/UserAvatar.vue';
+  import AppLogo from '@/components/util/AppLogo.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
@@ -94,6 +79,7 @@
   export default {
     components: {
       UserAvatar,
+      AppLogo,
       NavListItem,
       NavListGroup,
     },
@@ -103,8 +89,6 @@
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
       const rightDrawOpen = sync('userPrefs/rightDrawOpen');
       const darkMode = sync('userPrefs/darkMode');
-      const leftDrawEnabled = get('appFeatures/leftDrawEnabled');
-      const rightDrawEnabled = get('appFeatures/rightDrawEnabled');
       const isUserLoggedIn = get('users/isUserLoggedIn');
       const toggleDarkMode = () => {
         context.root.$vuetify.theme.dark = darkMode.value;
@@ -115,8 +99,6 @@
         leftDrawOpen,
         rightDrawOpen,
         darkMode,
-        leftDrawEnabled,
-        rightDrawEnabled,
         isUserLoggedIn,
         // Methods
         anonymousItems,

@@ -57,7 +57,7 @@ const anonymousItems = getRoutesByName(['Login', 'Settings']);
 // Routes for Anyone Logged In
 const userItems = getRoutesByName(['Home']);
 // Routes for Users with Role Admin
-const adminItems = getRoutesByName(['Admin']);
+const adminItems = getRoutesByName(['Admin', 'Users']);
 // Routes used for the Toolbar in AppBar.vue
 const userToolbarItems = getRoutesByName([
   'Home',

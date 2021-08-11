@@ -2,9 +2,9 @@
   <v-app>
     <AppBar></AppBar>
 
-    <NavDrawerLeft v-if="leftDrawEnabled"></NavDrawerLeft>
+    <NavDrawerLeft></NavDrawerLeft>
 
-    <NavDrawerRight v-if="rightDrawEnabled" title="Right side Drawer">
+    <NavDrawerRight title="Right side Drawer">
       <template v-slot:content>
         <v-list>
           <v-list-item v-for="n in 5" :key="n" link>
@@ -24,14 +24,11 @@
     </v-main>
     <!-- </Catch> -->
 
-    <BottomNavBar
-      v-if="bottomBarEnabled && $vuetify.breakpoint.mdAndDown"
-    ></BottomNavBar>
+    <BottomNavBar v-if="$vuetify.breakpoint.mdAndDown"></BottomNavBar>
   </v-app>
 </template>
 
 <script>
-  import { get } from 'vuex-pathify';
   import AppBar from '@/components/layouts/navigation/AppBar.vue';
   import NavDrawerLeft from '@/components/layouts/navigation/NavDrawerLeft.vue';
   import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
@@ -48,13 +45,6 @@
       Snackbar,
       BottomNavBar,
       // Catch,
-    },
-    computed: {
-      ...get('appFeatures', [
-        'leftDrawEnabled',
-        'rightDrawEnabled',
-        'bottomBarEnabled',
-      ]),
     },
   };
 </script>

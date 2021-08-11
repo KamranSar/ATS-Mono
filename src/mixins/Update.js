@@ -20,7 +20,7 @@ export default {
     updateItem() {
       return {
         icon: 'mdi-new-box',
-        color: 'primary',
+        color: 'success',
         path: '',
         name: 'Update App',
         onClick: () => {
