@@ -28,27 +28,56 @@ module.exports = function (app) {
     }
     const connInfo = `MS-SQL server for (${connection.database}) database at: ${connection.server}:${connection.options.port}`;
     debug(`Connecting to ${connInfo}...`);
-    const dbMssql = knex({ client: 'mssql', connection, pool, acquireConnectionTimeout: connTimeout });
-    // Test the connection
-    let mssql = { max: 11, errcnt: 0, connected: false, timeout: 2000 };
-    for (let i = 0; !mssql.connected && i <= mssql.max; ++i) {
-      setTimeout(() => {
-        if (!mssql.connected) {
-          dbMssql
-            .raw('select 1+1 as result')
-            .then(() => {
-              debug(`Successfully connected to ${connInfo}`);
-              mssql.connected = true;
-            })
-            .catch((error) => {
-              logger.error('Connection error #%d at %s - ', ++mssql.errcnt, connInfo, { error });
-              if (mssql.errcnt == mssql.max) process.exit(1);
-            });
-        }
-      }, mssql.timeout * i);
-    }
-
+    const connConfig = {
+      client: 'mssql',
+      connection,
+      pool,
+      acquireConnectionTimeout: connTimeout
+    };
+    // Create connection
+    let dbMssql = knex(connConfig);
     app.set('mssqlClient', dbMssql);
+
+    // Initial connection test - perform a fast server query
+    app.mssql = { max: 1001, errcnt: 0, connected: false, connectionTimeoutMS: 5000, heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000 };
+    dbMssql
+      .raw('select 1+1 as result')
+      .then(() => {
+        if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
+        else debug(`Successfully connected to ${connInfo}`);
+        app.mssql.connected = true;
+      })
+      .catch((error) => {
+        logger.error('Connection error #%d at %s - ', ++app.mssql.errcnt, connInfo, { error });
+        app.mssql.connected = false;
+      });
+
+    // Ongoing connection maintenance interval
+    setInterval(() => {
+      if (!app.mssql.connected) {
+        // Destroy the connection pool
+        dbMssql.destroy();
+        debug(`Destroyed Oracle connection to  ${connInfo}`);
+        // Connection attempt
+        dbMssql = knex(connConfig);
+        debug(`Attempting Oracle connection to ${connInfo}`);
+        // Test if connected by sending a fast server query
+        dbMssql
+          .raw('select 1+1 as result')
+          .then(() => {
+            if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
+            else debug(`Successfully connected to ${connInfo}`);
+            app.mssql.connected = true;
+            app.mssql.errcnt = 0;
+          })
+          .catch((error) => {
+            logger.error('Connection error #%d at %s - ', ++app.mssql.errcnt, connInfo, { error });
+            app.mssql.connected = false;
+            if (app.mssql.errcnt == app.mssql.max) process.exit(1);
+          });
+      }
+    }, app.mssql.connectionTimeoutMS);
+
   }
 
   // Oracle connection
@@ -73,49 +102,73 @@ module.exports = function (app) {
 
     const connInfo = `Oracle server at: ${connection.connectString}`;
     debug(`Connecting to ${connInfo}...  `);
-    const dbOracle = knex({
+    const connConfig = {
       client: 'oracledb',
       native: false,
       connection,
       pool,
       acquireConnectionTimeout: connTimeout,
-    });
-    // Test the connection
-    let oracle = { max: 21, errcnt: 0, connected: false, timeout: 10000 };
-    for (let i = 0; !oracle.connected && i <= oracle.max; ++i) {
-      setTimeout(() => {
-        if (!oracle.connected) {
-          // Test if connected by sending a server check
-          dbOracle
-            .raw('select 1+1 as result from DUAL')
-            .then(() => {
-              debug(`Successfully connected to ${connInfo}`);
-              oracle.connected = true;
-            })
-            .catch((error) => {
-              logger.error('Connection error #%d at %s - ', ++oracle.errcnt, connInfo, { error });
-              if (oracle.errcnt == oracle.max) process.exit(1);
-            });
-        }
-      }, oracle.timeout * i);
-    }
-
+    };
+    // Create connection
+    let dbOracle = knex(connConfig);
     app.set('oracleClient', dbOracle);
 
-    // Once connected, keep the connection alive with a periodic server check
-    const serverHeartbeatMS = 60 * 60 * 1000; // 60 minutes
+    // Initial connection test - perform a fast server query
+    app.oracle = { max: 1001, errcnt: 0, connected: false, connectionTimeoutMS: 5000, heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000 };
+    dbOracle
+      .raw('select banner from v$version')
+      .then(() => {
+        if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
+        else debug(`Successfully connected to ${connInfo}`);
+        app.oracle.connected = true;
+      })
+      .catch((error) => {
+        logger.error('Connection error #%d at %s - ', ++app.oracle.errcnt, connInfo, { error });
+        app.oracle.connected = false;
+      });
+
+    // Ongoing connection maintenance interval
     setInterval(() => {
-      if (oracle.connected) {
+      if (!app.oracle.connected) {
+        // Destroy the connection pool
+        dbOracle.destroy();
+        debug(`Destroyed Oracle connection to  ${connInfo}`);
+        // Connection attempt
+        dbOracle = knex(connConfig);
+        debug(`Attempting Oracle connection to ${connInfo}`);
+        // Test if connected by sending a fast server query
         dbOracle
-          .raw('select 1+1 as result from DUAL')
+          .raw('select banner from v$version')
           .then(() => {
-            debug(`Keepalive successfully sent to ${connInfo}`);
+            if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
+            else debug(`Successfully connected to ${connInfo}`);
+            app.oracle.connected = true;
+            app.oracle.errcnt = 0;
+          })
+          .catch((error) => {
+            logger.error('Connection error #%d at %s - ', ++app.oracle.errcnt, connInfo, { error });
+            app.oracle.connected = false;
+            if (app.oracle.errcnt == app.oracle.max) process.exit(1);
+          });
+      }
+    }, app.oracle.connectionTimeoutMS);
+
+    // Ongoing DB server heartbeat interval
+    setInterval(() => {
+      // Once connected, keep the connection alive with a periodic server check
+      if (app.oracle.connected) {
+        dbOracle
+          .raw('select banner from v$version')
+          .then(() => {
+            if (process.env.NODE_ENV === 'production') logger.info(`Keepalive successfully sent to ${connInfo}`);
+            else debug(`Keepalive successfully sent to ${connInfo}`);
           })
           .catch((error) => {
             logger.error('Keepalive error %s - ', connInfo, { error });
+            app.oracle.connected = false;
           });
       }
-    }, serverHeartbeatMS);
+    }, app.oracle.heartbeatTimeoutMS);
   }
 
   // Postgres connection
@@ -142,25 +195,55 @@ module.exports = function (app) {
     const connInfo = `Postgres SQL server for (${connection.database}) database at: ${connection.server}:${connection.options.port}`;
     debug(`Connecting to ${connInfo}...`);
     const connString = `postgresql://${connection.user}:${connection.password}@${connection.server}:${connection.options.port}/${connection.database}`;
-    const dbPostgres = knex({ client: 'pg', connection: connString, pool, acquireConnectionTimeout: connTimeout });
-    // Test the connection
-    let postgres = { max: 6, errcnt: 0, connected: false, timeout: 2000 };
-    for (let i = 0; !postgres.connected && i <= postgres.max; ++i) {
-      setTimeout(() => {
-        if (!postgres.connected) {
-          dbPostgres
-            .raw('SET timezone = "UTC";')
-            .then(() => {
-              debug(`Successfully connected to ${connInfo}`);
-              postgres.connected = true;
-            })
-            .catch((error) => {
-              logger.error('Connection error #%d at %s - ', ++postgres.errcnt, connInfo, { error });
-              if (postgres.errcnt == postgres.max) process.exit(1);
-            });
-        }
-      }, postgres.timeout * i);
-    }
+    const connConfig = {
+      client: 'pg',
+      connection: connString,
+      pool,
+      acquireConnectionTimeout: connTimeout,
+    };
+    // Create connection
+    let dbPostgres = knex(connConfig);
     app.set('pgClient', dbPostgres);
+
+    // Initial connection test - perform a fast server query
+    app.postgres = { max: 1001, errcnt: 0, connected: false, connectionTimeoutMS: 5000, heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000 };
+    dbPostgres
+      .raw('SET timezone = "UTC";')
+      .then(() => {
+        if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
+        else debug(`Successfully connected to ${connInfo}`);
+        app.postgres.connected = true;
+      })
+      .catch((error) => {
+        logger.error('Connection error #%d at %s - ', ++app.postgres.errcnt, connInfo, { error });
+        app.postgres.connected = false;
+      });
+
+    // Ongoing connection maintenance interval
+    setInterval(() => {
+      if (!app.postgres.connected) {
+        // Destroy the connection pool
+        dbPostgres.destroy();
+        debug(`Destroyed Oracle connection to  ${connInfo}`);
+        // Connection attempt
+        dbPostgres = knex(connConfig);
+        debug(`Attempting Oracle connection to ${connInfo}`);
+        // Test if connected by sending a fast server query
+        dbPostgres
+          .raw('SET timezone = "UTC";')
+          .then(() => {
+            if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
+            else debug(`Successfully connected to ${connInfo}`);
+            app.postgres.connected = true;
+            app.postgres.errcnt = 0;
+          })
+          .catch((error) => {
+            logger.error('Connection error #%d at %s - ', ++app.postgres.errcnt, connInfo, { error });
+            app.postgres.connected = false;
+            if (app.postgres.errcnt == app.postgres.max) process.exit(1);
+          });
+      }
+    }, app.postgres.connectionTimeoutMS);
+
   }
 };

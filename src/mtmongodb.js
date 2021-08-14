@@ -20,7 +20,9 @@ module.exports = function (app) {
     poolSize: poolSize,
   })
     .then((client) => {
-      debug('Successfully connected to mongoDb midtier database (%s) at %s', database, dbConnection);
+      if (process.env.NODE_ENV === 'production') logger.info('Successfully connected to mongoDb midtier database (%s) at %s', database, dbConnection);
+      else debug('Successfully connected to mongoDb midtier database (%s) at %s', database, dbConnection);
+      app.mtMongoConnected = true;
       return client.db(database);
     })
     .catch((error) => {

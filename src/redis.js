@@ -43,9 +43,11 @@ module.exports = function (app) {
       let redisConn = { maxErrors: 5, errorCnt: 0 };
       redisSvcClient
         .on('ready', function () {
-          debug('Successfully connected to REDIS Service Cache server at %s ', redis_cfg.url);
+          if (process.env.NODE_ENV === 'production') logger.info('Successfully connected to REDIS Service Cache server at %s ', redis_cfg.url);
+          else debug('Successfully connected to REDIS Service Cache server at %s ', redis_cfg.url);
           const redisSvcClient = app.get('redisClient');
           redisSvcClient.options.prefix = redis_cfg.prefix; // Change the default key prefix so it sorts better in Redis client tools.
+          app.redisConnected = true;
           app.set('redisClient', redisSvcClient);
         })
         .on('error', (error) => {
@@ -77,7 +79,8 @@ module.exports = function (app) {
       .on('ready', function () {
         // If the REDIS connection was retried previously, then delete the interval.
         if (redisConn.errorInterval) clearInterval(redisConn.errorInterval);
-        debug('Successfully connected to REDIS General Use server at %s ', redis_cfg.url);
+        if (process.env.NODE_ENV === 'production') logger.info('Successfully connected to REDIS General Use server at %s ', redis_cfg.url);
+        else debug('Successfully connected to REDIS General Use server at %s ', redis_cfg.url);
         // Promise wrapper for Raw Redis redisGeneralUseClient
         const redisClient = {
           client: redisGeneralUseClient,

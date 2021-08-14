@@ -33,6 +33,9 @@
     "perf": "echo 'Performance Testing Profile\n'; export AUTHACTIVE=true; export NODE_ENV=perf; node src/",
     "clean": "rm -rf *_modules package-lock.json .env ",
     "cleaninstall": "npm run clean;\nnpm install",
+    "start-servers": "scripts/start_test_servers.sh",
+    "stop-servers": "scripts/stop_test_servers.sh",
+    "restart-servers": "scripts/fast_restart.sh",
     "start": "node src/",
     "mocha": "mocha test/ --recursive --exit"
   },

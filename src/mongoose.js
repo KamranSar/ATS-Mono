@@ -24,7 +24,9 @@ module.exports = function (app) {
         poolSize: poolSize,
       })
       .then(() => {
-        debug('Successfully connected to mongoDb (Mongoose) database (%s) at %s', database, connUrlMidTier);
+        if (process.env.NODE_ENV === 'production') logger.info('Successfully connected to mongoDb (Mongoose) database (%s) at %s', database, connUrlMidTier);
+        else debug('Successfully connected to mongoDb (Mongoose) database (%s) at %s', database, connUrlMidTier);
+        app.mongooseConnected = true;
       })
       .catch((error) => {
         logger.error('MongoDb (Mongoose) connection error at %s - ', connUrlMidTier, { error: error.message || error });
