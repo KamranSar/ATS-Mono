@@ -10,12 +10,9 @@ module.exports = function (app) {
     const { connection, pool, connTimeout } = app.get('mssql');
     // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
     if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
-      const username = (connection.user == 'SA') ? connection.user: base64ToString(connection.user);
-      if (username !== connection.user) connection.user = username;
-      const password = base64ToString(connection.password);
-      if (password !== connection.password) connection.password = password;
-    }
-    else {
+      connection.user = connection.user == 'SA' ? connection.user : base64ToString(connection.user);
+      connection.password = connection.user == 'SA' ? connection.password: base64ToString(connection.password);
+    } else {
       logger.error('knex: MS-SQL username or password is missing or incomplete');
       process.exit(1);
     }
@@ -85,12 +82,9 @@ module.exports = function (app) {
     const { connection, pool, connTimeout } = app.get('oracledb');
     // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
     if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
-      const username = (connection.user == 'Oradoc_db1') ? connection.user: base64ToString(connection.user);
-      if (username !== connection.user) connection.user = username;
-      const password = base64ToString(connection.password);
-      if (password !== connection.password) connection.password = password;
-    }
-    else {
+      connection.user = connection.user == 'Oradoc_db1' ? connection.user : base64ToString(connection.user);
+      connection.password = connection.user == 'Oradoc_db1' ? connection.password: base64ToString(connection.password);
+    } else {
       logger.error('knex: Oracle username or password is missing or incomplete');
       process.exit(1);
     }
@@ -176,12 +170,9 @@ module.exports = function (app) {
     const { connection, pool, connTimeout } = app.get('postgres');
     // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
     if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
-      const username = (connection.user == 'postgres') ? connection.user: base64ToString(connection.user);
-      if (username !== connection.user) connection.user = username;
-      const password = base64ToString(connection.password);
-      if (password !== connection.password) connection.password = password;
-    }
-    else {
+      connection.user = connection.user == 'postgres' ? connection.user : base64ToString(connection.user);
+      connection.password = connection.user == 'postgres' ? connection.password: base64ToString(connection.password);
+    } else {
       logger.error('knex: Postgres SQL username or password is missing or incomplete');
       process.exit(1);
     }
