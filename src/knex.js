@@ -4,6 +4,8 @@ const { logger, base64ToString } = require('cdcrhelpers');
 const knex = require('knex');
 const serverData = require('./service-config').server;
 
+process.env.DB_HEARTBEAT_SECS = process.env.DB_HEARTBEAT_SECS ? process.env.DB_HEARTBEAT_SECS : 15;
+
 module.exports = function (app) {
   // MS-SQL connection
   if (serverData.mssqlEnabled) {
