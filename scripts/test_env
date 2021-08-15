@@ -45,6 +45,7 @@ MT_EIS_COMMON_PORT=51401
 #=============================
 ## Local DB Server settings
 #=============================
+DB_HEARTBEAT_SECS=900
 #
 ## Oracle Docker Server
 ORACLE_SVR_PORT=1521
