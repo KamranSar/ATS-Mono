@@ -12,7 +12,7 @@ module.exports =
     'docsPath': '/docs/database',
     'release': 'R1',
     //* authActive values: true = authentication activated, false = authentication deactivated meaning no auth required for all services.
-    'authActive': true,
+    'authActive': false,
     //* Database enable/disable flags:
     //* All DB flags are optional and can be removed along with their associated code if not used.
     'mongooseEnabled': true,
