@@ -37,29 +37,25 @@ module.exports = function (app) {
     let dbMssql = knex(connConfig);
     app.set('mssqlClient', dbMssql);
 
-    // Initial connection test - perform a fast server query
-    app.mssql = { max: 1001, errcnt: 0, connected: false, connectionTimeoutMS: 5000, heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000 };
-    dbMssql
-      .raw('select 1+1 as result')
-      .then(() => {
-        if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
-        else debug(`Successfully connected to ${connInfo}`);
-        app.mssql.connected = true;
-      })
-      .catch((error) => {
-        logger.error('Connection error #%d at %s - ', ++app.mssql.errcnt, connInfo, { error });
-        app.mssql.connected = false;
-      });
-
+    // Connection test - perform a fast server query
+    app.mssql = {
+      max: 1001,
+      errcnt: 0,
+      connected: false,
+      connectionTimeoutMS: 5000,
+      heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000,
+    };
     // Ongoing connection maintenance interval
     setInterval(() => {
       if (!app.mssql.connected) {
-        // Destroy the connection pool
-        dbMssql.destroy();
-        debug(`Destroyed Oracle connection to  ${connInfo}`);
-        // Connection attempt
-        dbMssql = knex(connConfig);
-        debug(`Attempting Oracle connection to ${connInfo}`);
+        if (app.mssql.errcnt > 0) {
+          // Destroy the connection pool
+          dbMssql.destroy();
+          debug(`Destroyed MS-SQL connection to  ${connInfo}`);
+          // Connection attempt
+          dbMssql = knex(connConfig);
+          debug(`Attempting MS-SQL connection to ${connInfo}`);
+        }
         // Test if connected by sending a fast server query
         dbMssql
           .raw('select 1+1 as result')
@@ -68,6 +64,7 @@ module.exports = function (app) {
             else debug(`Successfully connected to ${connInfo}`);
             app.mssql.connected = true;
             app.mssql.errcnt = 0;
+            dbMssql = knex(connConfig);
           })
           .catch((error) => {
             logger.error('Connection error #%d at %s - ', ++app.mssql.errcnt, connInfo, { error });
@@ -77,6 +74,23 @@ module.exports = function (app) {
       }
     }, app.mssql.connectionTimeoutMS);
 
+
+    // Ongoing DB server heartbeat interval
+    setInterval(() => {
+      // Once connected, keep the connection alive with a periodic server check
+      if (app.mssql.connected) {
+        dbMssql
+          .raw('select 1+1 as result')
+          .then(() => {
+            if (process.env.NODE_ENV === 'production') logger.info(`Keepalive successfully sent to ${connInfo}`);
+            else debug(`Keepalive successfully sent to ${connInfo}`);
+          })
+          .catch((error) => {
+            logger.error('Keepalive error %s - ', connInfo, { error });
+            app.mssql.connected = false;
+          });
+      }
+    }, app.mssql.heartbeatTimeoutMS);
   }
 
   // Oracle connection
@@ -85,7 +99,7 @@ module.exports = function (app) {
     // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
     if (connection.user && connection.user.length > 1 && connection.password && connection.password.length > 1) {
       connection.user = connection.user == 'Oradoc_db1' ? connection.user : base64ToString(connection.user);
-      connection.password = connection.user == 'Oradoc_db1' ? connection.password: base64ToString(connection.password);
+      connection.password = connection.user == 'Oradoc_db1' ? connection.password : base64ToString(connection.password);
     } else {
       logger.error('knex: Oracle username or password is missing or incomplete');
       process.exit(1);
@@ -109,29 +123,25 @@ module.exports = function (app) {
     let dbOracle = knex(connConfig);
     app.set('oracleClient', dbOracle);
 
-    // Initial connection test - perform a fast server query
-    app.oracle = { max: 1001, errcnt: 0, connected: false, connectionTimeoutMS: 5000, heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000 };
-    dbOracle
-      .raw('select banner from v$version')
-      .then(() => {
-        if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
-        else debug(`Successfully connected to ${connInfo}`);
-        app.oracle.connected = true;
-      })
-      .catch((error) => {
-        logger.error('Connection error #%d at %s - ', ++app.oracle.errcnt, connInfo, { error });
-        app.oracle.connected = false;
-      });
-
+    // Connection test - perform a fast server query
+    app.oracle = {
+      max: 1001,
+      errcnt: 0,
+      connected: false,
+      connectionTimeoutMS: 5000,
+      heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000,
+    };
     // Ongoing connection maintenance interval
     setInterval(() => {
       if (!app.oracle.connected) {
-        // Destroy the connection pool
-        dbOracle.destroy();
-        debug(`Destroyed Oracle connection to  ${connInfo}`);
-        // Connection attempt
-        dbOracle = knex(connConfig);
-        debug(`Attempting Oracle connection to ${connInfo}`);
+        if (app.oracle.errcnt > 0) {
+          // Destroy the connection pool
+          dbOracle.destroy();
+          debug(`Destroyed Oracle connection to  ${connInfo}`);
+          // Connection attempt
+          dbOracle = knex(connConfig);
+          debug(`Attempting Oracle connection to ${connInfo}`);
+        }
         // Test if connected by sending a fast server query
         dbOracle
           .raw('select banner from v$version')
@@ -140,6 +150,7 @@ module.exports = function (app) {
             else debug(`Successfully connected to ${connInfo}`);
             app.oracle.connected = true;
             app.oracle.errcnt = 0;
+            app.set('oracleClient', dbOracle);
           })
           .catch((error) => {
             logger.error('Connection error #%d at %s - ', ++app.oracle.errcnt, connInfo, { error });
@@ -198,30 +209,25 @@ module.exports = function (app) {
     let dbPostgres = knex(connConfig);
     app.set('pgClient', dbPostgres);
 
-    // Initial connection test - perform a fast server query
-    app.postgres = { max: 1001, errcnt: 0, connected: false, connectionTimeoutMS: 5000, heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000 };
-    dbPostgres
-      .raw('SET timezone = "UTC";')
-      .then(() => {
-        if (process.env.NODE_ENV === 'production') logger.info(`Successfully connected to ${connInfo}`);
-        else debug(`Successfully connected to ${connInfo}`);
-        app.postgres.connected = true;
-      })
-      .catch((error) => {
-        logger.error('Connection error #%d at %s - ', ++app.postgres.errcnt, connInfo, { error });
-        app.postgres.connected = false;
-      });
-
+    // Connection test - perform a fast server query
+    app.postgres = {
+      max: 1001,
+      errcnt: 0,
+      connected: false,
+      connectionTimeoutMS: 5000,
+      heartbeatTimeoutMS: process.env.DB_HEARTBEAT_SECS * 1000,
+    };
     // Ongoing connection maintenance interval
     setInterval(() => {
       if (!app.postgres.connected) {
-        // Destroy the connection pool
-        dbPostgres.destroy();
-        debug(`Destroyed Oracle connection to  ${connInfo}`);
-        // Connection attempt
-        dbPostgres = knex(connConfig);
-        debug(`Attempting Oracle connection to ${connInfo}`);
-        // Test if connected by sending a fast server query
+        if (app.postgres.errcnt > 0) {
+          // Destroy the connection pool
+          dbPostgres.destroy();
+          debug(`Destroyed Postgres connection to  ${connInfo}`);
+          // Connection attempt
+          dbPostgres = knex(connConfig);
+          debug(`Attempting Postgres connection to ${connInfo}`);
+        }
         dbPostgres
           .raw('SET timezone = "UTC";')
           .then(() => {
@@ -229,6 +235,7 @@ module.exports = function (app) {
             else debug(`Successfully connected to ${connInfo}`);
             app.postgres.connected = true;
             app.postgres.errcnt = 0;
+            app.set('pgClient', dbPostgres);
           })
           .catch((error) => {
             logger.error('Connection error #%d at %s - ', ++app.postgres.errcnt, connInfo, { error });
@@ -238,5 +245,21 @@ module.exports = function (app) {
       }
     }, app.postgres.connectionTimeoutMS);
 
+    // Ongoing DB server heartbeat interval
+    setInterval(() => {
+      // Once connected, keep the connection alive with a periodic server check
+      if (app.postgres.connected) {
+        dbPostgres
+          .raw('SET timezone = "UTC";')
+          .then(() => {
+            if (process.env.NODE_ENV === 'production') logger.info(`Keepalive successfully sent to ${connInfo}`);
+            else debug(`Keepalive successfully sent to ${connInfo}`);
+          })
+          .catch((error) => {
+            logger.error('Keepalive error %s - ', connInfo, { error });
+            app.postgres.connected = false;
+          });
+      }
+    }, app.postgres.heartbeatTimeoutMS);
   }
 };
