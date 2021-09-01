@@ -1,9 +1,24 @@
 <template>
-  <v-snackbar v-model="show" top center :color="color" :timeout="timeout">
-    {{ message }}
+  <v-snackbar
+    v-model="snackbar.show"
+    :top="snackbar.top"
+    :left="snackbar.left"
+    :bottom="snackbar.bottom"
+    :right="snackbar.right"
+    :center="snackbar.center"
+    :color="snackbar.color"
+    :timeout="snackbar.timeout"
+  >
+    <span v-html="snackbar.message" />
 
     <template v-slot:action="{ attrs }">
-      <v-btn color="white" icon small v-bind="attrs" @click="show = false">
+      <v-btn
+        color="white"
+        icon
+        small
+        v-bind="attrs"
+        @click="snackbar.show = false"
+      >
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </template>
@@ -11,33 +26,11 @@
 </template>
 
 <script>
-  import { reactive } from '@vue/composition-api';
-  export default {
-    setup() {
-      const data = reactive({
-        show: false,
-        top: true,
-        message: '',
-        color: '',
-        timeout: 6000,
-      });
+  import { sync } from 'vuex-pathify';
 
-      return { ...data };
-    },
-    created: function () {
-      this.$store.watch(
-        (state) => state.snackbar.snack,
-        () => {
-          const message = this.$store.state.snackbar.snack.message;
-          if (message) {
-            this.show = true;
-            this.message = message;
-            this.timeout = this.$store.state.snackbar.snack.timeout || 6000;
-            this.color = this.$store.state.snackbar.snack.color || 'info';
-            this.$store.commit('snackbar/setSnack', {});
-          }
-        }
-      );
+  export default {
+    computed: {
+      ...sync('app', ['snackbar']),
     },
   };
 </script>

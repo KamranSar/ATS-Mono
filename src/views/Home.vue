@@ -1,24 +1,44 @@
 <template>
-  <Panel icon="mdi-view-dashboard" title="Home">
+  <Panel>
     <template slot="content">
       <p>Welcome Home</p>
 
       <v-row justify="center">
-        <v-btn class="mr-2" color="red lighten-4" @click="getHeartbeat()">
+        <v-btn class="mx-1" color="red lighten-4" @click="getHeartbeat()">
           <v-icon left color="red">mdi-heart</v-icon>
           Click for a heartbeat
           <v-icon right color="red">mdi-heart</v-icon>
         </v-btn>
 
-        <v-btn color="info darken-4" @click="getAppUserRoles()">
+        <v-btn class="mx-1" color="info darken-4" @click="getAppUserRoles()">
           <v-icon left color="info lighten-2">mdi-help-circle-outline</v-icon>
           Click to dump app user roles
           <v-icon right color="info lighten-2">mdi-help-circle-outline</v-icon>
         </v-btn>
       </v-row>
 
-      <v-row>
-        {{ appUserRoles }}
+      <v-row justify="center" v-has-all-roles="['System Administrator']">
+        <v-btn
+          v-has-any-roles="['System Administrator', 'asdfkasdfasdf']"
+          class="ma-1"
+          color="primary"
+        >
+          Primary
+        </v-btn>
+
+        <v-btn class="ma-1" color="secondary"> Secondary </v-btn>
+        <v-btn class="ma-1" color="accent"> Secondary </v-btn>
+        <v-btn class="ma-1" color="error"> Error </v-btn>
+        <v-btn
+          class="ma-1"
+          color="info"
+          v-if="$roleCheck(['Some Role'], 'hasAnyRoles')"
+        >
+          Info
+        </v-btn>
+        <v-btn class="ma-1" color="warning"> Warning </v-btn>
+        <v-btn class="ma-1" color="success"> Success </v-btn>
+        <v-btn class="ma-1" disabled> Disabled </v-btn>
       </v-row>
 
       <Footer app></Footer>
@@ -37,6 +57,7 @@
   import Heartbeat from '@/feathers/services/heartbeat/heartbeat.service.js';
   import findAll from '@/feathers/helpers/findAll';
   import { call } from 'vuex-pathify';
+
   export default {
     name: 'Home',
     components: {
@@ -49,7 +70,7 @@
       };
     },
     methods: {
-      ...call('alert', ['setAlertMsg']),
+      ...call('app', ['SET_ALERT', 'SET_SNACKBAR']),
       /**
        * getAppUserRoles
        * Fetches everything from the appUserRoles table with the findAll helper.
@@ -60,6 +81,9 @@
         const appUserRoles = await findAll(ROLES_SVC_PATH);
         // console.log('appUserRoles: ', appUserRoles);
         this.appUserRoles = appUserRoles.data;
+
+        this.toggleSnackbar(this.appUserRoles);
+
         return appUserRoles;
       },
 
@@ -70,22 +94,40 @@
       async getHeartbeat() {
         const heartbeat = await Heartbeat.find();
         this.toggleAlert(heartbeat);
-        console.log('heartbeat: ', heartbeat);
       },
 
       /**
        * toggleAlert
-       * Uses the alert module to call setAlertMsg handle passed to the util Alert.vue
+       * Uses the alert state from app module to set an alert for the App handle passed to the util Alert.vue
        *
-       * @param {String} message - The message string
+       * @param {Object} options - The alert options with message being the only required
        */
       toggleAlert(message) {
-        this.setAlertMsg(message);
+        const options = {
+          type: 'success',
+          message: message,
+          button: 'Click Me',
+          onClick: () => {
+            alert('Roll for initative!');
+          },
+        };
+        this.SET_ALERT(options);
+      },
 
-        const seconds = 1000; // 1000 ms
-        setTimeout(() => {
-          this.setAlertMsg();
-        }, 5 * seconds);
+      /**
+       * toggleSnackbar
+       * Uses the alert state from app module to set an alert for the App handle passed to the util Alert.vue
+       *
+       * @param {Object} options - The alert options with message being the only required
+       */
+      toggleSnackbar(message) {
+        const options = {
+          icon: 'mdi-account',
+          color: 'info',
+          message: message,
+          bottom: true,
+        };
+        this.SET_SNACKBAR(options);
       },
     },
   };

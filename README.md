@@ -12,6 +12,12 @@ npm run start-servers
 npm run serve
 ```
 
+### Run the documentation
+
+```sh
+npm run docs
+```
+
 ### Starting your development
 
 Follow the HOWTO.md on starting your development.

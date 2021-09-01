@@ -16,13 +16,12 @@
       </template>
     </NavDrawerRight>
 
+    <Alert />
     <Snackbar />
 
-    <!-- <Catch label="Main"> -->
     <v-main>
       <router-view :key="$route.fullPath" />
     </v-main>
-    <!-- </Catch> -->
 
     <BottomNavBar v-if="$vuetify.breakpoint.mdAndDown"></BottomNavBar>
   </v-app>
@@ -32,9 +31,9 @@
   import AppBar from '@/components/layouts/navigation/AppBar.vue';
   import NavDrawerLeft from '@/components/layouts/navigation/NavDrawerLeft.vue';
   import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
+  import Alert from '@/components/util/Alert.vue';
   import Snackbar from '@/components/util/Snackbar.vue';
   import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
-  // import Catch from '@/components/util/Catch.vue';
 
   // https://v3.vuejs.org/guide/composition-api-setup.html#setup
   export default {
@@ -42,9 +41,40 @@
       AppBar,
       NavDrawerLeft,
       NavDrawerRight,
+      Alert,
       Snackbar,
       BottomNavBar,
-      // Catch,
     },
   };
 </script>
+
+<style>
+  /* FIXME: Derive this from themes as --css-variable */
+
+  /* Chrome, Safari */
+  /** Begin Force Scroll Bar */
+  /** https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar */
+  /* TODO: Use an appropriate HEX value from your themes to set the background-color */
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  ::-webkit-scrollbar:vertical {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar:horizontal {
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #517ca7;
+    border: transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #517ca7;
+    background: transparent;
+  }
+  /** Force Scroll Bar End */
+</style>

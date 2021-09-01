@@ -35,7 +35,7 @@ then
   echo "pip3 installed."
 else
   echo -e "${GREEN}Installing pip3${NC}"
-  sudo apt install pip3
+  sudo apt install python3-pip
 fi
 
 # Check that cairosvg is installed with python3

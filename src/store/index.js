@@ -19,10 +19,8 @@ const store = new Vuex.Store({
 
 // initialization functions for each vuex store
 // Adding await to the beginning of one makes it synchronous
-store.dispatch('alert/init');
 store.dispatch('app/init');
 store.dispatch('azureAuthentication/init');
-store.dispatch('snackbar/init');
 store.dispatch('userPrefs/init');
 
 // TODO: How to guarantee application data during refresh.

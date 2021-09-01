@@ -4,20 +4,22 @@ import myApp from '@/config/myApp';
 import feathers from '@/feathers/index.js';
 
 /**
+ * logout
  * Call this function to log out of the app
  *
+ * @example
  * import logout from "@/config/private/helpers/logout.js";
  * <v-btn @click="logout()">Logout</v-btn>
+ *
  */
 async function logout() {
-  const loggedIn = store.get('users/isUserLoggedIn');
+  const loggedIn = store.getters['users/isUserLoggedIn'];
   try {
     if (loggedIn) {
       await store.dispatch('azureAuthentication/logout'); // And always remove the Azure login token.
-
-      store.dispatch('snackbar/setSnack', {
+      store.dispatch('app/SET_ALERT', {
         message: `Logged out of ${myApp.name} successfully.`,
-        color: 'success',
+        type: 'success',
       });
       window.localStorage.removeItem(process.env.VUE_APP_NAME);
 

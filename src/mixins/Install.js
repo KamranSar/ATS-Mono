@@ -1,3 +1,5 @@
+import { call } from 'vuex-pathify';
+
 /**
  * Install Mixin:
  * This can be used by calling the install() method or displayed in a list item...
@@ -12,7 +14,7 @@ export default {
   },
   computed: {
     /**
-     * @returns A single VueRouter object with a defined onClick event to install.
+     * @returns A single RouteConfig object with a defined onClick event to install.
      */
     installItem() {
       return {
@@ -44,13 +46,15 @@ export default {
     }
   },
   methods: {
+    ...call('app', ['SET_SNACKBAR']),
     async install() {
       if (this.deferredPrompt && this.deferredPrompt.prompt) {
         await this.deferredPrompt.prompt();
       } else {
         setTimeout(() => {
           // Nothing happened?
-          this.$store.dispatch('snackbar/setSnack', {
+          this.SET_SNACKBAR({
+            bottom: true,
             message: `Nothing happened? Check app drawer if already installed.`,
             color: 'info',
           });

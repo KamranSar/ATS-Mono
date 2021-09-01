@@ -26,21 +26,17 @@
 </template>
 
 <script>
-  import { call, get, sync } from 'vuex-pathify';
+  import { call, sync } from 'vuex-pathify';
   import getNewToken from '@/config/private/helpers/getNewToken';
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
     name: 'SignInWithMicrosoftButton',
     methods: {
+      ...call('app', ['SET_ALERT']),
       ...call('azureAuthentication', ['AzureAuthentication']),
-      ...call('alert', ['setAlertMsg']),
-      ...call('users', {
-        getUserRecord: 'get',
-      }),
-      ...call('snackbar', ['setSnack']),
 
       async signinButtonClicked() {
-        this.setAlertMsg('');
+        this.SET_ALERT();
         this.loading = true;
         try {
           // Sign in with azure
@@ -49,29 +45,31 @@
             await getNewToken();
             await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for the authentication to finish or we get router errors
             this.$router.push({ name: 'Home' });
-
-            this.setSnack({
+            this.SET_ALERT({
               message: `Logged into ${this.$myApp.name} successfully.`,
-              color: 'success',
+              type: 'success',
             });
           } catch (e1) {
-            this.setAlertMsg(
-              'API server Authentication failed. ' + e1.message || ''
-            );
+            console.error(e1);
+            this.SET_ALERT({
+              message: 'User cancelled or authenticated failed.',
+              type: 'error',
+            });
           } finally {
             this.loading = false;
           }
         } catch (e2) {
-          this.setAlertMsg(
-            'Sign in with Microsoft failed. ' + e2.message || ''
-          );
+          console.error(e2);
+          this.SET_ALERT({
+            message: 'Sign in with Microsoft failed, please try again later.',
+            type: 'error',
+          });
         } finally {
           this.loading = false;
         }
       },
     },
     computed: {
-      ...get('azureAuthentication', ['azureLoading', 'azuretokenresponse']),
       ...sync('app', ['loading']),
     },
   };

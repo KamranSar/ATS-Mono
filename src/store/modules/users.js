@@ -32,11 +32,37 @@ const actions = {
 };
 
 const getters = {
+  /**
+   * isUserLoggedIn
+   * Returns whether or not a user is logged in.
+   *
+   * @param {*} state
+   * @returns {Boolean} - true|false whether or not the application user is logged in.
+   */
   isUserLoggedIn: (state) => {
     if (state.loggedInUser && state.loggedInUser.displayName) {
       return true;
     } else {
       return false;
+    }
+  },
+  /**
+   * getAppUserRoles
+   * Returns the roles from the loggedInUser or an empty array
+   *
+   * @param {*} state
+   * @returns {Array} - state.loggedInUser.appuserroles.roles || []
+   */
+  getAppUserRoles: (state) => {
+    if (
+      state.loggedInUser &&
+      state.loggedInUser.appuserroles &&
+      state.loggedInUser.appuserroles.roles &&
+      state.loggedInUser.appuserroles.roles.length
+    ) {
+      return state.loggedInUser.appuserroles.roles;
+    } else {
+      return [];
     }
   },
 };

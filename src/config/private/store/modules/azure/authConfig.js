@@ -6,6 +6,7 @@ import myApp from '@/config/myApp.js';
 import { getRoutesByName } from '@/router/routes.js';
 
 const azureTenantId = '0662477d-fa0c-4556-a8f5-c3bc62aa0d9c'; // TenantId of CDCR.
+const azureAppID = 'c0cf535a-bb4d-4731-94fb-8a4165b1a124';
 const loginPath =
   window.location.origin +
   myApp.publicPath +
@@ -15,7 +16,7 @@ const loginPath =
 // Config object to be passed to Msal on creation
 const msalConfig = {
   auth: {
-    clientId: myApp.azureAppID,
+    clientId: azureAppID,
     authority: `https://login.microsoftonline.com/${azureTenantId}`,
     redirectUri: loginPath,
     postLogoutRedirectUri: window.location.href, // This is the default behavior
@@ -55,7 +56,8 @@ const msalConfig = {
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
 const loginRequest = {
-  scopes: ['openid', 'profile', 'offline_access', 'email', 'User.Read'],
+  nonce: myApp.cdcrAppID,
+  scopes: ['openid', 'profile', 'offline_access', 'User.Read'],
   forceRefresh: false, // Set this to "true" to skip a cached token and go to the server to get a new token
 };
 
@@ -69,11 +71,11 @@ const graphConfig = {
   profilePhotoEndpoint:
     'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
   profilePhotoMetaEndpoint: 'https://graph.microsoft.com/v1.0/me/photos/48x48',
-  scopes: ['openid', 'profile', 'offline_access', 'email', 'User.Read'], // https://docs.microsoft.com/en-us/graph/permissions-reference
+  scopes: ['User.Read'], // https://docs.microsoft.com/en-us/graph/permissions-reference
 };
 
 const silentRequest = {
-  scopes: ['openid', 'profile', 'offline_access', 'email', 'User.Read'],
+  scopes: ['openid', 'profile', 'offline_access', 'User.Read'],
   forceRefresh: false, // Set this to "true" to skip a cached token and go to the server to get a new token
   // loginHint: 'first.last@cdcr.ca.gov',
 };

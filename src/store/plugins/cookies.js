@@ -1,3 +1,5 @@
+// https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies
+
 import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 import Cookies from 'js-cookie';
 

@@ -1,3 +1,5 @@
+// https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+
 import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 import localForage from 'localforage';
 import pako from 'pako';

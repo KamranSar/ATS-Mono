@@ -1,3 +1,5 @@
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+
 import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 
 // Modules you want to save to persistence

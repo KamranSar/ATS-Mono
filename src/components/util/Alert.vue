@@ -1,33 +1,65 @@
 <template>
-  <div>
-    <v-alert
-      class="text-center pl-3 pr-3 elevation-1"
-      :value="!!alert['message']"
-      type="error"
-      @input="closeAlert"
-      dismissible
+  <transition name="fade">
+    <v-container
+      fluid
+      :style="alertContainerStyle"
+      v-if="alert && alert.message"
     >
-      {{ alert['message'] }}
-    </v-alert>
-  </div>
+      <v-row justify="center">
+        <v-alert
+          border="left"
+          :type="alert.type"
+          dismissible
+          elevation="3"
+          @input="alert.message = ''"
+          dense
+          :prominent="showButton"
+        >
+          <span v-html="alert.message" />
+          <v-btn
+            v-if="showButton"
+            outlined
+            @click="alert.onClick"
+            v-html="alert.button"
+            class="ml-3"
+            dense
+          ></v-btn>
+        </v-alert>
+      </v-row> </v-container
+  ></transition>
 </template>
 <script>
-  import useVuexPathify from '@/compositions/useVuexPathify';
-
+  import { sync } from 'vuex-pathify';
   export default {
-    setup(props, context) {
-      const { sync } = useVuexPathify(context);
-
-      const alert = sync('alert/alert');
-
-      const closeAlert = () => {
-        alert.value['message'] = '';
-      };
-
-      return {
-        alert,
-        closeAlert,
-      };
+    computed: {
+      ...sync('app', ['alert']),
+      /**
+       * This styling allows the alert container to float on top of the canvas without obstruction.
+       */
+      alertContainerStyle() {
+        return {
+          position: 'absolute',
+          'z-index': 1,
+          top: this.$vuetify.application.top + 15 + 'px',
+        };
+      },
+      /**
+       * Prominent takes up vertical real-estate, only use when displaying a button
+       */
+      showButton() {
+        return Boolean(this.alert.onClick && this.alert.button);
+      },
     },
   };
 </script>
+
+<style scoped>
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+</style>

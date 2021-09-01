@@ -21,8 +21,9 @@
 </template>
 
 <script>
-  import { anonymousItems, userItems } from '@/router/routes';
-  import { onClick, getRouterColor } from '@/router/helpers/index.js';
+  import { anonymousItems, userItems } from '@/router/routes.js';
+  import onClick from '@/router/helpers/onClick.js';
+  import getRouterColor from '@/router/helpers/getRouterColor.js';
   import useVuexPathify from '@/compositions/useVuexPathify';
   export default {
     name: 'BottomNavBar',

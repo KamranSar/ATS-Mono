@@ -1,14 +1,14 @@
 import store from '@/store';
 import router from '@/router';
-import azureTokenExpiration from '@/config/private/helpers/azureTokenExpiration';
 import feathersTokenExpiration from '@/config/private/helpers/feathersTokenExpiration';
 import getMidTierToken from '@/config/private/helpers/getMidTierToken';
 
 /**
- * We need this because doing a users.find() returns all the users but without approles
- * To use this as a helper function outside of hooks, pass feathersClients in a object property called 'app'
+ * @name getNewToken
+ * This private helper can be called any time throughout the application but not NOT required.
  *
- * @returns feathers
+ * This private helper gets called on a setInterval we've created on `main.js`.
+ * This is also called during a refresh of all our vuex modules in `waitForStorageToBeReady`.
  */
 const getNewToken = async () => {
   try {
@@ -30,15 +30,15 @@ const getNewToken = async () => {
     }
 
     // Conditional around AzureAuthentication to check if expired.
-    if (azureTokenExpiration()) {
-      await store.dispatch('azureAuthentication/getTokenPopup');
-    }
-
     if (feathersTokenExpiration()) {
+      await store.dispatch('azureAuthentication/getTokenPopup');
       const midTierToken = await getMidTierToken();
 
       if (!midTierToken.authentication) {
-        store.dispatch('alert/setAlertMsg', 'Failed authentication');
+        store.dispatch('app/SET_ALERT', {
+          type: 'error',
+          message: 'Failed authentication',
+        });
         throw new Error('Failed authentication.');
       }
 
@@ -47,10 +47,11 @@ const getNewToken = async () => {
     }
     return true;
   } catch (error) {
+    // TODO: Catch cancel on getTokenPopup
     store.commit('users/resetState');
     router.push({ name: 'Login' });
     console.log('getNewToken(): ', error.message);
-    return null;
+    throw Error(error);
   }
 };
 

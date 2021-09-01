@@ -1,15 +1,22 @@
 <template>
-  <v-app-bar
-    :clipped-left="true"
-    :clipped-right="true"
-    flat
-    app
-    min-height="65"
-  >
-    <v-app-bar-nav-icon @click="leftDrawOpen = !leftDrawOpen">
-      <AppLogo></AppLogo>
-    </v-app-bar-nav-icon>
+  <v-app-bar clipped-left clipped-right flat app dense>
+    <!-- Left Navigation Icon -->
+    <v-badge
+      overlap
+      offset-y="20"
+      style="z-index: 1"
+      :color="updateItem.color"
+      :icon="updateItem.icon"
+      :value="updateExists"
+    >
+      <v-btn large icon @click="leftDrawOpen = !leftDrawOpen">
+        <v-icon v-if="leftDrawOpen">mdi-backburger</v-icon>
+        <v-icon v-else>mdi-menu</v-icon>
+      </v-btn>
+    </v-badge>
 
+    <!-- Application Logo & Name -->
+    <AppLogo></AppLogo>
     <span class="title ml-1">{{ $myApp.name }}</span>
 
     <v-spacer></v-spacer>
@@ -45,8 +52,14 @@
             v-if="item.children"
             :key="i"
             :group="item"
+            :toolbar="true"
           ></NavListGroup>
-          <NavListItem v-else :key="i" :item="item"></NavListItem>
+          <NavListItem
+            v-else
+            :key="i"
+            :item="item"
+            :toolbar="true"
+          ></NavListItem>
         </template>
         <v-list-item>
           <v-list-item-title>Dark Mode</v-list-item-title>
@@ -58,13 +71,15 @@
     </v-menu>
 
     <v-btn @click="rightDrawOpen = !rightDrawOpen" icon>
-      <v-icon>mdi-menu</v-icon>
+      <v-icon v-if="rightDrawOpen">mdi-backburger mdi-rotate-180</v-icon>
+      <v-icon v-else>mdi-menu</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
 
 <script>
-  import { onClick, getRouterColor } from '@/router/helpers/index.js';
+  import getRouterColor from '@/router/helpers/getRouterColor.js';
+  import onClick from '@/router/helpers/onClick.js';
   import {
     anonymousItems,
     adminItems,
@@ -75,7 +90,8 @@
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import useVuexPathify from '@/compositions/useVuexPathify';
-  import toTitleCase from '@/filters/toTitleCase';
+  import toTitleCase from '@/helpers/toTitleCase';
+  import Update from '@/mixins/Update';
   export default {
     components: {
       UserAvatar,
@@ -83,6 +99,7 @@
       NavListItem,
       NavListGroup,
     },
+    mixins: [Update],
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const loading = sync('app/loading');

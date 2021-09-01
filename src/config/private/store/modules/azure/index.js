@@ -48,6 +48,7 @@ const actions = {
     //
   },
 
+  // #region AzureAuthentication
   // Authenticate the user with Azure Active Directory
   AzureAuthentication: async ({ state }) => {
     try {
@@ -106,6 +107,7 @@ const actions = {
       store.set('app/loading', false);
     }
   },
+  // #endregion AzureAuthentication
 
   // This signs completely out of Azure including any other applications using this browser (outlook email, Teams, Devops, etc.)
   signOut: ({ state, commit }) => {

@@ -1,35 +1,47 @@
 <template>
-  <!-- FIX: Add disable-route-watcher to fix router color not opening without having to toggle drawer -->
   <v-navigation-drawer
     v-model="leftDrawOpen"
     clipped
     hide-overlay
     app
-    disable-resize-watcher
-    disable-route-watcher
+    :mini-variant.sync="miniDraw"
     :key="loggedInUser.logincount"
+    mini-variant-width="70"
   >
+    <!-- CAVEATS For Mini-Variant: https://vuetifyjs.com/en/components/navigation-drawers/#caveats -->
+    <!-- When displaying the user toolbar the miniDraw variable drives what content gets shown due to real estate -->
+    <!-- We hide the UserAvar in the toolbar and give it it's own ListItem in the mini-variant -->
+    <!-- We don't display any of the app or user info at the bottom in the mini-variant-->
+    <!-- We also correct some of the margins to center when going between variants -->
     <v-toolbar
       flat
       class="text-capitalize subtitle-2 grey--text"
       dense
       color="#ECEFF1"
     >
-      <span class="text-truncate mr-auto" v-if="isUserLoggedIn">
-        <UserAvatar></UserAvatar>
-        <span class="ml-2">{{ displayName }}</span>
+      <span class="text-truncate text-left">
+        <UserAvatar v-if="isUserLoggedIn && !miniDraw"></UserAvatar>
+        <span class="ml-2" v-if="!miniDraw">{{ displayName }}</span>
       </span>
-      <span class="text-truncate mr-auto" v-else>
-        <span>Currently Logged Out</span>
-      </span>
-      <v-btn icon small @click="leftDrawOpen = !leftDrawOpen">
-        <v-icon>mdi-chevron-left</v-icon>
+      <v-btn
+        color="primary"
+        icon
+        @click="miniDraw = !miniDraw"
+        :class="miniDraw ? 'mr-auto' : 'ml-auto'"
+        small
+      >
+        <v-icon>mdi-chevron-{{ miniDraw ? 'right' : 'left' }}</v-icon>
       </v-btn>
     </v-toolbar>
     <v-list v-if="isUserLoggedIn">
+      <v-list-item v-if="miniDraw">
+        <v-list-item-icon>
+          <UserAvatar></UserAvatar>
+        </v-list-item-icon>
+      </v-list-item>
       <template v-for="item in userItems">
         <NavListGroup
-          v-if="item.children"
+          v-if="item.children && item.children.length"
           :key="item.name"
           :group="item"
         ></NavListGroup>
@@ -39,7 +51,7 @@
     <v-list v-else>
       <template v-for="item in anonymousItems">
         <NavListGroup
-          v-if="item.children"
+          v-if="item.children && item.children.length"
           :key="item.name"
           :group="item"
         ></NavListGroup>
@@ -49,14 +61,13 @@
 
     <v-list
       v-if="
-        loggedInUser &&
-        loggedInUser.appuserroles &&
+        $hasARole() &&
         loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
       "
     >
       <template v-for="item in adminItems">
         <NavListGroup
-          v-if="item.children"
+          v-if="item.children && item.children.length"
           :key="item.name"
           :group="item"
         ></NavListGroup>
@@ -69,7 +80,7 @@
     <v-list>
       <template v-for="item in items">
         <NavListGroup
-          v-if="item.children"
+          v-if="item.children && item.children.length"
           :key="item.name"
           :group="item"
         ></NavListGroup>
@@ -87,30 +98,32 @@
     </v-list>
 
     <template v-slot:append>
-      <div
-        class="text-right caption pa-1"
-        v-if="
-          loggedInUser &&
-          loggedInUser.appuserroles &&
-          loggedInUser.appuserroles.roles
-        "
-      >
-        <div v-if="loggedInUser.appuserroles.roles.length">
-          <span
-            v-for="role in loggedInUser.appuserroles.roles"
-            :key="role"
-            class="text-right"
-          >
-            {{ role }} <br />
-          </span>
+      <transition-group name="fade" mode="in-out">
+        <div
+          key="user"
+          class="text-right caption pa-1"
+          v-if="$hasARole() && !miniDraw"
+        >
+          <div>
+            <span
+              v-for="role in loggedInUser.appuserroles.roles"
+              :key="role"
+              class="text-right"
+            >
+              {{ role }} <br />
+            </span>
+          </div>
+
+          <router-link to="/signout" exact>Log in as another user</router-link>
         </div>
-
-        <router-link to="/signout" exact>Log in as another user</router-link>
-      </div>
-
-      <div class="text-right caption pa-1 font-weight-regular">
-        {{ gitVersion }}
-      </div>
+        <div
+          key="app"
+          class="text-right caption font-weight-regular pr-1"
+          v-if="!miniDraw"
+        >
+          {{ gitVersion }}
+        </div>
+      </transition-group>
     </template>
   </v-navigation-drawer>
 </template>
@@ -137,6 +150,7 @@
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
       const leftDrawOpen = sync('userPrefs/leftDrawOpen');
+      const miniDraw = sync('userPrefs/miniDraw');
       const loggedInUser = get('users/loggedInUser');
       const isUserLoggedIn = get('users/isUserLoggedIn');
       const version = myApp.version;
@@ -167,12 +181,14 @@
         } else if (loggedInUser.value && loggedInUser.value.displayName) {
           return loggedInUser.value.displayName;
         } else {
-          return '';
+          return 'Currently Logged Out';
         }
       });
 
       return {
+        // Data
         leftDrawOpen,
+        miniDraw,
         displayName,
         anonymousItems,
         userItems,
@@ -187,3 +203,13 @@
     },
   };
 </script>
+<style>
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+</style>

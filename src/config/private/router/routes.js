@@ -43,19 +43,6 @@ const routes = [
       location.href = window.location.origin;
     },
   },
-  // Displayed by default in NavDrawerLeft.vue for admins
-  {
-    icon: 'mdi-account-multiple-outline',
-    path: '/users',
-    name: 'Users',
-    meta: {
-      can: 'if-user-admin',
-      fail: '4oh4',
-    },
-    component: () =>
-      import(/* webpackChunkName: "users" */ '@/views/Users.vue'),
-    // children: [],
-  },
   {
     // catch all 404
     path: '*',

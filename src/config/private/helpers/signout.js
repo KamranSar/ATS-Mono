@@ -6,7 +6,7 @@ import logout from '@/config/private/helpers/logout';
  * Call this function to sign out of the app
  * This will remove their auth from all other connected cdcr and microsoft apps.
  *
- * import signout from "@/config/private/helpers/signout.js";
+ * @example
  * <v-btn @click="signout()">Sign Out</v-btn>
  */
 async function signout() {

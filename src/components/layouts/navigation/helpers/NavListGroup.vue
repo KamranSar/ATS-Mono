@@ -1,10 +1,11 @@
 <template>
   <v-list-group
     v-bind="$attrs"
-    v-model="value"
     :no-action="child"
     :sub-group="child"
     :key="$route.fullPath"
+    v-model="value"
+    v-if="hasRoles"
   >
     <template v-slot:activator>
       <v-list-item-icon
@@ -23,7 +24,12 @@
         :group="item"
         :child="true"
       ></NavListGroup>
-      <NavListItem v-else :key="i" :item="item"></NavListItem>
+      <NavListItem
+        v-else
+        :key="i"
+        :item="item"
+        :toolbar="toolbar"
+      ></NavListItem>
     </template>
   </v-list-group>
 </template>
@@ -31,7 +37,7 @@
 <script>
   import NavListGroup from '@/components/layouts/navigation/helpers/NavListGroup.vue';
   import NavListItem from '@/components/layouts/navigation/helpers/NavListItem.vue';
-  import { getRouterColor } from '@/router/helpers/index.js';
+  import Navigation from '@/mixins/Navigation.js'; // toolbar, anyRole, allRoles, showOrHide(), getRouterColor(), onClick()
 
   export default {
     name: 'NavListGroup',
@@ -46,13 +52,6 @@
         default: false,
       },
     },
-    data: () => {
-      return {
-        value: null,
-      };
-    },
-    methods: {
-      getRouterColor,
-    },
+    mixins: [Navigation],
   };
 </script>

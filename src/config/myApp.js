@@ -1,4 +1,4 @@
-import toTitleCase from '@/filters/toTitleCase.js';
+import toTitleCase from '@/helpers/toTitleCase.js';
 
 const isLcl = window.location.hostname.includes('localhost'); // (internal only)
 const isDev = window.location.hostname.includes('dev'); // (internal only)
@@ -30,7 +30,7 @@ var myApp = Object.freeze({
   name: process.env.VUE_APP_NAME ? toTitleCase(process.env.VUE_APP_NAME) : '',
   appVersion, // Update using `npm version major|minor|patch`
   gitVersion,
-  azureAppID: process.env.VUE_APP_AZURE_APP_ID, // TODO: Request your azureAPPID from Network Engr
+  cdcrAppID: process.env.VUE_APP_CDCR_APP_ID, // TODO: Request your cdcrAppID from dashboard
   publicPath: process.env.VUE_APP_PUBLIC_PATH, // TODO: Define the publicPath in package.json
   useWebSocketConnection: false, // Set to true to switch from REST to Web Sockets
   appType: 'PWA',

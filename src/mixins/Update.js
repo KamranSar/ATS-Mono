@@ -1,7 +1,7 @@
 /**
  * Update Mixin:
  * This can be used by calling the update() method or displayed in a list item...
- * <v-list-item :item="updateItemm"></v-list-item>
+ * <v-list-item :item="updateItem"></v-list-item>
  *
  * Source: https://dev.to/drbragg/handling-service-worker-updates-in-your-vue-pwa-1pip
  */
@@ -19,7 +19,7 @@ export default {
      */
     updateItem() {
       return {
-        icon: 'mdi-new-box',
+        icon: 'mdi-exclamation',
         color: 'success',
         path: '',
         name: 'Update App',

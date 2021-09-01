@@ -5,7 +5,11 @@ import store from '@/store';
  *
  * The default return type is 'JSON'
  *
- * @param {Object|String} servicepath - The service or path of your API end point. Ex. /api/auth/v1/appuserroles
+ * @example
+ * const appUserRoles = await findAll('/api/auth/v1/appuserroles', null, { type: 'Array'});
+ * console.log({ appUserRoles })
+ *
+ * @param {Object|String} servicepath - The service or path of your API end point.
  * @param {Object} query - A complete feathers query object. Ex. { query: { ... } }
  * @param {Object} [options={type: 'JSON'}] - Available options for return
  *

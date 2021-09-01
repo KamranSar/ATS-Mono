@@ -1,0 +1,20 @@
+{
+  "name": "vue-frontend-template",
+  "version": "0.0.1",
+  "description": "Documentation for the vue-frontend-template",
+  "main": "index.js",
+  "authors": {
+    "name": "Nurthin Aziz",
+    "email": "nurthin.aziz@cdcr.ca.gov"
+  },
+  "repository": "https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template/vue-frontend-template",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "markdown-it-task-lists": "^2.1.1",
+    "vuepress": "^1.5.3"
+  }
+}

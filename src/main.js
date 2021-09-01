@@ -8,14 +8,24 @@ import myApp from '@/config/myApp.js';
 import feathersClient from '@/feathers/index.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 import getNewToken from '@/config/private/helpers/getNewToken';
+import '@/styles/Roboto-font.css';
+import '@mdi/font/css/materialdesignicons.css';
 
-import '@/acl/index.js';
+/**
+ * Make global our hasAnyRoles and hasAllRoles directives and helpers
+ */
+import '@/directives/v-has-any-roles';
+import '@/directives/v-has-all-roles';
+import hasARole from '@/helpers/hasARole';
+import roleCheck from '@/helpers/roleCheck';
 
 initServiceWorker();
 
 Vue.config.productionTip = true;
 
 Vue.prototype.$myApp = myApp;
+Vue.prototype.$hasARole = hasARole;
+Vue.prototype.$roleCheck = roleCheck;
 Vue.prototype.$feathers = feathersClient;
 Vue.prototype.$vuetify = vuetify;
 
@@ -28,21 +38,21 @@ new Vue({
   render: (h) => h(App),
 }).$mount('#app');
 
-// Get a new token every 20 seconds.
 let keepAliveInterval = null;
 let appInitialized = false;
 const createKeepAlive = () => {
   // handle the case where the visibility changes.
   // When we come back, we must check for a token before anything
   // else happens in the app or API's could fail
-  // Skip this for page refreshes. It's handled in the router guards (guards.js)
+  // Skip this for page refreshes. It's handled in the router guards
   if (appInitialized) {
     getNewToken();
   }
   appInitialized = true;
+  const hours = 2 * 1000 * 60; // Get a new token every 2 hours.
   keepAliveInterval = setInterval(() => {
     getNewToken();
-  }, 20 * 1000);
+  }, hours);
 };
 
 // Create the first one, and toggle it between visibility changes.

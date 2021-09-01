@@ -5,6 +5,7 @@ const getDefaultState = () => {
     // TODO: May want to implement this per user id to support multiple user login prefs.
     leftDrawOpen: false,
     rightDrawOpen: false,
+    miniDraw: true,
     darkMode: false,
   };
 };

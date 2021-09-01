@@ -3,13 +3,15 @@
     <v-toolbar
       flat
       dense
-      v-if="title"
+      v-if="routeTitle"
       fill-height
       class="align-center ma-0 pa-0"
     >
       <v-toolbar-title class="title primary--text">
-        <v-icon v-if="icon" color="primary" class="mr-2">{{ icon }}</v-icon>
-        <span color="primary" class="font-weight-bold">{{ title }}</span>
+        <v-icon v-if="routeIcon" color="primary" class="mr-2">{{
+          routeIcon
+        }}</v-icon>
+        <span color="primary" class="font-weight-bold">{{ routeTitle }}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -25,11 +27,10 @@
         :indeterminate="true"
         bottom
         absolute
-        color="#2196F3"
+        color="primary"
       />
     </v-toolbar>
 
-    <Alert />
     <v-container fluid>
       <v-row>
         <v-col cols="12">
@@ -47,6 +48,8 @@
    * <template slot="content"> This is a beautiful Pricing page. </template>
    */
   import useVuexPathify from '@/compositions/useVuexPathify';
+  import { reactive, ref } from '@vue/composition-api';
+  import { getRoutesByName } from '@/router/routes';
   export default {
     name: 'panel',
     props: {
@@ -57,12 +60,30 @@
     setup(props, context) {
       const { get } = useVuexPathify(context);
       const loading = get('app/loading');
+      const route = reactive({});
+      const routeTitle = ref('');
+      const routeIcon = ref('');
       return {
         loading,
+        route,
+        routeTitle,
+        routeIcon,
       };
     },
-    components: {
-      Alert: () => import('@/components/util/Alert'),
+    mounted() {
+      this.getRoute();
+    },
+    methods: {
+      getRoute() {
+        let route =
+          this.$route && this.$route.name
+            ? getRoutesByName(this.$route.name)
+            : [{ name: '', icon: '' }];
+
+        this.route = route[0];
+        this.routeTitle = this.title ? this.title : this.route.name;
+        this.routeIcon = this.icon ? this.icon : this.route.icon;
+      },
     },
   };
 </script>
