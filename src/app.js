@@ -23,7 +23,7 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const helmet = require('helmet');
 const cors = require('cors');
-const { logger } = require('cdcrhelpers');
+const { fileExists, logger } = require('cdcrhelpers');
 const feathers = require('@feathersjs/feathers');
 const configuration = require('@feathersjs/configuration');
 const express = require('@feathersjs/express');
@@ -126,5 +126,12 @@ app.hooks(appHooks);
 debug('Service Authorization is (%s)',
   (require('./service-config').server.authActive === true) ? 'ACTIVE' : 'DEACTIVATED'
 );
+
+// Set the gitInfo object in the application, if file exists
+const fileName = 'gitInfo.js';
+if (fileExists('./src/' + fileName)) {
+  const gitInfo = require('./' + fileName);
+  app.set('gitInfo', gitInfo);
+}
 
 module.exports = app;
