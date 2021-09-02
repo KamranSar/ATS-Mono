@@ -2,11 +2,11 @@
  * Router Guards used by Vue-Router
  */
 
-import checkRouteItems from '@/helpers/checkRouteItems.js';
+import checkRouteItems from '@/router/helpers/checkRouteItems.js';
 
 /**
- * hasAllRoles
- * Check to confirm the loggedInUser has ALL the roles passed in.
+ * hasAnyRoles
+ * Check to confirm the loggedInUser has any of the roles passed in.
  * Sends them to No Access if any of roles don't check out.
  *
  * @example
@@ -17,7 +17,7 @@ import checkRouteItems from '@/helpers/checkRouteItems.js';
  *  path: '/admin',
  *  component: Admin,
  *  meta: {
- *      beforeResolve: (to, from, next) => hasAllRoles(to, from, next, "4oh4"),
+ *      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next, "4oh4"),
  *      roles: [defaultAdminRole.name],
  *    }
  * }
@@ -28,8 +28,8 @@ import checkRouteItems from '@/helpers/checkRouteItems.js';
  * @param {String} [noAccessRoute="No Access"] noAccessRoute - The NAME of the route if all of the roles don't check out
 
  */
-const hasAllRoles = (to, from, next, noAccessRoute = 'No Access') => {
-  let hasRoles = true; // Default to false for hasAllRoles
+const hasAnyRoles = (to, from, next, noAccessRoute = 'No Access') => {
+  let hasRoles = false; // Default to false for hasAnyRoles
 
   hasRoles = checkRouteItems(to.matched, hasRoles);
 
@@ -40,4 +40,4 @@ const hasAllRoles = (to, from, next, noAccessRoute = 'No Access') => {
   }
 };
 
-export default hasAllRoles;
+export default hasAnyRoles;

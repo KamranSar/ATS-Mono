@@ -17,9 +17,11 @@ async function logout() {
   try {
     if (loggedIn) {
       await store.dispatch('azureAuthentication/logout'); // And always remove the Azure login token.
-      store.dispatch('app/SET_ALERT', {
+      store.dispatch('app/SET_SNACKBAR', {
+        top: true,
+        center: true,
         message: `Logged out of ${myApp.name} successfully.`,
-        type: 'success',
+        color: 'success',
       });
       window.localStorage.removeItem(process.env.VUE_APP_NAME);
 

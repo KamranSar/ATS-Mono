@@ -29,11 +29,7 @@
         <v-btn class="ma-1" color="secondary"> Secondary </v-btn>
         <v-btn class="ma-1" color="accent"> Secondary </v-btn>
         <v-btn class="ma-1" color="error"> Error </v-btn>
-        <v-btn
-          class="ma-1"
-          color="info"
-          v-if="$roleCheck(['Some Role'], 'hasAnyRoles')"
-        >
+        <v-btn class="ma-1" color="info" v-if="$hasAnyRoles(['Some Role'])">
           Info
         </v-btn>
         <v-btn class="ma-1" color="warning"> Warning </v-btn>

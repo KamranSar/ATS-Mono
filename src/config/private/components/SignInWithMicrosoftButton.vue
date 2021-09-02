@@ -32,11 +32,10 @@
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
     name: 'SignInWithMicrosoftButton',
     methods: {
-      ...call('app', ['SET_ALERT']),
+      ...call('app', ['SET_SNACKBAR']),
       ...call('azureAuthentication', ['AzureAuthentication']),
 
       async signinButtonClicked() {
-        this.SET_ALERT();
         this.loading = true;
         try {
           // Sign in with azure
@@ -45,24 +44,30 @@
             await getNewToken();
             await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for the authentication to finish or we get router errors
             this.$router.push({ name: 'Home' });
-            this.SET_ALERT({
+            this.SET_SNACKBAR({
+              top: true,
+              center: true,
               message: `Logged into ${this.$myApp.name} successfully.`,
-              type: 'success',
+              color: 'success',
             });
           } catch (e1) {
             console.error(e1);
-            this.SET_ALERT({
+            this.SET_SNACKBAR({
+              top: true,
+              center: true,
               message: 'User cancelled or authenticated failed.',
-              type: 'error',
+              color: 'error',
             });
           } finally {
             this.loading = false;
           }
         } catch (e2) {
           console.error(e2);
-          this.SET_ALERT({
+          this.SET_SNACKBAR({
+            top: true,
+            center: true,
             message: 'Sign in with Microsoft failed, please try again later.',
-            type: 'error',
+            color: 'error',
           });
         } finally {
           this.loading = false;

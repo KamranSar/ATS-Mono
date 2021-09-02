@@ -1,6 +1,6 @@
 {
   "name": "vue-frontend-template",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "publicPath": "/app",
   "cdcrAppID": "c0cf535a-bb4d-4731-94fb-8a4165b1a124",
   "private": true,

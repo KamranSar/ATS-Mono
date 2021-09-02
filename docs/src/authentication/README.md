@@ -163,8 +163,7 @@ A globally available helper to do a role check, the default type passed in (seco
 // Some .vue file
 export default {
   beforeRouteEnter(to, from, next) {
-    // Defaults to `hasAllRoles`
-    if (this.$roleCheck(['Required Role 1', 'Required Role 2'])) {
+    if (this.$hasAllRoles(['Required Role 1', 'Required Role 2'])) {
       next();
     } else {
       next({ name: 'No Access' });

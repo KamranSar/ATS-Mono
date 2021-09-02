@@ -17,7 +17,8 @@ import '@mdi/font/css/materialdesignicons.css';
 import '@/directives/v-has-any-roles';
 import '@/directives/v-has-all-roles';
 import hasARole from '@/helpers/hasARole';
-import roleCheck from '@/helpers/roleCheck';
+import hasAllRoles from '@/helpers/hasAllRoles';
+import hasAnyRoles from '@/helpers/hasAnyRoles';
 
 initServiceWorker();
 
@@ -25,7 +26,8 @@ Vue.config.productionTip = true;
 
 Vue.prototype.$myApp = myApp;
 Vue.prototype.$hasARole = hasARole;
-Vue.prototype.$roleCheck = roleCheck;
+Vue.prototype.$hasAllRoles = hasAllRoles;
+Vue.prototype.$hasAnyRoles = hasAnyRoles;
 Vue.prototype.$feathers = feathersClient;
 Vue.prototype.$vuetify = vuetify;
 

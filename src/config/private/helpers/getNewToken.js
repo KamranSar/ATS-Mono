@@ -35,8 +35,10 @@ const getNewToken = async () => {
       const midTierToken = await getMidTierToken();
 
       if (!midTierToken.authentication) {
-        store.dispatch('app/SET_ALERT', {
-          type: 'error',
+        store.dispatch('app/SET_SNACKBAR', {
+          top: true,
+          center: true,
+          color: 'error',
           message: 'Failed authentication',
         });
         throw new Error('Failed authentication.');

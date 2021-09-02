@@ -59,12 +59,7 @@
       </template>
     </v-list>
 
-    <v-list
-      v-if="
-        $hasARole() &&
-        loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
-      "
-    >
+    <v-list>
       <template v-for="item in adminItems">
         <NavListGroup
           v-if="item.children && item.children.length"

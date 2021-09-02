@@ -4,7 +4,7 @@
  */
 import onClick from '@/router/helpers/onClick.js';
 import getRouterColor from '@/router/helpers/getRouterColor.js';
-import checkRouteItems from '@/helpers/checkRouteItems.js';
+import checkRouteItems from '@/router/helpers/checkRouteItems.js';
 export default {
   props: {
     toolbar: {

@@ -2,7 +2,7 @@
  * Router Guards used by Vue-Router
  */
 
-import checkRouteItems from '@/helpers/checkRouteItems.js';
+import checkRouteItems from '@/router/helpers/checkRouteItems.js';
 
 /**
  * hasAllRoles
@@ -29,7 +29,7 @@ import checkRouteItems from '@/helpers/checkRouteItems.js';
 
  */
 const hasAllRoles = (to, from, next, noAccessRoute = 'No Access') => {
-  let hasRoles = true; // Default to false for hasAllRoles
+  let hasRoles = true; // Default to true for hasAllRoles
 
   hasRoles = checkRouteItems(to.matched, hasRoles);
 

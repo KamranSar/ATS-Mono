@@ -375,7 +375,7 @@ The purpose of this helper is to do a role check for all the routes and not a si
   This is already called in the router guards and their v-directive equivalents `hasAnyRoles` and `hasAllRoles`.
 
 :::details
-<<< @/../src/helpers/checkRouteItems.js
+<<< @/../src/router/helpers/checkRouteItems.js
 :::
 
 ## Full Navigation Resolution Flow
