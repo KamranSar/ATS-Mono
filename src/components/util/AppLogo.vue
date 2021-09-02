@@ -23,7 +23,7 @@
     name: 'AppLogo',
     mixins: [Update],
     data: () => ({
-      imgLocation: '/img/logo.svg',
+      imgLocation: 'img/logo.svg',
     }),
     computed: {
       ...get('app', ['loading']),
