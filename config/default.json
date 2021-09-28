@@ -14,7 +14,9 @@
     "entity": "user",
     "service": "internal/users",
     "secret": "JWT_SALT_SECRET",
-    "authStrategies": ["jwt"],
+    "authStrategies": [
+      "jwt"
+    ],
     "jwtOptions": {
       "header": {
         "typ": "access"
@@ -47,23 +49,44 @@
     "poolSize": 5
   },
   "mssql": {
-    "connection": {
-      "server": "MSSQL_SVR",
-      "user": "MSSQL_USER",
-      "password": "MSSQL_PASSWORD",
-      "database": "MSSQL_DB",
-      "options": {
-        "port": "MSSQL_PORT",
-        "enableArithAbort": true,
-        "timezone": "UTC",
-        "encrypt": false
-      }
+    "host": "MSSQL_SVR",
+    "port": 0,
+    "userName": "MSSQL_USER",
+    "password": "MSSQL_PASSWORD",
+    "database": "MSSQL_DB",
+    "dialect": "mssql",
+    "schema": "MSSQL_DB_SCHEMA",
+    "protocol": "tcp",
+    "timezone": "America/Los_Angeles",
+    "logging": false,
+    "define": {
+      "freezeTableName": true
     },
     "pool": {
       "min": 1,
-      "max": 5
+      "max": 5,
+      "idle": 10000,
+      "acquire": 60000
     },
-    "connTimeout": 10000
+    "dialectOptions": {
+      "authentication": {
+        "type": "MSSQL_AUTH_TYPE",
+        "options": {
+          "domain": "MSSQL_DOMAIN",
+          "userName": "MSSQL_USER",
+          "password": "MSSQL_PASSWORD"
+        }
+      },
+      "options": {
+        "connectionRetryInterval": 500,
+        "connectTimeout": 10000,
+        "database": "MSSQL_DB",
+        "instanceName": "MSSQL_DB_INSTANCE_NAME",
+        "port": 0,
+        "requestTimeout": 15000,
+        "useUTC": false
+      }
+    }
   },
   "oracledb": {
     "connection": {

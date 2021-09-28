@@ -1,30 +1,40 @@
 /* eslint-disable no-console */
-const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:models:mssqlservice.model:dbname');
-const { logger } = require('cdcrhelpers');
+const Sequelize = require('sequelize');
+const DataTypes = Sequelize.DataTypes;
 //
-// mssqlservice-model.js - KnexJS
+// mssqlservice-model.js - Sequelize
 // 
 // See http://knexjs.org/  for more of what you can do here.
 module.exports = function (app) {
-  const db = app.get('mssqlClient');
-  const tableName = 'a_people';
-  const schema = db.schema;
-  schema.hasTable(tableName)
-    .then(exists => {
-      if (!exists) {
-        db.schema.createTable(tableName, table => {
-          table.increments('id');
-          table.string('lastname');
-          table.string('firstname');
-          table.string('location');
-          table.timestamp('createdat').defaultTo(db.fn.now());
-          table.timestamp('updatedat').defaultTo(db.fn.now());
-          table.string('updatedby').defaultTo('NO_ID');
-        })
-          .then(() => debug(`Created ${tableName} table`))
-          .catch(e => logger.error(`Error creating ${tableName} table`, e));
+  const dbMssql = app.get('mssqlClient');
+  const newModel = dbMssql.define('a_people', {
+    id: {
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    lastname: DataTypes.STRING,
+    firstname: DataTypes.STRING,
+    location: DataTypes.STRING,
+   
+  }, {
+    tableName: 'a_people',
+    timestamps: true,
+    createdAt: true,
+    updatedAt: true
+  },
+  {
+    hooks: {
+      beforeCount(options) {
+        options.raw = true;
       }
-    });
+    }
+  });
 
-  return db;
+  // eslint-disable-next-line no-unused-vars
+  newModel.associate = function (models) {
+    // Define associations here
+    // See http://docs.sequelizejs.com/en/latest/docs/associations/
+  };
+
+  return newModel;
 };

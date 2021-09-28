@@ -68,6 +68,7 @@
     "feathers-mongoose": "^8.3.3",
     "feathers-permissions": "^2.1.4",
     "feathers-redis-cache": "^1.2.1",
+    "feathers-sequelize": "^6.2.0",
     "feathers-swagger": "^1.2.1",
     "feathers-sync": "^2.3.0",
     "git-describe": "^4.0.4",
@@ -83,7 +84,9 @@
     "oracledb": "^5.1.0",
     "pg": "^8.5.1",
     "request-logs": "^2.1.4",
+    "sequelize": "^6.6.5",
     "serve-favicon": "^2.5.0",
+    "tedious": "^12.2.0",
     "tough-cookie": "^4.0.0",
     "winston": "^3.3.3"
   },
