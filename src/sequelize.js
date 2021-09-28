@@ -14,7 +14,9 @@ module.exports = function (app) {
     // Convert username and password from base64 to utf8/ascii - Also handles if already in utf8/ascii.
     if (connConfig.userName && connConfig.userName.length > 1 && connConfig.password && connConfig.password.length > 1) {
       connConfig.userName = connConfig.userName == 'SA' ? connConfig.userName : base64ToString(connConfig.userName);
+      connConfig.dialectOptions.authentication.options.userName = connConfig.userName;
       connConfig.password = connConfig.userName == 'SA' ? connConfig.password: base64ToString(connConfig.password);
+      connConfig.dialectOptions.authentication.options.password = connConfig.password;
     } else {
       logger.error('sequelize: MS-SQL username or password is missing or incomplete');
       process.exit(1);
