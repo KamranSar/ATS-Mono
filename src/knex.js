@@ -40,7 +40,7 @@ module.exports = function (app) {
 
     // Connection test - perform a fast server query
     app.oracle = {
-      max: 1001,
+      max: 12,
       errcnt: 0,
       connected: false,
       connectionTimeoutMS: 5000,
@@ -126,7 +126,7 @@ module.exports = function (app) {
 
     // Connection test - perform a fast server query
     app.postgres = {
-      max: 1001,
+      max: 12,
       errcnt: 0,
       connected: false,
       connectionTimeoutMS: 5000,
