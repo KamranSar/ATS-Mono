@@ -49,11 +49,16 @@ var myApp = Object.freeze({
     } */
     defaultAdminRole,
     {
-      name: 'Example Role',
-      description:
-        'Generic application role, change this to suit your app needs',
-      priority: 999,
+      name: 'Everyone',
+      description: 'Everyone role has read or view access only.',
+      priority: 99,
     },
+    // {
+    //   name: 'Example Role',
+    //   description:
+    //     'Generic application role, change this to suit your app needs',
+    //   priority: 999,
+    // },
   ],
   helpers: {
     // reverseText: function (text) {

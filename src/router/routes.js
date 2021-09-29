@@ -12,6 +12,50 @@ import { defaultAdminRole } from '@/config/myApp.js';
 const routes = [
   ...defaultRoutes,
   {
+    icon: 'mdi-bus-multiple',
+    path: '/transfer',
+    name: 'Transfer',
+    component: () =>
+      import(/* webpackChunkName: "Transfer" */ '@/views/Transfer.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      roles: [defaultAdminRole.name, 'Everyone'],
+    },
+  },
+  {
+    icon: 'mdi-bus-clock',
+    path: '/schedule',
+    name: 'Schedule',
+    component: () =>
+      import(/* webpackChunkName: "Schedule" */ '@/views/Schedule.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      roles: [defaultAdminRole.name, 'Everyone'],
+    },
+  },
+  {
+    icon: 'mdi-bus-clock',
+    path: '/maintenance',
+    name: 'Maintenance',
+    component: () =>
+      import(/* webpackChunkName: "Maintenance" */ '@/views/Maintenance.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      roles: [defaultAdminRole.name, 'Everyone'],
+    },
+  },
+  {
+    icon: 'mdi-file-document',
+    path: '/reports',
+    name: 'Reports',
+    component: () =>
+      import(/* webpackChunkName: "Reports" */ '@/views/Reports.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      roles: [defaultAdminRole.name, 'Everyone'],
+    },
+  },
+  {
     icon: 'mdi-account-key-outline',
     name: 'Admin',
     path: '/admin',
@@ -87,7 +131,13 @@ function getRoutesByName(listOfRouteNames) {
 // Public Routes
 const anonymousItems = getRoutesByName(['Login', 'Settings']);
 // Routes for Anyone Logged In
-const userItems = getRoutesByName(['Home']);
+const userItems = getRoutesByName([
+  'Home',
+  'Schedule',
+  'Transfer',
+  'Maintenance',
+  'Reports',
+]);
 // Routes for Users with Role Admin
 const adminItems = getRoutesByName(['Admin']);
 // Routes used for the Toolbar in AppBar.vue
