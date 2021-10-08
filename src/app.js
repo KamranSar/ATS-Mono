@@ -18,12 +18,13 @@ if (process.env.NODE_ENV === 'production') {
   if (process.env.DEBUG && process.env.DEBUG.length > 1 && !process.env.DEBUG.includes(process.env.APP_NAME)) process.env.DEBUG += `,${process.env.APP_NAME}:*`;
 }
 
+// Declare required packages, libraries and app components
 const debug = require('debug')(`${process.env.APP_NAME}:` + 'src:app');
 const path = require('path');
 const favicon = require('serve-favicon');
 const helmet = require('helmet');
 const cors = require('cors');
-const { fileExists, logger } = require('cdcrhelpers');
+const { fileExists, logger, processSecrets } = require('cdcrhelpers');
 const feathers = require('@feathersjs/feathers');
 const configuration = require('@feathersjs/configuration');
 const express = require('@feathersjs/express');
@@ -42,8 +43,12 @@ const redis = require('./redis');
 const openapi = require('./openapi');
 const distribution = require('@kalisio/feathers-distributed');
 
+// Create the app object
 const app = express(feathers());
 debug('Node Environment: ' + app.get('env'));
+
+// Load all secrets if present
+processSecrets();
 
 // Load app configuration (default.json, test.json, or production.json)
 app.configure(configuration());
@@ -123,6 +128,7 @@ app.configure(channels);
 // Configure a middleware for 404s and the error handler
 app.use(express.errorHandler({ logger }));
 
+// Configure global app hooks
 app.hooks(appHooks);
 
 debug('Service Authorization is (%s)',

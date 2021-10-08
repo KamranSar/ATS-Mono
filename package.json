@@ -1,7 +1,7 @@
 {
   "name": "database-template",
   "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
-  "version": "0.0.0",
+  "version": "0.2.1",
   "homepage": "",
   "private": true,
   "main": "src",

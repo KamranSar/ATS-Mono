@@ -23,8 +23,8 @@ IMAGE_REPO_DOMAIN=fdctwebharbor.accounts.cdcr.ca.gov
 #
 # Harbor Repo Credentials
 #------------------------
-IMAGE_REPO_USER=admin
-IMAGE_REPO_PSWD=Harbor12345
+IMAGE_REPO_USER=readonly
+IMAGE_REPO_PSWD=H@rb0r3p0
 #
 # Harbor Repo Folders & Version
 #------------------------------
@@ -52,7 +52,8 @@ ORACLE_SVR_PORT=1521
 ORACLE_GUI_PORT=5500
 ORACLE_USER=system
 ORACLE_PASSWORD=Oradoc_db1
-ORACLE_CONNSTR=localhost:1521/ORCLPDB1.localdomain
+ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest1.vcx
+# ORACLE_CONNSTR=localhost:1521/ORCLPDB1.localdomain
 #
 ## MS SQL Docker Server
 MSSQL_PORT=1433

@@ -35,7 +35,7 @@ RUN cd /app  &&  npm install --unsafe-perm
 # RUN ls -al
 
 # Remove unnecessary files & folders to reduce image size & improve security
-RUN rm -rf .git; rm -rf .vscode; rm -rf test; rm -rf testdata; rm -rf scripts; rm -rf env.sample; rm -rf .env
+RUN rm -rf .git .vscode test testdata scripts env.sample .env /usr/bin/cat
 # RUN ls -al
 
 # Expose server port

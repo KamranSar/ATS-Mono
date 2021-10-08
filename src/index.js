@@ -21,10 +21,8 @@ process.on('SIGINT', function () {
   // });
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection Reason:  ', {reason});
-  logger.error('Unhandled Rejection Promise: ', {promise});
-  // process.exit(1);
+process.on('unhandledRejection', error => {
+  logger.error('Unhandled Rejection Error:  ', error);
 });
 
 process.on('uncaughtException', (error, origin) => {
