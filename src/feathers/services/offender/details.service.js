@@ -5,7 +5,7 @@ import myApp from '@/config/myApp.js';
 // If you've enabled sockets in myApp config...
 // Toggle this to true or false to watch for service changes on the socket.
 const watchForChangesOnSocket = true;
-import { offenderdetailHook } from '@/feathers/services/offenderdetail/offenderdetail.hooks.js';
+import { offenderdetailHook } from '@/feathers/services/offender/details.hooks.js';
 
 const servicePath = 'api/cdcr/ats/v1/offenderdetail';
 const service = feathersClient.service(servicePath);

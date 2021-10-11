@@ -356,7 +356,7 @@
 <script>
   //  import { get } from 'vuex-pathify';
   // import transferservice from '@/feathers/services/transfer/transfer.service.js';
-  import somsservice from '@/feathers/services/soms/soms.service.js';
+  import somsOffender from '@/feathers/services/offender/details.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
 
@@ -466,9 +466,16 @@
         // this.continue1824();
         this.loading = true;
         try {
-          const offenderInfo = await somsservice.getOffender(
-            this.somsCDCRNumber
-          );
+          // const offenderInfo = await somsOffender.getOffender(
+          //   this.somsCDCRNumber
+          // );
+          const query = {
+            query: {
+              cdcrnumber: this.cdcrNumber,
+            },
+          };
+
+          const offenderInfo = somsOffender.find(query);
 
           if (offenderInfo.data.length > 0) {
             this.somsOffender = offenderInfo.data[0];
@@ -492,6 +499,8 @@
               this.loading = false;
               this.displayOffender = true;
             }, 500);
+
+            return offenderInfo;
           } else {
             this.loading = false;
             this.searchOffenderNotFoundErrorDialog = true;
