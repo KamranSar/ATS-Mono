@@ -19,7 +19,7 @@
 
       <v-row justify="center" v-has-all-roles="['System Administrator']">
         <v-btn
-          v-has-any-roles="['System Administrator', 'asdfkasdfasdf']"
+          v-has-any-roles="['System Administrator', 'Everyone']"
           class="ma-1"
           color="primary"
         >

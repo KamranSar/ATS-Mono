@@ -88,6 +88,24 @@ docker run \
 --name $IMAGE_NAME \
 --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 #
+IMAGE_NAME="mt-eds-ats"
+if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
+  docker container rm --force $IMAGE_NAME
+fi
+echo docker run --name $IMAGE_NAME...
+docker run \
+--network host \
+--env-file scripts/test_env \
+--env APP_HOST=localhost \
+--env APP_PORT=${MT_EIS_COMMON_PORT} \
+--env ORACLE_SVR_PORT=1521 \
+--env ORACLE_GUI_PORT=5500 \
+--env ORACLE_USER=aW50ZXJmYWNlX3VzZXJbZW9taXNfcm9fdXNlcl0= \
+--env ORACLE_PASSWORD=VVNFUmlmIyMyMDIw \
+--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest1.vcx \
+--expose ${MT_EIS_COMMON_PORT} \
+--name $IMAGE_NAME \
+--detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 #* END - REQUIRED CONTAINERS
 
 #* BEGIN - OPTIONAL CONTAINERS

@@ -3,7 +3,7 @@
 #=============================
 # Define the test servers/containers your MT server is using.
 #* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
-REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common")
+REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common" "mt-eds-ats")
 #* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
 OPT_ContainerArray=()
 #

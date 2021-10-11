@@ -7,6 +7,7 @@ const themes = Object.freeze({
     info: '#2196F3', // Blue
     success: '#4CAF50', // Green
     warning: '#FFC107', // Yellow
+    cardPrimary: '#ECEFF1', // light Gray
   },
   dark: {},
 });

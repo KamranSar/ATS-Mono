@@ -34,7 +34,7 @@ const routes = [
     },
   },
   {
-    icon: 'mdi-bus-clock',
+    icon: 'mdi-cog-outline',
     path: '/maintenance',
     name: 'Maintenance',
     component: () =>

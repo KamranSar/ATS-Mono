@@ -1,4 +1,4 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
-  "VUE_APP_NAME": "vue-frontend-template"
+  "VUE_APP_NAME": "Automated Transfer System"
 }

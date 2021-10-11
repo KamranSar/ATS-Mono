@@ -4,7 +4,7 @@ module.exports = {
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#title
    */
-  title: 'Vue Frontend Template',
+  title: 'Automated Transfer System',
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
