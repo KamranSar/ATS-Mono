@@ -2,6 +2,7 @@
 const { getUptime, FormatLongTimestampAsString } = require('cdcrhelpers');
 const { gitDescribe } = require('git-describe');
 const glc = require('git-last-commit');
+const appCfg = require('../../../package.json');
 
 exports.ServiceClass = class ServiceClass {
   constructor(options, app) {
@@ -39,7 +40,10 @@ exports.ServiceClass = class ServiceClass {
     }
 
     return {
-      uptime: getUptime(),
+      serverInfo: {
+        name: appCfg.name,
+        version: appCfg.version
+      },
       lastCommitInfo: {
         commitId: appGitInfo.commitId || '',
         branch: appGitInfo.branch || '',
@@ -47,7 +51,8 @@ exports.ServiceClass = class ServiceClass {
         committedOn: appGitInfo.committedOn || '',
         subject: appGitInfo.subject || '',
         dirty: appGitInfo.dirty || '',
-      }
+      },
+      uptime: getUptime()
     };
   }
 };
