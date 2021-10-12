@@ -155,7 +155,7 @@
                 <v-divider></v-divider>
                 <div>
                   <span class="labeling">Housing:</span>
-                  <span class="data">{{ displayHousing }}</span>
+                  <span class="data">{{ somsOffender.housingArea }}</span>
                   <br />
                   <span class="labeling">Ethnicity:</span>
                   <span class="data">{{ somsOffender.ethnicity }}</span>
@@ -366,9 +366,9 @@
     data: () => ({
       //Imported Methods
       formatDate,
+      loading: false,
       formValid: false,
       displayOffender: true,
-      loading: false,
       somsCDCRNumber: '',
       somsOffender: {
         offenderId: '0123456789',
@@ -471,11 +471,11 @@
           // );
           const query = {
             query: {
-              cdcrnumber: this.cdcrNumber,
+              cdcrnumber: this.somsCDCRNumber,
             },
           };
 
-          const offenderInfo = somsOffender.find(query);
+          const offenderInfo = await somsOffender.find(query);
 
           if (offenderInfo.data.length > 0) {
             this.somsOffender = offenderInfo.data[0];
