@@ -49,8 +49,20 @@ var myApp = Object.freeze({
     } */
     defaultAdminRole,
     {
-      name: 'Everyone',
-      description: 'Everyone role has read or view access only.',
+      name: 'Institution Administrator',
+      description:
+        'Institution Administrator has permission to assign roles and create and update records.',
+      priority: 10,
+    },
+    {
+      name: 'Institution User',
+      description:
+        'Institution User has permission to create and update records.',
+      priority: 20,
+    },
+    {
+      name: 'Guest',
+      description: 'Guest role has read or view access only.',
       priority: 99,
     },
     // {

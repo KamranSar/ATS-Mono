@@ -54,73 +54,98 @@
                 </v-btn>
               </v-col>
             </v-row>
-            <v-row class="my-0 pt-2" v-show="displayOffender">
+            <v-row class="my-0 pt-2">
               <v-col class="py-0 my-0" cols="4" sm="6" md="3" lg="3">
-                <v-img
-                  height="100%"
-                  editForm
-                  class="white--text"
-                  :src="displayPhoto"
-                  contain
-                >
-                  <!-- <v-img max-height="400px" contain :src="displayPhoto"> -->
-                  <template v-slot:placeholder>
-                    <v-progress-circular
-                      indeterminate
-                      color="grey lighten-5"
-                    ></v-progress-circular>
-                  </template>
-                </v-img>
+                <div v-show="displayOffender">
+                  <v-img
+                    height="100%"
+                    editForm
+                    class="white--text"
+                    :src="displayPhoto"
+                    contain
+                  >
+                    <!-- <v-img max-height="400px" contain :src="displayPhoto"> -->
+                    <template v-slot:placeholder>
+                      <v-progress-circular
+                        indeterminate
+                        color="grey lighten-5"
+                      ></v-progress-circular>
+                    </template>
+                  </v-img>
+                </div>
+                <div v-show="housingRestriction">
+                </div>
+                <div v-show="physicalLimitation">
+                </div>
+                <div v-show="medicalEquipment">
+                </div>
               </v-col>
               <v-col cols="4" sm="6" md="3" lg="3">
                 <div>
                   <v-row no-gutters>
                     <v-col class="pb-1">
-                      <p class="font-weight-black black--text title pa-0 ma-0">
+                      <span
+                        class="font-weight-black black--text title pa-0 ma-0"
+                      >
                         {{
                           somsOffender.firstName + ' ' + somsOffender.lastName
                         }}
-                      </p>
+                      </span>
+                      <span class="data">
+                        <v-btn
+                          v-show="housingRestriction"
+                          x-small
+                          fab
+                          color="brown darken-1"
+                          class="ml-2 data"
+                          @click="housingRestrictionsDialog = true"
+                          dark
+                        >
+                          <v-icon>mdi-home</v-icon>
+                        </v-btn>
+                        <v-btn
+                          v-show="housingRestriction"
+                          x-small
+                          fab
+                          color="brown darken-1"
+                          class="ml-2 data"
+                          @click="housingRestrictionsDialog = true"
+                          dark
+                        >
+                          <v-icon>mdi-home</v-icon>
+                        </v-btn>
+                        <v-btn
+                          v-show="physicalLimitation"
+                          x-small
+                          fab
+                          color="blue-grey darken-1"
+                          class="ml-2 data"
+                          @click="physicalLimitationsDialog = true"
+                          dark
+                        >
+                          <v-icon>mdi-run</v-icon>
+                        </v-btn>
+                        <v-btn
+                          v-show="medicalEquipment"
+                          x-small
+                          fab
+                          class="ml-2 data"
+                          color="red lighten-1"
+                          @click="medicalEquipmentDialog = true"
+                          dark
+                        >
+                          <v-icon class="pb-1">mdi-medical-bag</v-icon>
+                        </v-btn>
+                      </span>
+                      <br />
                       <span>
                         {{ somsOffender.institution }}
                       </span>
-                      <br />
-                      <v-btn
-                        v-show="housingRestriction"
-                        x-small
-                        fab
-                        color="brown darken-1"
-                        class="ml-2 data"
-                        @click="housingRestrictionsDialog = true"
-                        dark
-                      >
-                        <v-icon>mdi-home</v-icon>
-                      </v-btn>
-                      <v-btn
-                        v-show="physicalLimitation"
-                        x-small
-                        fab
-                        color="blue-grey darken-1"
-                        class="ml-2 data"
-                        @click="physicalLimitationsDialog = true"
-                        dark
-                      >
-                        <v-icon>mdi-run</v-icon>
-                      </v-btn>
-                      <v-btn
-                        v-show="medicalEquipment"
-                        x-small
-                        fab
-                        class="ml-2 data"
-                        color="red lighten-1"
-                        @click="medicalEquipmentDialog = true"
-                        dark
-                      >
-                        <v-icon class="pb-1">mdi-medical-bag</v-icon>
-                      </v-btn>
                     </v-col>
                   </v-row>
-                  <v-divider class="pb-2"></v-divider>
+                </div>
+                <v-divider class="pb-2"></v-divider>
+                <div>
                   <span class="labeling">CDCR Number:</span>
                   <span class="data">{{ somsOffender.cdcrNumber }}</span>
                   <br />
@@ -151,9 +176,9 @@
                   <br />
                   <span class="labeling">MH Level of Care:</span>
                   <span class="data">{{ somsOffender.mhLoc }}</span> -->
-                </div>
+                <!-- </div> -->
                 <v-divider></v-divider>
-                <div>
+                <!-- <div> -->
                   <span class="labeling">Housing:</span>
                   <span class="data">{{ somsOffender.housingArea }}</span>
                   <br />
