@@ -15,11 +15,11 @@ module.exports =
     'authActive': false,
     //* Database enable/disable flags:
     //* All DB flags are optional and can be removed along with their associated code if not used.
-    'mongooseEnabled': false,
-    'mongodbEnabled': false,
-    'mssqlEnabled': false,
+    'mongooseEnabled': true,
+    'mongodbEnabled': true,
+    'mssqlEnabled': true,
     'oracleEnabled': true,
-    'postgresEnabled': false
+    'postgresEnabled': true
   },
   'services': [
     //* List off Supported Services:
@@ -27,19 +27,19 @@ module.exports =
     {
       'name': 'mongooseservice',
       'version': 'v1',
-      'enabled': false,
+      'enabled': true,
       'description': 'example of a CRUD services for a MongoDB Mongoose schema database.'
     },
     {
       'name': 'mongodbservice',
       'version': 'v1',
-      'enabled': false,
+      'enabled': true,
       'description': 'Example of a CRUD services for a MongoDB database.'
     },
     {
       'name': 'mssqlservice',
       'version': 'v1',
-      'enabled': false,
+      'enabled': true,
       'description': 'CRUD services for an MS-SQL database. The A_PEOPLE table is used for this template.'
     },
     {
@@ -51,25 +51,25 @@ module.exports =
     {
       'name': 'postgresservice',
       'version': 'v1',
-      'enabled': false,
+      'enabled': true,
       'description': 'CRUD services for an Postgres database. The A_PEOPLE table is used for this template.'
     },
     {
       'name': 'rawsqlservice',
       'version': 'v1',
-      'enabled': false,
+      'enabled': true,
       'description': 'CRUD services for a Custom database server. Complex queries and payloads used for this template.'
     },
     {
       'name': 'rawsqlservice',
       'version': 'v2',
-      'enabled': false,
+      'enabled': true,
       'description': 'CRUD services for a Custom database server. Complex queries and payloads used for this template.'
     },
     {
       'name': 'customservice',
       'version': 'v1',
-      'enabled': false,
+      'enabled': true,
       'description': 'Example of a basic Custom service.'
     }
   ]
