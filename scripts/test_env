@@ -82,8 +82,9 @@ PROXY_USER_AGENT=cdcr_midtier_api_auth
 #
 ## Debugging settings
 # =============================
-DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*
-#DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*,feathers-distributed*
+DEBUG=-*channels*,cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*
+#DEBUG=-*channels*,-feathersjs/configuration,cdcr*,*feathers*express*,*feathers-permissions*,*feathers-sync*
+#DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*,*feathers-distributed*
 DEBUG_COLORS=true
 DEBUG_HIDE_DATE=false
 DEBUG_SHOW_HIDDEN=false
