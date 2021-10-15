@@ -1,0 +1,45 @@
+#=============================================
+# Azure pipeline to build a Docker image and
+# push the image to the Harbor Repository.
+#=============================================
+trigger:
+- main
+
+pool:
+  name: $(AGENT_POOL)
+
+stages:
+- stage: BuildAndPushStage
+  jobs:
+  - job: BuildAndPushJob
+    steps:
+      - script: |
+          echo .***************************************
+          echo .
+          echo "Build Reason = (" $(Build.Reason) ")"
+          echo .
+          echo .***************************************
+      - task: Bash@3
+        displayName: ImageBuildTask
+        name: ImageBuildTask
+        enabled: true
+        continueOnError: false
+        timeoutInMinutes: 30
+        inputs:
+          noProfile: false
+          noRc: false
+          filePath: '$(MT_BUILD_SCRIPTS_LOC)/devops_build_mt_server.sh'
+          workingDirectory: $(MT_BUILD_SCRIPTS_LOC)
+          arguments: '-u $(Build.Repository.Uri) -b $(Build.SourceBranch) -i $(DOCKER_IMAGE_NAME)'
+      - task: Bash@3
+        displayName: ImagePushTask
+        name: ImagePushTask
+        enabled: true
+        continueOnError: false
+        timeoutInMinutes: 10
+        inputs:
+          noProfile: false
+          noRc: false
+          filePath: '$(MT_BUILD_SCRIPTS_LOC)/devops_push_mt_server_to_harbor.sh'
+          workingDirectory: $(MT_BUILD_SCRIPTS_LOC)
+          arguments:  '-i $(DOCKER_IMAGE_NAME)'
