@@ -166,7 +166,7 @@
                       </div>
                     </span>
                   </v-col>
-                  <v-col class="pb-1" cols="3">
+                  <v-col cols="3" class="pb-1">
                     <span class="font-weight-black black--text title pa-0 ma-0">
                       {{ somsOffender.firstName + ' ' + somsOffender.lastName }}
                     </span>
@@ -175,7 +175,7 @@
                       {{ somsOffender.institutionName }}
                     </span>
                   </v-col>
-                  <v-col class="pb-1" cols="3" align-self="center">
+                  <v-col cols="3" class="pb-1" align-self="center">
                     <!-- <div style="text-align: right"> -->
                     <div>
                       <span>
@@ -235,6 +235,20 @@
                         </v-btn>
                       </span>
                     </div>
+                  </v-col>
+                  <v-col cols="5" class="pb-1" align="right">
+                    <!-- <span class="pr-4">
+                      <v-btn color="secondary" @click="dlgCancel = true" dense>
+                        <v-icon>mdi-close-box-outline</v-icon>
+                        Cancel
+                      </v-btn>
+                    </span> -->
+                    <!-- <span> -->
+                    <v-btn color="secondary" @click="dlgSave = true" dense>
+                      <v-icon>mdi-content-save-outline</v-icon>
+                      Save
+                    </v-btn>
+                    <!-- </span> -->
                   </v-col>
                 </v-row>
               </div>
@@ -547,6 +561,34 @@
           </v-row>
         </v-form>
       </v-card-text>
+      <v-dialog v-model="confirmSubmitDialog" persistent max-width="480">
+        <v-card>
+          <v-card-title class="headline"> Confirm Update </v-card-title>
+          <v-card-text
+            >Confirm updating request by clicking Yes or No.</v-card-text
+          >
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="confirmSubmitDialog = false">
+              No
+            </v-btn>
+            <v-btn color="primary" text @click="updateForm"> Yes </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="cancelSubmitDialog" persistent max-width="480">
+        <v-card>
+          <v-card-title class="headline"> Cancel Update </v-card-title>
+          <v-card-text>Cancel the update by clicking Yes or No.</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="cancelSubmitDialog = false">
+              No
+            </v-btn>
+            <v-btn color="primary" text @click="cancelUpdate"> Yes </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
     <!-- </v-card> -->
 
@@ -687,6 +729,28 @@
         </v-tabs>
       </v-col>
     </v-row> -->
+    <v-dialog v-model="confirmSubmitDialog" persistent max-width="480">
+      <v-card>
+        <v-card-title class="headline"> Confirm Transfer </v-card-title>
+        <v-card-text> Confirm transfer by clicking Yes or No. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="dlgSave = false"> No </v-btn>
+          <v-btn color="primary" text @click="saveForm"> Yes </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="cancelSubmitDialog" persistent max-width="480">
+      <v-card>
+        <v-card-title class="headline"> Cancel Update </v-card-title>
+        <v-card-text>Cancel the update by clicking Yes or No.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="dlgCancel = false"> No </v-btn>
+          <v-btn color="primary" text @click="cancelSave"> Yes </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -704,6 +768,8 @@
     data: () => ({
       //Imported Methods
       formatDate,
+      dlgCancel: false,
+      dlgSave: false,
       loading: false,
       formValid: false,
       displayOffender: true,
@@ -954,6 +1020,16 @@
         } finally {
           this.loading = false;
         }
+      },
+      cancelSave() {
+        this.dlgCancel = false;
+      },
+      saveForm() {
+        // validate data
+        // call api to send data to db
+        // interrogate response - success or failure
+        this.dlgSave = false;
+        alert('saveForm(): completed successfully!');
       },
     },
   };
