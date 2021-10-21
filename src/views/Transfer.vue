@@ -561,193 +561,28 @@
           </v-row>
         </v-form>
       </v-card-text>
-      <v-dialog v-model="confirmSubmitDialog" persistent max-width="480">
-        <v-card>
-          <v-card-title class="headline"> Confirm Update </v-card-title>
-          <v-card-text
-            >Confirm updating request by clicking Yes or No.</v-card-text
-          >
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="confirmSubmitDialog = false">
-              No
-            </v-btn>
-            <v-btn color="primary" text @click="updateForm"> Yes </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model="cancelSubmitDialog" persistent max-width="480">
-        <v-card>
-          <v-card-title class="headline"> Cancel Update </v-card-title>
-          <v-card-text>Cancel the update by clicking Yes or No.</v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="cancelSubmitDialog = false">
-              No
-            </v-btn>
-            <v-btn color="primary" text @click="cancelUpdate"> Yes </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-card>
-    <!-- </v-card> -->
-
-    <!-- <v-divider class="pb-2"></v-divider>
-    <v-card>
-      <v-row class="mt-2">
-        <v-col cols="3">
-          <v-text-field
-            dense
-            label="Hold Date"
-            prepend-icon="mdi-calendar"
-            v-bind="attrs"
-            v-on="on"
-            placeholder=""
-          ></v-text-field>
-        </v-col>
-        <v-col cols="4">
-          <v-combobox dense label="Hold Reason" placeholder=" "> </v-combobox>
-        </v-col>
-        <v-col cols="4">
-          <v-text-field
-            dense
-            label="Hold Comments"
-            placeholder=" "
-          ></v-text-field>
-        </v-col>
-      </v-row>
-    </v-card> -->
-    <!-- <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-              >
-                Save
-              </v-btn>
-            </v-card-actions> -->
-    <!-- <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog> -->
-    <!-- <v-card>
-      <v-row class="px-3" no-gutters>
-        <v-col class="py-0 my-0" cols="10" sm="6" md="4" lg="3">
-          <v-combobox label="Destination" placeholder=" "></v-combobox>
-          <br />
-          <v-combobox label="Schedule" placeholder=" "></v-combobox>
-
-          <br />
-          <v-combobox dense label="VIA1" placeholder=" "></v-combobox>
-          <br />
-          <v-combobox dense label="VIA2" placeholder=" "></v-combobox>
-          <br />
-          <v-text-field
-            label="Transfer Date"
-            prepend-icon="mdi-calendar"
-            v-bind="attrs"
-            v-on="on"
-            placeholder=" "
-          ></v-text-field>
-          <br />
-          <v-text-field
-            dense
-            label="Specific Transfer Reason"
-            placeholder=" "
-          ></v-text-field>
-
-          <br />
-          <br />
-        </v-col>
-        <v-col cols="6">
-          <v-combobox
-            dense
-            label="Offender Case Factors"
-            placeholder=" "
-          ></v-combobox>
-        </v-col>
-      </v-row>
-    </v-card>
-
-    <v-row>
-
-      <v-col cols="8">
-        <v-tabs vertical>
-          <v-tab> Auditor Comments </v-tab>
-          <v-tab> CDCR 135 Comments </v-tab>
-          <v-tab> In-House Remarks </v-tab>
-
-          <v-tab-item>
-            <v-card>
-              <v-card-text>
-                <v-textarea
-                  label="Auditor Comments"
-                  readonly
-                  placeholder=" "
-                  rows="4"
-                ></v-textarea>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-            <v-card>
-              <v-card-text>
-                <v-textarea
-                  label="CDCR 135 Comments"
-                  placeholder=" "
-                  rows="4"
-                ></v-textarea>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-            <v-card>
-              <v-card-text>
-                <v-textarea
-                  label="In-House Remarks"
-                  placeholder=" "
-                  rows="4"
-                ></v-textarea>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-        </v-tabs>
-      </v-col>
-    </v-row> -->
-    <v-dialog v-model="confirmSubmitDialog" persistent max-width="480">
+    <v-dialog v-model="dlgSaveForm" persistent max-width="480">
       <v-card>
         <v-card-title class="headline"> Confirm Transfer </v-card-title>
         <v-card-text> Confirm transfer by clicking Yes or No. </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dlgSave = false"> No </v-btn>
+          <v-btn color="primary" text @click="dlgSaveForm = false"> No </v-btn>
           <v-btn color="primary" text @click="saveForm"> Yes </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="cancelSubmitDialog" persistent max-width="480">
+    <v-dialog v-model="dlgCancelForm" persistent max-width="480">
       <v-card>
         <v-card-title class="headline"> Cancel Update </v-card-title>
         <v-card-text>Cancel the update by clicking Yes or No.</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dlgCancel = false"> No </v-btn>
-          <v-btn color="primary" text @click="cancelSave"> Yes </v-btn>
+          <v-btn color="primary" text @click="dlgCancelForm = false">
+            No
+          </v-btn>
+          <v-btn color="primary" text @click="cancelForm"> Yes </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -768,8 +603,8 @@
     data: () => ({
       //Imported Methods
       formatDate,
-      dlgCancel: false,
-      dlgSave: false,
+      dlgCancelForm: false,
+      dlgSaveForm: false,
       loading: false,
       formValid: false,
       displayOffender: true,
@@ -1021,14 +856,14 @@
           this.loading = false;
         }
       },
-      cancelSave() {
-        this.dlgCancel = false;
+      cancelForm() {
+        this.dlgCancelForm = false;
       },
       saveForm() {
         // validate data
         // call api to send data to db
         // interrogate response - success or failure
-        this.dlgSave = false;
+        this.dlgSaveForm = false;
         alert('saveForm(): completed successfully!');
       },
     },
