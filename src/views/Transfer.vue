@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <v-card class="mt-1 mb-6 pa-2"> -->
     <v-card elevation="3" class="ma-4 px-4 pb-4">
       <v-card-title class="light-grey lighten-4">
         <v-row>
@@ -52,98 +51,7 @@
       <v-divider></v-divider>
       <v-card-text class="pa-2 ma-0">
         <v-form v-model="formValid" ref="myForm">
-          <!-- <v-row class="pa-0 ma-0" no-gutters justify="start">
-              <v-col cols="4" class="ma-0 pa-0">
-                <v-text-field
-                  class="pt-1 pb-0 ma-0"
-                  dense
-                  outlined
-                  clearable
-                  autocomplete="off"
-                  label="Enter CDCR Number"
-                  type="text"
-                  @keypress.enter="searchOffender"
-                  @change="somsCDCRNumber = somsCDCRNumber.toUpperCase()"
-                  @keyup="somsCDCRNumber = somsCDCRNumber.toUpperCase()"
-                  v-model="somsCDCRNumber"
-                  hide-details
-                >
-                </v-text-field>
-              </v-col>
-              <v-col cols="1">
-                <v-btn
-                  color="secondary"
-                  class="pa-5 ml-2 mt-1"
-                  @click="searchOffender"
-                  :loading="loading"
-                >
-                  <v-icon>mdi-magnify</v-icon>
-                  Search
-                </v-btn>
-              </v-col>
-            </v-row> -->
-          <!-- <v-row>
-              <v-col>
-                <span>
-                  <v-btn
-                    v-show="btnInfo"
-                    x-small
-                    fab
-                    color="gray darken-1"
-                    class="ml-2"
-                    @click="showInfo('info')"
-                    dark
-                  >
-                    <v-icon>mdi-account</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-show="btnHousing"
-                    x-small
-                    fab
-                    color="brown darken-1"
-                    class="ml-2"
-                    @click="showInfo('housing')"
-                    dark
-                  >
-                    <v-icon>mdi-home</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-show="btnPhysical"
-                    x-small
-                    fab
-                    color="blue-grey darken-1"
-                    class="ml-2"
-                    @click="showInfo('physical')"
-                    dark
-                  >
-                    <v-icon>mdi-run</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-show="btnMedical"
-                    x-small
-                    fab
-                    class="ml-2"
-                    color="red lighten-1"
-                    @click="showInfo('medical')"
-                    dark
-                  >
-                    <v-icon class="pb-1">mdi-medical-bag</v-icon>
-                  </v-btn>
-                  <v-btn
-                    x-small
-                    fab
-                    color="gray darken-1"
-                    class="ml-2"
-                    @click="showInfo('comments')"
-                    dark
-                  >
-                    <v-icon>mdi-comment-text-outline</v-icon>
-                  </v-btn>
-                </span>
-              </v-col>
-            </v-row> -->
           <v-row class="my-0 pt-2">
-            <!-- <v-col cols="8" sm="12" md="6" lg="6"> -->
             <v-col>
               <div>
                 <v-row no-gutters>
@@ -237,18 +145,44 @@
                     </div>
                   </v-col>
                   <v-col cols="5" class="pb-1" align="right">
-                    <!-- <span class="pr-4">
-                      <v-btn color="secondary" @click="dlgCancel = true" dense>
-                        <v-icon>mdi-close-box-outline</v-icon>
-                        Cancel
-                      </v-btn>
-                    </span> -->
-                    <!-- <span> -->
-                    <v-btn color="secondary" @click="dlgSave = true" dense>
-                      <v-icon>mdi-content-save-outline</v-icon>
-                      Save
-                    </v-btn>
-                    <!-- </span> -->
+                    <v-dialog v-model="dlgSaveForm" persistent max-width="480">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          color="secondary"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="dlgSave = true"
+                          dense
+                        >
+                          <v-icon>mdi-content-save-outline</v-icon>
+                          Save
+                        </v-btn>
+                      </template>
+                      <template v-slot:default="dlgSaveForm">
+                        <v-card>
+                          <v-toolbar color="primary" dark>
+                            Confirm Transfer
+                          </v-toolbar>
+                          <v-card-text>
+                            <div class="text-h2 pa-12">
+                              Confirm transfer by clicking Yes or No.
+                            </div>
+                          </v-card-text>
+                          <v-card-actions class="justify-end">
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="dlgSaveForm = false"
+                            >
+                              No
+                            </v-btn>
+                            <v-btn color="primary" text @click="saveForm">
+                              Yes
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
+                    </v-dialog>
                   </v-col>
                 </v-row>
               </div>
@@ -409,38 +343,10 @@
               <v-text-field label="Temporary Housing" dense></v-text-field>
               <v-select label="Security Level" dense></v-select>
             </v-col>
-            <!-- <v-col cols="3" sm="6" md="3" lg="3">
-                <span>Comments</span>
-                <v-divider class="pb-2"></v-divider>
-                <v-textarea
-                  label="CDC 135/Status Report Comments"
-                  outlined
-                  no-resize
-                  rows="4"
-                ></v-textarea>
-                <v-divider class="pa-2"></v-divider>
-                <v-textarea
-                  label="In-House Remarks"
-                  outlined
-                  no-resize
-                  rows="4"
-                ></v-textarea>
-              </v-col> -->
           </v-row>
           <v-row>
-            <!-- <v-col cols="2">
-                <span>Endorsement Information</span>
-                <v-divider class="pb-4"></v-divider>
-                <v-text-field label="Date" dense></v-text-field>
-                <v-select label="Endorsed To" dense></v-select>
-                <v-select label="Original Date" dense></v-select>
-                <v-select label="Current Date" dense></v-select>
-                <v-select label="Expiration Date" dense></v-select>
-              </v-col> -->
             <v-col cols="4">
               <div>
-                <span>Case Factors</span>
-                <v-divider class="pb-4"></v-divider>
                 <v-data-table
                   :items-per-page="itemsPerPage"
                   dense
@@ -453,11 +359,104 @@
                   no-data-text="No Case Factors"
                   no-results-text="No Case Factors Found"
                 >
+                  <template
+                    v-slot:top
+                    class="pb-4"
+                    style="boder: 1px solid lightgray"
+                  >
+                    <span style="color: rgba(0, 0, 0, 0.6); font-size: 14px">
+                      Case Factors
+                    </span>
+                    <v-dialog v-model="dlgEditCF" max-width="300px">
+                      <template v-slot:activator="{ on, attrs }">
+                        <button
+                          type="button"
+                          style="
+                            background-color: #1976d2;
+                            border-radius: 4px;
+                            float: right;
+                            margin-top: -2px;
+                          "
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          <v-icon dark dense>mdi-plus</v-icon>
+                        </button>
+                      </template>
+                      <v-card>
+                        <v-card-title>
+                          <span class="text-h5">{{ formTitleCF }}</span>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <v-col>
+                                <v-text-field
+                                  v-model="editedCaseFactorItem.code"
+                                  label="Code"
+                                >
+                                </v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="blue darken-2"
+                            text
+                            @click="cancelCaseFactor"
+                          >
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            color="blue darken-2"
+                            text
+                            @click="saveCaseFactor"
+                          >
+                            Save
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                    <v-dialog v-model="dlgDeleteCF" max-width="500px">
+                      <v-card>
+                        <v-card-title class="text-h5">
+                          Are you sure you want to delete this item?
+                        </v-card-title>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="cancelDeleteCaseFactor"
+                          >
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="confirmDeleteCaseFactor"
+                          >
+                            OK
+                          </v-btn>
+                          <v-spacer></v-spacer>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                    <v-divider class="pb-4"></v-divider>
+                  </template>
                   <template v-slot:item.actions="{ item }">
-                    <v-icon small class="mr-2" @click="alert(item)">
+                    <v-icon
+                      small
+                      class="mr-2"
+                      @click="editCaseFactorItem(item)"
+                    >
                       mdi-pencil
                     </v-icon>
-                    <v-icon small> mdi-delete @click="alert(item)"</v-icon>
+                    <v-icon small @click="deleteCaseFactorItem(item)">
+                      mdi-delete
+                    </v-icon>
                   </template>
                   <template v-slot:no-data>
                     <v-btn color="primary"> Reset </v-btn>
@@ -467,25 +466,127 @@
             </v-col>
             <v-col cols="8">
               <div>
-                <span>Holds</span>
-                <v-divider class="pb-4"></v-divider>
                 <v-data-table
                   :items-per-page="itemsPerPage"
                   dense
                   :headers="holdsHeader"
                   :items="holds"
-                  item-key="code"
+                  item-key="number"
                   class="elevation-1"
-                  :search="cfCode"
-                  @keypress="filterCaseFactors"
+                  :search="holdNum"
+                  @keypress="filterHolds"
                   no-data-text="No Holds"
                   no-results-text="No Holds Found"
                 >
+                  <template
+                    v-slot:top
+                    class="pb-4"
+                    style="boder: 1px solid lightgray"
+                  >
+                    <span style="color: rgba(0, 0, 0, 0.6); font-size: 14px">
+                      Holds
+                    </span>
+                    <v-dialog v-model="dlgEditHold" max-width="400px">
+                      <template v-slot:activator="{ on, attrs }">
+                        <button
+                          type="button"
+                          style="
+                            background-color: #1976d2;
+                            border-radius: 4px;
+                            float: right;
+                            margin-top: -2px;
+                          "
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          <v-icon dark dense>mdi-plus</v-icon>
+                        </button>
+                      </template>
+                      <v-card>
+                        <v-card-title>
+                          <span class="text-h5">{{ formTitleHold }}</span>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <v-col>
+                                <v-text-field
+                                  v-model="editedHoldItem.number"
+                                  label="Number"
+                                >
+                                </v-text-field>
+                              </v-col>
+                              <v-col>
+                                <v-text-field
+                                  v-model="editedHoldItem.reason"
+                                  label="Reason"
+                                >
+                                </v-text-field>
+                              </v-col>
+                              <v-col>
+                                <v-text-field
+                                  v-model="editedHoldItem.date"
+                                  label="Date"
+                                >
+                                </v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col>
+                                <v-text-field
+                                  v-model="editedHoldItem.comments"
+                                  label="Comments"
+                                >
+                                </v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="blue darken-2" text @click="cancelHold">
+                            Cancel
+                          </v-btn>
+                          <v-btn color="blue darken-2" text @click="saveHold">
+                            Save
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                    <v-dialog v-model="dlgDeleteHold" max-width="500px">
+                      <v-card>
+                        <v-card-title class="text-h5">
+                          Are you sure you want to delete this item?
+                        </v-card-title>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="cancelDeleteHold"
+                          >
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="confirmDeleteHold"
+                          >
+                            OK
+                          </v-btn>
+                          <v-spacer></v-spacer>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                    <v-divider class="pb-4"></v-divider>
+                  </template>
                   <template v-slot:item.actions="{ item }">
-                    <v-icon small class="mr-2" @click="alert(item)">
+                    <v-icon small class="mr-2" @click="editHoldItem(item)">
                       mdi-pencil
                     </v-icon>
-                    <v-icon small> mdi-delete @click="alert(item)"</v-icon>
+                    <v-icon small @click="deleteHoldItem(item)">
+                      mdi-delete
+                    </v-icon>
                   </template>
                   <template v-slot:no-data>
                     <v-btn color="primary"> Reset </v-btn>
@@ -544,16 +645,27 @@
               </v-row>
               <v-row>
                 <v-col cols="2">
-                  <v-text-field label="Via 1" dense readonly></v-text-field>
+                  <v-text-field
+                    label="Via 1"
+                    dense
+                    readonly
+                    filled
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="2">
-                  <v-text-field label="Via 2" dense readonly></v-text-field>
+                  <v-text-field
+                    label="Via 2"
+                    dense
+                    readonly
+                    filled
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
                     label="Transfer Date"
                     dense
                     readonly
+                    filled
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -562,36 +674,10 @@
         </v-form>
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dlgSaveForm" persistent max-width="480">
-      <v-card>
-        <v-card-title class="headline"> Confirm Transfer </v-card-title>
-        <v-card-text> Confirm transfer by clicking Yes or No. </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dlgSaveForm = false"> No </v-btn>
-          <v-btn color="primary" text @click="saveForm"> Yes </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dlgCancelForm" persistent max-width="480">
-      <v-card>
-        <v-card-title class="headline"> Cancel Update </v-card-title>
-        <v-card-text>Cancel the update by clicking Yes or No.</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dlgCancelForm = false">
-            No
-          </v-btn>
-          <v-btn color="primary" text @click="cancelForm"> Yes </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
-  //  import { get } from 'vuex-pathify';
-  // import transferservice from '@/feathers/services/transfer/transfer.service.js';
   import somsOffender from '@/feathers/services/offender/details.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
@@ -676,7 +762,9 @@
           },
         ],
         // ATS Fields
-        originalEndorsementDate: null,
+        dateEndorsementOriginal: null,
+        dateEndorsementCurrent: null,
+        dateEndorsementExpiration: null,
         transferDate: null,
         isTransfered: false,
         schedule: '',
@@ -698,8 +786,7 @@
       showMedical: false,
       showPhoto: false,
       showComments: false,
-      // Case Factor Table Header
-      cfCode: '',
+      // Case Factors Table Header
       itemsPerPage: 5,
       caseFactorsHeader: [
         {
@@ -707,12 +794,18 @@
           value: 'code',
         },
         { text: 'Actions', value: 'actions', sortable: false },
-        // { text: 'Calories', value: 'calories' },
-        // { text: 'Fat (g)', value: 'fat' },
-        // { text: 'Carbs (g)', value: 'carbs' },
-        // { text: 'Protein (g)', value: 'protein' },
-        // { text: 'Iron (%)', value: 'iron' },
       ],
+      cfCode: '',
+      dlgDeleteCF: false,
+      dlgEditCF: false,
+      editCFTitle: '',
+      editedCaseFactorIndex: -1,
+      editedCaseFactorItem: {
+        code: 0,
+      },
+      defaultCFItem: {
+        code: 0,
+      },
       caseFactors: [
         {
           code: 1,
@@ -724,36 +817,61 @@
           code: 3,
         },
       ],
+      // Holds Table Header
       holdsHeader: [
-        { text: 'Hold Number', value: 'holdNum' },
-        { text: 'Hold Reason', value: 'holdReason' },
-        { text: 'Hold Date', value: 'holdDate' },
-        { text: 'Hold Comments', value: 'holdComments' },
+        { text: 'Number', value: 'number' },
+        { text: 'Reason', value: 'reason' },
+        { text: 'Date', value: 'date' },
+        { text: 'Comments', value: 'comments' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
+      holdNum: '',
+      dlgDeleteHold: false,
+      dlgEditHold: false,
+      editHoldTitle: '',
+      editedHoldIndex: -1,
+      editedHoldItem: {
+        number: 0,
+        reason: '',
+        date: '',
+        comments: '',
+      },
+      defaultHoldItem: {
+        number: 0,
+        reason: '',
+        date: '',
+        comments: '',
+      },
       holds: [
         {
-          holdNum: 1,
-          holdReason: 'Not liked',
-          holdDate: '01/01/2049',
-          holdComments: 'Sorry Charlie',
+          number: 1,
+          reason: 'Not liked',
+          date: '01/01/2049',
+          comments: 'Sorry Charlie',
         },
         {
-          holdNum: 2,
-          holdReason: 'Not liked',
-          holdDate: '01/02/2049',
-          holdComments: 'Sorry Charlie',
+          number: 2,
+          reason: 'Not liked',
+          date: '01/02/2049',
+          comments: 'Sorry Charlie',
         },
         {
-          holdNum: 3,
-          holdReason: 'Not liked',
-          holdDate: '01/03/2049',
-          holdComments: 'Sorry Charlie',
+          number: 3,
+          reason: 'Not liked',
+          date: '01/03/2049',
+          comments: 'Sorry Charlie',
         },
       ],
     }),
+    watch: {
+      dlgEditCF(val) {
+        val || this.cancelCaseFactor();
+      },
+      dlgDeleteCF(val) {
+        val || this.cancelDeleteCaseFactor();
+      },
+    },
     computed: {
-      // ...get('users', ['loggedInUser']),
       displayPhoto() {
         if (this.somsOffender && this.somsOffender.photograph) {
           return `data:image/jpg;base64,${this.somsOffender.photograph}`;
@@ -761,25 +879,28 @@
           return `data:image/jpg;base64,${userplaceholder}`;
         }
       },
+      formTitleCF() {
+        return this.editedCaseFactorIndex === -1
+          ? 'New Case Factor'
+          : 'Edit Case Factor';
+      },
+      formTitleHold() {
+        return this.editedHoldIndex === -1 ? 'New Hold' : 'Edit Hold';
+      },
     },
     async mounted() {
       await this.getInstitutions();
     },
     methods: {
       async searchOffender() {
-        // this.continue1824();
         this.loading = true;
         try {
-          // const offenderInfo = await somsOffender.getOffender(
-          //   this.somsCDCRNumber
-          // );
           const query = {
             query: {
               cdcrnumber: this.somsCDCRNumber,
             },
           };
 
-          debugger;
           const offenderInfo = await somsOffender.find(query);
 
           if (offenderInfo.data.length > 0) {
@@ -829,7 +950,6 @@
         this.showMedical = choice == 'medical' ? true : false;
         this.showComments = choice == 'comments' ? true : false;
       },
-      filterCaseFactors() {},
       async getInstitutions() {
         try {
           this.loading = true;
@@ -856,6 +976,86 @@
           this.loading = false;
         }
       },
+      // Case Factor Methods
+      filterCaseFactors() {},
+      editCaseFactorItem(item) {
+        this.editedCaseFactorIndex = this.caseFactors.indexOf(item);
+        this.editedCaseFactorItem = Object.assign({}, item);
+        this.dlgEditCF = true;
+      },
+      cancelCaseFactor() {
+        this.dlgEditCF = false;
+        this.$nextTick(() => {
+          this.editedCaseFactorItem = Object.assign({}, this.defaultItem);
+          this.editedCaseFactorIndex = -1;
+        });
+      },
+      saveCaseFactor() {
+        if (this.editedCaseFactorIndex > -1) {
+          Object.assign(
+            this.caseFactors[this.editedCaseFactorIndex],
+            this.editedCaseFactorItem
+          );
+        } else {
+          this.caseFactors.push(this.editedCaseFactorItem);
+        }
+        this.cancelCaseFactor();
+      },
+      deleteCaseFactorItem(item) {
+        debugger;
+        this.editedCaseFactorIndex = this.caseFactors.indexOf(item);
+        this.editedCaseFactorItem = Object.assign({}, item);
+        this.dlgDeleteCF = true;
+      },
+      cancelDeleteCaseFactor() {
+        this.dlgDeleteCF = false;
+        this.$nextTick(() => {
+          this.editedCaseFactorItem = Object.assign({}, this.defaultItem);
+          this.editedCaseFactorIndex = -1;
+        });
+      },
+      confirmDeleteCaseFactor() {
+        this.caseFactors.splice(this.editedCaseFactorIndex, 1);
+        this.cancelDeleteCaseFactor();
+      },
+      // Hold Methods
+      filterHolds() {},
+      editHoldItem(item) {
+        this.editedHoldIndex = this.holds.indexOf(item);
+        this.editedHoldItem = Object.assign({}, item);
+        this.dlgEditHold = true;
+      },
+      cancelHold() {
+        this.dlgEditHold = false;
+        this.$nextTick(() => {
+          this.editedHoldItem = Object.assign({}, this.defaultHoldItem);
+          this.editedHoldIndex = -1;
+        });
+      },
+      saveHold() {
+        if (this.editedHoldIndex > -1) {
+          Object.assign(this.holds[this.editedHoldIndex], this.editedHoldItem);
+        } else {
+          this.holds.push(this.editedHoldItem);
+        }
+        this.cancelHold();
+      },
+      deleteHoldItem(item) {
+        this.editedHoldIndex = this.caseFactors.indexOf(item);
+        this.editedHoldItem = Object.assign({}, item);
+        this.dlgDeleteHold = true;
+      },
+      cancelDeleteHold() {
+        this.dlgDeleteHold = false;
+        this.$nextTick(() => {
+          this.editedHoldItem = Object.assign({}, this.defaultHoldItem);
+          this.editedHoldIndex = -1;
+        });
+      },
+      confirmDeleteHold() {
+        this.holds.splice(this.editedHoldIndex, 1);
+        this.cancelDeleteCaseFactor();
+      },
       cancelForm() {
         this.dlgCancelForm = false;
       },
@@ -865,6 +1065,7 @@
         // interrogate response - success or failure
         this.dlgSaveForm = false;
         alert('saveForm(): completed successfully!');
+        this.displayOffender = false;
       },
     },
   };
