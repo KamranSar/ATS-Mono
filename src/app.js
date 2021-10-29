@@ -15,7 +15,8 @@ if (process.env.NODE_ENV === 'production') {
   console.log = function () {};
 } else {
   // If the DEBUG variable is populated, then add this app to those requested if not already present.
-  if (process.env.DEBUG && process.env.DEBUG.length > 1 && !process.env.DEBUG.includes(process.env.APP_NAME)) process.env.DEBUG += `,${process.env.APP_NAME}:*`;
+  if (process.env.DEBUG && process.env.DEBUG.length > 1 && !process.env.DEBUG.includes(process.env.APP_NAME))
+    process.env.DEBUG += `,${process.env.APP_NAME}:*`;
 }
 
 // Declare required packages, libraries and app components
@@ -37,8 +38,8 @@ const authentication = require('./authentication');
 const mongoose = require('./mongoose');
 const mongodb = require('./mongodb');
 const mtmongodb = require('./mtmongodb');
-const knex = require('./knex');
-const sequelize = require('./sequelize');
+// const knex = require('./knex');
+// const sequelize = require('./sequelize');
 const redis = require('./redis');
 const openapi = require('./openapi');
 const distribution = require('@kalisio/feathers-distributed');
@@ -111,8 +112,8 @@ app.configure(mongoose);
 app.configure(mongodb);
 app.configure(mtmongodb);
 app.configure(redis);
-app.configure(knex);
-app.configure(sequelize);
+// app.configure(knex);
+// app.configure(sequelize);
 
 // Load the OpenAPI specs
 if (process.env.PUBLISH_DOCS && process.env.PUBLISH_DOCS.toLowerCase() === 'true') app.configure(openapi);
@@ -131,8 +132,9 @@ app.use(express.errorHandler({ logger }));
 // Configure global app hooks
 app.hooks(appHooks);
 
-debug('Service Authorization is (%s)',
-  (require('./service-config').server.authActive === true) ? 'ACTIVE' : 'DEACTIVATED'
+debug(
+  'Service Authorization is (%s)',
+  require('./service-config').server.authActive === true ? 'ACTIVE' : 'DEACTIVATED'
 );
 
 // Set the gitInfo object in the application, if file exists

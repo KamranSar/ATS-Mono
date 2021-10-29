@@ -4,7 +4,7 @@ const service = require('../../service-config').services.find(obj => { return (o
 /**
  * This is the name of the ID field used by the API's {id}
  */
-const ids = ['id'];
+const ids = ['_id'];
 
 /**
  * This is the docs portion of this API
@@ -21,13 +21,13 @@ const docs = {
         _id: {
           type: 'integer',
         },
-        lastname: {
+        text: {
           type: 'string',
-          format: 'lastname',
+          format: 'text',
         },
-        firstname: {
+        someother: {
           type: 'string',
-          format: 'firstname',
+          format: 'someother',
         },
         createdAt: {
           type: 'string',
@@ -36,6 +36,10 @@ const docs = {
         updatedAt: {
           type: 'string',
           format: 'date-time',
+        },
+        updatedBy: {
+          type: 'string',
+          format: 'ObjectId',
         },
       },
     },
@@ -47,7 +51,7 @@ const docs = {
   securities: ['find', 'get', 'create', 'update', 'patch', 'remove'],
   operations: {
     find: {
-      summary: 'Finds one or more A_PEOPLE rows',
+      summary: 'Finds one or more XXXX rows',
       responses: {
         200: {
           description: 'success',
@@ -211,19 +215,19 @@ const docs = {
       },
     },
     get: {
-      summary: 'Gets an A_PEOPLE row',
+      summary: 'Gets a XXXX row',
     },
     create: {
-      summary: 'Creates an A_PEOPLE row',
+      summary: 'Creates a XXXX row',
     },
     update: {
-      summary: 'Updates an A_PEOPLE row',
+      summary: 'Updates a XXXX row',
     },
     patch: {
-      summary: 'Patches an A_PEOPLE row',
+      summary: 'Patches a XXXX row',
     },
     remove: {
-      summary: 'Removes an A_PEOPLE row',
+      summary: 'Removes a XXXX row',
     },
     all: {
       security: [

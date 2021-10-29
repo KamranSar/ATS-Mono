@@ -1,78 +1,60 @@
 const appCfg = require('../package.json');
 
-module.exports =
-{
-  'server': {
+module.exports = {
+  server: {
     //* FIXME: You MUST set the 'name' and 'description' elements in the "package.json" file before modifying this file.
     //* DO NOT modify these first 2 elements in this file.
-    'name': appCfg.name,
-    'description': appCfg.description,
+    name: appCfg.name,
+    description: appCfg.description,
     //* You can modify all of the following elements:
-    'appPath': '/api/database',
-    'docsPath': '/docs/database',
-    'release': 'R1',
+    appPath: '/api/ats',
+    docsPath: '/docs/ats',
+    release: 'R1',
     //* authActive values: true = authentication activated, false = authentication deactivated meaning no auth required for all services.
-    'authActive': false,
+    authActive: false,
     //* Database enable/disable flags:
     //* All DB flags are optional and can be removed along with their associated code if not used.
-    'mongooseEnabled': true,
-    'mongodbEnabled': true,
-    'mssqlEnabled': true,
-    'oracleEnabled': true,
-    'postgresEnabled': true
+    mongooseEnabled: true,
+    mongodbEnabled: false,
+    mssqlEnabled: false,
+    oracleEnabled: false,
+    postgresEnabled: false,
   },
-  'services': [
+  services: [
     //* List off Supported Services:
     //* mongooseservice is required, all other services are optional and can be removed along with their associated code if not used.
     {
-      'name': 'mongooseservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'example of a CRUD services for a MongoDB Mongoose schema database.'
+      name: 'mongooseservice',
+      version: 'v1',
+      enabled: true,
+      description: 'example of a CRUD services for a MongoDB Mongoose schema database.',
     },
     {
-      'name': 'mongodbservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'Example of a CRUD services for a MongoDB database.'
+      name: 'offendertransfer',
+      version: 'v1',
+      enabled: true,
+      description: 'CRUD service for a transfer of an offender.',
     },
     {
-      'name': 'mssqlservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'CRUD services for an MS-SQL database. The A_PEOPLE table is used for this template.'
+      name: 'schedule',
+      version: 'v1',
+      enabled: true,
+      description: 'CRUD service for transfer schedules.',
     },
     {
-      'name': 'oracleservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'CRUD services for an Oracle database. The A_PEOPLE table is used for this template.'
+      name: 'mongodbservice',
+      version: 'v1',
+      enabled: true,
+      description: 'Example of a CRUD services for a MongoDB database.',
     },
     {
-      'name': 'postgresservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'CRUD services for an Postgres database. The A_PEOPLE table is used for this template.'
+      // Only an example
+      name: 'customservice',
+      version: 'v1',
+      enabled: true,
+      description: 'Example of a basic Custom service.',
     },
-    {
-      'name': 'rawsqlservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'CRUD services for a Custom database server. Complex queries and payloads used for this template.'
-    },
-    {
-      'name': 'rawsqlservice',
-      'version': 'v2',
-      'enabled': true,
-      'description': 'CRUD services for a Custom database server. Complex queries and payloads used for this template.'
-    },
-    {
-      'name': 'customservice',
-      'version': 'v1',
-      'enabled': true,
-      'description': 'Example of a basic Custom service.'
-    }
-  ]
+  ],
 };
 //*** DO NOT MODIFY THIS CODE ***//
 if (process.env.NODE_ENV === 'production') module.exports.server.authActive = true;
