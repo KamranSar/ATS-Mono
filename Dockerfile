@@ -3,7 +3,7 @@
 # Docker Official Images: https://hub.docker.com/_/node/
 # GitHub Node Quick Ref: https://github.com/docker-library/docs/tree/master/node
 FROM node:14.16.0-alpine3.13
-MAINTAINER Tim Gaither <dallas.weinrich@cdcr.ca.gov>
+MAINTAINER Tim Gaither <tim.gaither@cdcr.ca.gov>
 
 # Params passed in
 ARG APP_PORT
