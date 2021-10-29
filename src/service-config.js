@@ -11,24 +11,15 @@ module.exports = {
     docsPath: '/docs/ats',
     release: 'R1',
     //* authActive values: true = authentication activated, false = authentication deactivated meaning no auth required for all services.
-    authActive: false,
+    authActive: true,
     //* Database enable/disable flags:
     //* All DB flags are optional and can be removed along with their associated code if not used.
     mongooseEnabled: true,
     mongodbEnabled: false,
-    mssqlEnabled: false,
-    oracleEnabled: false,
-    postgresEnabled: false,
   },
   services: [
     //* List off Supported Services:
     //* mongooseservice is required, all other services are optional and can be removed along with their associated code if not used.
-    {
-      name: 'mongooseservice',
-      version: 'v1',
-      enabled: true,
-      description: 'example of a CRUD services for a MongoDB Mongoose schema database.',
-    },
     {
       name: 'offendertransfer',
       version: 'v1',
@@ -41,19 +32,13 @@ module.exports = {
       enabled: true,
       description: 'CRUD service for transfer schedules.',
     },
-    {
-      name: 'mongodbservice',
-      version: 'v1',
-      enabled: false,
-      description: 'Example of a CRUD services for a MongoDB database.',
-    },
-    {
-      // Only an example
-      name: 'customservice',
-      version: 'v1',
-      enabled: false,
-      description: 'Example of a basic Custom service.',
-    },
+    // {
+    //   // Only an example
+    //   name: 'customservice',
+    //   version: 'v1',
+    //   enabled: false,
+    //   description: 'Example of a basic Custom service.',
+    // },
   ],
 };
 //*** DO NOT MODIFY THIS CODE ***//

@@ -38,8 +38,6 @@ const authentication = require('./authentication');
 const mongoose = require('./mongoose');
 const mongodb = require('./mongodb');
 const mtmongodb = require('./mtmongodb');
-// const knex = require('./knex');
-// const sequelize = require('./sequelize');
 const redis = require('./redis');
 const openapi = require('./openapi');
 const distribution = require('@kalisio/feathers-distributed');
@@ -112,8 +110,6 @@ app.configure(mongoose);
 app.configure(mongodb);
 app.configure(mtmongodb);
 app.configure(redis);
-// app.configure(knex);
-// app.configure(sequelize);
 
 // Load the OpenAPI specs
 if (process.env.PUBLISH_DOCS && process.env.PUBLISH_DOCS.toLowerCase() === 'true') app.configure(openapi);
