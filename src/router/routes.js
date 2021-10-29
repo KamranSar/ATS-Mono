@@ -19,7 +19,7 @@ const routes = [
       import(/* webpackChunkName: "Transfer" */ '@/views/Transfer.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Everyone'],
+      roles: [defaultAdminRole.name, 'Guest'],
     },
   },
   {
@@ -30,7 +30,7 @@ const routes = [
       import(/* webpackChunkName: "Schedule" */ '@/views/Schedule.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Everyone'],
+      roles: [defaultAdminRole.name, 'Guest'],
     },
   },
   {
@@ -41,7 +41,7 @@ const routes = [
       import(/* webpackChunkName: "Maintenance" */ '@/views/Maintenance.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Everyone'],
+      roles: [defaultAdminRole.name, 'Guest'],
     },
   },
   {
@@ -52,7 +52,7 @@ const routes = [
       import(/* webpackChunkName: "Reports" */ '@/views/Reports.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Everyone'],
+      roles: [defaultAdminRole.name, 'Guest'],
     },
   },
   {
@@ -135,7 +135,7 @@ const userItems = getRoutesByName([
   'Home',
   'Schedule',
   'Transfer',
-  'Maintenance',
+  // 'Maintenance',
   'Reports',
 ]);
 // Routes for Users with Role Admin

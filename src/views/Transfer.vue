@@ -646,14 +646,15 @@
               <v-row>
                 <v-col cols="2">
                   <v-text-field
+                    v-model="schedule.via1"
                     label="Via 1"
                     dense
-                    readonly
                     filled
                   ></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
+                    v-model="schedule.via2"
                     label="Via 2"
                     dense
                     readonly
@@ -662,11 +663,23 @@
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
+                    v-model="schedule.transferDate"
                     label="Transfer Date"
                     dense
                     readonly
                     filled
                   ></v-text-field>
+                </v-col>
+                <v-col cols="6" align="right" align-self="center">
+                  <v-btn
+                    color="secondary"
+                    class="ma-5"
+                    @click="dlgSave = true"
+                    dense
+                  >
+                    <v-icon>mdi-content-save-outline</v-icon>
+                    Save
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-col>
@@ -679,6 +692,7 @@
 
 <script>
   import somsOffender from '@/feathers/services/offender/details.service.js';
+  import transfer from '@/feathers/services/transfer/transfer.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
@@ -1059,11 +1073,16 @@
       cancelForm() {
         this.dlgCancelForm = false;
       },
-      saveForm() {
+      async saveForm() {
         // validate data
         // call api to send data to db
         // interrogate response - success or failure
         this.dlgSaveForm = false;
+
+        const response = await transfer.Create(data);
+        // response._id;
+        // response.cdcrNumber;
+
         alert('saveForm(): completed successfully!');
         this.displayOffender = false;
       },
