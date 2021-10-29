@@ -1,19 +1,18 @@
 # Refer to the following regarding this image: 
-# Put Your Containers on a Diet with Oracle Linux: https://blogs.oracle.com/developers/put-your-containers-on-a-diet-with-oracle-linux
-# Docker Official Images: https://hub.docker.com/_/oraclelinux/
-# GitHub OralceLinux Quick Ref: https://github.com/docker-library/docs/tree/master/oraclelinux
-FROM oraclelinux:7-slim
-MAINTAINER Kevin A. Baroni <kevin.baroni@cdcr.ca.gov>
- 
+# Nodejs.org LTS Downloads: https://nodejs.org/en/download/
+# Docker Official Images: https://hub.docker.com/_/node/
+# GitHub Node Quick Ref: https://github.com/docker-library/docs/tree/master/node
+FROM node:14.16.0-alpine3.13
+MAINTAINER Tim Gaither <dallas.weinrich@cdcr.ca.gov>
+
 # Params passed in
 ARG APP_PORT
 ARG APP_ENV
 ARG NPM_RUN
 
-RUN  yum -y install oracle-release-el7 oracle-nodejs-release-el7 && \
-     yum-config-manager --disable ol7_developer_EPEL && \
-     yum -y install oracle-instantclient19.3-basiclite nodejs && \
-     rm -rf /var/cache/yum
+# The latest alpine images don't have a lot of necessary tools
+# Install bash and some other network tools
+RUN apk add --no-cache bash net-tools
 
 # Create working directory and go into it
 RUN mkdir -p /app &&  \
