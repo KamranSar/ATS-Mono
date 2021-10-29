@@ -1,6 +1,6 @@
 {
-  "name": "database-template",
-  "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
+  "name": "ats",
+  "description": "This is the Database server for the ATS client.",
   "version": "0.1.0",
   "homepage": "",
   "private": true,
