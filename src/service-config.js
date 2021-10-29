@@ -44,14 +44,14 @@ module.exports = {
     {
       name: 'mongodbservice',
       version: 'v1',
-      enabled: true,
+      enabled: false,
       description: 'Example of a CRUD services for a MongoDB database.',
     },
     {
       // Only an example
       name: 'customservice',
       version: 'v1',
-      enabled: true,
+      enabled: false,
       description: 'Example of a basic Custom service.',
     },
   ],
