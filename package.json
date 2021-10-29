@@ -1,8 +1,8 @@
 {
   "name": "automated-transfer-system",
   "version": "0.5.7",
-  "publicPath": "/app",
-  "cdcrAppID": "c0cf535a-bb4d-4731-94fb-8a4165b1a124",
+  "publicPath": "/ats",
+  "cdcrAppID": "38b5c0ad-42d9-48e1-b559-7cde0709e286",
   "private": true,
   "scripts": {
     "preinstall": "chmod +x scripts/*.sh; scripts/get_preinstall_scripts.sh",
