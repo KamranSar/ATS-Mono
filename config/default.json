@@ -14,9 +14,7 @@
     "entity": "user",
     "service": "internal/users",
     "secret": "JWT_SALT_SECRET",
-    "authStrategies": [
-      "jwt"
-    ],
+    "authStrategies": ["jwt"],
     "jwtOptions": {
       "header": {
         "typ": "access"
@@ -37,7 +35,7 @@
   "mongodb": {
     "server": "MONGO_SVR",
     "port": "MONGO_PORT",
-    "database": "yourdatabasename",
+    "database": "ats",
     "connectTimeoutMS": 10000,
     "poolSize": 5
   },

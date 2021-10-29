@@ -1,7 +1,7 @@
 {
   "name": "database-template",
   "description": "This is the Database server template for the EIS-MiddleTier. It is a template for building a server to access other databases.",
-  "version": "0.2.1",
+  "version": "0.1.0",
   "homepage": "",
   "private": true,
   "main": "src",
@@ -9,8 +9,8 @@
     "feathers"
   ],
   "author": {
-    "name": "kevin.baroni",
-    "email": "kevin.baroni@cdcr.ca.gov"
+    "name": "tim.gaither",
+    "email": "tim.gaither@cdcr.ca.gov"
   },
   "contributors": [],
   "bugs": {},
