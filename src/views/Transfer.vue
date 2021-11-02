@@ -646,7 +646,7 @@
               <v-row>
                 <v-col cols="2">
                   <v-text-field
-                    v-model="schedule.via1"
+                    v-model="via1"
                     label="Via 1"
                     dense
                     filled
@@ -654,7 +654,7 @@
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
-                    v-model="schedule.via2"
+                    v-model="via2"
                     label="Via 2"
                     dense
                     readonly
@@ -663,7 +663,7 @@
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
-                    v-model="schedule.transferDate"
+                    v-model="transferDate"
                     label="Transfer Date"
                     dense
                     readonly
@@ -696,6 +696,8 @@
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
+
+  // import schedules from 'schedules.json';
 
   export default {
     name: 'NewRequest',
@@ -781,7 +783,7 @@
         dateEndorsementExpiration: null,
         transferDate: null,
         isTransfered: false,
-        schedule: '',
+        // schedule: '',
         isScheduled: false,
         transferReason: '',
         vias: [],
@@ -876,7 +878,14 @@
           comments: 'Sorry Charlie',
         },
       ],
+      schedules: {},
+      via1: '',
+      via2: '',
+      transferDate: null,
     }),
+    created() {
+      this.initialize();
+    },
     watch: {
       dlgEditCF(val) {
         val || this.cancelCaseFactor();
@@ -906,6 +915,46 @@
       await this.getInstitutions();
     },
     methods: {
+      initialize() {
+        this.schedules = [
+          {
+            scheduleId: 1,
+            destination: 'RJD',
+            schedule: 'A',
+            VIA: ['FOL-II', 'ASP-II'],
+            transferDate: '05/07/2021',
+            seats: 10,
+            remainingSeats: 6,
+          },
+          {
+            scheduleId: 2,
+            destination: 'CCC',
+            schedule: 'B',
+            VIA: ['ASP-II', 'RJD-II'],
+            transferDate: '06/07/2021',
+            seats: 10,
+            remainingSeats: 6,
+          },
+          {
+            scheduleId: 3,
+            destination: 'CIM',
+            schedule: 'C',
+            VIA: ['FOL-II', 'SAC-II'],
+            transferDate: '07/07/2021',
+            seats: 10,
+            remainingSeats: 6,
+          },
+          {
+            scheduleId: 4,
+            destination: 'HDSP',
+            schedule: 'D',
+            VIA: ['FOL-II', 'CMC-II'],
+            transferDate: '08/07/2021',
+            seats: 10,
+            remainingSeats: 6,
+          },
+        ];
+      },
       async searchOffender() {
         this.loading = true;
         try {
