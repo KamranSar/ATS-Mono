@@ -7,8 +7,7 @@ import store from '@/store';
 import myApp from '@/config/myApp.js';
 import feathersClient from '@/feathers/index.js';
 import { initServiceWorker } from '@/registerServiceWorker.js';
-import getNewToken from '@/config/private/helpers/getNewToken';
-import '@/styles/Roboto-font.css';
+import { getNewToken } from '@/config/private/helpers/index.js';
 import '@mdi/font/css/materialdesignicons.css';
 
 /**
@@ -16,9 +15,7 @@ import '@mdi/font/css/materialdesignicons.css';
  */
 import '@/directives/v-has-any-roles';
 import '@/directives/v-has-all-roles';
-import hasARole from '@/helpers/hasARole';
-import hasAllRoles from '@/helpers/hasAllRoles';
-import hasAnyRoles from '@/helpers/hasAnyRoles';
+import { hasARole, hasAllRoles, hasAnyRoles } from '@/helpers/index.js';
 
 initServiceWorker();
 
@@ -37,36 +34,35 @@ new Vue({
   vuetify,
   router,
   store,
+  data: () => ({
+    keepAliveInterval: null,
+  }),
+  created() {
+    // Create the first one, and toggle it between visibility changes.
+    this.createKeepAlive();
+
+    // console.log('Created First Interval: ', this.keepAliveInterval);
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.createKeepAlive();
+        console.log('Visible Activated: ', this.keepAliveInterval);
+      } else if (this.keepAliveInterval) {
+        clearInterval(this.keepAliveInterval);
+        console.log('Visible Hidden: ', this.keepAliveInterval);
+      }
+    });
+  },
+  methods: {
+    createKeepAlive() {
+      // handle the case where the visibility changes.
+      // When we come back, we must check for a token before anything
+      // else happens in the app or API's could fail
+      // Skip this for page refreshes. It's handled in the router guards
+      const hours = 2 * 1000 * 60 * 60; // Get a new token every 2 hours.
+      this.keepAliveInterval = setInterval(() => {
+        getNewToken();
+      }, hours);
+    },
+  },
   render: (h) => h(App),
 }).$mount('#app');
-
-let keepAliveInterval = null;
-let appInitialized = false;
-const createKeepAlive = () => {
-  // handle the case where the visibility changes.
-  // When we come back, we must check for a token before anything
-  // else happens in the app or API's could fail
-  // Skip this for page refreshes. It's handled in the router guards
-  if (appInitialized) {
-    getNewToken();
-  }
-  appInitialized = true;
-  const hours = 2 * 1000 * 60; // Get a new token every 2 hours.
-  keepAliveInterval = setInterval(() => {
-    getNewToken();
-  }, hours);
-};
-
-// Create the first one, and toggle it between visibility changes.
-createKeepAlive();
-
-// console.log('Created First Interval: ', keepAliveInterval);
-window.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    createKeepAlive();
-    console.log('Visible Activated: ', keepAliveInterval);
-  } else if (keepAliveInterval) {
-    clearInterval(keepAliveInterval);
-    console.log('Visible Hidden: ', keepAliveInterval);
-  }
-});

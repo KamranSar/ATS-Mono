@@ -9,16 +9,27 @@ import Vuetify from 'vuetify/lib';
 const { themes } = require('./themes.js');
 Vue.use(Vuetify);
 
-/** Install the vs code plugin for better color support:
- * Name: Color Highlight
- * Publisher: Sergii Naumov
- * VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight
- */
 export default new Vuetify({
   breakpoint: {
-    mobileBreakpoint: 'sm', // https://vuetifyjs.com/en/features/breakpoints/#mobile-breakpoints
+    // ! REMINDER: Update @/styles/variables.scss when updating these thresholds
+    thresholds: {
+      xs: 340,
+      sm: 540,
+      md: 800,
+      lg: 1280,
+    },
   },
   theme: {
+    options: {
+      // https://vuetifyjs.com/en/features/theme/#custom-properties
+      customProperties: true,
+      // FIXME: Dynamically turn this when process.NODE_ENV === 'production'
+      // https://vuetifyjs.com/en/features/theme/#caching
+      // themeCache: {
+      //   get: (key) => localStorage.getItem(key),
+      //   set: (key, value) => localStorage.setItem(key, value),
+      // },
+    },
     themes,
   },
   icons: {

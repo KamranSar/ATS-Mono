@@ -1,44 +1,27 @@
 <template>
-  <v-bottom-navigation app grow :key="$route.currentPath">
-    <template v-if="isUserLoggedIn">
-      <v-btn v-for="(item, i) in userItems" :key="i" @click="onClick(item)">
-        <span :class="`${getRouterColor(item)}--text`">{{ item.name }}</span>
-        <v-icon :color="getRouterColor(item)">{{ item.icon }} </v-icon>
-      </v-btn>
-    </template>
-
-    <template v-else>
-      <v-btn
-        v-for="(item, i) in anonymousItems"
-        :key="i"
-        @click="onClick(item)"
-      >
-        <span :class="`${getRouterColor(item)}--text`">{{ item.name }}</span>
-        <v-icon :color="getRouterColor(item)">{{ item.icon }} </v-icon>
-      </v-btn>
-    </template>
+  <v-bottom-navigation
+    app
+    grow
+    :key="$route.currentPath"
+    v-if="$vuetify.breakpoint.mdAndDown"
+  >
+    <NavButton
+      v-for="(item, index) in BottomNavItems"
+      :key="index"
+      :item="item"
+    ></NavButton>
   </v-bottom-navigation>
 </template>
 
 <script>
-  import { anonymousItems, userItems } from '@/router/routes.js';
-  import onClick from '@/router/helpers/onClick.js';
-  import getRouterColor from '@/router/helpers/getRouterColor.js';
-  import useVuexPathify from '@/compositions/useVuexPathify';
+  import { BottomNavItems } from '@/router/routes.js';
+  import NavButton from './helpers/NavButton.vue';
   export default {
+    components: { NavButton },
     name: 'BottomNavBar',
-    setup(props, context) {
-      const { get } = useVuexPathify(context);
-      const isUserLoggedIn = get('users/isUserLoggedIn');
-      const loading = get('app/loading');
-
+    setup() {
       return {
-        isUserLoggedIn,
-        loading,
-        anonymousItems,
-        userItems,
-        onClick,
-        getRouterColor,
+        BottomNavItems,
       };
     },
   };

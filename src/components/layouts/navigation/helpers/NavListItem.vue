@@ -1,19 +1,17 @@
 <template>
   <v-list-item
     v-bind="$attrs"
-    v-model="value"
     @click="onClick(item)"
-    :key="$route.fullPath"
-    v-if="hasRoles"
+    v-if="hasRoles || hasException"
+    v-model="value"
+    color="primary"
   >
     <!-- Force list-item-icon to show up on the left by hiding the title when mini draw variant in active -->
-    <v-list-item-title
-      v-if="!miniDraw || toolbar"
-      :class="`${getRouterColor(item)}--text`"
-      >{{ item.name }}</v-list-item-title
-    >
+    <v-list-item-title v-if="!miniDraw || toolbar">{{
+      item.name
+    }}</v-list-item-title>
     <v-list-item-icon>
-      <v-icon :color="getRouterColor(item)">{{ item.icon }}</v-icon>
+      <v-icon>{{ item.icon }}</v-icon>
     </v-list-item-icon>
   </v-list-item>
 </template>
@@ -37,7 +35,7 @@
     },
     mixins: [Navigation],
     computed: {
-      ...get('userPrefs', ['miniDraw']),
+      ...get('devicePrefs', ['miniDraw']),
     },
   };
 </script>

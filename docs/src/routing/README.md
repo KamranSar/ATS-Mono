@@ -12,7 +12,7 @@ All routes are handled by [Vue Router](https://router.vuejs.org/guide/advanced/m
 
 The **vue-frontend-template** has pre-configured all the routes defined in `@/router/routes.js` to work with the Navigation Components we have in `@/components/layouts/navigation...`
 
-_This can be easily expanded by defining your own [route items](/routing/#route-items)!_
+_These can be easily expanded by defining your own [route items](/routing/#route-items)!_
 
 ## RouteConfig Interface
 
@@ -66,7 +66,7 @@ const routes = [
       import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Institution Administrator'],
+      hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
     },
     children: [
       {
@@ -78,7 +78,7 @@ const routes = [
           import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
         meta: {
           beforeResolve: (to, from, next) => hasAllRoles(to, from, next),
-          roles: [defaultAdminRole.name, 'Foo Bar'],
+          hasAllRoles: [defaultAdminRole.name, 'Foo Bar'],
         },
       },
     ],
@@ -96,19 +96,25 @@ _(These components are defined in `@/components/layouts/navigation/`)_
 The navigation components utilize the route items defined below, but feel free to expand upon these and add them to any of the navigation component for display.
 
 ```js
-// Public Routes
-const anonymousItems = getRoutesByName(['Login', 'Settings']);
-// Routes for Anyone Logged In
-const userItems = getRoutesByName(['Home']);
-// Routes for Users with Role Admin
-const adminItems = getRoutesByName(['Admin']);
-// Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName([
+// Routes used in AppBar.vue
+const TopNavItems = getRoutesByName([
+  // 'Home',
+  // 'Settings',
+  // 'Admin',
+  // 'CDCR Dashboard',
+  // 'Settings',
+]);
+// Routes used in the v-toolbar in AppBar.vue
+const ToolbarItems = getRoutesByName([
   'Home',
   'Logout',
   'Settings',
   'CDCR Dashboard',
 ]);
+// Routes used in BottomNavBar.vue
+const BottomNavItems = getRoutesByName(['Home', 'Admin']);
+// Routes used in NavDrawerLeft.vue
+const LeftNavItems = getRoutesByName(['Home', 'Admin', 'Settings']);
 ```
 
 ### getRoutesByName
@@ -124,9 +130,12 @@ The helper used above can also be found in `@/router/routes.js`
 ```js
 import { getRoutesByName } from '@/router/routes.js';
 
-getRoutesByName('Home');
-getRoutesByName('home');
-getRoutesByName(['Home', 'Users']);
+const homeRoute = getRoutesByName('Home');
+console.log({ homeRoute });
+const homeRoute2 = getRoutesByName('home');
+console.log({ homeRoute });
+const homeAndUsers = getRoutesByName(['Home', 'Users']);
+console.log({ homeAndUsers });
 ```
 
 :::details
@@ -156,13 +165,9 @@ The application by default sends a user to the **No Access** route if they have 
 
 This and more can all be added to your own use cases with the pre-defined `router-guards`, `vue-directives`, and `javascript helpers`.
 
-## Router Hooks
+## Global Guards
 
-Below is a list of all the available hooks within Vue Router.
-
-### Global Guards
-
-#### beforeEach
+### beforeEach
 
 :::warning
 This hook is currently populated with the Router Guard [waitForStorageToBeReady](/routing/#waitforstoragetobeready) in the vue-frontend-template.
@@ -179,7 +184,7 @@ router.beforeEach(waitForStorageToBeReady);
 
 ```
 
-#### beforeResolve
+### beforeResolve
 
 :::tip
 This is actually how the router guards `hasAnyRoles`, & `hasAllRoles` are consumed when found in the **meta** field of a route.
@@ -187,7 +192,7 @@ This is actually how the router guards `hasAnyRoles`, & `hasAllRoles` are consum
 
 "You can register a global guard with `router.beforeResolve`. This is similar to `router.beforeEach`, with the difference that resolve guards will be called right before the navigation is confirmed, **after all in-component guards and async route components are resolved.**" - [Vue Router Docs](https://router.vuejs.org/guide/advanced/navigation-guards.html#global-resolve-guards)
 
-#### afterEach
+### afterEach
 
 Action after the route resolves (**you cannot affect the navigation**).
 
@@ -199,9 +204,9 @@ router.afterEach((to, from) => {
 });
 ```
 
-### Per-Route Guard
+## Per-Route Guard
 
-#### beforeEnter
+### beforeEnter
 
 Action before entering a specific route (unlike global guards, we have access to _`this`_).
 
@@ -221,9 +226,9 @@ const router = new VueRouter({
 });
 ```
 
-### Component Guards
+## Component Guards
 
-#### beforeRouteEnter
+### beforeRouteEnter
 
 Action before navigation is confirmed, and before component creation (no access to _`this`_)
 
@@ -237,7 +242,7 @@ beforeRouteEnter (to, from, next) {
 }
 ```
 
-#### beforeRouteUpdate
+### beforeRouteUpdate
 
 Action after a new route has been called that uses the same component
 
@@ -251,7 +256,7 @@ beforeRouteUpdate (to, from, next) {
 }
 ```
 
-#### beforeRouteLeave
+### beforeRouteLeave
 
 "The **leave guard** is usually used to prevent the user from accidentally leaving the route with unsaved edits. The navigation can be canceled by calling `next(false)`." - [Vue Router Docs](https://router.vuejs.org/guide/advanced/navigation-guards.html#in-component-guards)
 
@@ -271,7 +276,7 @@ beforeRouteLeave (to, from, next) {
 ## Router Guards
 
 :::warning
-When using the router guards, remember to define the `roles` Array in the route object.
+When using the router guards, remember to define the `hasAnyRoles` or `hasAllRoles` Array in the Route Config.
 :::
 
 Two guards are provided to us called `hasAnyRoles` & `hasAllRoles`. These guards can be found in `@/router/guards/`
@@ -283,7 +288,7 @@ This router guard checks if any of the roles passed into the route are found in 
 - **Type:** `beforeResolve Guard`
 - **Location:** `@/router/guards/hasAnyRoles.js`
 - **Usage:**\
-  Add this to the `beforeResolve` hook in the `meta` of a `Route Config`, and define an Array of role names called `roles`.
+  Add this to the `beforeResolve` hook in the `meta` of a `Route Config`, and define an Array of role names called `hasAnyRoles`.
 
 ```js
 import hasAnyRoles from '@/router/guards/hasAnyRoles.js';
@@ -295,7 +300,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Foo Bar'],
+      hasAnyRoles: [defaultAdminRole.name, 'Foo Bar'],
     },
   },
 ];
@@ -312,7 +317,7 @@ This router guard checks for all of the roles passed into the route against the 
 - **Type:** `beforeResolve Guard`
 - **Location:** `@/router/guards/hasAllRoles.js`
 - **Usage:**\
-  Add this to the `beforeResolve` hook in a `route` object, and define an Array of role names called `roles`.
+  Add this to the `beforeResolve` hook in a `route` object, and define an Array of role names called `hasAllRoles`.
 
 ```js
 import hasAllRoles from '@/router/guards/hasAllRoles.js';
@@ -324,7 +329,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAllRoles(to, from, next),
-      roles: [defaultAdminRole.name, 'Foo Bar'],
+      hasAllRoles: [defaultAdminRole.name, 'Foo Bar'],
     },
   },
 ];
@@ -363,6 +368,130 @@ router.beforeEach(waitForStorageToBeReady);
 
 ## Javascript Helpers
 
+### hasARole
+
+:::tip
+Remember to call it as a **function** or it will not work as expected!
+:::
+
+<center><span style="color: green; font-weight: bold;">RIGHT</span></center>
+
+```html
+<v-btn :disabled="$hasARole()">Search</v-btn>
+```
+
+<center><span style="color: red; font-weight: bold;">WRONG</span></center>
+
+```html
+<v-btn :disabled="$hasARole">Search</v-btn>
+```
+
+This is a global helper to check if the `loggedInUser` has been assigned any roles.
+
+- **Type:** `Global Helper`
+- **Return:** `Boolean`
+- **Location:** `@/helpers/hasARole.js`
+- **Usage:**\
+  Add this to the attribute `disabled` or a `v-if` directive to determine the behavior of a button or text-field.
+
+```html
+<v-btn :disabled="$hasARole()">Search</v-btn>
+
+<v-btn v-if="$hasARole()">Submit Request</v-btn>
+<v-btn v-else>Request Permissions</v-btn>
+```
+
+:::details
+<<< @/../src/helpers/hasARole.js
+:::
+
+### hasAnyRoles
+
+This is the global helper equivalent of the router guard `hasAnyRoles`.
+
+- **Type:** `Global Helper`
+- **Param:** `Array[String]`
+- **Return:** `Boolean`
+- **Location:** `@/helpers/hasAnyRoles.js`
+- **Usage:**\
+  Add this to the attribute `disabled` or a `v-if` directive to determine the behavior of a button or text-field.
+
+```html
+<!-- NOT Disabled if user has any of these roles -->
+<v-btn :disabled="!$hasAnyRoles([defaultAdminRole.name, 'Application User'])"
+  >Search</v-btn
+>
+
+<v-btn v-if="$hasAnyRoles([defaultAdminRole.name])">Approve Request</v-btn>
+<v-btn v-else-if="$hasAnyRoles(['Application User'])">Submit Request</v-btn>
+<v-btn v-else>Request Permissions</v-btn>
+```
+
+:::tip
+If your `beforeResolve` route is more complex than what comes out of the box, you an utilize the global helpers to determine what happens `next()`.
+:::
+
+```js
+import hasARole from '@/helpers/hasARole.js';
+import hasAnyRoles from '@/helpers/hasAnyRoles.js';
+import { defaultAdminRole } from '@/config/myApp.js';
+
+const routes = [
+  {
+    icon: 'mdi-home',
+    path: 'Home',
+    name: 'Home',
+    component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => {
+        if (!hasARole()) {
+          next({ name: 'No Access' });
+        } else if (hasAnyRoles(['Guest User'])) {
+          next({ name: 'Guest Home' });
+        } else if (hasAnyRoles([defaultAdminRole.name])) {
+          next();
+        } else {
+          next({ name: '4oh4' });
+        }
+      },
+    },
+  },
+];
+```
+
+:::details
+<<< @/../src/helpers/hasAnyRoles.js
+:::
+
+### hasAllRoles
+
+This is the global helper equivalent of the router guard `hasAllRoles`
+
+- **Type:** `Global Helper`
+- **Location:** `@/helpers/hasAllRoles.js`
+- **Usage:**\
+  Add this to the `beforeResolve` hook in a `route` object, and define an Array of role names called `roles`.
+
+```js
+import hasAllRoles from '@/router/guards/hasAllRoles.js';
+const routes = [
+  {
+    icon: 'mdi-home',
+    path: 'Home',
+    name: 'Home',
+    component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => hasAllRoles(to, from, next),
+      hasAllRoles: [defaultAdminRole.name, 'Foo Bar'],
+    },
+  },
+];
+```
+
+:::details
+<<< @/../src/helpers/hasAllRoles.js
+:::
+
 ### checkRouteItems
 
 This helper takes in an array of routes to loop through and an optional second parameter called `hasRoles`, which defaults to `false`.
@@ -376,6 +505,56 @@ The purpose of this helper is to do a role check for all the routes and not a si
 
 :::details
 <<< @/../src/router/helpers/checkRouteItems.js
+:::
+
+## vue-directives
+
+The globally registered directives that are available are called `v-has-any-roles` and `v-has-all-roles`.
+
+### v-has-any-roles
+
+A globally available helper to check if the user has any of the roles passed in.
+
+- **Type:** `directive`
+- **Param:** `Array[String]`
+- **Location:** `@/directives/v-has-any-roles/index.js`
+- **Usage:**
+
+```html
+<v-btn
+  v-has-any-roles="['Role 1', 'Optional Role 2']"
+  class="ma-1"
+  color="info"
+>
+  Has a role required.
+</v-btn>
+```
+
+::: details
+<<< @/../src/directives/v-has-any-roles/index.js
+:::
+
+### v-has-all-roles
+
+A globally available helper to check if the user has all of the roles passed in.
+
+- **Type:** `directive`
+- **Param:** `Array[String]`
+- **Location:** `@/directives/v-has-all-roles/index.js`
+- **Usage:**
+
+```html
+<v-btn
+  v-has-all-roles="['Required Role 1', 'Required Role 2']"
+  class="ma-1"
+  color="info"
+>
+  Has all the roles required.
+</v-btn>
+```
+
+::: details
+<<< @/../src/directives/v-has-all-roles/index.js
 :::
 
 ## Full Navigation Resolution Flow

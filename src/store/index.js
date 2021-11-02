@@ -17,12 +17,6 @@ const store = new Vuex.Store({
   plugins: [...plugins, azureDB],
 });
 
-// initialization functions for each vuex store
-// Adding await to the beginning of one makes it synchronous
-store.dispatch('app/init');
-store.dispatch('azureAuthentication/init');
-store.dispatch('userPrefs/init');
-
 // TODO: How to guarantee application data during refresh.
 if (process.env.NODE_ENV === 'development') {
   window.store = store; // Make store available from the console.

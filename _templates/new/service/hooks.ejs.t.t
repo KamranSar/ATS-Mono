@@ -1,3 +1,6 @@
+---
+to: "src/feathers/services/<%= h.changeCase.lower(name) %>/<%= h.changeCase.lower(name) %>.hooks.js"
+---
 // import myApp from '@/config/myApp.js';
 
 /**
@@ -14,3 +17,5 @@ async function exampleHook(context) {
 }
 
 export { exampleHook };
+
+

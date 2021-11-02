@@ -49,7 +49,6 @@ const getNewToken = async () => {
     }
     return true;
   } catch (error) {
-    // TODO: Catch cancel on getTokenPopup
     store.commit('users/resetState');
     router.push({ name: 'Login' });
     console.log('getNewToken(): ', error.message);

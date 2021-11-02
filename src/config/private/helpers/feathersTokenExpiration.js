@@ -10,7 +10,7 @@ const feathersTokenExpiration = () => {
     feathers.authentication.options.storageKey
   ) {
     if (!feathers.authentication.authenticated) {
-      console.log('Not authenticated so get a feathers new token');
+      // console.log('Not authenticated so get a feathers new token');
       return true; // If not authenticated, treat as expired
     }
     const encodedToken =

@@ -111,6 +111,26 @@ docker run \
 #* BEGIN - OPTIONAL CONTAINERS
 #* These are optional DB containers. You may add/remove/change as needed.
 
+# mt-ingress
+# IMAGE_NAME="mt-ingress"
+# if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
+#   echo docker start $IMAGE_NAME
+#   docker start $IMAGE_NAME
+# else
+#   echo docker run --name $IMAGE_NAME...
+#   docker run \
+#   --network host \
+#   --expose 8080 \
+#   --expose 8443 \
+#   --env PGID=1001 \
+#   --env PUID=1001 \
+#   --volume $(pwd)/dist:/var/www/main/app \
+#   --volume $(pwd)/scripts/cfg:/certs \
+#   --volume $(pwd)/scripts/cfg/mt-ingress.conf:/opt/bitnami/nginx/conf/nginx.conf \
+#   --name $IMAGE_NAME \
+#   --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_CORE}/${IMAGE_NAME}:${IMAGE_VER}
+# fi
+
 #* END - OPTIONAL CONTAINERS
 
 #

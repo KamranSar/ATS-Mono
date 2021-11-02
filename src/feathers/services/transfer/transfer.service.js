@@ -5,13 +5,13 @@ import myApp from '@/config/myApp.js';
 // If you've enabled sockets in myApp config...
 // Toggle this to true or false to watch for service changes on the socket.
 const watchForChangesOnSocket = true;
-import { transferHook } from '@/feathers/services/transfer/transfer.hooks.js';
+// import { transferHook } from '@/feathers/services/transfer/transfer.hooks.js';
 
 const servicePath = 'api/cdcr/ats/v1/transfer';
 const service = feathersClient.service(servicePath);
 service.hooks({
   before: {
-    all: [debug('Transfer Service!'), transferHook],
+    all: [debug('Transfer Service!') /* transferHook */],
     find: [],
     get: [],
     create: [],

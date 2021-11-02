@@ -3,23 +3,17 @@
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/configuration.md#logger-config-options
 import myApp from '@/config/myApp.js';
-import { getRoutesByName } from '@/router/routes.js';
 
 const azureTenantId = '0662477d-fa0c-4556-a8f5-c3bc62aa0d9c'; // TenantId of CDCR.
 const azureAppID = 'c0cf535a-bb4d-4731-94fb-8a4165b1a124';
-const loginPath =
-  window.location.origin +
-  myApp.publicPath +
-  (myApp.publicPath === '/' ? '' : getRoutesByName('Login')[0].path);
-// console.log({ loginPath });
 
 // Config object to be passed to Msal on creation
 const msalConfig = {
   auth: {
     clientId: azureAppID,
     authority: `https://login.microsoftonline.com/${azureTenantId}`,
-    redirectUri: loginPath,
-    postLogoutRedirectUri: window.location.href, // This is the default behavior
+    redirectUri: window.location.origin,
+    postLogoutRedirectUri: window.location.origin,
     navigateToLoginRequestUrl: true,
   },
   cache: {
@@ -50,7 +44,7 @@ const msalConfig = {
     },
     windowHashTimeout: 60000, // Timeout in milliseconds to wait for popup operations to resolve.
     iframeHashTimeout: 6000, // Timeout in milliseconds to wait for iframe opeations to resolve.
-    asyncPopups: true,
+    asyncPopups: false, // ! REQUIRED: MUST BE TRUE
   },
 };
 

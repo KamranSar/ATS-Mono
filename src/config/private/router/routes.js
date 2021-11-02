@@ -16,13 +16,6 @@ const routes = [
       import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
   },
   {
-    icon: 'mdi-cog-outline',
-    path: '/settings',
-    name: 'Settings',
-    component: () =>
-      import(/* webpackChunkName: "settings" */ '@/views/Settings.vue'),
-  },
-  {
     icon: 'mdi-logout',
     path: '',
     name: 'Logout',

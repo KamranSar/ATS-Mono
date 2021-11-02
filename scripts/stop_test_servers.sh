@@ -26,7 +26,7 @@ for containerName in "${ALL_ContainerArray[@]}"
 do
   if docker container ls -a | grep -Fq "$containerName" 1>/dev/null; then
      # If container name starts with "mt-", then it's an MT object and must be removed
-     if [[ $containerName = "mt-"* ]]; then
+     if [[ $containerName == "mt-"* ]] && [[ $containerName != "mt-ingress" ]]; then
         echo docker container rm --force ${containerName}
         docker container rm --force ${containerName}
      else

@@ -108,3 +108,73 @@ After the script is complete you'll see the files have been backed up and update
 ![Images Directory](./image_updated.png)
 
 ![Images Updated](./image_resize_updated2.png)
+
+## `npm run merge-squash`
+
+You can run the following command to perform a merge of all your working changes onto main.
+
+```sh
+npm run merge-squash
+```
+
+## Export all helpers within a folder
+
+**If** your "helpers-like" folder is similar to below:
+
+```sh
+./src/helpers/
+├── hasAllRoles.js
+├── hasAnyRoles.js
+├── hasARole.js
+├── hexAddition.js
+├── index.js
+├── roleCheck.js
+├── showApiVersion.js
+├── stringToColor.js
+└── toTitleCase.js
+```
+
+**and** you want to easily do the following:
+
+```javascript
+import { hasAllRoles } from '@/helpers/index.js';
+```
+
+**then** follow these steps:
+
+In the the root of a the `/config/private/helpers` folder is a file called `index.js`
+
+1. Save a copy of the `BoilerPlate` in this file as the `index.js` to any of your "helpers-like" folder.
+2. All files within that folder will `export default` at a minimum. "SEE EXAMPLE FILE" below.
+
+```javascript
+const helloWorld = function () {
+  console.log('Hello World!');
+};
+const helloEarthling = function () {
+  console.log('Hello Earthling');
+};
+export { helloWorld, helloEarthling };
+export default helloWorld;
+```
+
+3. The end result can be seen in the "EXAMPLE USAGE" below
+
+```vue
+<script>
+  import { helloWorld, getHeartBeat, getDropdownLists } from '@/apis/index.js';
+  import { helloEarthling } from '@/apis/helloWorld.js';
+  export default {
+    mounted() {
+      helloWorld();
+      helloEarthling();
+    },
+  };
+</script>
+```
+
+### BoilerPlate
+
+::: details
+<<< @/../src/config/private/helpers/index.js#BoilerPlate
+:::

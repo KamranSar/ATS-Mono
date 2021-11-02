@@ -12,6 +12,5 @@ module.exports = {
   proseWrap: 'preserve',
   quoteProps: 'as-needed',
   vueIndentScriptAndStyle: true,
-  jsxBracketSameLine: false,
   jsxSingleQuote: false,
 };

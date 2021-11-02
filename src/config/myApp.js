@@ -1,4 +1,4 @@
-import toTitleCase from '@/helpers/toTitleCase.js';
+import { toTitleCase } from '@/helpers/index.js';
 
 const isLcl = window.location.hostname.includes('localhost'); // (internal only)
 const isDev = window.location.hostname.includes('dev'); // (internal only)
@@ -32,14 +32,16 @@ var myApp = Object.freeze({
   gitVersion,
   cdcrAppID: process.env.VUE_APP_CDCR_APP_ID, // TODO: Request your cdcrAppID from dashboard
   publicPath: process.env.VUE_APP_PUBLIC_PATH, // TODO: Define the publicPath in package.json
-  useWebSocketConnection: false, // Set to true to switch from REST to Web Sockets
   appType: 'PWA',
   isLcl,
   isDev,
   isTst,
   isPoc,
-  isPrd: !isLcl && !isDev && !isTst, // (internal only until Tim updates the VIP route) TODO: Nurthin Aziz 2021-07-22 UPDATE THIS COMMENT.
-  allowMultipleRoles: false, // This flag allows assigning multiple roles to a user.
+  isPrd: !isLcl && !isDev && !isTst,
+  isMobile:
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    ),
   approles: [
     // TODO: Add your application roles here
     /* {

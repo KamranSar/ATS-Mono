@@ -58,6 +58,8 @@ console.log('myApp: ', myApp.name);
 
 ## :rainbow: Adding **color** to the app
 
+### Modifying the theme colors
+
 Light and Dark themes are derived from the file `"@/plugins/themes.js"`
 
 - [ ] Change the `primary,secondary,accent,error,info,success and warning` colors as needed.
@@ -73,6 +75,12 @@ Light and Dark themes are derived from the file `"@/plugins/themes.js"`
 :::
 
 NOTE: _Remember to see what it also looks like in dark mode before settling on a theme._
+
+### Updating the scrollbar colors
+
+By default when the page needs to scroll, the scrollbar color is defaulted to the primary color defined in `@/plugins/themes.js`.
+
+![Scrollbar](./scrollbar.png)
 
 ## :black_flag: Adding the application **logo**
 
@@ -107,8 +115,7 @@ Now is a good time to `stage` all of our changes, give it a good `commit` messag
 - [ ] Run the following in a terminal:
 
 ```sh
-git add . # Stage your changes
-git commit -m "Updated application name, applied application themes, and added logo." # Give it a good commit message
+git commit -am "Updated application name, applied application themes, and added logo." # Give it a good commit message
 git push # Push
 ```
 
@@ -192,19 +199,20 @@ _Feel free to add your own `Items`, just remember to apply it to the `NavDrawerL
 Read more on that at [routing/#routeconfig-interface](/routing/#navigation)
 
 ```js
-// Public Routes
-const anonymousItems = getRoutesByName(['Login', 'Settings']);
-// Routes for Anyone Logged In
-const userItems = getRoutesByName(['Home', 'My New Route']);
-// Routes for Users with Role Admin
-const adminItems = getRoutesByName(['Admin']);
-// Routes used for the Toolbar in AppBar.vue
-const userToolbarItems = getRoutesByName([
-  'Home',
-  'Logout',
-  'Settings',
-  'CDCR Dashboard',
+// Routes used on AppBar.vue
+const TopNavItems = getRoutesByName([
+  // 'Home',
+  // 'Settings',
+  // 'Admin',
+  // 'CDCR Dashboard',
+  // 'Settings',
 ]);
+// Routes used for the Toolbar in AppBar.vue
+const ToolbarItems = getRoutesByName(['Home', 'Settings', 'CDCR Dashboard']);
+// Routes fused for BottomNavBar.vue
+const BottomNavItems = getRoutesByName(['Home', 'Admin']);
+// Routes used for NavDrawerLeft.vue
+const LeftNavItems = getRoutesByName(['Home', 'Admin', 'Settings']);
 ```
 
 Navigate to your new page using the left navigation drawer!
@@ -258,11 +266,9 @@ Much less code to track! :nerd_face:
 
 ### Creating a Vuex Module
 
-- [ ] Copy `@/store/modules/example.js` and rename to `greetings.js` to create your first vuex module.
+- [ ] `npm run new module`.
 
-_@/store/modules/example.js_
-
-<<< @/../src/store/modules/example.js
+![npm run new module](./npm_run_new_module.gif)
 
 - [ ] Update the `getDefaultState` in `greetings.js` to be the following:
 
@@ -379,7 +385,9 @@ services: [
 
 - [ ] Create a backend feathers service to hook into and call APIs with
 
-- [ ] Copy the folder `@/feathers/services/example` and change the file names and the `servicePath` variable in `example.service.js`
+- [ ] `npm run new service`
+
+![npm run new service](./npm_run_new_service.gif)
 
 Use it like so in Vue
 
@@ -427,161 +435,4 @@ git remote -v # Check that you don't already have it
 git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
 git fetch upstream main
 git merge --squash upstream/main
-```
-
-## :question: FAQ
-
-### When to Fork vs Clone?
-
-- **Fork** - when you're creating a project in devops for the first time.
-
-- **Clone** - when you're pulling down the project you just forked in devops to your local machine.
-  - Because a `git clone` does not bring down any upstream branches, git will tell you to run the command below:
-
-```
-git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
-```
-
-### What's the difference between a git `clone` and `fork`.
-
-Creating a fork will link your newly created repository and the repository you forked from.
-
-- The benefit to this is when creating a `Pull Request`, devops is smart enough to your repository was forked.
-  - This allows you to pull in changes bi-directionally.
-  - This is great for pulling in updates.
-
-```
-git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
-```
-
-Doing a `git clone https://...` of a project will only provide you a copy.
-
-- This is great for testing or working on a project.
-- Does not bring in any remote upstreams
-- If the project is forked, `git clone` will give you the command to add it if available.
-
-### How to update template version?
-
-```sh
-# 1. Check that you don't already have an upstream remote pointing to:
-# https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
-git remote -v
-
-# 2. Add it otherwise
-git remote add upstream https://cdcr@dev.azure.com/cdcr/CDCR-EIS-MiddleTier-Templates/_git/vue-frontend-template
-
-# 3. Merge in changes from vue-frontend-template.
-git fetch upstream main
-git merge --squash upstream/main # Resolve any merge conflicts
-```
-
-#### Tips:
-
-- Use `git fetch upstream main` to check for updates.
-- Select the **Accept all incoming.** option when dealing with merge conflicts in `@/config/private/`.
-- All other merge conflicts should be handled normally.
-
-### How to update app version?
-
-You can properly update your application `major`, `minor`, and `patch` releases with **npm** provided commands.
-
-- This bumps up the version appropriate
-- Creates a commit on your current branch with the version number
-- Creates a tag _(Not needed)_
-
-* **Type:** `CLI`
-* **Usage:**
-
-```sh
-# Assume we're currently on version 1.0.1
-
-npm version major # Sets the version to v2.0.0
-npm version minor # Sets the version to v1.1.0
-npm version major # Sets the version to v1.0.2
-```
-
-### Why am I getting errors from `api/auth/v1/authentication`
-
-_Assuming you're on your local machine..._
-
-Make sure you have the MT server running and try again.
-
-```sh
-# Navigate to your database-template
-cd ~/code/database-template
-git pull
-npm install
-./scripts/start_test_servers.sh
-npm run dev
-```
-
-_If this is the first time you're running the MT server..._
-
-- [ ] Connect to F5
-- [ ] Bring down the latest images from database-template
-
-```sh
-./scripts/get_test_images.sh
-```
-
-- [ ] Try running it again
-
-```sh
-./scripts/start_test_servers.sh
-npm run dev
-```
-
-_If you've recently lost connection to F5_
-
-You'll need to do a fast restart of your servers.
-
-- [ ] Run the fast restart script in your server directory
-
-```sh
-./scripts/fast_restart.sh
-```
-
-### Why does the app name in the browser title show up with delimitters?
-
-This is because of the following code in `/public/index.html`
-
-Webpack automatically pulls the title from the variable `name` in `package.json`.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    ...
-    <title><%= htmlWebpackPlugin.options.title %></title>
-    ...
-  </head>
-</html>
-```
-
-If you want to correct this without the delimitters you can hard code it like so:
-
-```html
-<title>My App Name</title>
-```
-
-### How can I access my Vue app through console?
-
-By default the Vue application is mounted to an element with the id app.
-
-- [ ] Open DevTools with `Ctrl + Shift + I`
-      In the prompt you can create a variable and assign it to app.
-
-```javascript
-const app = document.getElementById('app').__vue__;
-app.$store.set('app/loading', true);
-app.$store.set('app/loading', false);
-```
-
-:::tip
-You actually have access to the store already in the dev tools.
-:::
-
-```js
-store.set('app/loading', true);
-store.set('app/loading', false);
 ```

@@ -40,9 +40,6 @@ export default {
         this.deferredPrompt = null;
         this.installedByPrompt = true;
       });
-    } else {
-      // Else go back to where you came from
-      this.$router.push({ name: 'Home' });
     }
   },
   methods: {

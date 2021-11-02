@@ -3,17 +3,14 @@
     v-bind="$attrs"
     :no-action="child"
     :sub-group="child"
-    :key="$route.fullPath"
-    v-model="value"
-    v-if="hasRoles"
+    :value="value"
+    v-if="hasRoles || hasException"
   >
     <template v-slot:activator>
       <v-list-item-icon
-        ><v-icon :color="getRouterColor(group)">{{
-          group.icon
-        }}</v-icon></v-list-item-icon
+        ><v-icon>{{ group.icon }}</v-icon></v-list-item-icon
       >
-      <v-list-item-content :class="`${getRouterColor(group)}--text`">
+      <v-list-item-content>
         <v-list-item-title>{{ group.name }}</v-list-item-title>
       </v-list-item-content>
     </template>

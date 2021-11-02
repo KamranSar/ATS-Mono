@@ -15,10 +15,6 @@
   "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "editor.tabCompletion": "on",
-  "eslint.validate": [
-    "javascript",
-    "vue",
-    "html"
-  ],
+  "eslint.validate": ["javascript", "vue", "html"],
   "files.autoSave": "onWindowChange"
 }

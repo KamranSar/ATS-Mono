@@ -4,13 +4,9 @@
     indeterminate
     v-if="loading"
   ></v-progress-circular>
-  <v-btn
-    v-else-if="!loading && $vuetify.breakpoint.mdAndUp"
-    icon
-    @click="$router.go()"
-  >
+  <v-btn v-else-if="!loading && $vuetify.breakpoint.mdAndUp" icon :to="toRoute">
     <v-avatar size="36">
-      <v-img :src="imgLocation"></v-img>
+      <v-img :src="`${$myApp.publicPath}${imgLocation}`"></v-img>
     </v-avatar>
   </v-btn>
 </template>
@@ -23,10 +19,14 @@
     name: 'AppLogo',
     mixins: [Update],
     data: () => ({
-      imgLocation: 'img/logo.svg',
+      imgLocation: '/img/logo.svg',
     }),
     computed: {
       ...get('app', ['loading']),
+      ...get('users', ['isUserLoggedIn']),
+      toRoute() {
+        return this.isUserLoggedIn ? '/' : '/login';
+      },
     },
   };
 </script>

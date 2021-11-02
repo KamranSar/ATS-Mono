@@ -1,8 +1,9 @@
 import { make } from 'vuex-pathify';
-
+/**
+ * * NOTE: Device Preferences are saved per device in localStorage by default.
+ */
 const getDefaultState = () => {
   return {
-    // TODO: May want to implement this per user id to support multiple user login prefs.
     leftDrawOpen: false,
     rightDrawOpen: false,
     miniDraw: true,
@@ -16,14 +17,21 @@ const mutations = {
   ...make.mutations(state),
 
   resetState(state) {
+    // Maintain dark mode state when resetting
+    let darkModeState = state.darkMode;
+
     Object.assign(state, getDefaultState());
+
+    // Maintain dark mode state when resetting
+    state.darkMode = darkModeState;
   },
 };
 
 const actions = {
   ...make.actions(state),
+
   // eslint-disable-next-line no-unused-vars
-  init: async ({ dispatch }) => {
+  init: async ({ rootState, state, dispatch }) => {
     //
   },
 };
@@ -31,6 +39,7 @@ const actions = {
 const getters = {};
 
 export default {
+  persisted: 'localStorage',
   namespaced: true,
   state,
   mutations,

@@ -1,14 +1,17 @@
 import store from '@/store/';
 
+const HAS_ALL = 'hasAllRoles';
+const HAS_ANY = 'hasAnyRoles';
+
 /**
  * roleCheck
- * Private helper to generalize the way we check if a user has all or any of the passed passed in.
+ * Private helper to generalize the way we check if a user has all or any of the roles passed in.
  *
  * @param {Array} [roles = []] roles
  * @param {String} [type="hasAllRoles"] type Options are "hasAllRoles" | "hasAnyRoles"
  * @returns {Boolean} true or false depending on if the roles were enough to pass the given type.
  */
-const roleCheck = (roles = [], type = 'hasAllRoles') => {
+const roleCheck = (roles = [], type = HAS_ALL) => {
   // Check the appUserRoles against the roles passed in
   const appUserRoles = store.getters['users/getAppUserRoles'];
 
@@ -18,10 +21,10 @@ const roleCheck = (roles = [], type = 'hasAllRoles') => {
 
   // Default to true for no roles;
   // Start with true when checking for all roles
-  let retVal = !roles.length || type === 'hasAllRoles' ? true : false;
+  let retVal = !roles.length || type === HAS_ALL ? true : false;
   for (let index = 0; index < roles.length; index++) {
     const role = roles[index];
-    if (type === 'hasAnyRoles' && appUserRoles.includes(role)) {
+    if (type === HAS_ANY && appUserRoles.includes(role)) {
       retVal = true;
       break;
     } else if (!appUserRoles.includes(role)) {
@@ -36,3 +39,5 @@ const roleCheck = (roles = [], type = 'hasAllRoles') => {
 };
 
 export default roleCheck;
+
+export { roleCheck, HAS_ALL, HAS_ANY };

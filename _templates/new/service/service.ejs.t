@@ -1,14 +1,18 @@
+---
+to: "src/feathers/services/<%= h.changeCase.lower(name) %>/<%= h.changeCase.lower(name) %>.service.js"
+---
 import feathersClient from '@/feathers/index.js';
+// import findAll from '@/feathers/helpers/findAll.js';
 import { debug } from 'feathers-hooks-common';
-import myApp from '@/config/myApp.js';
-
-// If you've enabled sockets in myApp config...
+import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures.js';
+// If you've enabled sockets in appFeatures...
 // Toggle this to true or false to watch for service changes on the socket.
 const watchForChangesOnSocket = true;
-import { exampleHook } from '@/feathers/services/example/example.hooks.js';
+import { exampleHook } from '@/feathers/services/<%= h.changeCase.camel(name) %>/<%= h.changeCase.camel(name) %>.hooks.js';
 
-const servicePath = 'api/auth/v1/example';
+const servicePath = '<%= servicePath %>';
 const service = feathersClient.service(servicePath);
+
 service.hooks({
   before: {
     all: [debug('Hello World Example!'), exampleHook],
@@ -40,7 +44,7 @@ service.hooks({
 });
 
 // Listen to socket events when available.
-if (myApp.useWebSocketConnection && watchForChangesOnSocket) {
+if (WEB_SOCKETS_ENABLED && watchForChangesOnSocket) {
   service.on('created', (item) => {
     console.log('Created: ', item);
   });

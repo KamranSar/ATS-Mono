@@ -2,9 +2,9 @@
   <v-app>
     <AppBar></AppBar>
 
-    <NavDrawerLeft></NavDrawerLeft>
+    <NavDrawerLeft v-if="LEFT_DRAW_ENABLED" />
 
-    <NavDrawerRight title="Right side Drawer">
+    <NavDrawerRight v-if="RIGHT_DRAW_ENABLED" title="Right side Drawer">
       <template v-slot:content>
         <v-list>
           <v-list-item v-for="n in 5" :key="n" link>
@@ -20,10 +20,13 @@
     <Snackbar />
 
     <v-main>
-      <router-view :key="$route.fullPath" />
+      <!-- Remove the transition tag if route transitions are not desired -->
+      <transition name="slide-fade" mode="out-in">
+        <router-view :key="$route.fullPath" />
+      </transition>
     </v-main>
 
-    <BottomNavBar v-if="$vuetify.breakpoint.mdAndDown"></BottomNavBar>
+    <BottomNavBar v-if="BOTTOM_BAR_ENABLED" />
   </v-app>
 </template>
 
@@ -34,7 +37,12 @@
   import Alert from '@/components/util/Alert.vue';
   import Snackbar from '@/components/util/Snackbar.vue';
   import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
-
+  import { get } from 'vuex-pathify';
+  import {
+    LEFT_DRAW_ENABLED,
+    RIGHT_DRAW_ENABLED,
+    BOTTOM_BAR_ENABLED,
+  } from '@/config/appFeatures.js';
   // https://v3.vuejs.org/guide/composition-api-setup.html#setup
   export default {
     components: {
@@ -45,36 +53,24 @@
       Snackbar,
       BottomNavBar,
     },
+    data: () => ({
+      LEFT_DRAW_ENABLED,
+      RIGHT_DRAW_ENABLED,
+      BOTTOM_BAR_ENABLED,
+    }),
+    computed: {
+      ...get('users', ['isUserLoggedIn']),
+    },
   };
 </script>
 
-<style>
-  /* FIXME: Derive this from themes as --css-variable */
+<style lang="scss">
+  // Update or remove this if you don't want this scrollbar color
+  @import '@/styles/scrollbar.scss';
 
-  /* Chrome, Safari */
-  /** Begin Force Scroll Bar */
-  /** https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar */
-  /* TODO: Use an appropriate HEX value from your themes to set the background-color */
-  ::-webkit-scrollbar {
-    -webkit-appearance: none;
-  }
+  // Update this file for any transitions not used in the app.
+  @import '@/styles/transitions.scss';
 
-  ::-webkit-scrollbar:vertical {
-    width: 10px;
-  }
-
-  ::-webkit-scrollbar:horizontal {
-    height: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #517ca7;
-    border: transparent;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: #517ca7;
-    background: transparent;
-  }
-  /** Force Scroll Bar End */
+  // Uncomment this if you want to enable pull down to refresh
+  // @import '@/styles/overscroll.scss';
 </style>

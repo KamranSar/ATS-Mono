@@ -1,0 +1,4 @@
+/* Disables pull-to-refresh. */
+html {
+  overscroll-behavior-y: contain;
+}

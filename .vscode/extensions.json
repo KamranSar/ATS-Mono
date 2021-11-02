@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "aaron-bond.better-comments",
+    "coenraads.bracket-pair-colorizer-2",
+    "naumovs.color-highlight",
+    "alexdima.copy-relative-path",
+    "dbaeumer.vscode-eslint",
+    "mhutchie.git-graph",
+    "michelemelluso.gitignore",
+    "eamodio.gitlens",
+    "pkief.material-icon-theme",
+    "esbenp.prettier-vscode",
+    "wallabyjs.quokka-vscode",
+    "wayou.vscode-todo-highlight",
+    "gruntfuggly.todo-tree",
+    "octref.vetur",
+    "sdras.vue-vscode-snippets",
+    "ms-azuretools.vscode-docker"
+  ]
+}

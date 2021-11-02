@@ -8,7 +8,7 @@
               contain
               height="200px"
               width="200px"
-              src="img/logo.png"
+              :src="`${$myApp.publicPath}${imgLocation}`"
               justify="end"
             ></v-img>
           </v-col>
@@ -18,10 +18,17 @@
         <v-card flat height="100%" color="transparent">
           <p class="display-1 font-weight-bold mt-5">Page not found.</p>
           <p class="title">
-            Try going back to home page and repeating your action. Or, contact
-            us for assistance.
+            Try going back to home page and repeating your action. Or contact
+            the system administrator.
           </p>
-          <v-btn color="primary" large :to="{ name: 'Home' }"
+          <v-btn
+            v-if="!isUserLoggedIn"
+            color="primary"
+            large
+            :to="{ name: 'Login' }"
+            >Login</v-btn
+          >
+          <v-btn v-else color="primary" large :to="{ name: 'Home' }"
             >Take me home</v-btn
           >
         </v-card>
@@ -29,3 +36,15 @@
     </v-row>
   </v-container>
 </template>
+
+<script>
+  import { get } from 'vuex-pathify';
+  export default {
+    data: () => ({
+      imgLocation: '/img/logo.svg',
+    }),
+    computed: {
+      ...get('users', ['isUserLoggedIn']),
+    },
+  };
+</script>

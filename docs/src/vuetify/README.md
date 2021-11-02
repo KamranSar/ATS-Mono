@@ -20,16 +20,27 @@ import Vuetify from 'vuetify/lib';
 const { themes } = require('./themes.js');
 Vue.use(Vuetify);
 
-/** Install the vs code plugin for better color support:
- * Name: Color Highlight
- * Publisher: Sergii Naumov
- * VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=naumovs.color-highlight
- */
 export default new Vuetify({
   breakpoint: {
-    mobileBreakpoint: 'sm', // https://vuetifyjs.com/en/features/breakpoints/#mobile-breakpoints
+    // ! REMINDER: Update @/styles/variables.scss when updating these thresholds
+    thresholds: {
+      xs: 340,
+      sm: 540,
+      md: 800,
+      lg: 1280,
+    },
   },
   theme: {
+    options: {
+      // https://vuetifyjs.com/en/features/theme/#custom-properties
+      customProperties: true, // Required for css var used in scrollbar.scss
+      // FIXME: Dynamically turn this when process.NODE_ENV === 'production'
+      // https://vuetifyjs.com/en/features/theme/#caching
+      // themeCache: {
+      //   get: (key) => localStorage.getItem(key),
+      //   set: (key, value) => localStorage.setItem(key, value),
+      // },
+    },
     themes,
   },
   icons: {
@@ -83,3 +94,37 @@ msTileColor: themes.light.accent,
 <!-- Or apply it as a class -->
 <v-btn class="error">Hello World</v-btn>
 ```
+
+## Scrollbar Colors
+
+Scrollbars are colored `--v-primary-base` by default.
+
+### To remove the color completely
+
+- [ ] Take the `<style/>` tag out of `App.vue`
+
+### To change the color of the scrollbar
+
+- [ ] Change update it in `scrollbar.scss`
+
+:::details
+<<< @/../src/styles/scrollbar.scss
+:::
+
+## Mobile Breakpoints
+
+**There are cases when our users all have the same devices and the default mobile breakpoints won't always work in our favor without `JavaScript` manipulation.**
+
+When that happens do the following
+
+- [ ] Modify the `thresholds` in `vuetify.js`
+
+:::details
+<<< @/../src/plugins/vuetify.js
+:::
+
+- [ ] Update the $grid-breakpoint variable in the `variables.scss`.
+
+:::details
+<<< @/../src/styles/variables.scss
+:::

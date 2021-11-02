@@ -1,0 +1,25 @@
+// https://router.vuejs.org/guide/advanced/transitions.html
+// This file is used to define the transitions used throughout the application
+
+// slide-fade
+.slide-fade-enter-active {
+  transition: all 0.1s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+// fade
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}

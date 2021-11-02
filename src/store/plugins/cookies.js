@@ -1,11 +1,11 @@
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies
+// https://github.com/championswimmer/vuex-persist#detailed
+// https://github.com/js-cookie/js-cookie
 
 import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 import Cookies from 'js-cookie';
-
-// https://github.com/championswimmer/vuex-persist#detailed
-// https://github.com/js-cookie/js-cookie
-const modules = []; // TODO: Add peristed modules here to localstorage
+import { getPersistedModules } from '@/helpers/index.js';
+const modules = getPersistedModules('cookies');
 
 // !CAUTION: Persisted in plain-text
 const vuexPersist = new VuexPersistence({

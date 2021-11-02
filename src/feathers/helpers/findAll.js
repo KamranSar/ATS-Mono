@@ -5,9 +5,19 @@ import store from '@/store';
  *
  * The default return type is 'JSON'
  *
- * @example
+ * @example Type: Array
  * const appUserRoles = await findAll('/api/auth/v1/appuserroles', null, { type: 'Array'});
  * console.log({ appUserRoles })
+ *
+ * @example Type: Map
+ * const appUserRoles = await findAll('/api/auth/v1/appuserroles', null, { type: 'Array'});
+ * console.log({ appUserRoles })
+ * console.log([...results.keys()]) // To get all the keys
+ * console.log([...results.values()]) // To get all the values
+ *
+ * @example Type: JSON
+ * const { data } = await findAll('/api/auth/v1/appuserroles', null, { type: 'JSON'});
+ * console.log({ data })
  *
  * @param {Object|String} servicepath - The service or path of your API end point.
  * @param {Object} query - A complete feathers query object. Ex. { query: { ... } }

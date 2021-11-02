@@ -26,10 +26,12 @@ Below outlines the default directory structure the template comes with:
     │           │   └── azure
     │           └── plugins
     ├── directives
+    │   ├── v-check-all-roles
+    │   ├── v-check-any-role
     │   ├── v-has-all-roles
     │   └── v-has-any-roles
     ├── feathers - Exported feathers services
-    │   ├── helpers - findAll helper
+    │   ├── helpers
     │   └── services
     ├── helpers - toTitleCase, hasARole, roleCheck...
     ├── mixins - PWA Install Mixin

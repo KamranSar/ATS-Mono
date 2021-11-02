@@ -21,10 +21,18 @@ const getMidTierToken = async () => {
     strategy: 'azuretoken_v1',
     idToken: _azuretokenresponse.idToken, // Need the token from Azure to log into middle tier
     cdcrAppID: myApp.cdcrAppID,
-    defaultRole: defaultAdminRole.name, // Gets ignored after the first user creation
     appType: myApp.appType,
-    impersonatedSomsUPN,
   };
+
+  // Don't request what's not necessary
+  const appUserRoles = store.getters['users/getAppUserRoles'];
+  if (!appUserRoles.length) {
+    packet.defaultRole = defaultAdminRole.name;
+  }
+  if (impersonatedSomsUPN !== '') {
+    packet.impersonatedSomsUPN = impersonatedSomsUPN;
+  }
+
   try {
     const response = await feathers.authenticate(packet);
     // Set the app id as a session token to be used by the middle tier

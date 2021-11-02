@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import myApp from '@/config/myApp.js';
 import { make } from 'vuex-pathify';
 
 const getDefaultState = () => {
@@ -47,6 +48,27 @@ const getters = {
     }
   },
   /**
+   * getUserPrefs
+   * Returns the userprefs from the loggedInUser
+   * Returns mobile prefs when isMobile is true
+   *
+   * @param {*} state
+   * @returns {Array} - state.loggedInUser.userprefs : {}
+   */
+  getUserPrefs: (state) => {
+    if (
+      state.loggedInUser &&
+      state.loggedInUser.userprefs &&
+      state.loggedInUser.userprefs[myApp.isMobile ? 'mobilePrefs' : 'prefs']
+    ) {
+      return state.loggedInUser.userprefs[
+        myApp.isMobile ? 'mobilePrefs' : 'prefs'
+      ];
+    } else {
+      return {};
+    }
+  },
+  /**
    * getAppUserRoles
    * Returns the roles from the loggedInUser or an empty array
    *
@@ -69,6 +91,7 @@ const getters = {
 
 // Vuex Store
 export default {
+  persisted: 'indexeddb',
   namespaced: true,
   state,
   mutations,

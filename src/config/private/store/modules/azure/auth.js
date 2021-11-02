@@ -66,7 +66,7 @@ async function signIn(method = 'popup') {
       .loginPopup(loginRequest)
       .then(handleResponse)
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   } else if (signInType === 'redirect') {
     return myMSALObj.loginRedirect(loginRequest);

@@ -45,6 +45,7 @@ module.exports = {
             text: 'Guide',
             link: '/guide/',
           },
+          { text: 'Lifecycle Diagram', link: '/lifecycle/' },
           {
             text: 'Vuetify',
             link: '/vuetify/',
@@ -79,6 +80,10 @@ module.exports = {
             link: '/directory/',
           },
         ],
+      },
+      {
+        text: 'FAQ',
+        link: '/faq/',
       },
       {
         text: 'App Registration',
@@ -155,5 +160,5 @@ module.exports = {
   /**
    * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
    */
-  plugins: ['@vuepress/plugin-back-to-top', '@vuepress/plugin-medium-zoom'],
+  plugins: ['@vuepress/back-to-top', '@vuepress/medium-zoom'],
 };

@@ -109,7 +109,7 @@ async function addDownloadedAtTS(context) {
 
 import feathersClient from '@/feathers/index.js';
 import { debug } from 'feathers-hooks-common';
-import myApp from '@/config/myApp.js';
+import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures.js';
 
 // If you've enabled sockets in myApp config...
 // Toggle this to true or false to watch for service changes on the socket.
@@ -149,7 +149,7 @@ service.hooks({
 });
 
 // Listen to socket events when available.
-if (myApp.useWebSocketConnection && watchForChangesOnSocket) {
+if (WEB_SOCKETS_ENABLED && watchForChangesOnSocket) {
   service.on('created', (item) => {
     console.log('Created: ', item);
   });

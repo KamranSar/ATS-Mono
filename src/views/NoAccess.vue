@@ -8,7 +8,7 @@
               contain
               height="200px"
               width="200px"
-              src="img/logo.svg"
+              :src="`${$myApp.publicPath}${imgLocation}`"
               justify="end"
             ></v-img>
           </v-col>
@@ -20,12 +20,21 @@
             You are not authorized to access this application.
           </p>
           <p class="title">
-            <!-- Try going back to home page and repeating your action. Or, contact
-              us for assistance. -->
-            Please contact the institution or system administrator for
-            assistance.
+            Please contact the system administrator for assistance.
           </p>
-          <v-btn color="primary" large :to="{ name: 'Home' }"
+          <v-btn
+            v-if="!isUserLoggedIn"
+            color="primary"
+            large
+            :to="{ name: 'Login' }"
+            >Login</v-btn
+          >
+          <v-btn
+            v-else
+            class="mx-2"
+            color="primary"
+            large
+            :to="{ name: 'Home' }"
             >Take me home</v-btn
           >
         </v-card>
@@ -33,3 +42,15 @@
     </v-row>
   </v-container>
 </template>
+
+<script>
+  import { get } from 'vuex-pathify';
+  export default {
+    data: () => ({
+      imgLocation: '/img/logo.svg',
+    }),
+    computed: {
+      ...get('users', ['isUserLoggedIn']),
+    },
+  };
+</script>

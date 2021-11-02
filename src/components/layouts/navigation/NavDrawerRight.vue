@@ -1,5 +1,13 @@
 <template>
-  <v-navigation-drawer v-model="rightDrawOpen" clipped hide-overlay right app>
+  <v-navigation-drawer
+    v-model="rightDrawOpen"
+    clipped
+    hide-overlay
+    right
+    app
+    disable-resize-watcher
+    v-if="isUserLoggedIn"
+  >
     <!-- 
       NOTE: On Mobile the right drawer go overs the AppBar for some reason...
         Setting `absolute` to <v-navigation-drawer absolute></v-navigation-drawer> 
@@ -39,9 +47,11 @@
       },
     },
     setup(props, context) {
-      const { sync } = useVuexPathify(context);
-      const rightDrawOpen = sync('userPrefs/rightDrawOpen');
-      return { rightDrawOpen };
+      const { sync, get } = useVuexPathify(context);
+      const rightDrawOpen = sync('devicePrefs/rightDrawOpen');
+      const isUserLoggedIn = get('users/isUserLoggedIn');
+
+      return { rightDrawOpen, isUserLoggedIn };
     },
   };
 </script>

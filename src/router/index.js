@@ -28,6 +28,9 @@ router.beforeEach(waitForStorageToBeReady);
  * Create a `beforeResolve` hook to fire whenever one is defined in the meta of our Route Record.
  * This allows to call router guards such as `hasAllRoles` and `hasAnyRoles` without interfering with
  * the indiviudal guards at the `beforeEnter` level in the Route Config.
+ *
+ * Source: https://github.com/bencodezen/vue-enterprise-boilerplate/blob/main/src/router/index.js
+ * Author: github@chrisvfritz
  */
 router.beforeResolve(async (to, from, next) => {
   try {
@@ -57,7 +60,7 @@ router.beforeResolve(async (to, from, next) => {
     return;
   }
 
-  // If we reach this point, continue resolving the route.
+  // If we reach this point, route has been resolved, go next().
   next();
 });
 // #endregion beforeResolve

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import roleCheck from '@/helpers/roleCheck.js';
+import { roleCheck, HAS_ANY } from '@/helpers/roleCheck.js';
 
 /**
  * This is the vue-directive equivalent of our router guard hasAnyRoles (@/router/routers/hasAnyRoles.js)
@@ -18,7 +18,7 @@ const hasAnyRoles = {
     let display = false; // Flag to determine whether the element is displayed or not (Play it safe, default to false)
     const roles = binding.value; // Grab the roles passed in from the value passed in
 
-    display = roleCheck(roles, 'hasAnyRoles');
+    display = roleCheck(roles, HAS_ANY);
     // If we're not displaying, set display to 'none'
     // Otherwise don't touch the element
     if (!display) {

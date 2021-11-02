@@ -13,7 +13,7 @@
       max-height="25px"
       max-width="25px"
       class="ml-n1 mr-3 pa-1"
-      src="img/ms-symbollockup_mssymbol_19.svg"
+      :src="`${$myApp.publicPath}${imgLocation}`"
     ></v-img>
     <span
       class="buttonText"
@@ -28,9 +28,14 @@
 <script>
   import { call, sync } from 'vuex-pathify';
   import getNewToken from '@/config/private/helpers/getNewToken';
+  import onInit from '@/config/hooks/onInit.js';
+  import onLogin from '@/config/hooks/onLogin.js';
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
     name: 'SignInWithMicrosoftButton',
+    data: () => ({
+      imgLocation: '/img/ms-symbollockup_mssymbol_19.svg',
+    }),
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       ...call('azureAuthentication', ['AzureAuthentication']),
@@ -38,11 +43,21 @@
       async signinButtonClicked() {
         this.loading = true;
         try {
+          this.SET_SNACKBAR({
+            top: true,
+            center: true,
+            message: `Logging in...`,
+            color: 'success',
+          });
+
           // Sign in with azure
           await this.AzureAuthentication();
           try {
             await getNewToken();
             await new Promise((resolve) => setTimeout(resolve, 500)); // Wait for the authentication to finish or we get router errors
+            await onLogin();
+            await onInit();
+
             this.$router.push({ name: 'Home' });
             this.SET_SNACKBAR({
               top: true,
@@ -55,7 +70,7 @@
             this.SET_SNACKBAR({
               top: true,
               center: true,
-              message: 'User cancelled or authenticated failed.',
+              message: 'User cancelled or authentication failed.',
               color: 'error',
             });
           } finally {

@@ -85,49 +85,6 @@ The default value must not be used for production. Follow the guide to register 
 - **Usage:**\
    You can find `this.$myApp.publicPath` defined in the `package.json` file.
 
-### ~~useWebSocketConnection~~
-
-::: danger
-Currently does not work in production.
-:::
-
-- **Type:** `Boolean`
-- **Default:** `false`
-- **Read-Only:** `false`
-- **Usage:**\
-
-```js
-// @/feathers/services/example/example.service.js
-
-import feathersClient from '@/feathers/index.js';
-import myApp from '@/config/myApp.js';
-
-// If you've enabled sockets in myApp config...
-// Toggle this to true or false to watch for service changes on the socket.
-const watchForChangesOnSocket = true;
-const servicePath = 'api/auth/v1/example';
-const service = feathersClient.service(servicePath);
-
-// Listen to socket events when available.
-if (myApp.useWebSocketConnection && watchForChangesOnSocket) {
-  service.on('created', (item) => {
-    console.log('Created: ', item);
-  });
-  service.on('updated', (item) => {
-    console.log('Updated: ', item);
-  });
-  service.on('patched', (item) => {
-    console.log('Patched: ', item);
-  });
-  service.on('removed', (item) => {
-    console.log('Removed: ', item);
-  });
-}
-
-// Feathers Service
-export default service;
-```
-
 ### appType
 
 - **Type:** `String`
@@ -191,16 +148,8 @@ const isLcl = window.location.hostname.includes('poc'); // (internal only)
   `this.$myApp.isPrd` is true if `isLcl` `isDev` and `isTst` are not.
 
 ```js
-const isPrd = !isLcl && !isDev && !isTst; // (internal only until Tim updates the VIP route) TODO: Nurthin Aziz 2021-07-22 UPDATE THIS COMMENT.
+const isPrd = !isLcl && !isDev && !isTst;
 ```
-
-### allowMultipleRoles
-
-- **Type:** `Boolean`
-- **Default:** `false`
-- **Read-Only:** `false`
-- **Usage:**\
-  This flag allows assigning multiple roles to a user.
 
 ### approles
 
@@ -269,12 +218,44 @@ const defaultAdminRole = {
 - **Usage:**\
   The priority is used within the `/admin/users` page to handle cases where a user can't promote themselves to a higher role.
 
+## appFeatures
+
+### LEFT DRAW ENABLED
+
+This feature flag is captures in App.vue and AppBar.vue
+
+### RIGHT DRAW ENABLED
+
+This feature flag is captures in App.vue and AppBar.vue
+
+### BOTTOM BAR ENABLED
+
+This feature flag is captures in App.vue
+
+### WEB SOCKETS ENABLED
+
+::: danger
+Currently does not work in production.
+:::
+
+Set to true to switch from REST to Web Sockets
+
+### MULTIPLE USER ROLES ENABLED
+
+This feature flag allows assigning multiple roles to a user.
+
+::: details
+<<< @/../src/config/appFeatures.js
+:::
+
 ## Example Config
+
+### Example myApp
 
 **Location:** `@/config/myApp.js`
 
 ```javascript
-import toTitleCase from '@/helpers/toTitleCase.js';
+import { toTitleCase } from '@/helpers/index.js';
 
 const isLcl = window.location.hostname.includes('localhost'); // (internal only)
 const isDev = window.location.hostname.includes('dev'); // (internal only)
@@ -308,14 +289,12 @@ var myApp = Object.freeze({
   gitVersion,
   cdcrAppID: process.env.VUE_APP_CDCR_APP_ID, // TODO: Request your cdcrAppID from dashboard
   publicPath: process.env.VUE_APP_PUBLIC_PATH, // TODO: Define the publicPath in package.json
-  useWebSocketConnection: false, // Set to true to switch from REST to Web Sockets
   appType: 'PWA',
   isLcl,
   isDev,
   isTst,
   isPoc,
-  isPrd: !isLcl && !isDev && !isTst, // (internal only until Tim updates the VIP route) TODO: Nurthin Aziz 2021-07-22 UPDATE THIS COMMENT.
-  allowMultipleRoles: false, // This flag allows assigning multiple roles to a user.
+  isPrd: !isLcl && !isDev && !isTst,
   approles: [
     // TODO: Add your application roles here
     /* {
@@ -341,4 +320,22 @@ var myApp = Object.freeze({
 export default myApp;
 
 export { defaultAdminRole, myApp };
+```
+
+### Example appFeatures
+
+**Location:** `@/config/appFeatures.js`
+
+```javascript
+const LEFT_DRAW_ENABLED = true;
+const RIGHT_DRAW_ENABLED = false;
+const BOTTOM_BAR_ENABLED = false;
+const WEB_SOCKETS_ENABLED = false;
+
+export {
+  LEFT_DRAW_ENABLED,
+  RIGHT_DRAW_ENABLED,
+  BOTTOM_BAR_ENABLED,
+  WEB_SOCKETS_ENABLED,
+};
 ```

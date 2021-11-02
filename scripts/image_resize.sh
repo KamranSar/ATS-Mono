@@ -18,6 +18,15 @@ if [[ $CWD == *"scripts" ]]; then
   cd ..
 fi
 
+# Must be an absolute path
+if [[ $1 == "../"* ]]; then
+  echo -e "${RED}First argument must be an absolute path${NC}"
+  echo "./scripts/image_resize.sh /home/cdcr/Documents/Icons/logo.png"
+  echo -e "\t\t\t\tOR"
+  echo "./scripts/image_resize.sh ~/Documents/Icons/logo.png"
+  exit 0
+fi
+
 echo -e "${GREEN}Running the image resizer: ${NC}"
 echo "User passed in $1"
 
@@ -62,11 +71,15 @@ mv public/img/logo.* $backup_dir$num/.
 sleep 2
 
 echo -e "\n${GREEN}Resizing images, please wait...${NC}"
-git clone https://cdcr@dev.azure.com/cdcr/Common/_git/image_resize icons
+mkdir icons
 cd icons
-python3 image_resize.py $1
-# Keep only the .png
-find . -type f ! -name '*.png' -type f ! -name '*.svg' -delete
+python3 ../scripts/image_resize.py $1
+
+# Keep only the .png .svg and .ico
+find . -type f ! -name '*.png' \
+  -type f ! -name '*.svg' \
+  -type f ! -name '*.ico' \
+  -delete
 cd ..
 
 echo -e "\n${GREEN}Moving images to /public/img/icons folder...${NC}"

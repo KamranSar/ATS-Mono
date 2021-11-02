@@ -4,7 +4,7 @@
       <v-avatar
         size="36px"
         :color="
-          stringToColour(
+          stringToColor(
             user
               ? user.user
                 ? user.user.displayName
@@ -35,7 +35,7 @@
     v-else
     size="36px"
     :color="
-      stringToColour(
+      stringToColor(
         user
           ? user.user
             ? user.user.displayName
@@ -66,6 +66,7 @@
    * <UserAvatar :user="user"></UserAvatar>
    */
   import useVuexPathify from '@/compositions/useVuexPathify';
+  import stringToColor from '@/helpers/stringToColor.js';
   import { computed } from '@vue/composition-api';
 
   export default {
@@ -96,25 +97,6 @@
         );
       });
 
-      /**
-       * Helper function to generate a consistent HEX color given a seed
-       * Author: Joe Freeman
-       * Source: https://stackoverflow.com/a/16348977
-       */
-      var stringToColour = function (str) {
-        if (!str) return '';
-        var hash = 0;
-        for (var i = 0; i < str.length; i++) {
-          hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        var colour = '#';
-        for (var j = 0; j < 3; j++) {
-          var value = (hash >> (j * 8)) & 0xff;
-          colour += ('00' + value.toString(16)).substr(-2);
-        }
-        return colour;
-      };
-
       return {
         // Computed
         myUser,
@@ -122,7 +104,7 @@
         myInitials,
         userInitials,
         // Methods
-        stringToColour,
+        stringToColor,
       };
     },
   };

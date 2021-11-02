@@ -110,7 +110,7 @@ const actions = {
   // #endregion AzureAuthentication
 
   // This signs completely out of Azure including any other applications using this browser (outlook email, Teams, Devops, etc.)
-  signOut: ({ state, commit }) => {
+  signOut: ({ state }) => {
     console.log('signOut');
     if (
       state.azuretokenresponse &&
@@ -123,12 +123,6 @@ const actions = {
       );
       signOut(state.azuretokenresponse.account.homeAccountId, 'popup');
     }
-    console.log('signOut commit resetState');
-    commit('resetState');
-  },
-
-  logout: ({ commit }) => {
-    commit('resetState');
   },
 
   getTokenPopup: async ({ state }) => {

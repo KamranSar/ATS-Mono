@@ -1,4 +1,4 @@
-import roleCheck from '@/helpers/roleCheck.js';
+import { roleCheck, HAS_ANY } from '@/helpers/roleCheck.js';
 
 /**
  * hasAnyRoles
@@ -8,7 +8,7 @@ import roleCheck from '@/helpers/roleCheck.js';
  * @returns {Boolean} true if the user has any of the roles in the array, false otherwise.
  */
 const hasAnyRoles = (roles = []) => {
-  return roleCheck(roles, 'hasAnyRoles');
+  return roleCheck(roles, HAS_ANY);
 };
 
 export default hasAnyRoles;

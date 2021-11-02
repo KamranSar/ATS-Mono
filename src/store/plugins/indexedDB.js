@@ -3,17 +3,17 @@
 import VuexPersistence from '@/../local_modules/vuex-persist/esm/';
 import localForage from 'localforage';
 import pako from 'pako';
-
-const APP_NAME = process.env.VUE_APP_NAME;
-const PROD_ENV = process.env.NODE_ENV === 'production';
-
-const modules = ['users']; // TODO: Add any modules you want to save to persistence
+import myApp from '@/config/myApp.js';
+import { getPersistedModules } from '@/helpers/index.js';
+const modules = getPersistedModules('indexedDB');
 
 // https://localforage.github.io/localForage/#multiple-instances-createinstance
 const localForageInstance = localForage.createInstance({
-  name: APP_NAME,
+  name: process.env.VUE_APP_NAME,
   storeName: 'appDatabase',
 });
+
+const ENCRYPTING = myApp.isTst || myApp.isPoc || myApp.isPrd;
 
 const vuexPersisted = [];
 modules.forEach((key) => {
@@ -24,7 +24,7 @@ modules.forEach((key) => {
     restoreState: async (key) => {
       try {
         let data = await localForageInstance.getItem(key);
-        if (PROD_ENV) {
+        if (ENCRYPTING) {
           data = pako.inflate(data, { level: 6 });
           data = JSON.parse(new TextDecoder('utf-8').decode(data));
         }
@@ -36,7 +36,7 @@ modules.forEach((key) => {
     saveState: async (key, state) => {
       try {
         let data = state;
-        if (PROD_ENV) {
+        if (ENCRYPTING) {
           data = new TextEncoder().encode(JSON.stringify(state));
           data = pako.deflate(data, { level: 6 });
         }

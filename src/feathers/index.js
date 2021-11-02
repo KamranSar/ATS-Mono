@@ -9,7 +9,7 @@ import feathers from '@feathersjs/feathers';
 import auth from '@feathersjs/authentication-client';
 import socketio from '@feathersjs/socketio-client';
 import io from 'socket.io-client';
-import myApp from '@/config/myApp';
+import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures.js';
 
 let API_URL = window.location.origin;
 
@@ -17,8 +17,7 @@ let API_URL = window.location.origin;
 
 // Create the Feathers client
 const feathersClient = feathers();
-const useWebSocket = myApp.useWebSocketConnection;
-if (useWebSocket) {
+if (WEB_SOCKETS_ENABLED) {
   // https://docs.feathersjs.com/api/client/socketio.html#socketio-socket
   const socket = io(API_URL, {
     transports: ['websocket'],
@@ -58,7 +57,7 @@ feathersClient
     },
   });
 
-if (useWebSocket) {
+if (WEB_SOCKETS_ENABLED) {
   feathersClient.io.on('connect', () => {
     // Show online message
     console.log('socketio connect');

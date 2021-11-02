@@ -7,6 +7,7 @@
     :mini-variant.sync="miniDraw"
     :key="loggedInUser.logincount"
     mini-variant-width="70"
+    disable-resize-watcher
   >
     <!-- CAVEATS For Mini-Variant: https://vuetifyjs.com/en/components/navigation-drawers/#caveats -->
     <!-- When displaying the user toolbar the miniDraw variable drives what content gets shown due to real estate -->
@@ -16,7 +17,7 @@
     <v-toolbar
       flat
       class="text-capitalize subtitle-2 grey--text"
-      dense
+      v-bind="$attrs"
       color="#ECEFF1"
     >
       <span class="text-truncate text-left">
@@ -33,13 +34,9 @@
         <v-icon>mdi-chevron-{{ miniDraw ? 'right' : 'left' }}</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-list v-if="isUserLoggedIn">
-      <v-list-item v-if="miniDraw">
-        <v-list-item-icon>
-          <UserAvatar></UserAvatar>
-        </v-list-item-icon>
-      </v-list-item>
-      <template v-for="item in userItems">
+    <v-list v-bind="$attrs">
+      <!-- Left Navigation Items -->
+      <template v-for="item in LeftNavItems">
         <NavListGroup
           v-if="item.children && item.children.length"
           :key="item.name"
@@ -47,27 +44,18 @@
         ></NavListGroup>
         <NavListItem v-else :key="item.name" :item="item"></NavListItem>
       </template>
-    </v-list>
-    <v-list v-else>
-      <template v-for="item in anonymousItems">
-        <NavListGroup
-          v-if="item.children && item.children.length"
-          :key="item.name"
-          :group="item"
-        ></NavListGroup>
-        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
-      </template>
-    </v-list>
 
-    <v-list>
-      <template v-for="item in adminItems">
-        <NavListGroup
-          v-if="item.children && item.children.length"
-          :key="item.name"
-          :group="item"
-        ></NavListGroup>
-        <NavListItem v-else :key="item.name" :item="item"></NavListItem>
-      </template>
+      <!-- PWA Install & Update -->
+      <NavListItem
+        v-if="!isRunningPWA()"
+        :key="installItem.name"
+        :item="installItem"
+      ></NavListItem>
+      <NavListItem
+        v-if="updateExists"
+        :key="updateItem.name"
+        :item="updateItem"
+      ></NavListItem>
     </v-list>
 
     <!-- Add your own v-list below -->
@@ -83,14 +71,6 @@
       </template>
     </v-list>
     -->
-
-    <v-list v-if="!isRunningPWA()">
-      <NavListItem :key="installItem.name" :item="installItem"></NavListItem>
-    </v-list>
-
-    <v-list v-if="updateExists">
-      <NavListItem :key="updateItem.name" :item="updateItem"></NavListItem>
-    </v-list>
 
     <template v-slot:append>
       <transition-group name="fade" mode="in-out">
@@ -113,8 +93,10 @@
         </div>
         <div
           key="app"
-          class="text-right caption font-weight-regular pr-1"
+          class="text-right caption font-weight-regular pr-1 appversion"
           v-if="!miniDraw"
+          v-on:dblclick="showApiVersion"
+          v-touch="{ end: showApiVersion }"
         >
           {{ gitVersion }}
         </div>
@@ -124,7 +106,7 @@
 </template>
 
 <script>
-  import { anonymousItems, userItems, adminItems } from '@/router/routes';
+  import { LeftNavItems } from '@/router/routes';
   import { defaultAdminRole } from '@/config/myApp.js';
   import Install from '@/mixins/Install.js'; // Function:isRunningPWA(), []:installItem
   import Update from '@/mixins/Update.js'; // Data(): updateExists; Function: update(), []:updateItem
@@ -134,6 +116,7 @@
   import useVuexPathify from '@/compositions/useVuexPathify';
   import { myApp } from '@/config/myApp';
   import { computed } from '@vue/composition-api';
+  import { showApiVersion } from '@/helpers/index.js';
   export default {
     name: 'NavDrawerLeft',
     components: {
@@ -144,8 +127,8 @@
     mixins: [Install, Update],
     setup(props, context) {
       const { sync, get } = useVuexPathify(context);
-      const leftDrawOpen = sync('userPrefs/leftDrawOpen');
-      const miniDraw = sync('userPrefs/miniDraw');
+      const leftDrawOpen = sync('devicePrefs/leftDrawOpen');
+      const miniDraw = sync('devicePrefs/miniDraw');
       const loggedInUser = get('users/loggedInUser');
       const isUserLoggedIn = get('users/isUserLoggedIn');
       const version = myApp.version;
@@ -185,26 +168,16 @@
         leftDrawOpen,
         miniDraw,
         displayName,
-        anonymousItems,
-        userItems,
-        adminItems,
+        LeftNavItems,
         defaultAdminRole,
         loggedInUser,
         isUserLoggedIn,
         version,
         gitVersion,
         impersonatingSOMS,
+        // Methods
+        showApiVersion,
       };
     },
   };
 </script>
-<style>
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.5s;
-  }
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
-</style>
