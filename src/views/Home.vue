@@ -4,14 +4,14 @@
       <v-card-title class="cardPrimary"> Institution Transfers </v-card-title>
       <v-row no-gutters>
         <v-col cols="6"><h2>Departures from Folsom State Prison</h2></v-col>
-        <v-col cols="6" class="text-right">
+        <!-- <v-col cols="6" class="text-right">
           <v-btn x-large class="secondary" href="/transfer">
             New Offender Transfer
           </v-btn>
           <v-btn x-large class="secondary ml-2" href="/schedule">
             Go to Schedules
           </v-btn>
-        </v-col>
+        </v-col> -->
       </v-row>
       <v-data-table
         :items-per-page="itemsPerPage"
