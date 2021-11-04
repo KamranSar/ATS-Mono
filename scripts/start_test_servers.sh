@@ -97,13 +97,13 @@ docker run \
 --network host \
 --env-file scripts/test_env \
 --env APP_HOST=localhost \
---env APP_PORT=${MT_EIS_COMMON_PORT} \
+--env APP_PORT=${MT_EDS_ATS_PORT} \
 --env ORACLE_SVR_PORT=1521 \
 --env ORACLE_GUI_PORT=5500 \
 --env ORACLE_USER=aW50ZXJmYWNlX3VzZXJbZW9taXNfcm9fdXNlcl0= \
 --env ORACLE_PASSWORD=VVNFUmlmIyMyMDIw \
 --env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest1.vcx \
---expose ${MT_EIS_COMMON_PORT} \
+--expose ${MT_EDS_ATS_PORT} \
 --name $IMAGE_NAME \
 --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 #* END - REQUIRED CONTAINERS

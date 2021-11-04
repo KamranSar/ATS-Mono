@@ -193,7 +193,7 @@ const LeftNavItems = getRoutesByName([
   'Home',
   'Schedule',
   'Transfer',
-  // 'Maintenance',
+  'Maintenance',
   'Reports',
   'Admin',
   { name: 'Settings', parentOnly: true },

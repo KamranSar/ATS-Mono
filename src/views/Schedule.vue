@@ -1,152 +1,153 @@
 <template>
   <div>
-    <h1>Schedules</h1>
-    <v-data-table
-      :headers="headersSchedule"
-      @click:row="rowClick"
-      item-key="scheduleId"
-      :items="schedules"
-      single-select
-      sort-by="destination"
-      class="elevation-1"
-    >
-      <template v-slot:top>
-        <v-toolbar flat color="white">
-          <v-toolbar-title>FOLSOM STATE PRISON - Schedules</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialogSchedule" max-width="800px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn large class="secondary ma-2" v-bind="attrs" v-on="on">
-                Create Schedule
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="headline">{{ formScheduleTitle }}</span>
-              </v-card-title>
+    <v-card elevation="3" class="ma-4 px-4 pb-4">
+      <h1>Schedules</h1>
+      <v-data-table
+        :headers="headersSchedule"
+        @click:row="rowClick"
+        item-key="scheduleId"
+        :items="schedules"
+        single-select
+        sort-by="destination"
+        class="elevation-1"
+      >
+        <template v-slot:top>
+          <v-toolbar flat color="white">
+            <v-toolbar-title>FOLSOM STATE PRISON - Schedules</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialogSchedule" max-width="800px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn large class="secondary ma-2" v-bind="attrs" v-on="on">
+                  Create Schedule
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">{{ formScheduleTitle }}</span>
+                </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedSchedule.destination"
-                        label="Destination"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedSchedule.schedule"
-                        label="Schedule"
-                      ></v-text-field>
-                    </v-col>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedSchedule.destination"
+                          label="Destination"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedSchedule.schedule"
+                          label="Schedule"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" sm="6" md="4">
-                      <v-select
-                        v-model="editedSchedule.VIA"
-                        :items="VIAs"
-                        attach
-                        chips
-                        label="VIAs"
-                        multiple
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedSchedule.transferDate"
-                        label="Transfer Date"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedSchedule.seats"
-                        label="Seats"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field
-                        v-model="editedSchedule.remainingSeats"
-                        label="Remaining Seats"
-                      ></v-text-field>
-                    </v-col>
-                    <!-- <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6" md="4">
+                        <v-select
+                          v-model="editedSchedule.VIA"
+                          :items="VIAs"
+                          attach
+                          chips
+                          label="VIAs"
+                          multiple
+                        >
+                        </v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedSchedule.transferDate"
+                          label="Transfer Date"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedSchedule.seats"
+                          label="Seats"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedSchedule.remainingSeats"
+                          label="Remaining Seats"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedSchedule.offenders" label="Offenders"></v-text-field>
                   </v-col> -->
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeSchedule"
-                  >Cancel</v-btn
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeSchedule"
+                    >Cancel</v-btn
+                  >
+                  <v-btn color="blue darken-1" text @click="saveSchedule"
+                    >Save</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogDeleteSchedule" max-width="500px">
+              <v-card>
+                <v-card-title class="headline"
+                  >Are you sure you want to delete this schedule?</v-card-title
                 >
-                <v-btn color="blue darken-1" text @click="saveSchedule"
-                  >Save</v-btn
-                >
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="dialogDeleteSchedule" max-width="500px">
-            <v-card>
-              <v-card-title class="headline"
-                >Are you sure you want to delete this schedule?</v-card-title
-              >
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDeleteSchedule"
-                  >Cancel</v-btn
-                >
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="deleteScheduleConfirm()"
-                  >Delete Schedule</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editSchedule(item, schedules)">
-          mdi-pencil
-        </v-icon>
-        <v-icon small @click="deleteSchedule(item, schedule._id)">
-          mdi-delete
-        </v-icon>
-      </template>
-      <template v-slot:item.print135="{ item }">
-        <router-link to="">
-          {{ item.print135 }}
-          <v-icon color="primary" class="ml-5">mdi-file-document</v-icon>
-        </router-link>
-      </template>
-      <template v-slot:no-data>
-        <span>No Results</span>
-      </template>
-    </v-data-table>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeDeleteSchedule"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="deleteScheduleConfirm()"
+                    >Delete Schedule</v-btn
+                  >
+                  <v-spacer></v-spacer>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="editSchedule(item, schedules)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small @click="deleteSchedule(item, schedule._id)">
+            mdi-delete
+          </v-icon>
+        </template>
+        <template v-slot:item.print135="{ item }">
+          <router-link to="">
+            {{ item.print135 }}
+            <v-icon color="primary" class="ml-5">mdi-file-document</v-icon>
+          </router-link>
+        </template>
+        <template v-slot:no-data>
+          <span>No Results</span>
+        </template>
+      </v-data-table>
 
-    <!-- /* Endorsement Table Begin    */ -->
-    <div id="endTable" v-show="isShowing">
-      <div>
-        <v-toolbar>
-          <div class="flex-grow-1"></div>
+      <!-- /* Endorsement Table Begin    */ -->
+      <div id="endTable" v-show="isShowing">
+        <div>
+          <v-toolbar>
+            <div class="flex-grow-1"></div>
 
-          <v-toolbar-items>
-            <!-- <v-btn  class="secondary ma-2" :bind="attrs" v-on="on">Print all 135</v-btn>
+            <v-toolbar-items>
+              <!-- <v-btn  class="secondary ma-2" :bind="attrs" v-on="on">Print all 135</v-btn>
         <v-btn  class="secondary ma-2" :bind="attrs" v-on="on" @click="isShowing ^= true" >Close</v-btn>  -->
-            <v-btn class="secondary ma-2">Print all 135</v-btn>
-            <v-btn class="secondary ma-2" @click="isShowing ^= true">
-              Close
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-      </div>
-      <!-- <v-row class="my-4" no-gutters >
+              <v-btn class="secondary ma-2">Print all 135</v-btn>
+              <v-btn class="secondary ma-2" @click="isShowing ^= true">
+                Close
+              </v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+        </div>
+        <!-- <v-row class="my-4" no-gutters >
             <v-col  ><v-btn large class="secondary ma-2" v-bind="attrs" v-on="on"   >
               Print all 135
               </v-btn></v-col>
@@ -155,144 +156,145 @@
               </v-btn></v-col>
       
     </v-row> -->
-      <v-data-table
-        :headers="headersEndInmates"
-        :items="endInmates"
-        sort-by="lastName"
-        class="elevation-1"
-      >
-        <template v-slot:top>
-          <v-toolbar flat color="white">
-            <v-toolbar-title>Endorsed Inmates</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <v-dialog v-model="dialogEndInmate" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <!-- <v-btn large class="secondary ma-2" v-bind="attrs" v-on="on" >
+        <v-data-table
+          :headers="headersEndInmates"
+          :items="endInmates"
+          sort-by="lastName"
+          class="elevation-1"
+        >
+          <template v-slot:top>
+            <v-toolbar flat color="white">
+              <v-toolbar-title>Endorsed Inmates</v-toolbar-title>
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-spacer></v-spacer>
+              <v-dialog v-model="dialogEndInmate" max-width="500px">
+                <template v-slot:activator="{ on, attrs }">
+                  <!-- <v-btn large class="secondary ma-2" v-bind="attrs" v-on="on" >
               Print all 135
               </v-btn> -->
 
-                <v-btn class="secondary ma-2" v-bind="attrs" v-on="on">
-                  Add New Endorsement
-                </v-btn>
-                <!-- <v-btn class="secondary ma-2" v-bind="attrs" v-on="on" @click="isShowing ^= true" >
+                  <v-btn class="secondary ma-2" v-bind="attrs" v-on="on">
+                    Add New Endorsement
+                  </v-btn>
+                  <!-- <v-btn class="secondary ma-2" v-bind="attrs" v-on="on" @click="isShowing ^= true" >
               Close
               </v-btn> -->
-              </template>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formEndInmateTitle }}</span>
-                </v-card-title>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">{{ formEndInmateTitle }}</span>
+                  </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedEndInmate.cdcrNumber"
-                          label="CDCR Number"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedEndInmate.lastName"
-                          label="Last Name"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedEndInmate.firstName"
-                          label="First Name"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedEndInmate.housing"
-                          label="Housing"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedEndInmate.transferReason"
-                          label="Transfer Reason"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedEndInmate.endorsementDate"
-                          label="Endorsement Date"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Endorsement Details"
-                        ></v-text-field>
-                      </v-col>
-                      <!-- <template v-slot:item.print135="{ item }">
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedEndInmate.cdcrNumber"
+                            label="CDCR Number"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedEndInmate.lastName"
+                            label="Last Name"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedEndInmate.firstName"
+                            label="First Name"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedEndInmate.housing"
+                            label="Housing"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedEndInmate.transferReason"
+                            label="Transfer Reason"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            v-model="editedEndInmate.endorsementDate"
+                            label="Endorsement Date"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-text-field
+                            label="Endorsement Details"
+                          ></v-text-field>
+                        </v-col>
+                        <!-- <template v-slot:item.print135="{ item }">
                 <router-link to="">{{item.print135}}<v-icon color="primary" class="ml-5">mdi-file-document</v-icon></router-link>
               </template> -->
-                    </v-row>
-                  </v-container>
-                </v-card-text>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeEndInmate">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="saveEndInmate">
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            <v-dialog v-model="dialogDeleteEndInmate" max-width="500px">
-              <v-card>
-                <v-card-title class="headline">
-                  Are you sure you want to delete this inmate?
-                </v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="closeDeleteEndInmate"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="deleteEndInmateConfirm()"
-                  >
-                    Delete Inmate
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-toolbar>
-        </template>
-        <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editEndInmate(item, endInmates)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteEndInmate(item, endInmate._id)">
-            mdi-delete
-          </v-icon>
-        </template>
-        <template v-slot:item.print="{ item }">
-          <router-link to="">
-            {{ item.print }}
-            <v-icon color="primary" class="ml-5">mdi-file-document</v-icon>
-          </router-link>
-        </template>
-        <template v-slot:no-data>
-          <span>No Results</span>
-        </template>
-      </v-data-table>
-    </div>
-    <!-- /* Endorsement Table end    */ -->
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeEndInmate">
+                      Cancel
+                    </v-btn>
+                    <v-btn color="blue darken-1" text @click="saveEndInmate">
+                      Save
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="dialogDeleteEndInmate" max-width="500px">
+                <v-card>
+                  <v-card-title class="headline">
+                    Are you sure you want to delete this inmate?
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="closeDeleteEndInmate"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="deleteEndInmateConfirm()"
+                    >
+                      Delete Inmate
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="editEndInmate(item, endInmates)">
+              mdi-pencil
+            </v-icon>
+            <v-icon small @click="deleteEndInmate(item, endInmate._id)">
+              mdi-delete
+            </v-icon>
+          </template>
+          <template v-slot:item.print="{ item }">
+            <router-link to="">
+              {{ item.print }}
+              <v-icon color="primary" class="ml-5">mdi-file-document</v-icon>
+            </router-link>
+          </template>
+          <template v-slot:no-data>
+            <span>No Results</span>
+          </template>
+        </v-data-table>
+      </div>
+      <!-- /* Endorsement Table end    */ -->
+    </v-card>
   </div>
 </template>
 

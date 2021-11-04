@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-card elevation="3" class="ma-4 px-4 pb-4">
-      <v-card-title class="light-grey lighten-4">
+      <v-card-title>
         <v-row>
           <v-col cols="3">
-            <span>Transfer</span>
+            <h2>Transfer</h2>
           </v-col>
           <v-col cols="4">
             <v-text-field
@@ -50,31 +50,29 @@
       ></v-progress-linear>
       <v-divider></v-divider>
       <v-card-text class="pa-2 ma-0">
-        <v-form v-model="formValid" ref="myForm">
+        <v-form v-if="displayOffender" v-model="formValid" ref="myForm">
           <v-row class="my-0 pt-2">
-            <v-col>
-              <div>
-                <v-row no-gutters>
-                  <v-col cols="1">
-                    <span style="width: 50px">
-                      <div class="photo-sm">
-                        <v-img
-                          editForm
-                          class="white--text"
-                          :src="displayPhoto"
-                          @click="showInfo('photo')"
-                        >
-                          <template v-slot:placeholder>
-                            <v-progress-circular
-                              indeterminate
-                              color="grey lighten-5"
-                            ></v-progress-circular>
-                          </template>
-                        </v-img>
-                      </div>
-                    </span>
-                  </v-col>
-                  <v-col cols="3" class="pb-1">
+            <v-col cols="10">
+              <v-row no-gutters>
+                <v-col cols="1">
+                  <div class="photo-sm">
+                    <v-img
+                      editForm
+                      class="white--text"
+                      :src="displayPhoto"
+                      @click="showInfo('photo')"
+                    >
+                      <template v-slot:placeholder>
+                        <v-progress-circular
+                          indeterminate
+                          color="grey lighten-5"
+                        ></v-progress-circular>
+                      </template>
+                    </v-img>
+                  </div>
+                </v-col>
+                <v-col cols="4" class="pb-1">
+                  <div>
                     <span class="font-weight-black black--text title pa-0 ma-0">
                       {{ somsOffender.firstName + ' ' + somsOffender.lastName }}
                     </span>
@@ -82,111 +80,106 @@
                     <span>
                       {{ somsOffender.institutionName }}
                     </span>
-                  </v-col>
-                  <v-col cols="3" class="pb-1" align-self="center">
-                    <!-- <div style="text-align: right"> -->
-                    <div>
-                      <span>
-                        <v-btn
-                          v-show="btnInfo"
-                          x-small
-                          fab
-                          color="gray darken-1"
-                          class="ml-2"
-                          @click="showInfo('info')"
-                          dark
-                        >
-                          <v-icon>mdi-account</v-icon>
-                        </v-btn>
-                        <v-btn
-                          v-show="btnHousing"
-                          x-small
-                          fab
-                          color="brown darken-1"
-                          class="ml-2"
-                          @click="showInfo('housing')"
-                          dark
-                        >
-                          <v-icon>mdi-home</v-icon>
-                        </v-btn>
-                        <v-btn
-                          v-show="btnPhysical"
-                          x-small
-                          fab
-                          color="blue-grey darken-1"
-                          class="ml-2"
-                          @click="showInfo('physical')"
-                          dark
-                        >
-                          <v-icon>mdi-run</v-icon>
-                        </v-btn>
-                        <v-btn
-                          v-show="btnMedical"
-                          x-small
-                          fab
-                          class="ml-2"
-                          color="red lighten-1"
-                          @click="showInfo('medical')"
-                          dark
-                        >
-                          <v-icon class="pb-1">mdi-medical-bag</v-icon>
-                        </v-btn>
-                        <v-btn
-                          x-small
-                          fab
-                          color="gray darken-1"
-                          class="ml-2"
-                          @click="showInfo('comments')"
-                          dark
-                        >
-                          <v-icon>mdi-comment-text-outline</v-icon>
-                        </v-btn>
-                      </span>
-                    </div>
-                  </v-col>
-                  <v-col cols="5" class="pb-1" align="right">
-                    <v-dialog v-model="dlgSaveForm" persistent max-width="480">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          color="secondary"
-                          v-bind="attrs"
-                          v-on="on"
-                          @click="dlgSave = true"
-                          dense
-                        >
-                          <v-icon>mdi-content-save-outline</v-icon>
-                          Save
-                        </v-btn>
-                      </template>
-                      <template v-slot:default="dlgSaveForm">
-                        <v-card>
-                          <v-toolbar color="primary" dark>
-                            Confirm Transfer
-                          </v-toolbar>
-                          <v-card-text>
-                            <div class="text-h2 pa-12">
-                              Confirm transfer by clicking Yes or No.
-                            </div>
-                          </v-card-text>
-                          <v-card-actions class="justify-end">
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="dlgSaveForm = false"
-                            >
-                              No
-                            </v-btn>
-                            <v-btn color="primary" text @click="saveForm">
-                              Yes
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
-                  </v-col>
-                </v-row>
-              </div>
+                  </div>
+                </v-col>
+                <v-col cols="7" class="pb-1" align-self="center">
+                  <div>
+                    <span>
+                      <v-btn
+                        v-show="btnInfo"
+                        x-small
+                        fab
+                        color="gray darken-1"
+                        class="ml-2"
+                        @click="showInfo('info')"
+                        dark
+                      >
+                        <v-icon>mdi-account</v-icon>
+                      </v-btn>
+                      <v-btn
+                        v-show="btnHousing"
+                        x-small
+                        fab
+                        color="brown darken-1"
+                        class="ml-2"
+                        @click="showInfo('housing')"
+                        dark
+                      >
+                        <v-icon>mdi-home</v-icon>
+                      </v-btn>
+                      <v-btn
+                        v-show="btnPhysical"
+                        x-small
+                        fab
+                        color="blue-grey darken-1"
+                        class="ml-2"
+                        @click="showInfo('physical')"
+                        dark
+                      >
+                        <v-icon>mdi-run</v-icon>
+                      </v-btn>
+                      <v-btn
+                        v-show="btnMedical"
+                        x-small
+                        fab
+                        class="ml-2"
+                        color="red lighten-1"
+                        @click="showInfo('medical')"
+                        dark
+                      >
+                        <v-icon class="pb-1">mdi-medical-bag</v-icon>
+                      </v-btn>
+                      <v-btn
+                        x-small
+                        fab
+                        color="gray darken-1"
+                        class="ml-2"
+                        @click="showInfo('comments')"
+                        dark
+                      >
+                        <v-icon>mdi-comment-text-outline</v-icon>
+                      </v-btn>
+                    </span>
+                  </div>
+                </v-col>
+              </v-row>
               <v-divider class="pb-2"></v-divider>
+            </v-col>
+            <v-col cols="2" class="pb-1" align="right">
+              <v-dialog v-model="dlgSaveForm" persistent max-width="500px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="secondary"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="dlgSave = true"
+                    dense
+                  >
+                    <v-icon>mdi-content-save-outline</v-icon>
+                    Save
+                  </v-btn>
+                </template>
+                <template v-slot:default="dlgSave">
+                  <v-card>
+                    <v-toolbar color="primary" dark>
+                      Confirm Transfer
+                    </v-toolbar>
+                    <v-card-text>
+                      <div class="text-h2 pa-12">
+                        Confirm transfer by clicking Yes or No.
+                      </div>
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                      <v-btn color="primary" text @click="dlgSave = false">
+                        No
+                      </v-btn>
+                      <v-btn color="primary" text @click="saveForm">
+                        Yes
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
             </v-col>
           </v-row>
           <v-row class="my-0">
@@ -331,23 +324,198 @@
                   </v-col>
                 </v-row> -->
               <span>Release Information</span>
-              <v-divider class="pb-2"></v-divider>
-              <v-text-field label="Release Date" dense></v-text-field>
+              <v-divider class="pb-2 mb-2"></v-divider>
+              <v-text-field
+                v-model="somsOffender.releaseDate"
+                label="Release Date"
+                dense
+              ></v-text-field>
               <!-- <br /> -->
-              <v-text-field label="Release Type" dense></v-text-field>
+              <v-text-field
+                v-model="somsOffender.releaseType"
+                label="Release Type"
+                dense
+              ></v-text-field>
+              <!-- </v-col>
+            <v-col cols="3" sm="6" md="3" lg="3"> -->
+              <br />
+              <span>Housing Information</span>
+              <v-divider class="pb-2 mb-2"></v-divider>
+              <v-text-field
+                v-model="somsOffender.location"
+                label="Current Housing"
+                dense
+              ></v-text-field>
+              <!-- <v-text-field label="Temporary Housing" dense></v-text-field> -->
+              <v-text-field
+                v-model="somsOffender.securityLevel"
+                label="Security Level"
+                dense
+              ></v-text-field>
             </v-col>
             <v-col cols="3" sm="6" md="3" lg="3">
-              <span>Housing Information</span>
-              <v-divider class="pb-2"></v-divider>
-              <v-text-field label="Current Housing" dense></v-text-field>
-              <v-text-field label="Temporary Housing" dense></v-text-field>
-              <v-select label="Security Level" dense></v-select>
+              <div>
+                <span>Case Factors</span>
+                <v-divider class="pb-2"></v-divider>
+                <span class="labeling">
+                  {{ 'LWOP: ' + somsOffender.CaseFactors.lifer_lwop_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.lifer_lwop_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'SNY: ' + somsOffender.CaseFactors.sny_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.sny_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'CCMS EOP: ' + somsOffender.CaseFactors.cccms_eop_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.cccms_eop_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'Cocci1: ' + somsOffender.CaseFactors.cocci1_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.cocci1_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'Cocci2: ' + somsOffender.CaseFactors.cocci2_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.cocci2_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'DPP: ' + somsOffender.CaseFactors.dpp_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.dpp_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'DDP: ' + somsOffender.CaseFactors.ddp_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.ddp_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'ICE: ' + somsOffender.CaseFactors.ice_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.ice_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{
+                    'Retain ASU: ' + somsOffender.CaseFactors.retainASU_value
+                  }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.retainASU_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{
+                    'TransferMERD: ' +
+                    somsOffender.CaseFactors.transferMERD_value
+                  }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.transferMERD_flag }}
+                </span>
+                <br />
+              </div>
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="4">
+            <!-- <v-col cols="4">
               <div>
-                <v-data-table
+                <span>Case Factors</span>
+                <v-divider class="pb-2"></v-divider>
+                <span class="labeling">
+                  {{ 'LWOP: ' + somsOffender.CaseFactors.lifer_lwop_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.lifer_lwop_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'SNY: ' + somsOffender.CaseFactors.sny_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.sny_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'CCMS EOP: ' + somsOffender.CaseFactors.cccms_eop_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.cccms_eop_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'Cocci1: ' + somsOffender.CaseFactors.cocci1_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.cocci1_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'Cocci2: ' + somsOffender.CaseFactors.cocci2_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.cocci2_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'DPP: ' + somsOffender.CaseFactors.dpp_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.dpp_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'DDP: ' + somsOffender.CaseFactors.ddp_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.ddp_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'ICE: ' + somsOffender.CaseFactors.ice_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.ice_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{
+                    'Retain ASU: ' + somsOffender.CaseFactors.retainASU_value
+                  }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.retainASU_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{
+                    'TransferMERD: ' +
+                    somsOffender.CaseFactors.transferMERD_value
+                  }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors.transferMERD_flag }}
+                </span>
+                <br /> -->
+            <!-- <v-data-table
                   :items-per-page="itemsPerPage"
                   dense
                   :headers="caseFactorsHeader"
@@ -393,6 +561,13 @@
                               <v-col>
                                 <v-text-field
                                   v-model="editedCaseFactorItem.code"
+                                  label="Code"
+                                >
+                                </v-text-field>
+                              </v-col>
+                              <v-col>
+                                <v-text-field
+                                  v-model="editedCaseFactorItem."
                                   label="Code"
                                 >
                                 </v-text-field>
@@ -461,19 +636,17 @@
                   <template v-slot:no-data>
                     <v-btn color="primary"> Reset </v-btn>
                   </template>
-                </v-data-table>
-              </div>
-            </v-col>
-            <v-col cols="8">
+                </v-data-table> -->
+            <!-- </div>
+            </v-col> -->
+            <v-col>
               <div>
                 <v-data-table
                   :items-per-page="itemsPerPage"
                   dense
                   :headers="holdsHeader"
                   :items="holds"
-                  item-key="number"
                   class="elevation-1"
-                  :search="holdNum"
                   @keypress="filterHolds"
                   no-data-text="No Holds"
                   no-results-text="No Holds Found"
@@ -511,22 +684,22 @@
                             <v-row>
                               <v-col>
                                 <v-text-field
-                                  v-model="editedHoldItem.number"
-                                  label="Number"
+                                  v-model="editedHoldItem.effectiveDate"
+                                  label="Effective Date"
                                 >
                                 </v-text-field>
                               </v-col>
                               <v-col>
                                 <v-text-field
-                                  v-model="editedHoldItem.reason"
-                                  label="Reason"
+                                  v-model="editedHoldItem.holdType"
+                                  label="Reason/Hold Type"
                                 >
                                 </v-text-field>
                               </v-col>
                               <v-col>
                                 <v-text-field
-                                  v-model="editedHoldItem.date"
-                                  label="Date"
+                                  v-model="editedHoldItem.expirationDate"
+                                  label="Expiration Date"
                                 >
                                 </v-text-field>
                               </v-col>
@@ -588,9 +761,9 @@
                       mdi-delete
                     </v-icon>
                   </template>
-                  <template v-slot:no-data>
+                  <!-- <template v-slot:no-data>
                     <v-btn color="primary"> Reset </v-btn>
-                  </template>
+                  </template> -->
                 </v-data-table>
               </div>
             </v-col>
@@ -618,13 +791,25 @@
               ></v-select>
             </v-col>
             <v-col cols="2">
-              <v-text-field label="Original Date" dense></v-text-field>
+              <v-text-field
+                label="Original Date"
+                v-model="somsOffender.endorseDate"
+                dense
+              ></v-text-field>
             </v-col>
             <v-col cols="2">
-              <v-text-field label="Current Date" dense></v-text-field>
+              <v-text-field
+                label="Current Date"
+                v-model="somsOffender.currentDate"
+                dense
+              ></v-text-field>
             </v-col>
             <v-col cols="2">
-              <v-text-field label="Expiration Date" dense></v-text-field>
+              <v-text-field
+                label="Expiration Date"
+                v-model="somsOffender.expirationDate"
+                dense
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -637,7 +822,20 @@
               </v-row>
               <v-row>
                 <v-col cols="4">
-                  <v-select label="Schedule" dense></v-select>
+                  <v-select
+                    label="Schedule"
+                    v-model="selSchedule"
+                    :items="schedules"
+                    item-text="schedule"
+                    item-value="schedule"
+                    prepend-icon="mdi-bank"
+                    class="pl-1"
+                    clearable
+                    single-line
+                    hide-details="true"
+                    dense
+                    @change="scheduleSelected"
+                  ></v-select>
                 </v-col>
                 <v-col cols="3">
                   <v-select label="Specific Transfer Reason" dense></v-select>
@@ -646,16 +844,16 @@
               <v-row>
                 <v-col cols="2">
                   <v-text-field
-                    v-model="via1"
                     label="Via 1"
+                    v-model="schedule.via2"
                     dense
                     filled
                   ></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
-                    v-model="via2"
                     label="Via 2"
+                    v-model="schedule.via2"
                     dense
                     readonly
                     filled
@@ -663,8 +861,8 @@
                 </v-col>
                 <v-col cols="2">
                   <v-text-field
-                    v-model="transferDate"
                     label="Transfer Date"
+                    v-model="schedule.transferDate"
                     dense
                     readonly
                     filled
@@ -709,7 +907,7 @@
       dlgSaveForm: false,
       loading: false,
       formValid: false,
-      displayOffender: true,
+      displayOffender: false,
       somsCDCRNumber: '',
       somsOffender: {
         offenderId: '0123456789',
@@ -777,6 +975,28 @@
             rvrStatusDescription: '',
           },
         ],
+        CaseFactors: {
+          lifer_lwop_value: 'EPRD',
+          lifer_lwop_flag: false,
+          sny_value: 'EOP',
+          sny_flag: false,
+          cccms_eop_value: 'C',
+          cccms_eop_flag: true,
+          cocci1_value: 'Y',
+          cocci1_flag: true,
+          cocci2_value: 'Y',
+          cocci2_flag: true,
+          dpp_value: 'DPHDPS',
+          dpp_flag: true,
+          ddp_value: 'NCF',
+          ddp_flag: false,
+          ice_value: null,
+          ice_flag: false,
+          retainASU_value: null,
+          retainASU_flag: false,
+          transferMERD_value: null,
+          transferMERD_flag: false,
+        },
         // ATS Fields
         dateEndorsementOriginal: null,
         dateEndorsementCurrent: null,
@@ -835,9 +1055,10 @@
       ],
       // Holds Table Header
       holdsHeader: [
-        { text: 'Number', value: 'number' },
-        { text: 'Reason', value: 'reason' },
-        { text: 'Date', value: 'date' },
+        // { text: 'Number', value: 'number' },
+        { text: 'Date', value: 'effectiveDate' },
+        { text: 'Reason', value: 'holdType' },
+        { text: 'Exp. Date', value: 'expirationDate' },
         { text: 'Comments', value: 'comments' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
@@ -858,30 +1079,42 @@
         date: '',
         comments: '',
       },
-      holds: [
-        {
-          number: 1,
-          reason: 'Not liked',
-          date: '01/01/2049',
-          comments: 'Sorry Charlie',
-        },
-        {
-          number: 2,
-          reason: 'Not liked',
-          date: '01/02/2049',
-          comments: 'Sorry Charlie',
-        },
-        {
-          number: 3,
-          reason: 'Not liked',
-          date: '01/03/2049',
-          comments: 'Sorry Charlie',
-        },
-      ],
+      holds: [],
+      // holds: [
+      //   {
+      //     number: 1,
+      //     reason: 'Not liked',
+      //     date: '01/01/2049',
+      //     comments: 'Sorry Charlie',
+      //   },
+      //   {
+      //     number: 2,
+      //     reason: 'Not liked',
+      //     date: '01/02/2049',
+      //     comments: 'Sorry Charlie',
+      //   },
+      //   {
+      //     number: 3,
+      //     reason: 'Not liked',
+      //     date: '01/03/2049',
+      //     comments: 'Sorry Charlie',
+      //   },
+      // ],
       schedules: {},
+      schedule: {
+        scheduleId: 0,
+        destination: '',
+        schedule: '',
+        via1: '',
+        via2: '',
+        transferDate: '',
+        seats: 10,
+        remainingSeats: 6,
+      },
       via1: '',
       via2: '',
       transferDate: null,
+      selSchedule: {},
     }),
     created() {
       this.initialize();
@@ -921,7 +1154,8 @@
             scheduleId: 1,
             destination: 'RJD',
             schedule: 'A',
-            VIA: ['FOL-II', 'ASP-II'],
+            via1: 'FOL-II',
+            via2: 'ASP-II',
             transferDate: '05/07/2021',
             seats: 10,
             remainingSeats: 6,
@@ -930,7 +1164,8 @@
             scheduleId: 2,
             destination: 'CCC',
             schedule: 'B',
-            VIA: ['ASP-II', 'RJD-II'],
+            via1: 'ASP-II',
+            via2: 'RJD-II',
             transferDate: '06/07/2021',
             seats: 10,
             remainingSeats: 6,
@@ -939,7 +1174,8 @@
             scheduleId: 3,
             destination: 'CIM',
             schedule: 'C',
-            VIA: ['FOL-II', 'SAC-II'],
+            via1: 'FOL-II',
+            via2: 'SAC-II',
             transferDate: '07/07/2021',
             seats: 10,
             remainingSeats: 6,
@@ -948,7 +1184,8 @@
             scheduleId: 4,
             destination: 'HDSP',
             schedule: 'D',
-            VIA: ['FOL-II', 'CMC-II'],
+            via1: 'FOL-II',
+            via2: 'CMC-II',
             transferDate: '08/07/2021',
             seats: 10,
             remainingSeats: 6,
@@ -968,6 +1205,11 @@
 
           if (offenderInfo.data.length > 0) {
             this.somsOffender = offenderInfo.data[0];
+            console.log('searchOffender(): offender => ', this.somsOffender);
+            this.holds = offenderInfo.data[0].TransferHolds;
+            console.log('searchOffender(): holds => ', this.holds);
+            this.caseFactors = offenderInfo.data[0].caseFactors;
+            console.log('searchOffender(): caseFactors => ', this.caseFactors);
             //     if (
             //       this.somsOffender &&
             //       this.somsOffender.institutionName &&
@@ -1119,6 +1361,32 @@
         this.holds.splice(this.editedHoldIndex, 1);
         this.cancelDeleteCaseFactor();
       },
+      scheduleSelected() {
+        debugger;
+        console.log(this.selSchedule);
+        if (this.selSchedule == null) {
+          return;
+        }
+
+        for (var i = 0; i < this.schedules.length; i++) {
+          // var element = this.schedules.schedule;
+          var s = this.schedules[i];
+          if (s.schedule == this.selSchedule) {
+            this.schedule = s;
+            // s = element;
+            break;
+          }
+        }
+
+        //this.via1 = s.via1;
+        //this.via2 = s.via2;
+        //this.transferDate = s.transferDate;
+        // var index = this.schedules.indexOf(this.selSchedule);
+        // this.via1 = this.schedules[index].via1;
+        // this.via2 = this.schedules[index].via2;
+        // this.transferDate = this.schedules[index].transferDate;
+      },
+      // Cancel Form
       cancelForm() {
         this.dlgCancelForm = false;
       },

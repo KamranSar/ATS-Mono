@@ -1,7 +1,9 @@
 <template>
   <div class="ma-0 pa-0">
-    <v-card class="mb-12">
-      <v-card-title class="cardPrimary"> Institution Transfers </v-card-title>
+    <v-card elevation="3" class="ma-4 px-4 pb-4">
+      <v-card-title>
+        <h2>Institution Transfers</h2>
+      </v-card-title>
       <v-row no-gutters>
         <v-col cols="6"><h2>Departures from Folsom State Prison</h2></v-col>
         <!-- <v-col cols="6" class="text-right">
