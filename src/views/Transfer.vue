@@ -165,12 +165,12 @@
                       Confirm Transfer
                     </v-toolbar>
                     <v-card-text>
-                      <div class="text-h2 pa-12">
+                      <div class="text-h6 pa-12">
                         Confirm transfer by clicking Yes or No.
                       </div>
                     </v-card-text>
                     <v-card-actions class="justify-end">
-                      <v-btn color="primary" text @click="dlgSave = false">
+                      <v-btn color="primary" text @click="dlgSaveForm = false">
                         No
                       </v-btn>
                       <v-btn color="primary" text @click="saveForm">
@@ -838,7 +838,18 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="3">
-                  <v-select label="Specific Transfer Reason" dense></v-select>
+                  <v-select
+                    label="Specific Transfer Reason"
+                    v-model="selTransferReason"
+                    :items="transferReasons"
+                    item-text="description"
+                    item-value="name"
+                    class="pl-1"
+                    clearable
+                    single-line
+                    hide-details="true"
+                    dense
+                  ></v-select>
                 </v-col>
               </v-row>
               <v-row>
@@ -890,7 +901,7 @@
 
 <script>
   import somsOffender from '@/feathers/services/offender/details.service.js';
-  import transfer from '@/feathers/services/transfer/transfer.service.js';
+  // import transfer from '@/feathers/services/transfer/transfer.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
@@ -1115,6 +1126,8 @@
       via2: '',
       transferDate: null,
       selSchedule: {},
+      selTransferReason: '',
+      transferReasons: null,
     }),
     created() {
       this.initialize();
@@ -1191,6 +1204,45 @@
             remainingSeats: 6,
           },
         ];
+
+        this.transferReasons = [
+          {
+            name: 'ASU',
+            description: 'Aggregation unit',
+          },
+          {
+            name: 'BPTHRG',
+            description: 'Board of prison Unit',
+          },
+          {
+            name: 'BPTHRGRTN',
+            description: 'Board of prison return unit',
+          },
+          {
+            name: 'FAM',
+            description: 'Family ties',
+          },
+          {
+            name: 'FTTP',
+            description: 'Foreign Transfer Treaty Program',
+          },
+          {
+            name: 'GAIN',
+            description: 'Gang Affiliation',
+          },
+          {
+            name: 'ENE',
+            description: 'Enemies',
+          },
+          {
+            name: 'ENR',
+            description: 'Enroute',
+          },
+          {
+            name: 'HCPAR',
+            description: 'Test',
+          },
+        ];
       },
       async searchOffender() {
         this.loading = true;
@@ -1231,6 +1283,7 @@
               this.displayOffender = true;
             }, 500);
 
+            this.somsCDCRNumber = '';
             return offenderInfo;
           } else {
             this.loading = false;
@@ -1395,13 +1448,14 @@
         // call api to send data to db
         // interrogate response - success or failure
         this.dlgSaveForm = false;
-
-        const response = await transfer.Create(data);
+        // const response = await transfer.Create(data);
         // response._id;
         // response.cdcrNumber;
-
-        alert('saveForm(): completed successfully!');
-        this.displayOffender = false;
+        setTimeout(() => {
+          //   this.loading = false;
+          alert('Save completed successfully!');
+          // this.displayOffender = false;
+        }, 1000);
       },
     },
   };

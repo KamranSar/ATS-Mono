@@ -18,7 +18,7 @@
             <v-spacer></v-spacer>
             <v-dialog v-model="dialogSchedule" max-width="800px">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn large class="secondary ma-2" v-bind="attrs" v-on="on">
+                <v-btn class="secondary ma-2" v-bind="attrs" v-on="on">
                   Create Schedule
                 </v-btn>
               </template>
