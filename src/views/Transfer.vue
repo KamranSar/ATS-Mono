@@ -354,85 +354,94 @@
               ></v-text-field>
             </v-col>
             <v-col cols="3" sm="6" md="3" lg="3">
-              <div>
+              <div
+                v-if="
+                  somsOffender &&
+                  somsOffender.CaseFactors &&
+                  somsOffender.CaseFactors.length
+                "
+              >
                 <span>Case Factors</span>
                 <v-divider class="pb-2"></v-divider>
                 <span class="labeling">
-                  {{ 'LWOP: ' + somsOffender.CaseFactors.lifer_lwop_value }}
+                  {{ 'LWOP: ' + somsOffender.CaseFactors[0].lifer_lwop_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors.lifer_lwop_flag }}
+                  {{ somsOffender.CaseFactors[0].lifer_lwop_flag }}
                 </span>
                 <br />
                 <span class="labeling">
-                  {{ 'SNY: ' + somsOffender.CaseFactors.sny_value }}
+                  {{ 'SNY: ' + somsOffender.CaseFactors[0].sny_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors.sny_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'CCMS EOP: ' + somsOffender.CaseFactors.cccms_eop_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.cccms_eop_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'Cocci1: ' + somsOffender.CaseFactors.cocci1_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.cocci1_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'Cocci2: ' + somsOffender.CaseFactors.cocci2_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.cocci2_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'DPP: ' + somsOffender.CaseFactors.dpp_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.dpp_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'DDP: ' + somsOffender.CaseFactors.ddp_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.ddp_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'ICE: ' + somsOffender.CaseFactors.ice_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.ice_flag }}
+                  {{ somsOffender.CaseFactors[0].sny_flag }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{
-                    'Retain ASU: ' + somsOffender.CaseFactors.retainASU_value
+                    'CCMS EOP: ' + somsOffender.CaseFactors[0].cccms_eop_value
                   }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors.retainASU_flag }}
+                  {{ somsOffender.CaseFactors[0].cccms_eop_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'Cocci1: ' + somsOffender.CaseFactors[0].cocci1_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors[0].cocci1_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'Cocci2: ' + somsOffender.CaseFactors[0].cocci2_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors[0].cocci2_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'DPP: ' + somsOffender.CaseFactors[0].dpp_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors[0].dpp_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'DDP: ' + somsOffender.CaseFactors[0].ddp_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors[0].ddp_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{ 'ICE: ' + somsOffender.CaseFactors[0].ice_value }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors[0].ice_flag }}
+                </span>
+                <br />
+                <span class="labeling">
+                  {{
+                    'Retain ASU: ' + somsOffender.CaseFactors[0].retainASU_value
+                  }}
+                </span>
+                <span class="data">
+                  {{ somsOffender.CaseFactors[0].retainASU_flag }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{
                     'TransferMERD: ' +
-                    somsOffender.CaseFactors.transferMERD_value
+                    somsOffender.CaseFactors[0].transferMERD_value
                   }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors.transferMERD_flag }}
+                  {{ somsOffender.CaseFactors[0].transferMERD_flag }}
                 </span>
                 <br />
               </div>
+              <div v-else></div>
             </v-col>
           </v-row>
           <v-row>
@@ -1258,9 +1267,11 @@
           if (offenderInfo.data.length > 0) {
             this.somsOffender = offenderInfo.data[0];
             console.log('searchOffender(): offender => ', this.somsOffender);
-            this.holds = offenderInfo.data[0].TransferHolds;
+            // this.holds = offenderInfo.data[0].TransferHolds;
+            this.holds = this.somsOffender.TransferHolds;
             console.log('searchOffender(): holds => ', this.holds);
-            this.caseFactors = offenderInfo.data[0].caseFactors;
+            // this.caseFactors = offenderInfo.data[0].caseFactors;
+            this.caseFactors = this.somsOffender.CaseFactors;
             console.log('searchOffender(): caseFactors => ', this.caseFactors);
             //     if (
             //       this.somsOffender &&
@@ -1360,7 +1371,6 @@
         this.cancelCaseFactor();
       },
       deleteCaseFactorItem(item) {
-        debugger;
         this.editedCaseFactorIndex = this.caseFactors.indexOf(item);
         this.editedCaseFactorItem = Object.assign({}, item);
         this.dlgDeleteCF = true;
@@ -1415,7 +1425,6 @@
         this.cancelDeleteCaseFactor();
       },
       scheduleSelected() {
-        debugger;
         console.log(this.selSchedule);
         if (this.selSchedule == null) {
           return;
