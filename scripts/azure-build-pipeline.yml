@@ -1,0 +1,33 @@
+#=============================================
+# Azure pipeline to build a WebPack for a UI
+# and to push the WebPack to a DevOps repo.
+#=============================================
+trigger:
+- main
+
+pool:
+  name: $(AGENT_POOL)
+
+stages:
+- stage: Build_and_Push_UI_Stage
+  jobs:
+  - job: Build_and_Push_UI_Job
+    steps:
+      - script: |
+          echo .***************************************
+          echo .
+          echo "Build Reason = (" $(Build.Reason) ")"
+          echo .
+          echo .***************************************
+      - task: Bash@3
+        displayName: UI_Webpack_Build_Task
+        name: Image_Build_Task
+        enabled: true
+        continueOnError: false
+        timeoutInMinutes: 30
+        inputs:
+          noProfile: false
+          noRc: false
+          filePath: '$(MT_BUILD_SCRIPTS_LOC)/devops_build_push_web_content.sh'
+          workingDirectory: $(MT_BUILD_SCRIPTS_LOC)
+          arguments: '--srcUrl $(Build.Repository.Uri) --srcBranch $(Build.SourceBranch) --wcUrl $(WEBCONTENT_REPO_URL) --wcBranch $(WEBCONTENT_REPO_BRANCH) --wcName $(WEBCONTENT_REPO_NAME) --'
