@@ -2,6 +2,12 @@
   <div>
     <v-card elevation="3" class="ma-4 px-4 pb-4">
       <h1>Schedules</h1>
+      <v-progress-linear
+        :active="loading"
+        :indeterminate="loading"
+        absolute
+        color="primary"
+      ></v-progress-linear>
       <v-data-table
         :headers="headersSchedule"
         @click:row="rowClick"
@@ -13,7 +19,23 @@
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title>FOLSOM STATE PRISON - Schedules</v-toolbar-title>
+            <!-- <v-toolbar-title>FOLSOM STATE PRISON - Schedules</v-toolbar-title> -->
+            <v-col cols="3" sm="8" lg="3">
+              <v-autocomplete
+                v-model="selectedInstitution"
+                :disabled="loading"
+                :items="listOfInstitutions"
+                color="blue-grey lighten-2"
+                label="Select an institution"
+                item-text="institutionName"
+                item-value="institutionName"
+                prepend-icon="mdi-bank"
+                clearable
+                single-line
+                class="pl-1"
+              >
+              </v-autocomplete>
+            </v-col>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialogSchedule" max-width="800px">
@@ -299,14 +321,18 @@
 </template>
 
 <script>
-  /* Schedule Script Begin    */
+  // import svcSchedule from '@/feathers/services/offender/details.service.js';
+  import findAll from '@/feathers/helpers/findAll.js';
+
   export default {
     name: 'Schedules',
 
     data: () => ({
+      loading: false,
+      selectedInstitution: '',
+      listOfInstitutions: [],
       selectedId: -1,
       isShowing: false,
-
       dialogSchedule: false,
       dialogDeleteSchedule: false,
       dialogEndInmate: false,
@@ -402,6 +428,12 @@
     },
 
     watch: {
+      selInstitution(newVal, oldVal) {
+        if (newVal && newVal !== oldVal) {
+          // Get Institution Schedules
+          this.getSchedules();
+        }
+      },
       dialogSchedule(val) {
         val || this.closeSchedule();
       },
@@ -418,6 +450,10 @@
 
     created() {
       this.initialize();
+    },
+
+    async mounted() {
+      await this.getInstitutions();
     },
 
     methods: {
@@ -504,6 +540,76 @@
           ]);
       },
 
+      /**
+       * getInstitutions function
+       * @returns - All the institutions if you are the default admin role, otherwise it grabs your logged in institution
+       */
+      async getInstitutions() {
+        try {
+          this.loading = true;
+          const queryObject = {
+            query: {
+              $sort: {
+                institutionName: 1,
+              },
+            },
+          };
+
+          // if (
+          //   this.loggedInUser &&
+          //   this.loggedInUser.appuserroles &&
+          //   this.loggedInUser.appuserroles.roles.length &&
+          //   !this.loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
+          // ) {
+          //   queryObject.query['institutionPartyId'] =
+          //     this.loggedInUser.somsinfo.organizationId;
+          // }
+
+          const institutions = await findAll(
+            '/api/eis/common/v1/institution',
+            queryObject
+          );
+
+          this.listOfInstitutions = institutions.data;
+          return this.listOfInstitutions;
+        } catch (error) {
+          console.error('getInstitutions: ', error);
+          this.listOfInstitutions = [];
+          return [];
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      getSchedules() {
+        // Read Schedules db for Selected Institution
+        this.loading = true;
+        try {
+          // const query = {
+          //   query: {
+          //     institutionName: this.selectedInstitution,
+          //   },
+          // };
+
+          // const scheduleInfo = await svcSchedule.find(query);
+
+          // console.log('getSchedules(): scheduleInfo => ' + scheduleInfo);
+          // if (scheduleInfo.data.length > 0) {
+          setTimeout(() => {
+            this.loading = false;
+          }, 200);
+          alert('getSchedules() completed successfully!');
+          // }
+        } catch (error) {
+          this.loading = false;
+          if (error.code == 500) {
+            // this.searchOffenderNotFoundErrorDialog = true;
+          } else {
+            // Display a message that an error occurred!!!
+          }
+        }
+      },
+
       editSchedule(schedule) {
         this.editedScheduleIndex = this.schedules.indexOf(schedule);
         this.editedSchedule = Object.assign({}, schedule);
@@ -570,6 +676,8 @@
         } else {
           this.schedules.push(this.editedSchedule);
         }
+        // Save to the database
+
         this.closeSchedule();
       },
 

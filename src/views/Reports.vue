@@ -320,6 +320,27 @@
         return canvas.toDataURL();
       },
 
+      // get135()
+      //
+      get135(param) {
+        let filter = {
+          query: {
+            $sort: {
+              dateReceived: 1,
+            },
+          },
+        };
+
+        if (param == 'schedule') {
+          filter.query.schedule = this.sel135Schedule;
+        } else if (param == 'cdcr') {
+          filter.query.cdcrNumber = this.cdcrNum;
+        } else {
+          alert('Invalid option for CDCR-135 Transfer Record.');
+          return;
+        }
+      },
+
       // createPDF135()
       //
       createPDF135() {

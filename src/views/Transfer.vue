@@ -74,7 +74,8 @@
                 <v-col cols="4" class="pb-1">
                   <div>
                     <span class="font-weight-black black--text title pa-0 ma-0">
-                      {{ somsOffender.firstName + ' ' + somsOffender.lastName }}
+                      <!-- {{ somsOffender.firstName + ' ' + somsOffender.lastName }} -->
+                      {{ transferData.firstName + ' ' + transferData.lastName }}
                     </span>
                     <br />
                     <span>
@@ -152,14 +153,14 @@
                     color="secondary"
                     v-bind="attrs"
                     v-on="on"
-                    @click="dlgSave = true"
+                    @click="dlgSaveForm = true"
                     dense
                   >
                     <v-icon>mdi-content-save-outline</v-icon>
                     Save
                   </v-btn>
                 </template>
-                <template v-slot:default="dlgSave">
+                <template>
                   <v-card>
                     <v-toolbar color="primary" dark>
                       Confirm Transfer
@@ -188,27 +189,34 @@
                 <span>Persons Information</span>
                 <v-divider class="pb-2"></v-divider>
                 <span class="labeling">CDCR Number:</span>
-                <span class="data">{{ somsOffender.cdcrNumber }}</span>
+                <span class="data">{{ transferData.cdcrNumber }}</span>
                 <br />
                 <span class="labeling">Offender ID:</span>
-                <span class="data">{{ somsOffender.offenderId }}</span>
+                <span class="data">{{ transferData.offenderId }}</span>
                 <br />
                 <span class="labeling">Arrival Date:</span>
                 <span class="data">{{ somsOffender.arrivalDate }}</span>
                 <br />
+                <span class="labeling">Release Date:</span>
+                <span class="data">{{ somsOffender.releaseDate }}</span>
+                <br />
+                <span class="labeling">Release Type:</span>
+                <span class="data">{{ somsOffender.releaseType }}</span>
+                <br />
+                <v-divider class="pb-2"></v-divider>
+                <span class="labeling">Housing:</span>
+                <span class="data">{{ somsOffender.housingArea }}</span>
+                <br />
+                <span class="labeling">Security Level:</span>
+                <span class="data">{{ somsOffender.securityLevel }}</span>
+                <br />
+                <v-divider class="pb-2"></v-divider>
                 <span class="labeling">Ethnicity:</span>
                 <span class="data">{{ somsOffender.ethnicity }}</span>
                 <br />
                 <span class="labeling">TB Code:</span>
                 <span class="data">{{ somsOffender.tabeScore }}</span>
                 <br />
-                <!-- <span class="labeling">Release Date:</span>
-                  <span class="data">{{ somsOffender.releaseDate }}</span>
-                  <br />
-                  <span class="labeling">Release Type:</span>
-                  <span class="data">{{ somsOffender.releaseType }}</span>
-                  <br /> -->
-                <!-- <br /> -->
                 <span class="labeling">Mental Health:</span>
                 <span class="data">{{ somsOffender.Mental }}</span>
                 <br />
@@ -220,7 +228,6 @@
                 <!-- </div> -->
                 <span class="labeling">Override Reason: </span>
                 <span class="data">{{ somsOffender.overrideReason }}</span>
-                <v-divider></v-divider>
                 <!-- <br />
                 <span class="labeling">Override testing reason</span>
                 <span class="data">
@@ -292,6 +299,7 @@
                 <v-divider class="pb-2"></v-divider>
                 <v-textarea
                   label="CDC 135/Status Report Comments"
+                  v-model="transferData.cdcr135Comments"
                   outlined
                   no-resize
                   rows="3"
@@ -299,6 +307,7 @@
                 ></v-textarea>
                 <v-textarea
                   label="In-House Remarks"
+                  v-model="transferData.inHouseRemarks"
                   outlined
                   no-resize
                   rows="3"
@@ -306,23 +315,7 @@
                 ></v-textarea>
               </div>
             </v-col>
-            <v-col cols="3" sm="6" md="3" lg="3">
-              <!-- <v-row dense>
-                  <v-col>
-                    <span>Release Information</span>
-                    <v-divider class="pb-2"></v-divider>
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col>
-                    <v-text-field label="Release Date" dense></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col>
-                    <v-text-field label="Release Type" dense></v-text-field>
-                  </v-col>
-                </v-row> -->
+            <!-- <v-col cols="3" sm="6" md="3" lg="3">
               <span>Release Information</span>
               <v-divider class="pb-2 mb-2"></v-divider>
               <v-text-field
@@ -330,29 +323,25 @@
                 label="Release Date"
                 dense
               ></v-text-field>
-              <!-- <br /> -->
               <v-text-field
                 v-model="somsOffender.releaseType"
                 label="Release Type"
                 dense
               ></v-text-field>
-              <!-- </v-col>
-            <v-col cols="3" sm="6" md="3" lg="3"> -->
               <br />
               <span>Housing Information</span>
               <v-divider class="pb-2 mb-2"></v-divider>
               <v-text-field
-                v-model="somsOffender.location"
+                v-model="somsOffender.facilityName"
                 label="Current Housing"
                 dense
               ></v-text-field>
-              <!-- <v-text-field label="Temporary Housing" dense></v-text-field> -->
               <v-text-field
                 v-model="somsOffender.securityLevel"
                 label="Security Level"
                 dense
               ></v-text-field>
-            </v-col>
+            </v-col> -->
             <v-col cols="3" sm="6" md="3" lg="3">
               <div
                 v-if="
@@ -442,6 +431,69 @@
                 <br />
               </div>
               <div v-else></div>
+            </v-col>
+            <v-col cols="3" sm="6" md="3" lg="3">
+              <span>Endorsement Information</span>
+              <v-divider class="pb-2"></v-divider>
+              <span class="labeling">Endorsed To: </span>
+              <span class="data">{{ somsOffender.institution }}</span>
+              <br />
+              <span class="labeling">Original Date: </span>
+              <!-- <span class="data">{{ somsOffender.endorseDate }}</span> -->
+              <span class="data">{{
+                transferData.originalEndorsementDate
+              }}</span>
+              <br />
+              <span class="labeling">CurrentDate: </span>
+              <!-- <span class="data">{{ somsOffender.institution }}</span> -->
+              <span class="data">{{
+                transferData.currentEndorsementDate
+              }}</span>
+              <br />
+              <span class="labeling">Expiration Date: </span>
+              <span class="data">{{
+                transferData.expirationEndorsementDate
+              }}</span>
+            </v-col>
+            <v-col cols="3" sm="6" md="3" lg="3">
+              <span>Schedule Information</span>
+              <v-divider class="pb-2"></v-divider>
+              <span>
+                <v-select
+                  label="Schedule"
+                  v-model="selSchedule"
+                  :items="schedules"
+                  item-text="schedule"
+                  item-value="schedule"
+                  class="my-2 pl-1"
+                  clearable
+                  hide-details="true"
+                  dense
+                  @change="scheduleSelected"
+                ></v-select>
+              </span>
+              <span class="labeling">Via 1: </span>
+              <span class="data">{{ schedule.via1 }}</span>
+              <br />
+              <span class="labeling">Via 2: </span>
+              <span class="data">{{ schedule.via1 }}</span>
+              <br />
+              <span class="labeling">Transfer Date: </span>
+              <span class="data">{{ schedule.transferDate }}</span>
+              <span class="mt-4">
+                <v-select
+                  label="Specific Transfer Reason"
+                  v-model="selTransferReason"
+                  :items="transferReasons"
+                  item-text="description"
+                  item-value="name"
+                  class="mt-4 pl-1"
+                  hide-details="true"
+                  clearable
+                  dense
+                  @change="transferReasonSelected"
+                ></v-select>
+              </span>
             </v-col>
           </v-row>
           <v-row>
@@ -777,7 +829,7 @@
               </div>
             </v-col>
           </v-row>
-          <v-row>
+          <!-- <v-row>
             <v-col>
               <span>Endorsement Information</span>
               <v-divider></v-divider>
@@ -820,8 +872,8 @@
                 dense
               ></v-text-field>
             </v-col>
-          </v-row>
-          <v-row>
+          </v-row> -->
+          <!-- <v-row>
             <v-col>
               <v-row>
                 <v-col>
@@ -888,20 +940,9 @@
                     filled
                   ></v-text-field>
                 </v-col>
-                <v-col cols="6" align="right" align-self="center">
-                  <v-btn
-                    color="secondary"
-                    class="ma-5"
-                    @click="dlgSave = true"
-                    dense
-                  >
-                    <v-icon>mdi-content-save-outline</v-icon>
-                    Save
-                  </v-btn>
-                </v-col>
               </v-row>
             </v-col>
-          </v-row>
+          </v-row> -->
         </v-form>
       </v-card-text>
     </v-card>
@@ -910,7 +951,7 @@
 
 <script>
   import somsOffender from '@/feathers/services/offender/details.service.js';
-  // import transfer from '@/feathers/services/transfer/transfer.service.js';
+  import transfer from '@/feathers/services/transfer/transfer.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
@@ -929,6 +970,23 @@
       formValid: false,
       displayOffender: false,
       somsCDCRNumber: '',
+      transferData: {
+        offenderId: '',
+        cdcrNumber: '',
+        firstName: '',
+        lastName: '',
+        currentEndorsementDate: null,
+        originalEndorsementDate: null,
+        expirationEndorsementDate: null,
+        transferDate: null,
+        schedule: '',
+        transferReasonCode: '',
+        transferReasonDesc: '',
+        cdcr135Comments: '',
+        inHouseRemarks: '',
+        isTransferred: false,
+        isScheduled: false,
+      },
       somsOffender: {
         offenderId: '0123456789',
         cdcrNumber: 'AR1234',
@@ -1135,7 +1193,10 @@
       via2: '',
       transferDate: null,
       selSchedule: {},
-      selTransferReason: '',
+      selTransferReason: {
+        code: '',
+        desc: '',
+      },
       transferReasons: null,
     }),
     created() {
@@ -1289,6 +1350,20 @@
             //     this.checkAlerts();
             //     await this.getPrevious1824Requests();
             //     await this.getPrevious1824Issues();
+            this.transferData.cdcrNumber = this.somsOffender.cdcrNumber;
+            this.transferData.offenderId = this.somsOffender.offenderId;
+            this.transferData.firstName = this.somsOffender.firstName;
+            this.transferData.lastName = this.somsOffender.lastName;
+            this.transferData.currentEndorsementDate =
+              this.somsOffender.endorseDate;
+            this.transferData.originalEndorsementDate =
+              this.somsOffender.dateEndorsementOriginal;
+            this.transferData.transferDate = this.schedule.transferDate;
+            this.transferData.schedule = this.schedule.schedule;
+            this.transferData.transferReasonCode = this.selTransferReason.code;
+            this.transferData.transferReasonDesc = this.selTransferReason.desc;
+            this.cdcr135Comments = this.somsOffender.comments;
+            this.transferData.inHouseRemarks = this.somsOffender.inHouseRemarks;
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;
@@ -1448,6 +1523,14 @@
         // this.via2 = this.schedules[index].via2;
         // this.transferDate = this.schedules[index].transferDate;
       },
+      // transferReasonSelected
+      transferReasonSelected() {
+        console.log(
+          'transferReasonSelected(): reason => ',
+          this.selTransferReason
+        );
+        this.transferData.transferReasonCode = this.selTransferReason;
+      },
       // Cancel Form
       cancelForm() {
         this.dlgCancelForm = false;
@@ -1457,8 +1540,12 @@
         // call api to send data to db
         // interrogate response - success or failure
         this.dlgSaveForm = false;
-        // const response = await transfer.Create(data);
-        // response._id;
+        this.transferData.isScheduled = true;
+
+        console.log('saveForm(): transferData => ', this.transferData);
+        const response = await transfer.create(this.transferData);
+        console.log('saveForm(): response => ', response);
+        response._id;
         // response.cdcrNumber;
         setTimeout(() => {
           //   this.loading = false;
