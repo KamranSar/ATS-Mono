@@ -1,27 +1,29 @@
-#=============================================
-# Azure pipeline to build a Docker image and
-# push the image to the Harbor Repository.
-#=============================================
+#==============================================================
+# Azure pipeline to build a Docker image for an MT server, to 
+# push the image to the Harbor repo, and to deploy the Docker 
+# image to the MT Dev Cluster.
+#==============================================================
+name: Build_And_Deploy_Server_Pipeline
+
 trigger:
 - main
 
-pool:
-  name: $(AGENT_POOL)
-
 stages:
-- stage: BuildAndPushStage
+- stage: Server_CICD_Pipeline
   jobs:
-  - job: BuildAndPushJob
+  # BUILD & PUSH JOB
+  - job: Build_and_Push_Image_Job
+    pool: $(BUILD_AGENT_POOL)
     steps:
       - script: |
-          echo .***************************************
-          echo .
+          echo "***************************************"
+          echo "."
           echo "Build Reason = (" $(Build.Reason) ")"
-          echo .
-          echo .***************************************
+          echo "."
+          echo "***************************************"
       - task: Bash@3
-        displayName: ImageBuildTask
-        name: ImageBuildTask
+        displayName: Image_Build_Task
+        name: Image_Build_Task
         enabled: true
         continueOnError: false
         timeoutInMinutes: 30
@@ -32,8 +34,8 @@ stages:
           workingDirectory: $(MT_BUILD_SCRIPTS_LOC)
           arguments: '-u $(Build.Repository.Uri) -b $(Build.SourceBranch) -i $(DOCKER_IMAGE_NAME)'
       - task: Bash@3
-        displayName: ImagePushTask
-        name: ImagePushTask
+        displayName: Image_Push_Task
+        name: Image_Push_Task
         enabled: true
         continueOnError: false
         timeoutInMinutes: 10
@@ -43,3 +45,26 @@ stages:
           filePath: '$(MT_BUILD_SCRIPTS_LOC)/devops_push_mt_server_to_harbor.sh'
           workingDirectory: $(MT_BUILD_SCRIPTS_LOC)
           arguments:  '-i $(DOCKER_IMAGE_NAME)'
+  # DEPLOY JOB
+  - job: Deploy_Image_Job
+    pool: $(DEPLOY_AGENT_POOL)
+    dependsOn: Build_and_Push_Image_Job
+    steps:
+      - script: |
+          echo "***************************************"
+          echo "."
+          echo "Deploy Reason = (" $(Build.Reason) ")"
+          echo "."
+          echo "***************************************"
+      - task: Bash@3
+        displayName: Deploy_Server_Task
+        name: Deploy_Server_Task
+        enabled: true
+        continueOnError: false
+        timeoutInMinutes: 30
+        inputs:
+          noProfile: false
+          noRc: false
+          filePath: '$(MT_DEPLOY_SCRIPTS_LOC)/update_one_service.sh'
+          workingDirectory: $(MT_DEPLOY_SCRIPTS_LOC)
+          arguments: '$(DOCKER_IMAGE_NAME)'
