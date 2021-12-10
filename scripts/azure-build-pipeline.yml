@@ -1,24 +1,26 @@
-#=============================================
-# Azure pipeline to build a WebPack for a UI
-# and to push the WebPack to a DevOps repo.
-#=============================================
+#==============================================================
+# Azure pipeline to build a WebPack for a UI, to push the 
+# WebPack to a DevOps repo, and to deploy the WebPack to the 
+# MT Dev Cluster.
+#==============================================================
+name: Build_And_Deploy_Frontend_Pipeline
+
 trigger:
 - main
 
-pool:
-  name: $(AGENT_POOL)
-
 stages:
-- stage: Build_and_Push_UI_Stage
+- stage: Frontend_CICD_Pipeline
   jobs:
+  # BUILD & PUSH JOB
   - job: Build_and_Push_UI_Job
+    pool: $(BUILD_AGENT_POOL)
     steps:
       - script: |
-          echo .***************************************
-          echo .
+          echo "***************************************"
+          echo "."
           echo "Build Reason = (" $(Build.Reason) ")"
-          echo .
-          echo .***************************************
+          echo "."
+          echo "***************************************"
       - task: Bash@3
         displayName: UI_Webpack_Build_Task
         name: Image_Build_Task
@@ -31,3 +33,26 @@ stages:
           filePath: '$(MT_BUILD_SCRIPTS_LOC)/devops_build_push_web_content.sh'
           workingDirectory: $(MT_BUILD_SCRIPTS_LOC)
           arguments: '--srcUrl $(Build.Repository.Uri) --srcBranch $(Build.SourceBranch) --wcUrl $(WEBCONTENT_REPO_URL) --wcBranch $(WEBCONTENT_REPO_BRANCH) --wcName $(WEBCONTENT_REPO_NAME) --'
+  # DEPLOY JOB
+  - job: Deploy_UI_Job
+    pool: $(DEPLOY_AGENT_POOL)
+    dependsOn: Build_and_Push_UI_Job
+    steps:
+      - script: |
+          echo "***************************************"
+          echo "."
+          echo "Deploy Reason = (" $(Build.Reason) ")"
+          echo "."
+          echo "***************************************"
+      - task: Bash@3
+        displayName: Deploy_UI_Task
+        name: Deploy_UI_Task
+        enabled: true
+        continueOnError: false
+        timeoutInMinutes: 30
+        inputs:
+          noProfile: false
+          noRc: false
+          filePath: '$(MT_DEPLOY_SCRIPTS_LOC)/update_web_content.sh'
+          workingDirectory: $(MT_DEPLOY_SCRIPTS_LOC)
+          arguments: '$(WEBCONTENT_REPO_NAME)'
