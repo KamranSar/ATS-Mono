@@ -1,5 +1,4 @@
-import myApp from '@/config/myApp.js';
-import svcTransfer from '@/feathers/services/schedule/transfer.service.js';
+import svcTransfer from '@/feathers/services/transfer/transfer.service.js';
 
 const actions = {
   // createSchedule: async ({ state, rootState }) => {
@@ -13,7 +12,6 @@ const actions = {
   // },
 
   // readSchedule - by date
-  // readSchedule - by institution and date
   readTransfersByDate: async ({ state, rootState }, dateObj) => {
     try {
       rootState.app.loading = true;
@@ -29,21 +27,16 @@ const actions = {
       rootState.app.loading = false;
     }
   },
-  // readSchedule - by institution and date
-  readSchedulesByInstitution: async (
-    { state, rootState },
-    institution,
-    dateObj
-  ) => {
+  // readSchedule - by institution
+  readTransfersByInstitution: async ({ state, rootState }, institution) => {
     try {
       rootState.app.loading = true;
       const filter = {
         query: {
           institution: institution,
-          date: dateObj.date,
         },
       };
-      state.schedules = await scheduleService.find(filter);
+      state.schedules = await svcTransfer.find(filter);
     } catch (error) {
       return error;
     } finally {
@@ -59,7 +52,7 @@ const actions = {
           date: dateObj.date,
         },
       };
-      state.schedules = await scheduleService.patch(filter);
+      state.schedules = await svcTransfer.patch(filter);
     } catch (error) {
       return error;
     } finally {
@@ -75,7 +68,7 @@ const actions = {
           name: name,
         },
       };
-      state.schedules = await scheduleService.delete(filter);
+      state.schedules = await svcTransfer.delete(filter);
     } catch (error) {
       return error;
     } finally {

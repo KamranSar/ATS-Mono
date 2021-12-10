@@ -1,7 +1,7 @@
 import { make } from 'vuex-pathify';
 import actionsFile from '@/store/modules/transfers/actions.js';
 import mutationsFile from '@/store/modules/transfers/mutations.js';
-import getters from '@/store/modules/tranfers/getters.js';
+import getters from '@/store/modules/transfers/getters.js';
 
 const defaultTransfer = {
   _id: '',

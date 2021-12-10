@@ -1,4 +1,3 @@
-import myApp from '@/config/myApp.js';
 import svcSchedule from '@/feathers/services/schedule/schedule.service.js';
 
 const actions = {

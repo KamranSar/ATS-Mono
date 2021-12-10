@@ -7,11 +7,11 @@ import myApp from '@/config/myApp.js';
 const watchForChangesOnSocket = true;
 // import { transferHook } from '@/feathers/services/transfer/transfer.hooks.js';
 
-const servicePath = 'api/ats/v1/schedule';
+const servicePath = 'api/ats/v1/reason';
 const service = feathersClient.service(servicePath);
 service.hooks({
   before: {
-    all: [debug('Schedule Service!') /* transferHook */],
+    all: [debug('Reason Service!') /* transferHook */],
     find: [],
     get: [],
     create: [],
