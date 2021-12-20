@@ -484,7 +484,7 @@
                 <v-select
                   label="Specific Transfer Reason"
                   v-model="selTransferReason"
-                  :items="transferReasons"
+                  :items="reasons"
                   item-text="description"
                   item-value="name"
                   class="mt-4 pl-1"
@@ -492,7 +492,15 @@
                   clearable
                   dense
                   @change="transferReasonSelected"
-                ></v-select>
+                >
+                  <template v-slot:item="{ item, on, attrs }">
+                    <v-list-item v-on="on" v-bind="attrs">
+                      <v-list-item-content>
+                        {{ item.name }} - {{ item.description }}
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
               </span>
             </v-col>
           </v-row>
@@ -955,6 +963,7 @@
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
+  import { get } from 'vuex-pathify';
 
   // import schedules from 'schedules.json';
 
@@ -1211,6 +1220,7 @@
       },
     },
     computed: {
+      ...get('reasons', ['reasons']),
       displayPhoto() {
         if (this.somsOffender && this.somsOffender.photograph) {
           return `data:image/jpg;base64,${this.somsOffender.photograph}`;
@@ -1395,6 +1405,7 @@
         this.showComments = choice == 'comments' ? true : false;
       },
       async getInstitutions() {
+        debugger;
         try {
           this.loading = true;
           const query = {

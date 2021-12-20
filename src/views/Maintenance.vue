@@ -4,8 +4,8 @@
       <h1>ATS Maintenance</h1>
       <v-data-table
         :headers="headers"
-        :items="code"
-        sort-by="code"
+        :items="reasons"
+        sort-by="name"
         class="elevation-1"
       >
         <template v-slot:top>
@@ -92,6 +92,8 @@
 </template>
 
 <script>
+  import { sync } from 'vuex-pathify';
+
   export default {
     data: () => ({
       dialog: false,
@@ -106,7 +108,6 @@
         { text: 'Description', value: 'description' },
         { text: 'Edit/Delete', value: 'actions' },
       ],
-      code: [],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -119,6 +120,7 @@
     }),
 
     computed: {
+      ...sync('reasons', ['reasons']),
       formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
       },
@@ -138,61 +140,22 @@
     },
 
     methods: {
-      initialize() {
-        this.code = [
-          {
-            name: 'ASU',
-            description: 'Aggregation unit',
-          },
-          {
-            name: 'BPTHRG',
-            description: 'Board of prison Unit',
-          },
-          {
-            name: 'BPTHRGRTN',
-            description: 'Board of prison return unit',
-          },
-          {
-            name: 'FAM',
-            description: 'Family ties',
-          },
-          {
-            name: 'FTTP',
-            description: 'Foreign Transfer Treaty Program',
-          },
-          {
-            name: 'GAIN',
-            description: 'Gang Affiliation',
-          },
-          {
-            name: 'ENE',
-            description: 'Enemies',
-          },
-          {
-            name: 'ENR',
-            description: 'Enroute',
-          },
-          {
-            name: 'HCPAR',
-            description: 'Test',
-          },
-        ];
-      },
+      initialize() {},
 
       editItem(item) {
-        this.editedIndex = this.code.indexOf(item);
+        this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialog = true;
       },
 
       deleteItem(item) {
-        this.editedIndex = this.code.indexOf(item);
+        this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialogDelete = true;
       },
 
       deleteItemConfirm() {
-        this.code.splice(this.editedIndex, 1);
+        this.reasons.splice(this.editedIndex, 1);
         this.closeDelete();
       },
 
@@ -214,9 +177,9 @@
 
       save() {
         if (this.editedIndex > -1) {
-          Object.assign(this.code[this.editedIndex], this.editedItem);
+          Object.assign(this.reasons[this.editedIndex], this.editedItem);
         } else {
-          this.code.push(this.editedItem);
+          this.reasons.push(this.editedItem);
         }
         this.close();
       },

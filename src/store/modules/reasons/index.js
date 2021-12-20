@@ -3,18 +3,56 @@ import actionsFile from '@/store/modules/reasons/actions.js';
 import mutationsFile from '@/store/modules/reasons/mutations.js';
 import getters from '@/store/modules/reasons/getters.js';
 
-const defaultSchedule = {
+const defaultReason = {
   _id: '',
   name: '',
   description: '',
 };
 
+const DEFAULT_REASONS = [
+  {
+    name: 'ASU',
+    description: 'Aggregation unit',
+  },
+  {
+    name: 'BPTHRG',
+    description: 'Board of prison Unit',
+  },
+  {
+    name: 'BPTHRGRTN',
+    description: 'Board of prison return unit',
+  },
+  {
+    name: 'FAM',
+    description: 'Family ties',
+  },
+  {
+    name: 'FTTP',
+    description: 'Foreign Transfer Treaty Program',
+  },
+  {
+    name: 'GAIN',
+    description: 'Gang Affiliation',
+  },
+  {
+    name: 'ENE',
+    description: 'Enemies',
+  },
+  {
+    name: 'ENR',
+    description: 'Enroute',
+  },
+  {
+    name: 'HCPAR',
+    description: 'Test',
+  },
+];
 /**
  * Not all preferences are togglable, just show the ones that are.
  */
 const getDefaultState = () => {
   return {
-    reasons: [],
+    reasons: [...DEFAULT_REASONS],
   };
 };
 
@@ -31,7 +69,7 @@ const actions = {
 };
 
 export default {
-  // ! DO NOT SET `persisted`
+  persisted: 'indexedDB',
   namespaced: true,
   state,
   mutations,
@@ -39,4 +77,4 @@ export default {
   getters,
 };
 
-export { defaultSchedule, getDefaultState };
+export { defaultReason, getDefaultState };

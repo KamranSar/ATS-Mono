@@ -1,6 +1,6 @@
 import feathersClient from '@/feathers/index.js';
 import { debug } from 'feathers-hooks-common';
-import myApp from '@/config/myApp.js';
+import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures';
 
 // If you've enabled sockets in myApp config...
 // Toggle this to true or false to watch for service changes on the socket.
@@ -11,7 +11,7 @@ const servicePath = 'api/ats/v1/reason';
 const service = feathersClient.service(servicePath);
 service.hooks({
   before: {
-    all: [debug('Reason Service!') /* transferHook */],
+    all: [debug('Reason Service!') /* reasonHook */],
     find: [],
     get: [],
     create: [],
@@ -40,7 +40,7 @@ service.hooks({
 });
 
 // Listen to socket events when available.
-if (myApp.useWebSocketConnection && watchForChangesOnSocket) {
+if (WEB_SOCKETS_ENABLED && watchForChangesOnSocket) {
   service.on('created', (item) => {
     console.log('Created: ', item);
   });
