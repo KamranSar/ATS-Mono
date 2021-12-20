@@ -1,15 +1,21 @@
-import svcReasons from '@/feathers/services/reason/reason.service.js';
+import svcReasons from '@/feathers/services/reasons/reasons.service.js';
 
 const actions = {
-  // createReason: async ({ state, rootState }) => {
-  //   try {
-  //     await scheduleService.patch(loggedInUserPrefs._id, loggedInUserPrefs);
-  //   } catch (error) {
-  //     return error;
-  //   } finally {
-  //     rootState.app.loading = false;
-  //   }
-  // },
+  createReason: async ({ state, rootState }, reasonObj) => {
+    try {
+      await svcReasons.create(reasonObj);
+    } catch (error) {
+      return error;
+    } finally {
+      rootState.app.loading = false;
+    }
+  },
+
+  //await store.dispatch('reasons/readReasons');
+
+  init: async ({ dispatch }) => {
+    await dispatch('readReasons');
+  },
 
   // readReason
   readReasons: async ({ state, rootState }) => {
@@ -21,7 +27,8 @@ const actions = {
       //   },
       // };
       // ?      state.reasons = await svcReasons.find(filter);
-      state.reasons = await svcReasons.find();
+      const response = await svcReasons.find();
+      state.reasons = response.data;
     } catch (error) {
       return error;
     } finally {
@@ -29,15 +36,15 @@ const actions = {
     }
   },
   // updateReason
-  updateReasonsByDate: async ({ state, rootState }, dateObj) => {
+  updateReason: async ({ state, rootState }, reasonObj) => {
     try {
       rootState.app.loading = true;
-      const filter = {
-        query: {
-          date: dateObj.date,
-        },
-      };
-      state.reasons = await svcReasons.patch(filter);
+      // const filter = {
+      //   query: {
+      //     date: dateObj.date,
+      //   },
+      // };
+      await svcReasons.update(reasonObj._id, reasonObj);
     } catch (error) {
       return error;
     } finally {
@@ -45,15 +52,16 @@ const actions = {
     }
   },
   // deleteReason
-  deleteReason: async ({ state, rootState }, name) => {
+  deleteReason: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;
-      const filter = {
-        query: {
-          name: name,
-        },
-      };
-      state.reasons = await svcReasons.delete(filter);
+      // const filter = {
+      //   query: {
+      //     _id: name,
+      //   },
+      // };
+      console.log('deleteReason() id: ', id);
+      await svcReasons.remove(id);
     } catch (error) {
       return error;
     } finally {

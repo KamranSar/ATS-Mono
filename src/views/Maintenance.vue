@@ -5,7 +5,7 @@
       <v-data-table
         :headers="headers"
         :items="reasons"
-        sort-by="name"
+        sort-by="reasonCode"
         class="elevation-1"
       >
         <template v-slot:top>
@@ -35,13 +35,13 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.name"
+                          v-model="editedItem.reasonCode"
                           label="Code"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.description"
+                          v-model="editedItem.reasonDesc"
                           label="Description"
                         ></v-text-field>
                       </v-col>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-  import { sync } from 'vuex-pathify';
+  import { sync, call } from 'vuex-pathify';
 
   export default {
     data: () => ({
@@ -103,36 +103,36 @@
           text: 'Code',
           align: 'start',
           sortable: true,
-          value: 'name',
+          value: 'reasonCode',
         },
-        { text: 'Description', value: 'description' },
+        { text: 'Description', value: 'reasonDesc' },
         { text: 'Edit/Delete', value: 'actions' },
       ],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        description: '',
+        reasonCode: '',
+        reasonDesc: '',
       },
       defaultItem: {
-        name: '',
-        description: '',
+        reasonCode: '',
+        reasonDesc: '',
       },
     }),
 
     computed: {
       ...sync('reasons', ['reasons']),
       formTitle() {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
+        return this.editedItem._id ? 'New Item' : 'Edit Item';
       },
     },
 
     watch: {
-      dialog(val) {
-        val || this.close();
-      },
-      dialogDelete(val) {
-        val || this.closeDelete();
-      },
+      // dialog(val) {
+      //   val || this.close();
+      // },
+      // dialogDelete(val) {
+      //   val || this.closeDelete();
+      // },
     },
 
     created() {
@@ -140,47 +140,63 @@
     },
 
     methods: {
+      ...call('reasons', [
+        'deleteReason',
+        'readReasons',
+        'createReason',
+        'updateReason',
+      ]),
       initialize() {},
 
       editItem(item) {
-        this.editedIndex = this.reasons.indexOf(item);
+        // this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialog = true;
       },
 
       deleteItem(item) {
-        this.editedIndex = this.reasons.indexOf(item);
+        // this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialogDelete = true;
       },
 
-      deleteItemConfirm() {
-        this.reasons.splice(this.editedIndex, 1);
-        this.closeDelete();
+      async deleteItemConfirm() {
+        // this.reasons.splice(this.editedIndex, 1);
+        await this.deleteReason(this.editedItem._id);
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.readReasons();
+        this.dialogDelete = false;
+        // this.closeDelete();
       },
 
       close() {
         this.dialog = false;
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
+          // this.editedIndex = -1;
         });
       },
 
       closeDelete() {
         this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
+        // this.$nextTick(() => {
+        // this.editedItem = Object.assign({}, this.defaultItem);
+        //this.editedIndex = -1;
+        // });
       },
 
-      save() {
-        if (this.editedIndex > -1) {
-          Object.assign(this.reasons[this.editedIndex], this.editedItem);
+      async save() {
+        // if (this.editedIndex > -1) {
+        if (this.editedItem._id) {
+          // Object.assign(this.reasons[this.editedIndex], this.editedItem);
+          // Update
+          await this.updateReason(this.editedItem);
         } else {
-          this.reasons.push(this.editedItem);
+          // Create Reason
+          // this.reasons.push(this.editedItem);
+          await this.createReason(this.editedItem);
         }
+        await this.readReasons();
         this.close();
       },
     },

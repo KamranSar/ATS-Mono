@@ -56,19 +56,10 @@
               <v-row no-gutters>
                 <v-col cols="1">
                   <div class="photo-sm">
-                    <v-img
-                      editForm
-                      class="white--text"
-                      :src="displayPhoto"
+                    <offender-image
+                      :somsOffender="somsOffender"
                       @click="showInfo('photo')"
-                    >
-                      <template v-slot:placeholder>
-                        <v-progress-circular
-                          indeterminate
-                          color="grey lighten-5"
-                        ></v-progress-circular>
-                      </template>
-                    </v-img>
+                    ></offender-image>
                   </div>
                 </v-col>
                 <v-col cols="4" class="pb-1">
@@ -248,8 +239,8 @@
                   <span class="labeling">Primary Language: </span>
                   <span class="data">{{ somsOffender.primaryLanguage }}</span> -->
               </div>
-              <div v-show="showPhoto">
-                <v-img editForm class="white--text" :src="displayPhoto">
+              <div v-show="showPhoto" class="photo-lg">
+                <v-img class="white--text" :src="displayPhoto">
                   <template v-slot:placeholder>
                     <v-progress-circular
                       indeterminate
@@ -352,62 +343,157 @@
               >
                 <span>Case Factors</span>
                 <v-divider class="pb-2"></v-divider>
-                <span class="labeling">
+                <!-- <span class="labeling">
                   {{ 'LWOP: ' + somsOffender.CaseFactors[0].lifer_lwop_value }}
                 </span>
                 <span class="data">
                   {{ somsOffender.CaseFactors[0].lifer_lwop_flag }}
                 </span>
-                <br />
-                <span class="labeling">
-                  {{ 'SNY: ' + somsOffender.CaseFactors[0].sny_value }}
+                <br /> -->
+                <table width="100%">
+                  <tr>
+                    <td class="labeling">
+                      {{ 'SNY: ' }}
+                    </td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].sny_value }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].sny_flag ? 'Y' : 'N' }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{
+                        'CCMS EOP: ' +
+                        somsOffender.CaseFactors[0].cccms_eop_value
+                      }}
+                    </td>
+                    <td class="data">
+                      {{
+                        somsOffender.CaseFactors[0].cccms_eop_flag ? 'Y' : 'N'
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{
+                        'Cocci1: ' + somsOffender.CaseFactors[0].cocci1_value
+                      }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].cocci1_flag ? 'Y' : 'N' }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{
+                        'Cocci2: ' + somsOffender.CaseFactors[0].cocci2_value
+                      }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].cocci2_flag ? 'Y' : 'N' }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{ 'DPP: ' + somsOffender.CaseFactors[0].dpp_value }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].dpp_flag ? 'Y' : 'N' }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{ 'DDP: ' + somsOffender.CaseFactors[0].ddp_value }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].ddp_flag ? 'Y' : 'N' }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{ 'ICE: ' + somsOffender.CaseFactors[0].ice_value }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].ice_flag ? 'Y' : 'N' }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{
+                        'Retain ASU: ' +
+                        somsOffender.CaseFactors[0].retainASU_value
+                      }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].retainASU_flag }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="labeling">
+                      {{
+                        'TransferMERD: ' +
+                        somsOffender.CaseFactors[0].transferMERD_value
+                      }}
+                    </td>
+                    <td class="data">
+                      {{ somsOffender.CaseFactors[0].transferMERD_flag }}
+                    </td>
+                  </tr>
+                </table>
+                <!-- <span class="labeling">
+                  {{ 'SNY: ' }}
+                </span>
+                <span class="">
+                  {{ somsOffender.CaseFactors[0].sny_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].sny_flag }}
+                  {{ somsOffender.CaseFactors[0].sny_flag ? 'Y' : 'N' }}
                 </span>
-                <br />
-                <span class="labeling">
+                <br /> -->
+                <!-- <span class="labeling">
                   {{
                     'CCMS EOP: ' + somsOffender.CaseFactors[0].cccms_eop_value
                   }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].cccms_eop_flag }}
+                  {{ somsOffender.CaseFactors[0].cccms_eop_flag ? 'Y' : 'N' }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{ 'Cocci1: ' + somsOffender.CaseFactors[0].cocci1_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].cocci1_flag }}
+                  {{ somsOffender.CaseFactors[0].cocci1_flag ? 'Y' : 'N' }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{ 'Cocci2: ' + somsOffender.CaseFactors[0].cocci2_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].cocci2_flag }}
+                  {{ somsOffender.CaseFactors[0].cocci2_flag ? 'Y' : 'N' }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{ 'DPP: ' + somsOffender.CaseFactors[0].dpp_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].dpp_flag }}
+                  {{ somsOffender.CaseFactors[0].dpp_flag ? 'Y' : 'N' }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{ 'DDP: ' + somsOffender.CaseFactors[0].ddp_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].ddp_flag }}
+                  {{ somsOffender.CaseFactors[0].ddp_flag ? 'Y' : 'N' }}
                 </span>
                 <br />
                 <span class="labeling">
                   {{ 'ICE: ' + somsOffender.CaseFactors[0].ice_value }}
                 </span>
                 <span class="data">
-                  {{ somsOffender.CaseFactors[0].ice_flag }}
+                  {{ somsOffender.CaseFactors[0].ice_flag ? 'Y' : 'N' }}
                 </span>
                 <br />
                 <span class="labeling">
@@ -428,7 +514,7 @@
                 <span class="data">
                   {{ somsOffender.CaseFactors[0].transferMERD_flag }}
                 </span>
-                <br />
+                <br /> -->
               </div>
               <div v-else></div>
             </v-col>
@@ -964,11 +1050,15 @@
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
   import { get } from 'vuex-pathify';
+  import OffenderImage from '@/components/OffenderImage.vue';
 
   // import schedules from 'schedules.json';
 
   export default {
-    name: 'NewRequest',
+    name: 'Transfer',
+    components: {
+      OffenderImage,
+    },
 
     data: () => ({
       //Imported Methods
@@ -1397,6 +1487,7 @@
         }
       },
       showInfo(choice) {
+        debugger;
         this.showSOMSData = choice == 'info' ? true : false;
         this.showPhoto = choice == 'photo' ? true : false;
         this.showHousing = choice == 'housing' ? true : false;
@@ -1405,7 +1496,6 @@
         this.showComments = choice == 'comments' ? true : false;
       },
       async getInstitutions() {
-        debugger;
         try {
           this.loading = true;
           const query = {
@@ -1579,7 +1669,11 @@
     outline: 1px solid darkgray;
   }
   .photo-sm {
-    height: 50px;
-    width: 50px;
+    height: 40px;
+    width: 40px;
+  }
+  .photo-lg {
+    height: 200px;
+    /* width: 120px; */
   }
 </style>

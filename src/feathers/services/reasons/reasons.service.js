@@ -1,17 +1,16 @@
 import feathersClient from '@/feathers/index.js';
-import { debug } from 'feathers-hooks-common';
-import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures';
-
-// If you've enabled sockets in myApp config...
+// import findAll from '@/feathers/helpers/findAll.js';
+import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures.js';
+// If you've enabled sockets in appFeatures...
 // Toggle this to true or false to watch for service changes on the socket.
 const watchForChangesOnSocket = true;
-// import { transferHook } from '@/feathers/services/transfer/transfer.hooks.js';
 
 const servicePath = 'api/ats/v1/reason';
 const service = feathersClient.service(servicePath);
+
 service.hooks({
   before: {
-    all: [debug('Reason Service!') /* reasonHook */],
+    all: [],
     find: [],
     get: [],
     create: [],
