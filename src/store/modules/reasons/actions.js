@@ -39,11 +39,7 @@ const actions = {
   updateReason: async ({ state, rootState }, reasonObj) => {
     try {
       rootState.app.loading = true;
-      // const filter = {
-      //   query: {
-      //     date: dateObj.date,
-      //   },
-      // };
+
       await svcReasons.update(reasonObj._id, reasonObj);
     } catch (error) {
       return error;
@@ -55,12 +51,7 @@ const actions = {
   deleteReason: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;
-      // const filter = {
-      //   query: {
-      //     _id: name,
-      //   },
-      // };
-      console.log('deleteReason() id: ', id);
+
       await svcReasons.remove(id);
     } catch (error) {
       return error;
