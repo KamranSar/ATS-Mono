@@ -1,17 +1,33 @@
-import svcTransfer from '@/feathers/services/transfer/transfer.service.js';
+import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 
 const actions = {
-  // createSchedule: async ({ state, rootState }) => {
-  //   try {
-  //     await scheduleService.patch(loggedInUserPrefs._id, loggedInUserPrefs);
-  //   } catch (error) {
-  //     return error;
-  //   } finally {
-  //     rootState.app.loading = false;
-  //   }
-  // },
+  createSchedule: async ({ state, rootState }, transferObj) => {
+    try {
+      await svcTransfers.create(transferObj);
+    } catch (error) {
+      return error;
+    } finally {
+      rootState.app.loading = false;
+    }
+  },
 
-  // readSchedule - by date
+  init: async ({ dispatch }) => {
+    await dispatch('readTransfers');
+  },
+
+  // readTransfers
+  readTranfers: async ({ state, rootState }) => {
+    try {
+      rootState.app.loading = true;
+      const response = await svcTransfers.find();
+      state.transfers = response.data;
+    } catch (error) {
+      return error;
+    } finally {
+      rootState.app.loading = false;
+    }
+  },
+  // readTransfers By Date
   readTransfersByDate: async ({ state, rootState }, dateObj) => {
     try {
       rootState.app.loading = true;
@@ -20,14 +36,14 @@ const actions = {
           date: dateObj.date,
         },
       };
-      state.transfers = await svcTransfer.find(filter);
+      state.transfers = await svcTransfers.find(filter);
     } catch (error) {
       return error;
     } finally {
       rootState.app.loading = false;
     }
   },
-  // readSchedule - by institution
+  // readTransfers By Institution
   readTransfersByInstitution: async ({ state, rootState }, institution) => {
     try {
       rootState.app.loading = true;
@@ -36,39 +52,29 @@ const actions = {
           institution: institution,
         },
       };
-      state.schedules = await svcTransfer.find(filter);
+      state.schedules = await svcTransfers.find(filter);
     } catch (error) {
       return error;
     } finally {
       rootState.app.loading = false;
     }
   },
-  // updateSchedule
-  updateSchedulesByDate: async ({ state, rootState }, dateObj) => {
+  // updateTransfers
+  updateTransfers: async ({ state, rootState }, transferObj) => {
     try {
       rootState.app.loading = true;
-      const filter = {
-        query: {
-          date: dateObj.date,
-        },
-      };
-      state.schedules = await svcTransfer.patch(filter);
+      await svcTransfers.update(transferObj._id, transferObj);
     } catch (error) {
       return error;
     } finally {
       rootState.app.loading = false;
     }
   },
-  // deleteSchedule
-  deleteSchedule: async ({ state, rootState }, name) => {
+  // deleteTransfer
+  deleteTransfer: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;
-      const filter = {
-        query: {
-          name: name,
-        },
-      };
-      state.schedules = await svcTransfer.delete(filter);
+      await svcTransfers.remove(id);
     } catch (error) {
       return error;
     } finally {

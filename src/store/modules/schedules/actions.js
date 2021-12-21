@@ -19,9 +19,8 @@ const actions = {
   readSchedules: async ({ state, rootState }) => {
     try {
       rootState.app.loading = true;
-
       const response = await svcSchedules.find();
-      state.reasons = response.data;
+      state.schedules = response.data;
     } catch (error) {
       return error;
     } finally {
@@ -68,7 +67,7 @@ const actions = {
     }
   },
   // updateSchedule
-  updateSchedulesByDate: async ({ state, rootState }, scheduleObj) => {
+  updateSchedule: async ({ state, rootState }, scheduleObj) => {
     try {
       rootState.app.loading = true;
 

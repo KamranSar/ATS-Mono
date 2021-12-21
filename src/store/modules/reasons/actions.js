@@ -11,8 +11,6 @@ const actions = {
     }
   },
 
-  //await store.dispatch('reasons/readReasons');
-
   init: async ({ dispatch }) => {
     await dispatch('readReasons');
   },
@@ -21,12 +19,6 @@ const actions = {
   readReasons: async ({ state, rootState }) => {
     try {
       rootState.app.loading = true;
-      // const filter = {
-      //   query: {
-      //     date: dateObj.date,
-      //   },
-      // };
-      // ?      state.reasons = await svcReasons.find(filter);
       const response = await svcReasons.find();
       state.reasons = response.data;
     } catch (error) {
@@ -39,7 +31,6 @@ const actions = {
   updateReason: async ({ state, rootState }, reasonObj) => {
     try {
       rootState.app.loading = true;
-
       await svcReasons.update(reasonObj._id, reasonObj);
     } catch (error) {
       return error;
@@ -51,7 +42,6 @@ const actions = {
   deleteReason: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;
-
       await svcReasons.remove(id);
     } catch (error) {
       return error;
