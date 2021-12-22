@@ -107,6 +107,7 @@
               ></v-text-field>
             </v-col>
             <!-- <v-col cols="5" sm="1" md="2" lg="5">&nbsp;</v-col> -->
+            <v-spacer></v-spacer>
             <v-col cols="1" sm="2" lg="1" align-self="center">
               <v-btn class="secondary ma-2 btns" @click="saveSchedule()">
                 <!-- {{ btnAddEditSchedule }} -->
@@ -232,43 +233,13 @@
       </v-data-table>
     </v-card>
     <!-- /* Endorsement Table Begin    */ -->
-    <!-- <div id="endTable" v-show="isShowing"> -->
     <v-card v-show="isShowing" class="mt-2">
-      <!-- <div>
-        <v-toolbar>
-          <div class="flex-grow-1"></div>
-
-          <v-toolbar-items>
-            <v-btn class="secondary ma-2">Print all 135</v-btn>
-            <v-btn class="secondary ma-2" @click="isShowing ^= true">
-              Close
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-      </div> -->
-      <!-- <v-row class="my-4" no-gutters >
-            <v-col  ><v-btn large class="secondary ma-2" v-bind="attrs" v-on="on"   >
-              Print all 135
-              </v-btn></v-col>
-            <v-col  > <v-btn class="secondary ma-2" v-bind="attrs" v-on="on" @click="isShowing ^= true"  >
-              Close
-              </v-btn></v-col>
-      
-    </v-row> -->
-      <v-card-title class="mt-2">
+      <v-card-title class="blue-grey lighten-4">
         <v-row>
-          <v-col cols="2" sm="4" lg="2" align-self="center">
-            Endorsements
+          <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
+            <span>Endorsements</span>
           </v-col>
           <v-spacer></v-spacer>
-          <v-col cols="1" sm="2" lg="1" align-self="center">
-            <v-btn class="secondary ma-2 btns" @click="saveEndorsement()">
-              SAVE
-            </v-btn>
-          </v-col>
-          <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
-            <v-btn class="secondary ma-2 btns">Filter</v-btn>
-          </v-col>
         </v-row>
       </v-card-title>
       <v-data-table
@@ -279,89 +250,6 @@
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <!-- <v-toolbar-title>Endorsed Inmates</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <v-dialog v-model="dialogEndorsement" max-width="500px"> -->
-            <!-- <template v-slot:activator="{ on, attrs }"> -->
-            <!-- <v-btn large class="secondary ma-2" v-bind="attrs" v-on="on" >
-              Print all 135
-              </v-btn> -->
-
-            <!-- <v-btn class="secondary ma-2" v-bind="attrs" v-on="on">
-                  Add New Endorsement
-                </v-btn> -->
-            <!-- <v-btn class="secondary ma-2" v-bind="attrs" v-on="on" @click="isShowing ^= true" >
-              Close
-              </v-btn> -->
-            <!-- </template>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formEndorsementTitle }}</span>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editEndorsement.cdcrNumber"
-                          label="CDCR Number"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editEndorsement.lastName"
-                          label="Last Name"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editEndorsement.firstName"
-                          label="First Name"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editEndorsement.housing"
-                          label="Housing"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editEndorsement.transferReason"
-                          label="Transfer Reason"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editEndorsement.endorsementDate"
-                          label="Endorsement Date"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Endorsement Details"
-                        ></v-text-field>
-                      </v-col>
-                      <template v-slot:item.print135="{ item }">
-                <router-link to="">{{item.print135}}<v-icon color="primary" class="ml-5">mdi-file-document</v-icon></router-link>
-              </template>
-            </v-row>
-                  </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeEndorsement">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="saveEndorsement">
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog> -->
             <v-col cols="1" sm="2" lg="1" align-self="baseline">
               <v-text-field
                 label="CDCR #"
@@ -369,23 +257,23 @@
                 @blur="getOffender"
               ></v-text-field>
             </v-col>
-            <v-col cols="2" sm="3" lg="2" align-self="baseline">
+            <v-col cols="1" sm="3" lg="1" align-self="baseline">
               <v-text-field
-                label="LastName"
+                label="Last Name"
                 v-model="editEndorsement.lastName"
                 readonly
               ></v-text-field>
             </v-col>
-            <v-col cols="2" sm="3" lg="2" align-self="baseline">
+            <v-col cols="1" sm="3" lg="1" align-self="baseline">
               <v-text-field
-                label="firstName"
+                label="First Name"
                 v-model="editEndorsement.firstName"
                 readonly
               ></v-text-field>
             </v-col>
             <v-col cols="1" sm="2" lg="1" align-self="baseline">
               <v-text-field
-                label="housing"
+                label="Housing"
                 v-model="editEndorsement.housing"
                 readonly
               ></v-text-field>
@@ -419,12 +307,20 @@
                 readonly
               ></v-text-field>
             </v-col>
-            <v-col cols="2" sm="3" lg="2" align-self="baseline">
+            <v-col cols="1" sm="3" lg="2" align-self="baseline">
               <v-text-field
                 label="Endorsement Details"
                 v-model="editEndorsement.endorsementDetails"
                 readonly
               ></v-text-field>
+            </v-col>
+            <v-col cols="1" sm="2" lg="1" align-self="center">
+              <v-btn class="secondary ma-2 btns" @click="saveEndorsement()">
+                SAVE
+              </v-btn>
+            </v-col>
+            <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
+              <v-btn class="secondary ma-2 btns">Filter</v-btn>
             </v-col>
             <v-dialog v-model="dialogDeleteEndorsement" max-width="500px">
               <v-card>
