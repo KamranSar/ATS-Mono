@@ -60,7 +60,7 @@ const actions = {
     }
   },
   // updateTransfers
-  updateTransfers: async ({ state, rootState }, transferObj) => {
+  updateTransfer: async ({ state, rootState }, transferObj) => {
     try {
       rootState.app.loading = true;
       await svcTransfers.update(transferObj._id, transferObj);
