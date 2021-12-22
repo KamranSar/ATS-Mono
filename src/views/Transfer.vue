@@ -352,9 +352,7 @@
                 <br /> -->
                 <table width="100%">
                   <tr>
-                    <td class="labeling">
-                      {{ 'SNY: ' }}
-                    </td>
+                    <td class="labeling">SNY:</td>
                     <td>
                       {{ somsOffender.CaseFactors[0].sny_value }}
                     </td>
@@ -363,11 +361,9 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{
-                        'CCMS EOP: ' +
-                        somsOffender.CaseFactors[0].cccms_eop_value
-                      }}
+                    <td class="labeling">CCMS EOP:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].cccms_eop_value }}
                     </td>
                     <td class="data">
                       {{
@@ -376,69 +372,72 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{
-                        'Cocci1: ' + somsOffender.CaseFactors[0].cocci1_value
-                      }}
+                    <td class="labeling">Cocci1:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].cocci1_value }}
                     </td>
                     <td class="data">
                       {{ somsOffender.CaseFactors[0].cocci1_flag ? 'Y' : 'N' }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{
-                        'Cocci2: ' + somsOffender.CaseFactors[0].cocci2_value
-                      }}
+                    <td class="labeling">Cocci2:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].cocci2_value }}
                     </td>
                     <td class="data">
                       {{ somsOffender.CaseFactors[0].cocci2_flag ? 'Y' : 'N' }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{ 'DPP: ' + somsOffender.CaseFactors[0].dpp_value }}
+                    <td class="labeling">DPP:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].dpp_value }}
                     </td>
                     <td class="data">
                       {{ somsOffender.CaseFactors[0].dpp_flag ? 'Y' : 'N' }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{ 'DDP: ' + somsOffender.CaseFactors[0].ddp_value }}
+                    <td class="labeling">DDP:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].ddp_value }}
                     </td>
                     <td class="data">
                       {{ somsOffender.CaseFactors[0].ddp_flag ? 'Y' : 'N' }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{ 'ICE: ' + somsOffender.CaseFactors[0].ice_value }}
+                    <td class="labeling">ICE:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].ice_value }}
                     </td>
                     <td class="data">
                       {{ somsOffender.CaseFactors[0].ice_flag ? 'Y' : 'N' }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{
-                        'Retain ASU: ' +
-                        somsOffender.CaseFactors[0].retainASU_value
-                      }}
+                    <td class="labeling">Retain ASU:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].retainASU_value }}
                     </td>
                     <td class="data">
-                      {{ somsOffender.CaseFactors[0].retainASU_flag }}
+                      {{
+                        somsOffender.CaseFactors[0].retainASU_flag ? 'Y' : 'N'
+                      }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="labeling">
-                      {{
-                        'TransferMERD: ' +
-                        somsOffender.CaseFactors[0].transferMERD_value
-                      }}
+                    <td class="labeling">Transfer MERD:</td>
+                    <td>
+                      {{ somsOffender.CaseFactors[0].transferMERD_value }}
                     </td>
                     <td class="data">
-                      {{ somsOffender.CaseFactors[0].transferMERD_flag }}
+                      {{
+                        somsOffender.CaseFactors[0].transferMERD_flag
+                          ? 'Y'
+                          : 'N'
+                      }}
                     </td>
                   </tr>
                 </table>
@@ -1045,11 +1044,11 @@
 
 <script>
   import somsOffender from '@/feathers/services/offender/details.service.js';
-  import transfer from '@/feathers/services/transfer/transfer.service.js';
+  // import transfer from '@/feathers/services/transfer/transfer.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
   import findAll from '@/feathers/helpers/findAll.js';
-  import { get } from 'vuex-pathify';
+  import { get, sync, call } from 'vuex-pathify';
   import OffenderImage from '@/components/OffenderImage.vue';
 
   // import schedules from 'schedules.json';
@@ -1301,16 +1300,10 @@
     created() {
       this.initialize();
     },
-    watch: {
-      dlgEditCF(val) {
-        val || this.cancelCaseFactor();
-      },
-      dlgDeleteCF(val) {
-        val || this.cancelDeleteCaseFactor();
-      },
-    },
     computed: {
+      ...sync('transfers', ['transfers']),
       ...get('reasons', ['reasons']),
+
       displayPhoto() {
         if (this.somsOffender && this.somsOffender.photograph) {
           return `data:image/jpg;base64,${this.somsOffender.photograph}`;
@@ -1327,10 +1320,24 @@
         return this.editedHoldIndex === -1 ? 'New Hold' : 'Edit Hold';
       },
     },
+    watch: {
+      dlgEditCF(val) {
+        val || this.cancelCaseFactor();
+      },
+      dlgDeleteCF(val) {
+        val || this.cancelDeleteCaseFactor();
+      },
+    },
     async mounted() {
       await this.getInstitutions();
     },
     methods: {
+      ...call('transfers', [
+        'createTransfer',
+        'readTransfers',
+        'updateTransfer',
+        'deleteTransfer',
+      ]),
       initialize() {
         this.schedules = [
           {
@@ -1644,9 +1651,9 @@
         this.transferData.isScheduled = true;
 
         console.log('saveForm(): transferData => ', this.transferData);
-        const response = await transfer.create(this.transferData);
-        console.log('saveForm(): response => ', response);
-        response._id;
+        // const response = await transfer.create(this.transferData);
+        // console.log('saveForm(): response => ', response);
+        // response._id;
         // response.cdcrNumber;
         setTimeout(() => {
           //   this.loading = false;

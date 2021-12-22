@@ -480,39 +480,6 @@
         endorsementDetails: '',
       },
     }),
-
-    computed: {
-      ...sync('schedules', ['schedules']),
-      ...get('users', ['loggedInUser']),
-      ...get('reasons', ['reasons']),
-      formEndorsementTitle() {
-        return this.editEndorsementIndex === -1
-          ? 'New Endorsement'
-          : 'Edit Endorsement';
-      },
-    },
-
-    watch: {
-      selInstitution(newVal, oldVal) {
-        if (newVal && newVal !== oldVal) {
-          // Get Institution Schedules
-          this.getSchedules();
-        }
-      },
-      dialogSchedule(val) {
-        val || this.closeSchedule();
-      },
-      dialogEndorsement(val) {
-        val || this.closeEndorsement();
-      },
-      dialogDeleteSchedule(val) {
-        val || this.closeScheduleDelete();
-      },
-      dialogDeleteEndorsement(val) {
-        val || this.closeEndorsementDelete();
-      },
-    },
-
     async created() {
       this.initialize();
       if (
@@ -534,7 +501,36 @@
         // });
       }
     },
-
+    computed: {
+      ...sync('schedules', ['schedules']),
+      ...get('users', ['loggedInUser']),
+      ...get('reasons', ['reasons']),
+      formEndorsementTitle() {
+        return this.editEndorsementIndex === -1
+          ? 'New Endorsement'
+          : 'Edit Endorsement';
+      },
+    },
+    watch: {
+      selInstitution(newVal, oldVal) {
+        if (newVal && newVal !== oldVal) {
+          // Get Institution Schedules
+          this.getSchedules();
+        }
+      },
+      dialogSchedule(val) {
+        val || this.closeSchedule();
+      },
+      dialogEndorsement(val) {
+        val || this.closeEndorsement();
+      },
+      dialogDeleteSchedule(val) {
+        val || this.closeScheduleDelete();
+      },
+      dialogDeleteEndorsement(val) {
+        val || this.closeEndorsementDelete();
+      },
+    },
     async mounted() {
       await this.getInstitutions();
     },
