@@ -1,7 +1,7 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 
 const actions = {
-  createSchedule: async ({ state, rootState }, transferObj) => {
+  createTransfers: async ({ state, rootState }, transferObj) => {
     try {
       await svcTransfers.create(transferObj);
     } catch (error) {
@@ -16,7 +16,7 @@ const actions = {
   },
 
   // readTransfers
-  readTranfers: async ({ state, rootState }) => {
+  readTransfers: async ({ state, rootState }) => {
     try {
       rootState.app.loading = true;
       const response = await svcTransfers.find();

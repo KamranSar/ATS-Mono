@@ -10,7 +10,8 @@ const defaultSchedule = {
   schedule: '',
   via1: '',
   via2: '',
-  transferDate: '',
+  transferDate: null,
+  seats: 0,
 };
 
 /**

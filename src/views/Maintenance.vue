@@ -141,10 +141,10 @@
 
     methods: {
       ...call('reasons', [
-        'deleteReason',
-        'readReasons',
         'createReason',
+        'readReasons',
         'updateReason',
+        'deleteReason',
       ]),
       initialize() {},
 

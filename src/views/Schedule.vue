@@ -114,7 +114,7 @@
               </v-btn>
             </v-col>
             <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
-              <v-btn class="secondary ma-2 btns" @click="">Filter</v-btn>
+              <v-btn class="secondary ma-2 btns">Filter</v-btn>
             </v-col>
             <!-- <v-dialog v-model="dialogSchedule" max-width="800px">
             <template v-slot:activator="{ on, attrs }">
@@ -267,7 +267,7 @@
             </v-btn>
           </v-col>
           <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
-            <v-btn class="secondary ma-2 btns" @click="">Filter</v-btn>
+            <v-btn class="secondary ma-2 btns">Filter</v-btn>
           </v-col>
         </v-row>
       </v-card-title>
@@ -344,10 +344,10 @@
                           label="Endorsement Details"
                         ></v-text-field>
                       </v-col>
-                      <!-- <template v-slot:item.print135="{ item }">
+                      <template v-slot:item.print135="{ item }">
                 <router-link to="">{{item.print135}}<v-icon color="primary" class="ml-5">mdi-file-document</v-icon></router-link>
-              </template> -->
-            <!-- </v-row>
+              </template>
+            </v-row>
                   </v-container>
                 </v-card-text>
 
@@ -485,7 +485,7 @@
   import somsOffender from '@/feathers/services/offender/details.service.js';
   // import svcSchedule from '@/feathers/services/offender/details.service.js';
   import findAll from '@/feathers/helpers/findAll.js';
-  import { get } from 'vuex-pathify';
+  import { get, sync, call } from 'vuex-pathify';
 
   export default {
     name: 'Schedules',
@@ -540,25 +540,24 @@
 
       Vias: ['FOL-II', 'SAC-II', 'CSP-II', 'ASP-II', 'RJD-II', 'CMC-II'],
 
-      schedules: [],
       editScheduleIndex: -1,
       editSchedule: {
         id: '',
+        origin: '',
         destination: '',
         schedule: '',
-        via: '',
+        via: [],
         transferDate: '',
         seats: 0,
-        remainingSeats: 0,
       },
       defaultSchedule: {
         id: '',
+        origin: '',
         destination: '',
         schedule: '',
-        via: '',
+        via: [],
         transferDate: '',
         seats: 0,
-        remainingSeats: 0,
       },
       selTransferReason: {
         code: '',
@@ -587,13 +586,9 @@
     }),
 
     computed: {
+      ...sync('schedules', ['schedules']),
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
-      //   formScheduleTitle() {
-      //     return this.editScheduleIndex === -1
-      //       ? 'New Schedule'
-      //       : 'Edit Schedule';
-      //   },
       formEndorsementTitle() {
         return this.editEndorsementIndex === -1
           ? 'New Endorsement'
@@ -622,7 +617,7 @@
       },
     },
 
-    created() {
+    async created() {
       this.initialize();
       if (
         this.loggedInUser &&
@@ -632,7 +627,11 @@
         // DataService.getForms(this.loggedInUser.somsinfo.organizationName)
         //   .then((response) => {
         //     this.requests = response;
-        this.selInstitution = this.loggedInUser.somsinfo.organizationName;
+        this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
+        await this.readSchedulesByInstitution(
+          this.selectedInstitution,
+          Date.now()
+        );
         // })
         // .catch((error) => {
         //   console.log(error);
@@ -644,90 +643,89 @@
       await this.getInstitutions();
     },
     methods: {
-      // rowClick: function (item, row) {
-      //   console.log('here');
-      //   row.select(true);
-      //   this.editScheduleIndex = item.id;
-      //   this.isShowing = true;
-      // },
-      rowSelected(item, value) {
-        // debugger;
+      ...call('schedules', [
+        'createSchedule',
+        'readSchedules',
+        'readSchedulesByDate',
+        'readSchedulesByInstitution',
+        'updateSchedule',
+        'deleteSchedule',
+      ]),
+      rowSelected(item) {
         console.log('rowSelected(): item: ', item);
-        //row.select(true);
-        // this.editScheduleIndex = item.id;
         this.isShowing = true;
       },
 
       initialize() {
-        (this.schedules = [
+        // (this.schedules = [
+        //   {
+        //     scheduleId: 1,
+        //     destination: 'RJD',
+        //     schedule: 'A',
+        //     via: ['FOL-II', 'ASP-II'],
+        //     transferDate: '05/07/2021',
+        //     seats: 10,
+        //   },
+        //   {
+        //     scheduleId: 2,
+        //     destination: 'CCC',
+        //     schedule: 'B',
+        //     via: ['ASP-II', 'RJD-II'],
+        //     transferDate: '06/07/2021',
+        //     seats: 10,
+        //   },
+        //   {
+        //     scheduleId: 3,
+        //     destination: 'CIM',
+        //     schedule: 'C',
+        //     via: ['FOL-II', 'SAC-II'],
+        //     transferDate: '07/07/2021',
+        //     seats: 10,
+        //   },
+        //   {
+        //     scheduleId: 4,
+        //     destination: 'HDSP',
+        //     schedule: 'D',
+        //     via: ['FOL-II', 'CMC-II'],
+        //     transferDate: '08/07/2021',
+        //     seats: 10,
+        //   },
+        // ]),
+        this.endorsements = [
           {
+            endorsementId: 1,
             scheduleId: 1,
-            destination: 'RJD',
-            schedule: 'A',
-            via: ['FOL-II', 'ASP-II'],
-            transferDate: '05/07/2021',
-            seats: 10,
+            cdcrNumber: 'E05980',
+            lastName: 'Martin',
+            firstName: 'David',
+            housing: 'D0052',
+            transferReason: 'Transfering from Folsom',
+            endorsementDate: '12/2/21',
+            endorsementDetails: 'Go to Transfer Record',
           },
           {
-            scheduleId: 2,
-            destination: 'CCC',
-            schedule: 'B',
-            via: ['ASP-II', 'RJD-II'],
-            transferDate: '06/07/2021',
-            seats: 10,
+            endorsementId: 2,
+            scheduleId: 1,
+            cdcrNumber: 'AL7263',
+            lastName: 'Harris',
+            firstName: 'William',
+            housing: 'ALAA3',
+            transferReason: 'Housing',
+            endorsementDate: '12/2/21',
+            endorsementDetails: 'Go to Transfer Record',
           },
           {
-            scheduleId: 3,
-            destination: 'CIM',
-            schedule: 'C',
-            via: ['FOL-II', 'SAC-II'],
-            transferDate: '07/07/2021',
-            seats: 10,
+            endorsementId: 3,
+            scheduleId: 1,
+            cdcrNumber: 'AB1234',
+            lastName: 'Doe',
+            firstName: 'John',
+            housing: 'IU-2656',
+            transferReason: 'Transfering from Folsom',
+            endorsementDate: '12/2/21',
+            endorsementDetails: 'Go to Transfer Record',
           },
-          {
-            scheduleId: 4,
-            destination: 'HDSP',
-            schedule: 'D',
-            via: ['FOL-II', 'CMC-II'],
-            transferDate: '08/07/2021',
-            seats: 10,
-          },
-        ]),
-          (this.endorsements = [
-            {
-              endorsementId: 1,
-              scheduleId: 1,
-              cdcrNumber: 'E05980',
-              lastName: 'Martin',
-              firstName: 'David',
-              housing: 'D0052',
-              transferReason: 'Transfering from Folsom',
-              endorsementDate: '12/2/21',
-              endorsementDetails: 'Go to Transfer Record',
-            },
-            {
-              endorsementId: 2,
-              scheduleId: 1,
-              cdcrNumber: 'AL7263',
-              lastName: 'Harris',
-              firstName: 'William',
-              housing: 'ALAA3',
-              transferReason: 'Housing',
-              endorsementDate: '12/2/21',
-              endorsementDetails: 'Go to Transfer Record',
-            },
-            {
-              endorsementId: 3,
-              scheduleId: 1,
-              cdcrNumber: 'AB1234',
-              lastName: 'Doe',
-              firstName: 'John',
-              housing: 'IU-2656',
-              transferReason: 'Transfering from Folsom',
-              endorsementDate: '12/2/21',
-              endorsementDetails: 'Go to Transfer Record',
-            },
-          ]);
+        ];
       },
 
       /**
@@ -833,45 +831,40 @@
           this.editScheduleIndex = -1;
         });
       },
-      closeSchedule() {
-        // this.dialogSchedule = false;
-        this.$nextTick(() => {
-          this.editSchedule = Object.assign({}, this.defaultSchedule);
-          this.editScheduleIndex = -1;
-        });
-        // this.btnAddEditSchedule = 'ADD';
-      },
-      saveSchedule() {
+      // closeSchedule() {
+      // this.dialogSchedule = false;
+      // this.$nextTick(() => {
+      //   this.editSchedule = Object.assign({}, this.defaultSchedule);
+      //   this.editScheduleIndex = -1;
+      // });
+      // },
+      async saveSchedule() {
+        const self = this;
         if (
-          !this.editSchedule.schedule ||
-          !this.editSchedule.destination ||
-          !this.editSchedule.transferDate ||
-          this.editSchedule.seats == 0
+          !self.editSchedule.schedule ||
+          !self.editSchedule.destination ||
+          !self.editSchedule.transferDate ||
+          self.editSchedule.seats == 0
         ) {
           alert('A required field is empty.');
           return;
         }
-        // let i = this.schedules.indexOf(this.editSchedule);
-        let i = this.schedules.findIndex(
-          (x) => x.scheduleId === this.editSchedule.scheduleId
-        );
-        // if (this.editScheduleIndex > -1) {
-        if (
-          i > -1 &&
-          this.schedules[i].schedule === this.editSchedule.schedule
-        ) {
-          Object.assign(
-            // this.schedules[this.editScheduleIndex],
-            this.schedules[i],
-            this.editSchedule
-          );
+        if (self.editSchedule._id) {
+          await self.updateSchedule(self.editSchedule);
         } else {
-          this.editSchedule.scheduleId = this.schedules.length + 1;
-          this.schedules.push(this.editSchedule);
+          console.log('creating');
+          debugger;
+          if (!self.editSchedule.origin) {
+            self.editSchedule.origin = self.selectedInstitution;
+          }
+          console.log('saveSchedule(): origin: ', self.editSchedule.origin);
+          debugger;
+          await self.createSchedule(self.editSchedule);
         }
-        // Save to the database
-
-        this.closeSchedule();
+        await self.readSchedulesByInstitution(self.selectedInstitution);
+        debugger;
+        self.editSchedule = Object.assign({}, self.defaultSchedule);
+        // this.closeSchedule();
       },
       openEndorsement(endInmate) {
         this.editEndorsementIndex = this.endorsements.indexOf(endInmate);
@@ -1007,8 +1000,6 @@
         this.editEndorsement.transferReasonCode = this.selTransferReason;
       },
     },
-
-    /* Schedule Script End    */
   };
 </script>
 

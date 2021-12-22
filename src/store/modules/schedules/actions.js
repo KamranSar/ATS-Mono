@@ -59,7 +59,8 @@ const actions = {
           date: dateObj.date,
         },
       };
-      state.schedules = await svcSchedules.find(filter);
+      const response = await svcSchedules.find(filter);
+      state.schedules = response.data;
     } catch (error) {
       return error;
     } finally {

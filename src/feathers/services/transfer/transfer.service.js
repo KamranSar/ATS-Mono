@@ -1,5 +1,4 @@
 import feathersClient from '@/feathers/index.js';
-import { debug } from 'feathers-hooks-common';
 import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures';
 
 // If you've enabled sockets in myApp config...
@@ -11,7 +10,7 @@ const servicePath = 'api/ats/v1/transfer';
 const service = feathersClient.service(servicePath);
 service.hooks({
   before: {
-    all: [debug('Transfer Service!') /* transferHook */],
+    all: [],
     find: [],
     get: [],
     create: [],
