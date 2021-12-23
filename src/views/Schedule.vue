@@ -79,7 +79,7 @@
             <v-col cols="2" sm="4" lg="2" align-self="baseline">
               <v-select
                 label="Vias"
-                v-model="editSchedule.via"
+                v-model="editSchedule.vias"
                 :items="Vias"
                 item-text="institutionName"
                 item-value="institutionName"
@@ -409,7 +409,7 @@
           sortable: false,
           value: 'destination',
         },
-        { text: 'via 1', value: 'via' },
+        { text: 'via', value: 'vias' },
         // { text: 'via 2', value: 'via' },
         { text: 'Transfer Date', value: 'transferDate' },
         { text: 'Seats', value: 'seats' },
@@ -442,7 +442,7 @@
         origin: '',
         destination: '',
         schedule: '',
-        via: [],
+        vias: [],
         transferDate: '',
         seats: 0,
       },
@@ -451,7 +451,7 @@
         origin: '',
         destination: '',
         schedule: '',
-        via: [],
+        vias: [],
         transferDate: '',
         seats: 0,
       },
@@ -491,10 +491,10 @@
         //   .then((response) => {
         //     this.requests = response;
         this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
-        await this.readSchedulesByInstitution(
-          this.selectedInstitution,
-          Date.now()
-        );
+        console.log('0');
+        const dt = Date.now();
+        console.log(dt);
+        await this.readSchedulesByInstitution(this.selectedInstitution, dt);
         // })
         // .catch((error) => {
         //   console.log(error);
@@ -732,6 +732,7 @@
       // },
       async saveSchedule() {
         const self = this;
+        console.log('1');
         if (
           !self.editSchedule.schedule ||
           !self.editSchedule.destination ||
@@ -741,20 +742,25 @@
           alert('A required field is empty.');
           return;
         }
+        console.log('2');
         if (self.editSchedule._id) {
           await self.updateSchedule(self.editSchedule);
         } else {
+          console.log('3');
           console.log('creating');
-          debugger;
+
           if (!self.editSchedule.origin) {
             self.editSchedule.origin = self.selectedInstitution;
           }
           console.log('saveSchedule(): origin: ', self.editSchedule.origin);
-          debugger;
+
           await self.createSchedule(self.editSchedule);
         }
-        await self.readSchedulesByInstitution(self.selectedInstitution);
-        debugger;
+        console.log('4');
+        const dt = Date.now();
+        console.log(dt);
+        await self.readSchedulesByInstitution(self.selectedInstitution, dt);
+        console.log('5');
         self.editSchedule = Object.assign({}, self.defaultSchedule);
         // this.closeSchedule();
       },
@@ -818,7 +824,7 @@
               cdcrnumber: this.editEndorsement.cdcrNumber,
             },
           };
-          debugger;
+
           const offenderInfo = await somsOffender.find(query);
 
           if (offenderInfo.data.length > 0) {

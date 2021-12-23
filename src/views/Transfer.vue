@@ -557,21 +557,22 @@
                   @change="scheduleSelected"
                 ></v-select>
               </span>
-              <span class="labeling">Via 1: </span>
-              <span class="data">{{ schedule.via1 }}</span>
+              <span class="labeling">Vias: </span>
+              <span class="data">{{ schedule.vias }}</span>
               <br />
-              <span class="labeling">Via 2: </span>
+              <!-- <span class="labeling">Via 2: </span>
               <span class="data">{{ schedule.via1 }}</span>
-              <br />
+              <br /> -->
               <span class="labeling">Transfer Date: </span>
               <span class="data">{{ schedule.transferDate }}</span>
               <span class="mt-4">
                 <v-select
                   label="Specific Transfer Reason"
                   v-model="selTransferReason"
+                  return-object
                   :items="reasons"
-                  item-text="description"
-                  item-value="name"
+                  item-text="reasonDesc"
+                  item-value="reasonCode"
                   class="mt-4 pl-1"
                   hide-details="true"
                   clearable
@@ -581,7 +582,7 @@
                   <template v-slot:item="{ item, on, attrs }">
                     <v-list-item v-on="on" v-bind="attrs">
                       <v-list-item-content>
-                        {{ item.name }} - {{ item.description }}
+                        {{ item.reasonCode }} - {{ item.reasonDesc }}
                       </v-list-item-content>
                     </v-list-item>
                   </template>
@@ -915,127 +916,10 @@
                       mdi-delete
                     </v-icon>
                   </template>
-                  <!-- <template v-slot:no-data>
-                    <v-btn color="primary"> Reset </v-btn>
-                  </template> -->
                 </v-data-table>
               </div>
             </v-col>
           </v-row>
-          <!-- <v-row>
-            <v-col>
-              <span>Endorsement Information</span>
-              <v-divider></v-divider>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="4">
-              <v-select
-                label="Endorsed To"
-                v-model="selEndorsedTo"
-                :items="listOfInstitutions"
-                item-text="institutionName"
-                item-value="institutionName"
-                prepend-icon="mdi-bank"
-                class="pl-1"
-                clearable
-                single-line
-                hide-details="true"
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field
-                label="Original Date"
-                v-model="somsOffender.endorseDate"
-                dense
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field
-                label="Current Date"
-                v-model="somsOffender.currentDate"
-                dense
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field
-                label="Expiration Date"
-                v-model="somsOffender.expirationDate"
-                dense
-              ></v-text-field>
-            </v-col>
-          </v-row> -->
-          <!-- <v-row>
-            <v-col>
-              <v-row>
-                <v-col>
-                  <span>Schedule Information</span>
-                  <v-divider class="pb-2"></v-divider>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="4">
-                  <v-select
-                    label="Schedule"
-                    v-model="selSchedule"
-                    :items="schedules"
-                    item-text="schedule"
-                    item-value="schedule"
-                    prepend-icon="mdi-bank"
-                    class="pl-1"
-                    clearable
-                    single-line
-                    hide-details="true"
-                    dense
-                    @change="scheduleSelected"
-                  ></v-select>
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="Specific Transfer Reason"
-                    v-model="selTransferReason"
-                    :items="transferReasons"
-                    item-text="description"
-                    item-value="name"
-                    class="pl-1"
-                    clearable
-                    single-line
-                    hide-details="true"
-                    dense
-                  ></v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <v-text-field
-                    label="Via 1"
-                    v-model="schedule.via2"
-                    dense
-                    filled
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="2">
-                  <v-text-field
-                    label="Via 2"
-                    v-model="schedule.via2"
-                    dense
-                    readonly
-                    filled
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="2">
-                  <v-text-field
-                    label="Transfer Date"
-                    v-model="schedule.transferDate"
-                    dense
-                    readonly
-                    filled
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row> -->
         </v-form>
       </v-card-text>
     </v-card>
@@ -1256,29 +1140,9 @@
         comments: '',
       },
       holds: [],
-      // holds: [
-      //   {
-      //     number: 1,
-      //     reason: 'Not liked',
-      //     date: '01/01/2049',
-      //     comments: 'Sorry Charlie',
-      //   },
-      //   {
-      //     number: 2,
-      //     reason: 'Not liked',
-      //     date: '01/02/2049',
-      //     comments: 'Sorry Charlie',
-      //   },
-      //   {
-      //     number: 3,
-      //     reason: 'Not liked',
-      //     date: '01/03/2049',
-      //     comments: 'Sorry Charlie',
-      //   },
-      // ],
-      schedules: {},
       schedule: {
         scheduleId: 0,
+        origin: '',
         destination: '',
         schedule: '',
         via1: '',
@@ -1292,17 +1156,18 @@
       transferDate: null,
       selSchedule: {},
       selTransferReason: {
-        code: '',
-        desc: '',
+        reasonCode: '',
+        reasonDesc: '',
       },
       transferReasons: null,
     }),
-    created() {
-      this.initialize();
-    },
+    // created() {
+    //   this.initialize();
+    // },
     computed: {
       ...sync('transfers', ['transfers']),
       ...get('reasons', ['reasons']),
+      ...get('schedules', ['schedules']),
 
       displayPhoto() {
         if (this.somsOffender && this.somsOffender.photograph) {
@@ -1338,89 +1203,89 @@
         'updateTransfer',
         'deleteTransfer',
       ]),
-      initialize() {
-        this.schedules = [
-          {
-            scheduleId: 1,
-            destination: 'RJD',
-            schedule: 'A',
-            via1: 'FOL-II',
-            via2: 'ASP-II',
-            transferDate: '05/07/2021',
-            seats: 10,
-            remainingSeats: 6,
-          },
-          {
-            scheduleId: 2,
-            destination: 'CCC',
-            schedule: 'B',
-            via1: 'ASP-II',
-            via2: 'RJD-II',
-            transferDate: '06/07/2021',
-            seats: 10,
-            remainingSeats: 6,
-          },
-          {
-            scheduleId: 3,
-            destination: 'CIM',
-            schedule: 'C',
-            via1: 'FOL-II',
-            via2: 'SAC-II',
-            transferDate: '07/07/2021',
-            seats: 10,
-            remainingSeats: 6,
-          },
-          {
-            scheduleId: 4,
-            destination: 'HDSP',
-            schedule: 'D',
-            via1: 'FOL-II',
-            via2: 'CMC-II',
-            transferDate: '08/07/2021',
-            seats: 10,
-            remainingSeats: 6,
-          },
-        ];
+      // initialize() {
+      //   this.schedules = [
+      //     {
+      //       scheduleId: 1,
+      //       destination: 'RJD',
+      //       schedule: 'A',
+      //       via1: 'FOL-II',
+      //       via2: 'ASP-II',
+      //       transferDate: '05/07/2021',
+      //       seats: 10,
+      //       remainingSeats: 6,
+      //     },
+      //     {
+      //       scheduleId: 2,
+      //       destination: 'CCC',
+      //       schedule: 'B',
+      //       via1: 'ASP-II',
+      //       via2: 'RJD-II',
+      //       transferDate: '06/07/2021',
+      //       seats: 10,
+      //       remainingSeats: 6,
+      //     },
+      //     {
+      //       scheduleId: 3,
+      //       destination: 'CIM',
+      //       schedule: 'C',
+      //       via1: 'FOL-II',
+      //       via2: 'SAC-II',
+      //       transferDate: '07/07/2021',
+      //       seats: 10,
+      //       remainingSeats: 6,
+      //     },
+      //     {
+      //       scheduleId: 4,
+      //       destination: 'HDSP',
+      //       schedule: 'D',
+      //       via1: 'FOL-II',
+      //       via2: 'CMC-II',
+      //       transferDate: '08/07/2021',
+      //       seats: 10,
+      //       remainingSeats: 6,
+      //     },
+      //   ];
 
-        this.transferReasons = [
-          {
-            name: 'ASU',
-            description: 'Aggregation unit',
-          },
-          {
-            name: 'BPTHRG',
-            description: 'Board of prison Unit',
-          },
-          {
-            name: 'BPTHRGRTN',
-            description: 'Board of prison return unit',
-          },
-          {
-            name: 'FAM',
-            description: 'Family ties',
-          },
-          {
-            name: 'FTTP',
-            description: 'Foreign Transfer Treaty Program',
-          },
-          {
-            name: 'GAIN',
-            description: 'Gang Affiliation',
-          },
-          {
-            name: 'ENE',
-            description: 'Enemies',
-          },
-          {
-            name: 'ENR',
-            description: 'Enroute',
-          },
-          {
-            name: 'HCPAR',
-            description: 'Test',
-          },
-        ];
-      },
+      //   this.transferReasons = [
+      //     {
+      //       name: 'ASU',
+      //       description: 'Aggregation unit',
+      //     },
+      //     {
+      //       name: 'BPTHRG',
+      //       description: 'Board of prison Unit',
+      //     },
+      //     {
+      //       name: 'BPTHRGRTN',
+      //       description: 'Board of prison return unit',
+      //     },
+      //     {
+      //       name: 'FAM',
+      //       description: 'Family ties',
+      //     },
+      //     {
+      //       name: 'FTTP',
+      //       description: 'Foreign Transfer Treaty Program',
+      //     },
+      //     {
+      //       name: 'GAIN',
+      //       description: 'Gang Affiliation',
+      //     },
+      //     {
+      //       name: 'ENE',
+      //       description: 'Enemies',
+      //     },
+      //     {
+      //       name: 'ENR',
+      //       description: 'Enroute',
+      //     },
+      //     {
+      //       name: 'HCPAR',
+      //       description: 'Test',
+      //     },
+      //   ];
+      // },
       async searchOffender() {
         this.loading = true;
         try {
@@ -1494,7 +1359,6 @@
         }
       },
       showInfo(choice) {
-        debugger;
         this.showSOMSData = choice == 'info' ? true : false;
         this.showPhoto = choice == 'photo' ? true : false;
         this.showHousing = choice == 'housing' ? true : false;
@@ -1618,18 +1482,11 @@
           var s = this.schedules[i];
           if (s.schedule == this.selSchedule) {
             this.schedule = s;
+            this.transferData.schedule = this.schedule.schedule;
             // s = element;
             break;
           }
         }
-
-        //this.via1 = s.via1;
-        //this.via2 = s.via2;
-        //this.transferDate = s.transferDate;
-        // var index = this.schedules.indexOf(this.selSchedule);
-        // this.via1 = this.schedules[index].via1;
-        // this.via2 = this.schedules[index].via2;
-        // this.transferDate = this.schedules[index].transferDate;
       },
       // transferReasonSelected
       transferReasonSelected() {
@@ -1637,29 +1494,39 @@
           'transferReasonSelected(): reason => ',
           this.selTransferReason
         );
-        this.transferData.transferReasonCode = this.selTransferReason;
+        this.transferData.transferReasonCode =
+          this.selTransferReason.reasonCode;
+        this.transferData.transferReasonDesc =
+          this.selTransferReason.reasonDesc;
       },
       // Cancel Form
       cancelForm() {
         this.dlgCancelForm = false;
       },
       async saveForm() {
+        const self = this;
         // validate data
         // call api to send data to db
         // interrogate response - success or failure
-        this.dlgSaveForm = false;
-        this.transferData.isScheduled = true;
+        self.dlgSaveForm = false;
+        self.transferData.isScheduled = true;
 
-        console.log('saveForm(): transferData => ', this.transferData);
+        console.log('saveForm(): transferData => ', self.transferData);
+        if (self.transferData._id) {
+          await self.updateTransfer(self.transferData);
+        } else {
+          await self.createTransfer(self.transferData);
+          // show successful message
+        }
         // const response = await transfer.create(this.transferData);
         // console.log('saveForm(): response => ', response);
         // response._id;
         // response.cdcrNumber;
-        setTimeout(() => {
-          //   this.loading = false;
-          alert('Save completed successfully!');
-          // this.displayOffender = false;
-        }, 1000);
+        // setTimeout(() => {
+        //   //   this.loading = false;
+        //   alert('Save completed successfully!');
+        //   // this.displayOffender = false;
+        // }, 1000);
       },
     },
   };

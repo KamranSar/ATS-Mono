@@ -8,8 +8,7 @@ const defaultSchedule = {
   origin: '',
   destination: '',
   schedule: '',
-  via1: '',
-  via2: '',
+  vias: [],
   transferDate: null,
   seats: 0,
 };

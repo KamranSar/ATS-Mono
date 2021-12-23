@@ -1,4 +1,5 @@
 import svcSchedules from '@/feathers/services/schedule/schedule.service.js';
+import findAll from '@/feathers/helpers/findAll.js';
 
 const actions = {
   createSchedule: async ({ state, rootState }, scheduleObj) => {
@@ -19,7 +20,7 @@ const actions = {
   readSchedules: async ({ state, rootState }) => {
     try {
       rootState.app.loading = true;
-      const response = await svcSchedules.find();
+      const response = await findAll(svcSchedules);
       state.schedules = response.data;
     } catch (error) {
       return error;
@@ -34,10 +35,10 @@ const actions = {
       rootState.app.loading = true;
       const filter = {
         query: {
-          date: dateObj.date,
+          date: dateObj,
         },
       };
-      state.schedules = await svcSchedules.find(filter);
+      state.schedules = await findAll(svcSchedules, filter);
     } catch (error) {
       return error;
     } finally {
@@ -53,13 +54,15 @@ const actions = {
   ) => {
     try {
       rootState.app.loading = true;
+      console.log(institution);
+      console.log(dateObj);
       const filter = {
         query: {
-          institution: institution,
-          date: dateObj.date,
+          origin: institution,
+          date: dateObj,
         },
       };
-      const response = await svcSchedules.find(filter);
+      const response = await findAll(svcSchedules, filter);
       state.schedules = response.data;
     } catch (error) {
       return error;
