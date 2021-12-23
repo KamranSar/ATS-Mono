@@ -829,15 +829,7 @@
 
           if (offenderInfo.data.length > 0) {
             const person = offenderInfo.data[0];
-            // this.somsOffender = offenderInfo.data[0];
             console.log('searchOffender(): offender => ', offenderInfo.data[0]);
-            // console.log('searchOffender(): offender => ', this.somsOffender);
-            // this.holds = offenderInfo.data[0].TransferHolds;
-            // this.holds = this.somsOffender.TransferHolds;
-            // console.log('searchOffender(): holds => ', this.holds);
-            // this.caseFactors = offenderInfo.data[0].caseFactors;
-            // this.caseFactors = this.somsOffender.CaseFactors;
-            // console.log('searchOffender(): caseFactors => ', this.caseFactors);
             //     if (
             //       this.somsOffender &&
             //       this.somsOffender.institutionName &&
@@ -849,25 +841,11 @@
             //     ) {
             //       throw Error('You do not belong to this institution');
             //     }
-            //     this.displayHousing =
-            //       this.somsOffender.housingArea + ' ' + this.somsOffender.bed;
-            //     this.checkAlerts();
-            //     await this.getPrevious1824Requests();
-            //     await this.getPrevious1824Issues();
             this.editEndorsement.cdcrNumber = person.cdcrNumber;
-            // this.transferData.offenderId = this.somsOffender.offenderId;
             this.editEndorsement.firstName = person.firstName;
             this.editEndorsement.lastName = person.lastName;
             this.editEndorsement.endorsementDate = person.endorseDate;
             this.editEndorsement.housing = person.housingArea;
-            // this.transferData.originalEndorsementDate =
-            //   this.somsOffender.dateEndorsementOriginal;
-            // this.transferData.transferDate = this.schedule.transferDate;
-            // this.transferData.schedule = this.schedule.schedule;
-            // this.transferData.transferReasonCode = this.selTransferReason.code;
-            // this.transferData.transferReasonDesc = this.selTransferReason.desc;
-            // this.cdcr135Comments = this.somsOffender.comments;
-            // this.transferData.inHouseRemarks = this.somsOffender.inHouseRemarks;
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;

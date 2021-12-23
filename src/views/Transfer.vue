@@ -591,209 +591,6 @@
             </v-col>
           </v-row>
           <v-row>
-            <!-- <v-col cols="4">
-              <div>
-                <span>Case Factors</span>
-                <v-divider class="pb-2"></v-divider>
-                <span class="labeling">
-                  {{ 'LWOP: ' + somsOffender.CaseFactors.lifer_lwop_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.lifer_lwop_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'SNY: ' + somsOffender.CaseFactors.sny_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.sny_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'CCMS EOP: ' + somsOffender.CaseFactors.cccms_eop_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.cccms_eop_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'Cocci1: ' + somsOffender.CaseFactors.cocci1_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.cocci1_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'Cocci2: ' + somsOffender.CaseFactors.cocci2_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.cocci2_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'DPP: ' + somsOffender.CaseFactors.dpp_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.dpp_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'DDP: ' + somsOffender.CaseFactors.ddp_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.ddp_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{ 'ICE: ' + somsOffender.CaseFactors.ice_value }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.ice_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{
-                    'Retain ASU: ' + somsOffender.CaseFactors.retainASU_value
-                  }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.retainASU_flag }}
-                </span>
-                <br />
-                <span class="labeling">
-                  {{
-                    'TransferMERD: ' +
-                    somsOffender.CaseFactors.transferMERD_value
-                  }}
-                </span>
-                <span class="data">
-                  {{ somsOffender.CaseFactors.transferMERD_flag }}
-                </span>
-                <br /> -->
-            <!-- <v-data-table
-                  :items-per-page="itemsPerPage"
-                  dense
-                  :headers="caseFactorsHeader"
-                  :items="caseFactors"
-                  item-key="code"
-                  class="elevation-1"
-                  :search="cfCode"
-                  @keypress="filterCaseFactors"
-                  no-data-text="No Case Factors"
-                  no-results-text="No Case Factors Found"
-                >
-                  <template
-                    v-slot:top
-                    class="pb-4"
-                    style="boder: 1px solid lightgray"
-                  >
-                    <span style="color: rgba(0, 0, 0, 0.6); font-size: 14px">
-                      Case Factors
-                    </span>
-                    <v-dialog v-model="dlgEditCF" max-width="300px">
-                      <template v-slot:activator="{ on, attrs }">
-                        <button
-                          type="button"
-                          style="
-                            background-color: #1976d2;
-                            border-radius: 4px;
-                            float: right;
-                            margin-top: -2px;
-                          "
-                          v-bind="attrs"
-                          v-on="on"
-                        >
-                          <v-icon dark dense>mdi-plus</v-icon>
-                        </button>
-                      </template>
-                      <v-card>
-                        <v-card-title>
-                          <span class="text-h5">{{ formTitleCF }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col>
-                                <v-text-field
-                                  v-model="editedCaseFactorItem.code"
-                                  label="Code"
-                                >
-                                </v-text-field>
-                              </v-col>
-                              <v-col>
-                                <v-text-field
-                                  v-model="editedCaseFactorItem."
-                                  label="Code"
-                                >
-                                </v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="blue darken-2"
-                            text
-                            @click="cancelCaseFactor"
-                          >
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            color="blue darken-2"
-                            text
-                            @click="saveCaseFactor"
-                          >
-                            Save
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
-                    <v-dialog v-model="dlgDeleteCF" max-width="500px">
-                      <v-card>
-                        <v-card-title class="text-h5">
-                          Are you sure you want to delete this item?
-                        </v-card-title>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="cancelDeleteCaseFactor"
-                          >
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="confirmDeleteCaseFactor"
-                          >
-                            OK
-                          </v-btn>
-                          <v-spacer></v-spacer>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
-                    <v-divider class="pb-4"></v-divider>
-                  </template>
-                  <template v-slot:item.actions="{ item }">
-                    <v-icon
-                      small
-                      class="mr-2"
-                      @click="editCaseFactorItem(item)"
-                    >
-                      mdi-pencil
-                    </v-icon>
-                    <v-icon small @click="deleteCaseFactorItem(item)">
-                      mdi-delete
-                    </v-icon>
-                  </template>
-                  <template v-slot:no-data>
-                    <v-btn color="primary"> Reset </v-btn>
-                  </template>
-                </v-data-table> -->
-            <!-- </div>
-            </v-col> -->
             <v-col>
               <div>
                 <v-data-table
@@ -1145,8 +942,7 @@
         origin: '',
         destination: '',
         schedule: '',
-        via1: '',
-        via2: '',
+        vias: [],
         transferDate: '',
         seats: 10,
         remainingSeats: 6,
@@ -1203,89 +999,6 @@
         'updateTransfer',
         'deleteTransfer',
       ]),
-      // initialize() {
-      //   this.schedules = [
-      //     {
-      //       scheduleId: 1,
-      //       destination: 'RJD',
-      //       schedule: 'A',
-      //       via1: 'FOL-II',
-      //       via2: 'ASP-II',
-      //       transferDate: '05/07/2021',
-      //       seats: 10,
-      //       remainingSeats: 6,
-      //     },
-      //     {
-      //       scheduleId: 2,
-      //       destination: 'CCC',
-      //       schedule: 'B',
-      //       via1: 'ASP-II',
-      //       via2: 'RJD-II',
-      //       transferDate: '06/07/2021',
-      //       seats: 10,
-      //       remainingSeats: 6,
-      //     },
-      //     {
-      //       scheduleId: 3,
-      //       destination: 'CIM',
-      //       schedule: 'C',
-      //       via1: 'FOL-II',
-      //       via2: 'SAC-II',
-      //       transferDate: '07/07/2021',
-      //       seats: 10,
-      //       remainingSeats: 6,
-      //     },
-      //     {
-      //       scheduleId: 4,
-      //       destination: 'HDSP',
-      //       schedule: 'D',
-      //       via1: 'FOL-II',
-      //       via2: 'CMC-II',
-      //       transferDate: '08/07/2021',
-      //       seats: 10,
-      //       remainingSeats: 6,
-      //     },
-      //   ];
-
-      //   this.transferReasons = [
-      //     {
-      //       name: 'ASU',
-      //       description: 'Aggregation unit',
-      //     },
-      //     {
-      //       name: 'BPTHRG',
-      //       description: 'Board of prison Unit',
-      //     },
-      //     {
-      //       name: 'BPTHRGRTN',
-      //       description: 'Board of prison return unit',
-      //     },
-      //     {
-      //       name: 'FAM',
-      //       description: 'Family ties',
-      //     },
-      //     {
-      //       name: 'FTTP',
-      //       description: 'Foreign Transfer Treaty Program',
-      //     },
-      //     {
-      //       name: 'GAIN',
-      //       description: 'Gang Affiliation',
-      //     },
-      //     {
-      //       name: 'ENE',
-      //       description: 'Enemies',
-      //     },
-      //     {
-      //       name: 'ENR',
-      //       description: 'Enroute',
-      //     },
-      //     {
-      //       name: 'HCPAR',
-      //       description: 'Test',
-      //     },
-      //   ];
-      // },
       async searchOffender() {
         this.loading = true;
         try {
@@ -1478,12 +1191,10 @@
         }
 
         for (var i = 0; i < this.schedules.length; i++) {
-          // var element = this.schedules.schedule;
-          var s = this.schedules[i];
-          if (s.schedule == this.selSchedule) {
-            this.schedule = s;
+          if (this.schedules[i].schedule == this.selSchedule) {
+            this.schedule = this.schedules[i];
             this.transferData.schedule = this.schedule.schedule;
-            // s = element;
+            this.transferData.transferDate = this.schedule.transferDate;
             break;
           }
         }
