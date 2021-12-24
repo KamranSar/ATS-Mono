@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <h1>Reports</h1> -->
     <h2>Reports</h2>
     <v-row flex>
       <v-col cols="12" sm="6" lg="3">
@@ -26,18 +25,9 @@
               ></v-select>
             </v-col>
             <v-col cols="1" class="mx-4">
-              <!-- <v-btn fab small color="primary" depressed style="margin-top: -8px" class="pa-2" @click="createPDF135">
-                <v-icon >mdi-printer</v-icon>
-              </v-btn> -->
-              <v-btn
-                class="blue-grey lighten-4"
-                depressed
-                max-width="36px"
-                style="margin-top: -8px"
-                @click="createPDF135"
-              >
-                <v-icon large color="primary">mdi-file-pdf</v-icon>
-              </v-btn>
+              <v-icon large color="primary" @click="createPDF135">
+                mdi-file-document
+              </v-icon>
             </v-col>
           </v-row>
           <v-row no-gutters>
@@ -49,18 +39,9 @@
               ></v-text-field>
             </v-col>
             <v-col cols="1" class="mx-4">
-              <!-- <v-btn fab small color="primary" depressed style="margin-top: -8px" class="pa-2" @click="createPDF135">
-                <v-icon >mdi-printer</v-icon>
-              </v-btn> -->
-              <v-btn
-                class="blue-grey lighten-4"
-                depressed
-                max-width="36px"
-                style="margin-top: -8px"
-                @click="createPDF135"
-              >
-                <v-icon large color="primary">mdi-file-pdf</v-icon>
-              </v-btn>
+              <v-icon large color="primary" @click="createPDF135">
+                mdi-file-document
+              </v-icon>
             </v-col>
           </v-row>
         </v-card>
@@ -107,18 +88,9 @@
               </v-menu>
             </v-col>
             <v-col cols="1" class="mx-4">
-              <!-- <v-btn fab small color="primary" depressed style="margin-top: -8px" class="pa-2" @click="createPDF7344">
-                <v-icon >mdi-printer</v-icon>
-              </v-btn> -->
-              <v-btn
-                class="blue-grey lighten-4 pa-2"
-                depressed
-                max-width="36px"
-                style="margin-top: -8px"
-                @click="createPDF7344"
-              >
-                <v-icon large color="primary">mdi-file-pdf</v-icon>
-              </v-btn>
+              <v-icon large color="primary" @click="createPDF7344">
+                mdi-file-document
+              </v-icon>
             </v-col>
           </v-row>
           <v-row no-gutters>
@@ -168,11 +140,6 @@
           </v-card-title>
           <v-row no-gutters>
             <v-col cols="6" class="mx-4">
-              <!-- <v-text-field
-                label="CDCR #"
-                v-model="cdcrNum"
-                dense
-              ></v-text-field> -->
               <v-select
                 label="By Schedule"
                 placeholder="Schedule"
@@ -183,16 +150,9 @@
               ></v-select>
             </v-col>
             <v-col cols="1" class="mx-4">
-              <v-btn
-                class="blue-grey lighten-4 pa-2"
-                depressed
-                max-width="36px"
-                style="margin-top: -8px"
-                @click="createPDF134"
-              >
-                <!-- <v-icon >mdi-printer</v-icon> -->
-                <v-icon large color="primary">mdi-file-pdf</v-icon>
-              </v-btn>
+              <v-icon large color="primary" @click="createPDF134">
+                mdi-file-document
+              </v-icon>
             </v-col>
           </v-row>
         </v-card>
@@ -221,18 +181,9 @@
               ></v-select>
             </v-col>
             <v-col cols="1" class="mx-4">
-              <!-- <v-btn fab small color="primary" depressed style="margin-top: -8px" class="pa-2" @click="createPDFBusSeat">
-                <v-icon>mdi-printer</v-icon>
-              </v-btn> -->
-              <v-btn
-                class="blue-grey lighten-4 pa-2"
-                depressed
-                max-width="36px"
-                style="margin-top: -8px"
-                @click="createPDFBusSeat"
-              >
-                <v-icon large color="primary">mdi-file-pdf</v-icon>
-              </v-btn>
+              <v-icon large color="primary" @click="createPDFBusSeat">
+                mdi-file-document
+              </v-icon>
             </v-col>
           </v-row>
         </v-card>
