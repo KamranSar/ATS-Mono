@@ -2,7 +2,6 @@ const appCfg = require('../package.json');
 
 module.exports = {
   server: {
-    //* FIXME: You MUST set the 'name' and 'description' elements in the "package.json" file before modifying this file.
     //* DO NOT modify these first 2 elements in this file.
     name: appCfg.name,
     description: appCfg.description,
@@ -21,7 +20,7 @@ module.exports = {
     //* List off Supported Services:
     //* mongooseservice is required, all other services are optional and can be removed along with their associated code if not used.
     {
-      name: 'offendertransfer',
+      name: 'transfer',
       version: 'v1',
       enabled: true,
       description: 'CRUD service for a transfer of an offender.',
@@ -31,6 +30,18 @@ module.exports = {
       version: 'v1',
       enabled: true,
       description: 'CRUD service for transfer schedules.',
+    },
+    {
+      name: 'reason',
+      version: 'v1',
+      enabled: true,
+      description: 'CRUD service for transfer reasons.',
+    },
+    {
+      name: 'departuresarrivals',
+      version: 'v1',
+      enabled: true,
+      description: 'Gets departing offenders from institution on that day',
     },
     // {
     //   // Only an example
