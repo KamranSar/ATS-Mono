@@ -482,24 +482,18 @@
     }),
     async created() {
       this.initialize();
-      if (
-        this.loggedInUser &&
-        this.loggedInUser.somsinfo &&
-        this.loggedInUser.somsinfo.organizationName
-      ) {
-        // DataService.getForms(this.loggedInUser.somsinfo.organizationName)
-        //   .then((response) => {
-        //     this.requests = response;
-        this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
-        console.log('0');
-        const dt = Date.now();
-        console.log(dt);
-        await this.readSchedulesByInstitution(this.selectedInstitution, dt);
-        // })
-        // .catch((error) => {
-        //   console.log(error);
-        // });
-      }
+      // await this.getInstitutions();
+      // if (
+      //   this.loggedInUser &&
+      //   this.loggedInUser.somsinfo &&
+      //   this.loggedInUser.somsinfo.organizationName
+      // ) {
+      //   this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
+      //   console.log('0');
+      //   const dt = Date.now();
+      //   console.log(dt);
+      //   await this.readSchedulesByOrigin(this.selectedInstitution, dt);
+      // }
     },
     computed: {
       ...sync('schedules', ['schedules']),
@@ -512,12 +506,12 @@
       },
     },
     watch: {
-      selInstitution(newVal, oldVal) {
-        if (newVal && newVal !== oldVal) {
-          // Get Institution Schedules
-          this.getSchedules();
-        }
-      },
+      //   selInstitution(newVal, oldVal) {
+      //     if (newVal && newVal !== oldVal) {
+      //       // Get Institution Schedules
+      //       this.getSchedules();
+      //     }
+      //   },
       dialogSchedule(val) {
         val || this.closeSchedule();
       },
@@ -539,7 +533,7 @@
         'createSchedule',
         'readSchedules',
         'readSchedulesByDate',
-        'readSchedulesByInstitution',
+        'readSchedulesByOrigin',
         'updateSchedule',
         'deleteSchedule',
       ]),
@@ -584,39 +578,39 @@
         //   },
         // ]),
         this.endorsements = [
-          {
-            endorsementId: 1,
-            scheduleId: 1,
-            cdcrNumber: 'E05980',
-            lastName: 'Martin',
-            firstName: 'David',
-            housing: 'D0052',
-            transferReason: 'Transfering from Folsom',
-            endorsementDate: '12/2/21',
-            endorsementDetails: 'Go to Transfer Record',
-          },
-          {
-            endorsementId: 2,
-            scheduleId: 1,
-            cdcrNumber: 'AL7263',
-            lastName: 'Harris',
-            firstName: 'William',
-            housing: 'ALAA3',
-            transferReason: 'Housing',
-            endorsementDate: '12/2/21',
-            endorsementDetails: 'Go to Transfer Record',
-          },
-          {
-            endorsementId: 3,
-            scheduleId: 1,
-            cdcrNumber: 'AB1234',
-            lastName: 'Doe',
-            firstName: 'John',
-            housing: 'IU-2656',
-            transferReason: 'Transfering from Folsom',
-            endorsementDate: '12/2/21',
-            endorsementDetails: 'Go to Transfer Record',
-          },
+          // {
+          //   endorsementId: 1,
+          //   scheduleId: 1,
+          //   cdcrNumber: 'E05980',
+          //   lastName: 'Martin',
+          //   firstName: 'David',
+          //   housing: 'D0052',
+          //   transferReason: 'Transfering from Folsom',
+          //   endorsementDate: '12/2/21',
+          //   endorsementDetails: 'Go to Transfer Record',
+          // },
+          // {
+          //   endorsementId: 2,
+          //   scheduleId: 1,
+          //   cdcrNumber: 'AL7263',
+          //   lastName: 'Harris',
+          //   firstName: 'William',
+          //   housing: 'ALAA3',
+          //   transferReason: 'Housing',
+          //   endorsementDate: '12/2/21',
+          //   endorsementDetails: 'Go to Transfer Record',
+          // },
+          // {
+          //   endorsementId: 3,
+          //   scheduleId: 1,
+          //   cdcrNumber: 'AB1234',
+          //   lastName: 'Doe',
+          //   firstName: 'John',
+          //   housing: 'IU-2656',
+          //   transferReason: 'Transfering from Folsom',
+          //   endorsementDate: '12/2/21',
+          //   endorsementDetails: 'Go to Transfer Record',
+          // },
         ];
       },
 
@@ -754,14 +748,25 @@
           }
           console.log('saveSchedule(): origin: ', self.editSchedule.origin);
 
-          await self.createSchedule(self.editSchedule);
+          try {
+            await self.createSchedule(self.editSchedule);
+          } catch (e) {
+            console.error(e);
+          }
         }
         console.log('4');
         const dt = Date.now();
         console.log(dt);
-        await self.readSchedulesByInstitution(self.selectedInstitution, dt);
+        try {
+          await self.readSchedulesByOrigin({
+            institution: self.selectedInstitution,
+            dateObj: dt,
+          });
+          self.editSchedule = Object.assign({}, self.defaultSchedule);
+        } catch (e) {
+          console.error(e);
+        }
         console.log('5');
-        self.editSchedule = Object.assign({}, self.defaultSchedule);
         // this.closeSchedule();
       },
       openEndorsement(endInmate) {

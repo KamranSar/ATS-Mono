@@ -22,7 +22,11 @@ const routes = [
       import(/* webpackChunkName: "Transfer" */ '@/views/Transfer.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [defaultAdminRole.name, 'Guest'],
+      hasAnyRoles: [
+        defaultAdminRole.name,
+        'Institution Administrator',
+        'Guest',
+      ],
     },
   },
   {
@@ -33,7 +37,11 @@ const routes = [
       import(/* webpackChunkName: "Schedule" */ '@/views/Schedule.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [defaultAdminRole.name, 'Guest'],
+      hasAnyRoles: [
+        defaultAdminRole.name,
+        'Institution Administrator',
+        'Guest',
+      ],
     },
   },
   {
@@ -44,7 +52,11 @@ const routes = [
       import(/* webpackChunkName: "Maintenance" */ '@/views/Maintenance.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [defaultAdminRole.name, 'Guest'],
+      hasAnyRoles: [
+        defaultAdminRole.name,
+        'Institution Administrator',
+        'Guest',
+      ],
     },
   },
   {
@@ -55,7 +67,11 @@ const routes = [
       import(/* webpackChunkName: "Reports" */ '@/views/Reports.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [defaultAdminRole.name, 'Guest'],
+      hasAnyRoles: [
+        defaultAdminRole.name,
+        'Institution Administrator',
+        'Guest',
+      ],
     },
   },
   {

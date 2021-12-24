@@ -1,6 +1,8 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
+// import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
 const actions = {
+  // eslint-disable-next-line no-unused-vars
   createTransfer: async ({ state, rootState }, transferObj) => {
     try {
       await svcTransfers.create(transferObj);
@@ -52,7 +54,7 @@ const actions = {
           institution: institution,
         },
       };
-      state.schedules = await svcTransfers.find(filter);
+      state.transfers = await svcTransfers.find(filter);
     } catch (error) {
       return error;
     } finally {
@@ -60,6 +62,7 @@ const actions = {
     }
   },
   // updateTransfers
+  // eslint-disable-next-line no-unused-vars
   updateTransfer: async ({ state, rootState }, transferObj) => {
     try {
       rootState.app.loading = true;
@@ -71,6 +74,7 @@ const actions = {
     }
   },
   // deleteTransfer
+  // eslint-disable-next-line no-unused-vars
   deleteTransfer: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;

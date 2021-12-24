@@ -2,6 +2,7 @@ import svcSchedules from '@/feathers/services/schedule/schedule.service.js';
 import findAll from '@/feathers/helpers/findAll.js';
 
 const actions = {
+  // eslint-disable-next-line no-unused-vars
   createSchedule: async ({ state, rootState }, scheduleObj) => {
     try {
       await svcSchedules.create(scheduleObj);
@@ -47,10 +48,9 @@ const actions = {
   },
 
   // readSchedule - by institution and date
-  readSchedulesByInstitution: async (
+  readSchedulesByOrigin: async (
     { state, rootState },
-    institution,
-    dateObj
+    { institution, dateObj }
   ) => {
     try {
       rootState.app.loading = true;
@@ -59,9 +59,36 @@ const actions = {
       const filter = {
         query: {
           origin: institution,
-          date: dateObj,
         },
       };
+      if (dateObj) {
+        filter.query.transferDate = new Date(dateObj).setHours(0, 0, 0, 0);
+      }
+      console.log(filter);
+      const response = await findAll(svcSchedules, filter);
+      state.schedules = response.data;
+    } catch (error) {
+      return error;
+    } finally {
+      rootState.app.loading = false;
+    }
+  },
+  readSchedulesByDestination: async (
+    { state, rootState },
+    destination,
+    dateObj
+  ) => {
+    try {
+      rootState.app.loading = true;
+      console.log(dateObj);
+      const filter = {
+        query: {
+          destination: destination,
+        },
+      };
+      if (dateObj) {
+        filter.query.transferDate = dateObj;
+      }
       const response = await findAll(svcSchedules, filter);
       state.schedules = response.data;
     } catch (error) {
@@ -71,6 +98,7 @@ const actions = {
     }
   },
   // updateSchedule
+  // eslint-disable-next-line no-unused-vars
   updateSchedule: async ({ state, rootState }, scheduleObj) => {
     try {
       rootState.app.loading = true;
@@ -83,6 +111,7 @@ const actions = {
     }
   },
   // deleteSchedule
+  // eslint-disable-next-line no-unused-vars
   deleteSchedule: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;

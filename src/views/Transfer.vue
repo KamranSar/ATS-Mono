@@ -758,7 +758,8 @@
         originalEndorsementDate: null,
         expirationEndorsementDate: null,
         transferDate: null,
-        schedule: '',
+        schedule: '', // FIXME remove
+        scheduleId: '', // TODO update
         transferReasonCode: '',
         transferReasonDesc: '',
         cdcr135Comments: '',
@@ -1045,10 +1046,11 @@
               this.somsOffender.dateEndorsementOriginal;
             this.transferData.transferDate = this.schedule.transferDate;
             this.transferData.schedule = this.schedule.schedule;
+            this.transferData.scheduleId = this.schedule._id;
             this.transferData.transferReasonCode = this.selTransferReason.code;
             this.transferData.transferReasonDesc = this.selTransferReason.desc;
-            this.cdcr135Comments = this.somsOffender.comments;
-            this.transferData.inHouseRemarks = this.somsOffender.inHouseRemarks;
+            this.transferData.cdcr135Comments = this.somsOffender.comments; // TODO Need to read from ATS db also
+            this.transferData.inHouseRemarks = this.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;
@@ -1190,11 +1192,13 @@
           return;
         }
 
-        for (var i = 0; i < this.schedules.length; i++) {
-          if (this.schedules[i].schedule == this.selSchedule) {
-            this.schedule = this.schedules[i];
-            this.transferData.schedule = this.schedule.schedule;
-            this.transferData.transferDate = this.schedule.transferDate;
+        // for (let i = 0; i < this.schedules.length; i++) {
+        for (let schedule of this.schedules) {
+          // if (this.schedules[i].schedule == this.selSchedule) {
+          if (schedule.schedule == this.selSchedule) {
+            this.transferData.schedule = schedule.schedule; // FIXME
+            this.transferData.scheduleId = schedule._id;
+            this.transferData.transferDate = schedule.transferDate;
             break;
           }
         }
