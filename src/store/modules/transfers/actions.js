@@ -1,7 +1,104 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
+import somsOffender from '@/feathers/services/offender/details.service.js';
+import router from '@/router/';
 // import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
 const actions = {
+  async readOffenderDetails({ state, rootState, dispatch }, cdcrNumber) {
+    rootState.app.loading = true;
+    try {
+      const query = {
+        query: {
+          cdcrnumber: cdcrNumber,
+        },
+      };
+
+      const response = await somsOffender.find(query);
+      if (response && response.data && response.data.length) {
+        state.somsOffender = response.data[0];
+        state.transferData.cdcrNumber = state.somsOffender.cdcrNumber;
+        state.transferData.offenderId = state.somsOffender.offenderId;
+        state.transferData.firstName = state.somsOffender.firstName;
+        state.transferData.lastName = state.somsOffender.lastName;
+        state.transferData.currentEndorsementDate =
+          state.somsOffender.endorseDate;
+        state.transferData.originalEndorsementDate =
+          state.somsOffender.dateEndorsementOriginal;
+        state.transferData.cdcr135Comments = state.somsOffender.comments; // TODO Need to read from ATS db also
+        state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
+
+        router.push({
+          name: 'Transfer Details',
+          params: {
+            cdcrNumber,
+          },
+        });
+      } else {
+        dispatch(
+          'app/SET_SNACKBAR',
+          {
+            bottom: true,
+            center: true,
+            message: 'No results found',
+          },
+          { root: true }
+        );
+        state.somsOffender = null;
+      }
+    } catch (error) {
+      dispatch(
+        'app/SET_SNACKBAR',
+        {
+          bottom: true,
+          center: true,
+          message: 'An error occurred, please try again later.',
+        },
+        { root: true }
+      );
+    } finally {
+      rootState.app.loading = false;
+    }
+  },
+  async saveForm({ state, rootState, dispatch }) {
+    state.transferData.transferReasonCode = state.selTransferReason.reasonCode;
+    state.transferData.transferReasonDesc = state.selTransferReason.reasonDesc;
+
+    if (rootState.schedules && rootState.schedules.selSchedule) {
+      const schedules = rootState.schedules.schedules;
+      const selSchedule = rootState.schedules.selSchedule;
+      for (let schedule of schedules) {
+        if (schedule.schedule == selSchedule.schedule) {
+          state.transferData.schedule = schedule.schedule; // FIXME
+          state.transferData.scheduleId = schedule._id;
+          state.transferData.transferDate = schedule.transferDate;
+          state.transferData.institution = schedule.origin;
+          break;
+        }
+      }
+    }
+
+    // validate data
+    // call api to send data to db
+    // interrogate response - success or failure
+    state.transferData.isScheduled = true;
+
+    console.log('saveForm(): transferData => ', state.transferData);
+    if (state.transferData._id) {
+      await dispatch('updateTransfer', state.transferData);
+    } else {
+      await dispatch('createTransfer', state.transferData);
+      // show successful message
+    }
+    // const response = await transfer.create(this.transferData);
+    // console.log('saveForm(): response => ', response);
+    // response._id;
+    // response.cdcrNumber;
+    // setTimeout(() => {
+    //   //   this.loading = false;
+    //   alert('Save completed successfully!');
+    //   // this.displayOffender = false;
+    // }, 1000);
+  },
   // eslint-disable-next-line no-unused-vars
   createTransfer: async ({ state, rootState }, transferObj) => {
     try {
@@ -54,7 +151,8 @@ const actions = {
           institution: institution,
         },
       };
-      state.transfers = await svcTransfers.find(filter);
+      const response = await svcTransfers.find(filter);
+      state.transfers = response.data;
     } catch (error) {
       return error;
     } finally {

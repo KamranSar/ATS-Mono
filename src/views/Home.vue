@@ -24,6 +24,7 @@
             label="Institution"
             item-text="institutionName"
             item-value="institutionName"
+            return-object
             prepend-icon="mdi-bank"
             clearable
             hide-details="auto"
@@ -178,22 +179,15 @@
 </template>
 
 <script>
-  // import {departingOffenders, arrivingOffenders} from '@/assets/offenderData.js'
-  // import DataService from '@/services/ats-services.js';
-  import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync, call } from 'vuex-pathify';
 
   export default {
-    name: 'Dashboard',
+    name: 'Home',
     data: () => ({
       itemsPerPage: 5,
       loading: false,
       departureSearch: '',
       arrivalSearch: '',
-      selectedInstitution: '',
-      listOfInstitutions: [],
-      // departingOffenders: departingOffenders,
-      // arrivingOffenders: arrivingOffenders,
       departingOffenders: [],
       arrivingOffenders: [],
       departureHeaders: [
@@ -226,64 +220,45 @@
         { text: 'Pre-Print 135', value: 'preprint135' },
       ],
     }),
-    async created() {
-      if (
-        this.loggedInUser &&
-        this.loggedInUser.somsinfo &&
-        this.loggedInUser.somsinfo.organizationName
-      ) {
-        this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
-        console.log('0');
-        const dt = Date.now();
-        console.log(dt);
-        await this.readSchedulesByOrigin(this.selectedInstitution, dt);
-      }
-    },
     async mounted() {
-      await this.getInstitutions();
+      await this.readTransfers();
     },
     methods: {
       ...call('schedules', ['readSchedulesByOrigin']),
+      ...call('transfers', ['readTransfersByInstitution']),
 
-      async getInstitutions() {
-        try {
-          this.loading = true;
-          const queryObject = {
-            query: {
-              $sort: {
-                institutionName: 1,
-              },
-            },
-          };
-
-          // if (
-          //   this.loggedInUser &&
-          //   this.loggedInUser.appuserroles &&
-          //   this.loggedInUser.appuserroles.roles.length &&
-          //   !this.loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
-          // ) {
-          //   queryObject.query['institutionPartyId'] =
-          //     this.loggedInUser.somsinfo.organizationId;
-          // }
-
-          const institutions = await findAll(
-            '/api/eis/common/v1/institution',
-            queryObject
+      /**
+       * This method reads the schedule for the selected institution
+       */
+      async readTransfers() {
+        await this.readTransfersByInstitution(
+          this.selectedInstitution.institutionName
+        );
+        // For each transfer at the institution
+        this.transfers.forEach((offender) => {
+          // Find their schedule...
+          const schedule = this.schedules.find(
+            (sch) => sch.schedule === offender.schedule
           );
 
-          this.listOfInstitutions = institutions.data;
-          // this.selectedInstitution = !this.loggedInUser.somsinfo
-          //   .organizationName
-          //   ? null
-          //   : this.loggedInUser.somsinfo.organizationName;
-          return this.listOfInstitutions;
-        } catch (error) {
-          console.error('getInstitutions: ', error);
-          this.listOfInstitutions = [];
-          return [];
-        } finally {
-          this.loading = false;
-        }
+          if (schedule) {
+            // Departing
+            // An offender is departing from the institution
+            // if the schedule he/she is assigned to has a different origin
+            if (schedule.origin === this.selectedInstitution.institutionName) {
+              this.departingOffenders.push(offender);
+            }
+
+            // Arrivals
+            // An offender is arriving if the schedules destination
+            // is the selected institution
+            // if (
+            //   schedule.destination === this.selectedInstitution.institutionId
+            // ) {
+            //   this.arrivingOffenders.push(offender);
+            // }
+          }
+        });
       },
 
       // syncSOMS() {
@@ -348,8 +323,14 @@
       },
     },
     computed: {
+      ...sync('transfers', ['transfers']),
       ...sync('schedules', ['schedules']),
+      ...sync('institutions', ['selectedInstitution']),
+      ...get('institutions', ['listOfInstitutions']),
       ...get('users', ['loggedInUser']),
+      appUserRoles() {
+        return this.$store.get('users/getAppUserRoles');
+      },
 
       // departingOffenderHeaders() {
       //   return [

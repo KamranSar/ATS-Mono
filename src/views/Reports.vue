@@ -840,6 +840,7 @@
             // =============================
             {
               layout: {
+                // eslint-disable-next-line
                 fillColor: function (rowIndex, node, columnIndex) {
                   if (rowIndex < 4) {
                     return null;
@@ -1870,6 +1871,7 @@
                   width: '*',
                   //layout: 'lightHorizontalLines', // optional
                   layout: {
+                    // eslint-disable-next-line
                     fillColor: function (rowIndex, node, columnIndex) {
                       return rowIndex % 2 === 0 ? '#F0F0F0' : null;
                     },
@@ -2232,6 +2234,7 @@
                   width: '*',
                   //layout: 'lightHorizontalLines', // optional
                   layout: {
+                    // eslint-disable-next-line
                     fillColor: function (rowIndex, node, columnIndex) {
                       return rowIndex % 2 === 0 ? '#F0F0F0' : null;
                     },

@@ -19,7 +19,27 @@ const routes = [
     path: '/transfer',
     name: 'Transfer',
     component: () =>
-      import(/* webpackChunkName: "Transfer" */ '@/views/Transfer.vue'),
+      import(
+        /* webpackChunkName: "Transfer" */ '@/views/Transfer/Transfer.vue'
+      ),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      hasAnyRoles: [
+        defaultAdminRole.name,
+        'Institution Administrator',
+        'Guest',
+      ],
+    },
+  },
+  {
+    icon: 'mdi-bus-multiple',
+    path: '/transfer/:cdcrNumber',
+    props: true,
+    name: 'Transfer Details',
+    component: () =>
+      import(
+        /* webpackChunkName: "TransferDetails" */ '@/views/Transfer/TransferDetails.vue'
+      ),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [
