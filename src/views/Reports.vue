@@ -310,6 +310,12 @@
         'readSchedulesByDate',
         'readSchedulesByOrigin',
       ]),
+      ...call('transfers', [
+        'readTransfers',
+        'readOffenderDetails',
+        'readTransfersByDate',
+        'readTransfersByInstitution',
+      ]),
 
       goHome() {
         this.$router.push({
@@ -424,9 +430,15 @@
         }
       },
 
+      get135Data() {
+        let data = null;
+        let row = null;
+        let obj = null;
+      },
       // createPDF135()
       //
       createPDF135() {
+        const records = this.get135Data();
         const fileName = this.fileName + '.pdf';
 
         let doc =
