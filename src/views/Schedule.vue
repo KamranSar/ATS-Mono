@@ -14,6 +14,8 @@
         >
           <v-autocomplete
             v-model="selectedInstitution"
+            return-object
+            @change="initialize"
             :disabled="loading"
             :items="listOfInstitutions"
             color="blue-grey lighten-2"
@@ -47,15 +49,16 @@
       color="primary"
     ></v-progress-linear>
     <v-card>
+      <!-- Data table will push to selectedSchedule -->
       <v-data-table
+        v-model="selectedSchedule"
         :headers="headersSchedule"
-        item-key="scheduleId"
+        item-key="_id"
         :items="schedules"
         single-select
         show-select
         sort-by="scheduleId"
         class="elevation-1 mt-2"
-        @item-selected="rowSelected"
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
@@ -233,7 +236,7 @@
       </v-data-table>
     </v-card>
     <!-- /* Endorsement Table Begin    */ -->
-    <v-card v-show="isShowing" class="mt-2">
+    <v-card v-show="selectedSchedule.length" class="mt-2">
       <v-card-title class="blue-grey lighten-4">
         <v-row>
           <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
@@ -283,8 +286,8 @@
                 label="Specific Transfer Reason"
                 v-model="selTransferReason"
                 :items="reasons"
-                item-text="description"
-                item-value="name"
+                item-value="reasonCode"
+                item-text="reasonDesc"
                 class="mt-4 pl-1"
                 hide-details="true"
                 clearable
@@ -294,7 +297,7 @@
                 <template v-slot:item="{ item, on, attrs }">
                   <v-list-item v-on="on" v-bind="attrs">
                     <v-list-item-content>
-                      {{ item.name }} - {{ item.description }}
+                      {{ item.reasonCode }} - {{ item.reasonDesc }}
                     </v-list-item-content>
                   </v-list-item>
                 </template>
@@ -303,7 +306,7 @@
             <v-col cols="2" sm="3" lg="2" align-self="baseline">
               <v-text-field
                 label="Endorsement Date"
-                v-model="editEndorsement.endorsementDate"
+                v-model="editEndorsement.currentEndorsementDate"
                 readonly
               ></v-text-field>
             </v-col>
@@ -349,6 +352,17 @@
             </v-dialog>
           </v-toolbar>
         </template>
+
+        <template v-slot:item.cdcrNumber="{ item }">
+          <router-link
+            :to="{
+              name: 'Transfer Details',
+              params: { cdcrNumber: item.cdcrNumber },
+            }"
+            >{{ item.cdcrNumber }}</router-link
+          >
+        </template>
+
         <template v-slot:item.actions="{ item }">
           <v-icon
             small
@@ -379,6 +393,7 @@
 
 <script>
   import somsOffender from '@/feathers/services/offender/details.service.js';
+  import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
   // import svcSchedule from '@/feathers/services/offender/details.service.js';
   import { get, sync, call } from 'vuex-pathify';
 
@@ -392,8 +407,7 @@
       selVias: '',
       transferDate: null,
       seats: 0,
-      selectedId: -1,
-      isShowing: false,
+      selectedSchedule: [],
       dialogSchedule: false,
       dialogDeleteSchedule: false,
       dialogEndorsement: false,
@@ -424,8 +438,8 @@
         { text: 'Last Name', value: 'lastName' },
         { text: 'First Name', value: 'firstName' },
         { text: 'Housing', value: 'housing' },
-        { text: 'Transfer Reason', value: 'transferReason' },
-        { text: 'Endorsement Date', value: 'endorsementDate' },
+        { text: 'Transfer Reason', value: 'transferReasonDesc' },
+        { text: 'Endorsement Date', value: 'currentEndorsementDate' },
         { text: 'Endorsement Details', value: 'endorsementDetails' },
         { text: 'Print', value: 'print' },
         { text: 'Edit/Delete', value: 'actions', sortable: false },
@@ -483,6 +497,7 @@
     computed: {
       ...get('institutions', ['listOfInstitutions']),
       ...sync('institutions', ['selectedInstitution']),
+      ...sync('transfers', ['transferData']),
       ...sync('schedules', ['schedules']),
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
@@ -493,6 +508,10 @@
       },
     },
     watch: {
+      selectedSchedule: {
+        handler: 'getEndorsements',
+        deep: true,
+      },
       //   selInstitution(newVal, oldVal) {
       //     if (newVal && newVal !== oldVal) {
       //       // Get Institution Schedules
@@ -521,12 +540,45 @@
         'updateSchedule',
         'deleteSchedule',
       ]),
-      rowSelected(item) {
-        console.log('rowSelected(): item: ', item);
-        this.isShowing = true;
+      ...call('transfers', ['saveForm']),
+      ...call('app', ['SET_SNACKBAR']),
+      async getEndorsements(newVal, oldVal) {
+        function _getId(data) {
+          return data && data[0] && data[0]._id ? data[0]._id : '';
+        }
+        try {
+          const oldId = _getId(oldVal);
+          const newId = _getId(newVal);
+          if (newId && newId !== oldId) {
+            const response = await svcTransfers.find({
+              query: {
+                schedule: newVal[0].schedule,
+              },
+            });
+            if (response.data && response.data.length) {
+              this.endorsements = response.data;
+            } else {
+              this.endorsements = [];
+            }
+          }
+        } catch (error) {
+          console.error('getEndorsements', error);
+          this.SET_SNACKBAR({
+            bottom: true,
+            center: true,
+            message: 'Failed to fetch endorsements, try again later.',
+          });
+        }
       },
 
-      initialize() {
+      async initialize() {
+        this.endorsements = [];
+        this.selectedSchedule = [];
+        if (this.selectedInstitution) {
+          await this.readSchedules({
+            query: { origin: this.selectedInstitution.institutionName },
+          });
+        }
         // (this.schedules = [
         //   {
         //     scheduleId: 1,
@@ -730,7 +782,7 @@
           this.editEndorsementIndex = -1;
         });
       },
-      saveEndorsement() {
+      async saveEndorsement() {
         if (this.editEndorsementIndex > -1) {
           Object.assign(
             this.endorsements[this.editEndorsementIndex],
@@ -739,6 +791,11 @@
         } else {
           this.endorsements.push(this.editEndorsement);
         }
+
+        // Assign the endorsement to the transferData object
+        // And have saveForm save the transferData
+        this.transferData = this.editEndorsement;
+        await this.saveForm();
         this.closeEndorsement();
       },
       closeEndorsementDelete() {

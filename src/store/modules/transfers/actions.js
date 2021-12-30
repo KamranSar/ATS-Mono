@@ -115,10 +115,10 @@ const actions = {
   },
 
   // readTransfers
-  readTransfers: async ({ state, rootState }) => {
+  readTransfers: async ({ state, rootState }, queryObj) => {
     try {
       rootState.app.loading = true;
-      const response = await svcTransfers.find();
+      const response = await svcTransfers.find(queryObj);
       state.transfers = response.data;
     } catch (error) {
       return error;
