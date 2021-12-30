@@ -13,15 +13,15 @@ const actions = {
     }
   },
 
-  init: async ({ dispatch }) => {
-    await dispatch('readSchedules');
+  init: async () => {
+    //
   },
 
   // readReason
-  readSchedules: async ({ state, rootState }) => {
+  readSchedules: async ({ state, rootState }, queryObj) => {
     try {
       rootState.app.loading = true;
-      const response = await findAll(svcSchedules);
+      const response = await findAll(svcSchedules, queryObj);
       state.schedules = response.data;
     } catch (error) {
       return error;

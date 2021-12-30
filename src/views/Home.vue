@@ -180,6 +180,7 @@
 
 <script>
   import { get, sync, call } from 'vuex-pathify';
+  // import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
   export default {
     name: 'Home',
@@ -222,6 +223,13 @@
     }),
     async mounted() {
       await this.readTransfers();
+      // TODO: Get departures and arrivals by institition
+      // const response = await departuresArrivalsSvc.find({
+      //   query: {
+      //     institution: this.selectedInstitution.institutionName,
+      //   },
+      // });
+      // console.log('DEP ARR: ', response);
     },
     methods: {
       ...call('schedules', ['readSchedulesByOrigin']),

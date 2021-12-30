@@ -30,18 +30,7 @@ const actions = {
           },
         };
 
-        // If user is defaultAdminRole, query for all
-        const appUserRoles = rootGetters['users/getAppUserRoles'];
         const loggedInUser = rootState.users.loggedInUser;
-        if (
-          appUserRoles &&
-          appUserRoles.length &&
-          !appUserRoles.includes(defaultAdminRole.name)
-        ) {
-          // Default: Set list only to the users institution
-          queryObject.query['institutionName'] =
-            loggedInUser.somsinfo.organizationName;
-        }
         const institutions = await findAll(service, queryObject);
         state.listOfInstitutions = institutions.data;
 
