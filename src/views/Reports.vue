@@ -290,10 +290,12 @@
     }),
     computed: {
       ...sync('schedules', ['schedules']),
+      ...sync('institutions', ['selectedInstitution']),
+      ...get('institutions', ['listOfInstitutions']),
       ...get('users', ['loggedInUser']),
     },
     async mounted() {
-      await this.getInstitutions();
+      // await this.getInstitutions();
       if (
         this.loggedInUser &&
         this.loggedInUser.somsinfo &&
@@ -315,6 +317,7 @@
         'readOffenderDetails',
         'readTransfersByDate',
         'readTransfersByInstitution',
+        'readTransfersBySchedule',
       ]),
 
       goHome() {
@@ -322,33 +325,33 @@
           name: 'Home',
         });
       },
-      async getInstitutions() {
-        try {
-          this.loading = true;
-          const queryObject = {
-            query: {
-              $sort: {
-                institutionName: 1,
-              },
-            },
-          };
+      // async getInstitutions() {
+      //   try {
+      //     this.loading = true;
+      //     const queryObject = {
+      //       query: {
+      //         $sort: {
+      //           institutionName: 1,
+      //         },
+      //       },
+      //     };
 
-          const institutions = await findAll(
-            '/api/eis/common/v1/institution',
-            queryObject
-          );
+      //     const institutions = await findAll(
+      //       '/api/eis/common/v1/institution',
+      //       queryObject
+      //     );
 
-          this.listOfInstitutions = institutions.data;
+      //     this.listOfInstitutions = institutions.data;
 
-          return this.listOfInstitutions;
-        } catch (error) {
-          console.error('getInstitutions: ', error);
-          this.listOfInstitutions = [];
-          return [];
-        } finally {
-          this.loading = false;
-        }
-      },
+      //     return this.listOfInstitutions;
+      //   } catch (error) {
+      //     console.error('getInstitutions: ', error);
+      //     this.listOfInstitutions = [];
+      //     return [];
+      //   } finally {
+      //     this.loading = false;
+      //   }
+      // },
       async getSchedulesByInstitution() {
         this.loading = true;
         console.log(
@@ -412,33 +415,79 @@
       // get135()
       //
       get135(param) {
-        let filter = {
-          query: {
-            $sort: {
-              dateReceived: 1,
-            },
-          },
+        // let filter = {
+        //   query: {
+        //     $sort: {
+        //       dateReceived: 1,
+        //     },
+        //   },
+        // };
+
+        // if (param == 'schedule') {
+        //   filter.query.schedule = this.sel135Schedule;
+        // } else if (param == 'cdcr') {
+        //   filter.query.cdcrNumber = this.cdcrNum;
+        // } else {
+        //   alert('Invalid option for CDCR-135 Transfer Record.');
+        //   return;
+        // }
+
+        let data = null;
+        let row = null;
+        let obj = {
+          text: '',
+          style: 'tblCenter',
+          border: [false, false, false, false],
         };
 
-        if (param == 'schedule') {
-          filter.query.schedule = this.sel135Schedule;
-        } else if (param == 'cdcr') {
-          filter.query.cdcrNumber = this.cdcrNum;
+        this.readTransfersBySchedule(this.sel135Schedule);
+        let num = 1;
+        for (let xfr of this.transfers) {
+          // Column 1 - Row Number
+          obj.text = num++;
+          row.push(obj);
+          // Column 2 - CDCR Number
+          obj.text = xfr.cdcrNum;
+          row.push(obj);
+          // Column 3 - Name
+          obj.text = xfr.lastName + ', ' + xfr.firstName;
+          row.push(obj);
+          // Column 4 - Level
+          obj.text = 'level'; // FIXME need to add level field
+          row.push(obj);
+          // Column 5 - Housing
+          obj.text = 'housing'; // FIXME need to add housing field;
+          row.push(obj);
+          // Column 6 - TB Code
+          obj.text = 'val'; // FIXME need to add TB Code field;
+          row.push(obj);
+          // Column 7 - Ethnic
+          obj.text = 'cf'; // FIXME need to add ethnicity field;
+          row.push(obj);
+          // Column 8 - Case Factor
+          obj.text = 'cf'; // FIXME need to add case factor field;
+          row.push(obj);
+          // Column 9 - Specific Transfer Reason
+          obj.text = xfr.transferReasonCode;
+          row.push(obj);
+          // Column 10 - Comments
+          obj.text = xfr.cdcr135Comments;
+          row.push(obj);
+
+          data.push(row);
+        }
+
+        if (data) {
+          createPDF135(data);
         } else {
-          alert('Invalid option for CDCR-135 Transfer Record.');
-          return;
+          // error message
+          alert('Could not create CDCR 135 PDF Document!');
         }
       },
 
-      get135Data() {
-        let data = null;
-        let row = null;
-        let obj = null;
-      },
       // createPDF135()
       //
-      createPDF135() {
-        const records = this.get135Data();
+      createPDF135(data) {
         const fileName = this.fileName + '.pdf';
 
         let doc =
