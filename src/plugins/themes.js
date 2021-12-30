@@ -18,7 +18,7 @@ const themes = Object.freeze({
     success: '#4CAF50', // Green
     warning: '#FFC107', // Yellow
     cardPrimary: '#ECEFF1', // light Gray
-  }
+  },
 });
 
 // This file gets imported into vue.config.js.

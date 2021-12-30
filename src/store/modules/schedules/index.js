@@ -2,16 +2,7 @@ import { make } from 'vuex-pathify';
 import actionsFile from '@/store/modules/schedules/actions.js';
 import mutationsFile from '@/store/modules/schedules/mutations.js';
 import getters from '@/store/modules/schedules/getters.js';
-
-const defaultSchedule = {
-  _id: '',
-  origin: '',
-  destination: '',
-  schedule: '',
-  vias: [],
-  transferDate: null,
-  seats: 0,
-};
+import scheduleModel from '@/models/scheduleModel.js';
 
 /**
  * Not all preferences are togglable, just show the ones that are.
@@ -19,6 +10,7 @@ const defaultSchedule = {
 const getDefaultState = () => {
   return {
     schedules: [],
+    selSchedule: scheduleModel(),
   };
 };
 
@@ -43,4 +35,4 @@ export default {
   getters,
 };
 
-export { defaultSchedule, getDefaultState };
+export { getDefaultState };

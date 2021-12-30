@@ -1,7 +1,7 @@
 import svcReasons from '@/feathers/services/reasons/reasons.service.js';
 
 const actions = {
-  createReason: async ({ state, rootState }, reasonObj) => {
+  createReason: async ({ rootState }, reasonObj) => {
     try {
       await svcReasons.create(reasonObj);
     } catch (error) {
@@ -28,7 +28,7 @@ const actions = {
     }
   },
   // updateReason
-  updateReason: async ({ state, rootState }, reasonObj) => {
+  updateReason: async ({ rootState }, reasonObj) => {
     try {
       rootState.app.loading = true;
       await svcReasons.update(reasonObj._id, reasonObj);
@@ -39,7 +39,7 @@ const actions = {
     }
   },
   // deleteReason
-  deleteReason: async ({ state, rootState }, id) => {
+  deleteReason: async ({ rootState }, id) => {
     try {
       rootState.app.loading = true;
       await svcReasons.remove(id);

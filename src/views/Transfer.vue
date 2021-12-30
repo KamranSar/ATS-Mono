@@ -550,6 +550,7 @@
                   :items="schedules"
                   item-text="schedule"
                   item-value="schedule"
+                  return-object
                   class="my-2 pl-1"
                   clearable
                   hide-details="true"
@@ -728,7 +729,6 @@
   // import transfer from '@/feathers/services/transfer/transfer.service.js';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import formatDate from '@/helpers/formatDate';
-  import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync, call } from 'vuex-pathify';
   import OffenderImage from '@/components/OffenderImage.vue';
 
@@ -739,7 +739,6 @@
     components: {
       OffenderImage,
     },
-
     data: () => ({
       //Imported Methods
       formatDate,
@@ -990,9 +989,6 @@
         val || this.cancelDeleteCaseFactor();
       },
     },
-    async mounted() {
-      await this.getInstitutions();
-    },
     methods: {
       ...call('transfers', [
         'createTransfer',
@@ -1080,32 +1076,6 @@
         this.showPhysical = choice == 'physical' ? true : false;
         this.showMedical = choice == 'medical' ? true : false;
         this.showComments = choice == 'comments' ? true : false;
-      },
-      async getInstitutions() {
-        try {
-          this.loading = true;
-          const query = {
-            query: {
-              $sort: {
-                institutionName: 1,
-              },
-            },
-          };
-
-          const institutions = await findAll(
-            '/api/eis/common/v1/institution',
-            query
-          );
-
-          this.listOfInstitutions = institutions.data;
-          return this.listOfInstitutions;
-        } catch (error) {
-          console.error('getInstitutions: ', error);
-          this.listOfInstitutions = [];
-          return [];
-        } finally {
-          this.loading = false;
-        }
       },
       // Case Factor Methods
       filterCaseFactors() {},
@@ -1195,10 +1165,11 @@
         // for (let i = 0; i < this.schedules.length; i++) {
         for (let schedule of this.schedules) {
           // if (this.schedules[i].schedule == this.selSchedule) {
-          if (schedule.schedule == this.selSchedule) {
+          if (schedule.schedule == this.selSchedule.schedule) {
             this.transferData.schedule = schedule.schedule; // FIXME
             this.transferData.scheduleId = schedule._id;
             this.transferData.transferDate = schedule.transferDate;
+            this.transferData.institution = schedule.origin;
             break;
           }
         }

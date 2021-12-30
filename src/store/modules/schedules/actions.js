@@ -54,8 +54,8 @@ const actions = {
   ) => {
     try {
       rootState.app.loading = true;
-      console.log(institution);
-      console.log(dateObj);
+      // console.log(institution);
+      // console.log(dateObj);
       const filter = {
         query: {
           origin: institution,
@@ -64,7 +64,7 @@ const actions = {
       if (dateObj) {
         filter.query.transferDate = new Date(dateObj).setHours(0, 0, 0, 0);
       }
-      console.log(filter);
+      // console.log(filter);
       const response = await findAll(svcSchedules, filter);
       state.schedules = response.data;
     } catch (error) {
@@ -80,7 +80,7 @@ const actions = {
   ) => {
     try {
       rootState.app.loading = true;
-      console.log(dateObj);
+      // console.log(dateObj);
       const filter = {
         query: {
           destination: destination,

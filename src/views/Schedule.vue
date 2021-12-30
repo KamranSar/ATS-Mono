@@ -380,7 +380,6 @@
 <script>
   import somsOffender from '@/feathers/services/offender/details.service.js';
   // import svcSchedule from '@/feathers/services/offender/details.service.js';
-  import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync, call } from 'vuex-pathify';
 
   export default {
@@ -393,8 +392,6 @@
       selVias: '',
       transferDate: null,
       seats: 0,
-      selectedInstitution: '',
-      listOfInstitutions: [],
       selectedId: -1,
       isShowing: false,
       dialogSchedule: false,
@@ -482,20 +479,10 @@
     }),
     async created() {
       this.initialize();
-      // await this.getInstitutions();
-      // if (
-      //   this.loggedInUser &&
-      //   this.loggedInUser.somsinfo &&
-      //   this.loggedInUser.somsinfo.organizationName
-      // ) {
-      //   this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
-      //   console.log('0');
-      //   const dt = Date.now();
-      //   console.log(dt);
-      //   await this.readSchedulesByOrigin(this.selectedInstitution, dt);
-      // }
     },
     computed: {
+      ...get('institutions', ['listOfInstitutions']),
+      ...sync('institutions', ['selectedInstitution']),
       ...sync('schedules', ['schedules']),
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
@@ -524,9 +511,6 @@
       dialogDeleteEndorsement(val) {
         val || this.closeEndorsementDelete();
       },
-    },
-    async mounted() {
-      await this.getInstitutions();
     },
     methods: {
       ...call('schedules', [
@@ -613,51 +597,6 @@
           // },
         ];
       },
-
-      /**
-       * getInstitutions function
-       * @returns - All the institutions if you are the default admin role, otherwise it grabs your logged in institution
-       */
-      async getInstitutions() {
-        try {
-          this.loading = true;
-          const queryObject = {
-            query: {
-              $sort: {
-                institutionName: 1,
-              },
-            },
-          };
-
-          // if (
-          //   this.loggedInUser &&
-          //   this.loggedInUser.appuserroles &&
-          //   this.loggedInUser.appuserroles.roles.length &&
-          //   !this.loggedInUser.appuserroles.roles.includes(defaultAdminRole.name)
-          // ) {
-          //   queryObject.query['institutionPartyId'] =
-          //     this.loggedInUser.somsinfo.organizationId;
-          // }
-
-          const institutions = await findAll(
-            '/api/eis/common/v1/institution',
-            queryObject
-          );
-
-          this.listOfInstitutions = institutions.data;
-          // this.selectedInstitution = !this.loggedInUser.somsinfo
-          //   .organizationName
-          //   ? null
-          //   : this.loggedInUser.somsinfo.organizationName;
-          return this.listOfInstitutions;
-        } catch (error) {
-          console.error('getInstitutions: ', error);
-          this.listOfInstitutions = [];
-          return [];
-        } finally {
-          this.loading = false;
-        }
-      },
       getSchedules() {
         // Read Schedules db for Selected Institution
         this.loading = true;
@@ -726,7 +665,6 @@
       // },
       async saveSchedule() {
         const self = this;
-        console.log('1');
         if (
           !self.editSchedule.schedule ||
           !self.editSchedule.destination ||
@@ -736,13 +674,9 @@
           alert('A required field is empty.');
           return;
         }
-        console.log('2');
         if (self.editSchedule._id) {
           await self.updateSchedule(self.editSchedule);
         } else {
-          console.log('3');
-          console.log('creating');
-
           if (!self.editSchedule.origin) {
             self.editSchedule.origin = self.selectedInstitution;
           }
@@ -754,7 +688,6 @@
             console.error(e);
           }
         }
-        console.log('4');
         const dt = Date.now();
         console.log(dt);
         try {
@@ -766,7 +699,6 @@
         } catch (e) {
           console.error(e);
         }
-        console.log('5');
         // this.closeSchedule();
       },
       openEndorsement(endInmate) {

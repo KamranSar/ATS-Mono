@@ -4,6 +4,7 @@
     :src="displayPhoto"
     contain
     max-height="200px"
+    v-bind="$attrs"
     @click="$emit('click')"
   >
     <template v-slot:placeholder>
