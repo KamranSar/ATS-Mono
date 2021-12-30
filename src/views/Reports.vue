@@ -1,198 +1,252 @@
 <template>
-  <div>
-    <h2>Reports</h2>
-    <v-row flex>
-      <v-col cols="12" sm="6" lg="3">
-        <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
-          <v-card-title style="line-height: 1rem">
-            <v-row>
-              <v-col>
-                <span style="white-space: nowrap">Transfer Record</span>
-                <br />
-                <span style="font-size: 12px">CDCR-135</span>
+  <v-card class="mb-12">
+    <v-card-title class="blue-grey lighten-4">
+      <v-row>
+        <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
+          <h2>Reports</h2>
+        </v-col>
+        <v-col
+          cols="4"
+          xs="12"
+          md="4"
+          class="py-1 selInstitution"
+          align-self="center"
+        >
+          <v-autocomplete
+            v-model="selectedInstitution"
+            :disabled="loading"
+            :items="listOfInstitutions"
+            color="blue-grey lighten-2"
+            label="Institution"
+            item-text="institutionName"
+            item-value="institutionName"
+            prepend-icon="mdi-bank"
+            clearable
+            hide-details="auto"
+            class="ma-1 pa-1"
+            autofocus
+            background-color="white"
+          >
+          </v-autocomplete>
+        </v-col>
+        <v-col align="right" align-self="center">
+          <!-- <v-btn class="secondary ma-2" @click="dialogSchedule = true">
+            Create Schedule
+          </v-btn> -->
+          <v-icon small color="primary" right>mdi-arrow-left</v-icon>
+          <a @click="goHome" class="text-decoration-none subtitle-2">
+            Back to Home
+          </a>
+        </v-col>
+      </v-row>
+    </v-card-title>
+    <v-progress-linear
+      :active="loading"
+      :indeterminate="loading"
+      absolute
+      color="primary"
+    ></v-progress-linear>
+    <v-card class="my-4">
+      <v-row class="mx-2">
+        <v-col cols="12" sm="6" lg="3">
+          <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
+            <v-card-title style="line-height: 1rem">
+              <v-row>
+                <v-col>
+                  <span style="white-space: nowrap">Transfer Record</span>
+                  <br />
+                  <span style="font-size: 12px">CDCR-135</span>
+                </v-col>
+              </v-row>
+            </v-card-title>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-select
+                  label="By Schedule"
+                  placeholder="Schedule"
+                  :items="schedules"
+                  item-text="schedule"
+                  item-value="schedule"
+                  v-model="sel135Schedule"
+                  class="vselectTxtColor"
+                  dense
+                  @change="onChangeSchedule"
+                ></v-select>
+              </v-col>
+              <v-col cols="1" class="mx-4">
+                <v-icon large color="primary" @click="createPDF135">
+                  mdi-file-document
+                </v-icon>
               </v-col>
             </v-row>
-          </v-card-title>
-          <v-row no-gutters>
-            <v-col cols="6" class="mx-4">
-              <v-select
-                label="By Schedule"
-                placeholder="Schedule"
-                :items="itemsSchedules"
-                v-model="sel135Schedule"
-                class="vselectTxtColor"
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="1" class="mx-4">
-              <v-icon large color="primary" @click="createPDF135">
-                mdi-file-document
-              </v-icon>
-            </v-col>
-          </v-row>
-          <v-row no-gutters>
-            <v-col cols="6" class="mx-4">
-              <v-text-field
-                label="By CDCR #"
-                v-model="cdcrNum"
-                dense
-              ></v-text-field>
-            </v-col>
-            <v-col cols="1" class="mx-4">
-              <v-icon large color="primary" @click="createPDF135">
-                mdi-file-document
-              </v-icon>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" lg="3">
-        <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
-          <v-card-title style="line-height: 1rem">
-            <v-row>
-              <v-col>
-                <span style="white-space: nowrap">Advance Transfer</span>
-                <span style="white-space: nowrap">Notice</span>
-                <br />
-                <span style="font-size: 12px">CDCR-7344</span>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-text-field
+                  label="By CDCR #"
+                  v-model="cdcrNum"
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col cols="1" class="mx-4">
+                <v-icon large color="primary" @click="createPDF135">
+                  mdi-file-document
+                </v-icon>
               </v-col>
             </v-row>
-          </v-card-title>
-          <v-row no-gutters>
-            <v-col cols="6" class="mx-4">
-              <v-menu
-                v-model="dateBeginMenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    dense
-                    label="Begin"
-                    prepend-inner-icon="mdi-calendar"
-                    v-bind="attrs"
-                    v-on="on"
-                    placeholder=" "
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
+            <v-card-title style="line-height: 1rem">
+              <v-row>
+                <v-col>
+                  <span style="white-space: nowrap">Advance Transfer</span>
+                  <span style="white-space: nowrap">Notice</span>
+                  <br />
+                  <span style="font-size: 12px">CDCR-7344</span>
+                </v-col>
+              </v-row>
+            </v-card-title>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-menu
+                  v-model="dateBeginMenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      dense
+                      label="Begin"
+                      prepend-inner-icon="mdi-calendar"
+                      v-bind="attrs"
+                      v-on="on"
+                      placeholder=" "
+                      v-model="dateBegin"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                     v-model="dateBegin"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="dateBegin"
-                  :min="minDate"
-                  :max="maxDate"
-                  @input="dateBeginMenu = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-            <v-col cols="1" class="mx-4">
-              <v-icon large color="primary" @click="createPDF7344">
-                mdi-file-document
-              </v-icon>
-            </v-col>
-          </v-row>
-          <v-row no-gutters>
-            <v-col cols="6" class="mx-4">
-              <v-menu
-                v-model="dateEndMenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    dense
-                    label="End"
-                    prepend-inner-icon="mdi-calendar"
-                    v-bind="attrs"
-                    v-on="on"
-                    placeholder=" "
+                    :min="minDate"
+                    :max="maxDate"
+                    @input="dateBeginMenu = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="1" class="mx-4">
+                <v-icon large color="primary" @click="createPDF7344">
+                  mdi-file-document
+                </v-icon>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-menu
+                  v-model="dateEndMenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      dense
+                      label="End"
+                      prepend-inner-icon="mdi-calendar"
+                      v-bind="attrs"
+                      v-on="on"
+                      placeholder=" "
+                      v-model="dateEnd"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                     v-model="dateEnd"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="dateEnd"
-                  :min="minDate"
-                  :max="maxDate"
-                  @input="dateEndMenu = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-            <v-col cols="1" class="mx-4"> </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" lg="3">
-        <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
-          <v-card-title style="line-height: 1rem">
-            <v-row>
-              <v-col>
-                <span style="white-space: nowrap">Transfer Check</span>
-                <span style="white-space: nowrap">Sheet</span>
-                <br />
-                <span style="font-size: 12px">CDCR-134</span>
+                    :min="minDate"
+                    :max="maxDate"
+                    @input="dateEndMenu = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="1" class="mx-4"> </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
+            <v-card-title style="line-height: 1rem">
+              <v-row>
+                <v-col>
+                  <span style="white-space: nowrap">Transfer Check Sheet</span>
+                  <!-- <span style="white-space: nowrap">Sheet</span> -->
+                  <br />
+                  <span style="font-size: 12px">CDCR-134</span>
+                </v-col>
+              </v-row>
+            </v-card-title>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-select
+                  label="By Schedule"
+                  placeholder="Schedule"
+                  :items="schedules"
+                  item-text="schedule"
+                  item-value="schedule"
+                  v-model="sel134Schedule"
+                  class="vselectTxtColor"
+                  dense
+                ></v-select>
+              </v-col>
+              <v-col cols="1" class="mx-4">
+                <v-icon large color="primary" @click="createPDF134">
+                  mdi-file-document
+                </v-icon>
               </v-col>
             </v-row>
-          </v-card-title>
-          <v-row no-gutters>
-            <v-col cols="6" class="mx-4">
-              <v-select
-                label="By Schedule"
-                placeholder="Schedule"
-                :items="itemsSchedules"
-                v-model="sel134Schedule"
-                class="vselectTxtColor"
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="1" class="mx-4">
-              <v-icon large color="primary" @click="createPDF134">
-                mdi-file-document
-              </v-icon>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" lg="3">
-        <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
-          <v-card-title style="line-height: 1rem">
-            <v-row>
-              <v-col>
-                <span style="white-space: nowrap">Bus Seat Report</span>
-                <br />
-                <!-- Line below is colored the same as background to hide text & to make things line up -->
-                <span style="font-size: 12px; color: #cfd8dc">.</span>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
+            <v-card-title style="line-height: 1rem">
+              <v-row>
+                <v-col>
+                  <span style="white-space: nowrap">Bus Seat Report</span>
+                  <br />
+                  <!-- Line below is colored the same as background to hide text & to make things line up -->
+                  <span style="font-size: 12px; color: #cfd8dc">.</span>
+                </v-col>
+              </v-row>
+            </v-card-title>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-select
+                  label="Endorsed To"
+                  placeholder="Endorsed To"
+                  :items="itemsEndorsedTo"
+                  v-model="selEndorsedTo"
+                  class="vselectTxtColor"
+                  dense
+                ></v-select>
+              </v-col>
+              <v-col cols="1" class="mx-4">
+                <v-icon large color="primary" @click="createPDFBusSeat">
+                  mdi-file-document
+                </v-icon>
               </v-col>
             </v-row>
-          </v-card-title>
-          <v-row no-gutters>
-            <v-col cols="6" class="mx-4">
-              <v-select
-                label="Endorsed To"
-                placeholder="Endorsed To"
-                :items="itemsEndorsedTo"
-                v-model="selEndorsedTo"
-                class="vselectTxtColor"
-                dense
-              ></v-select>
-            </v-col>
-            <v-col cols="1" class="mx-4">
-              <v-icon large color="primary" @click="createPDFBusSeat">
-                mdi-file-document
-              </v-icon>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
-  </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-card>
 </template>
 
 <script>
+  import findAll from '@/feathers/helpers/findAll.js';
+  import { get, sync, call } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -200,7 +254,11 @@
   export default {
     name: 'Reports',
     data: (vm) => ({
+      loading: false,
       records: null,
+      selectedInstitution: '',
+      listOfInstitutions: [],
+      schedule: [],
       fileName: 'test',
       stateOf: 'STATE OF CALIFORNIA',
       agency: 'DEPARTMENT OF CORRECTIONS AND REHABILITATION',
@@ -230,7 +288,90 @@
       minDate: vm.getMinDate(),
       maxDate: new Date().toISOString().substr(0, 10),
     }),
+    computed: {
+      ...sync('schedules', ['schedules']),
+      ...get('users', ['loggedInUser']),
+    },
+    async mounted() {
+      await this.getInstitutions();
+      if (
+        this.loggedInUser &&
+        this.loggedInUser.somsinfo &&
+        this.loggedInUser.somsinfo.organizationName
+      ) {
+        this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
+        console.log('selectedInstitution: ', this.selectedInstitution);
+      }
+      await this.getSchedulesByInstitution();
+    },
     methods: {
+      ...call('schedules', [
+        'readSchedules',
+        'readSchedulesByDate',
+        'readSchedulesByOrigin',
+      ]),
+
+      goHome() {
+        this.$router.push({
+          name: 'Home',
+        });
+      },
+      async getInstitutions() {
+        try {
+          this.loading = true;
+          const queryObject = {
+            query: {
+              $sort: {
+                institutionName: 1,
+              },
+            },
+          };
+
+          const institutions = await findAll(
+            '/api/eis/common/v1/institution',
+            queryObject
+          );
+
+          this.listOfInstitutions = institutions.data;
+
+          return this.listOfInstitutions;
+        } catch (error) {
+          console.error('getInstitutions: ', error);
+          this.listOfInstitutions = [];
+          return [];
+        } finally {
+          this.loading = false;
+        }
+      },
+      async getSchedulesByInstitution() {
+        this.loading = true;
+        console.log(
+          'getSchedulesByInstitution(): selectedInstitution => ',
+          this.selectedInstitution
+        );
+        try {
+          const response = await this.readSchedulesByOrigin({
+            institution: this.selectedInstitution,
+          });
+          if (response) {
+            this.schedules = response.data;
+          }
+        } catch (e) {
+          console.log('getSchedulesByInstitution(): ERROR => ', e);
+          this.schedules = [];
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      onChangeSchedule() {
+        for (let s of this.schedules) {
+          if (s.schedule === this.sel135Schedule) {
+            this.schedule = s;
+            break;
+          }
+        }
+      },
       // getMinDate()
       // sets the min date for DatePicker
       // to 540 days (1.5 years) prior to today
@@ -242,18 +383,9 @@
         return d.toISOString().substr(0, 10);
       },
 
-      // show135Schedules() {
-      //   if (this.chbx135Schedule)
-      //   {
-      //     this.sel135Schedule.style.display = 'block';
-      //   } else {
-      //     this.sel135Schedule.style.display = 'none';
-      //   }
-      // },
-
       // define your function for generating rotated text
       writeRotatedText(text) {
-        var ctx,
+        let ctx,
           canvas = document.createElement('canvas');
         // I am using predefined dimensions so either make this part of the arguments or change at will
         canvas.width = 36;
@@ -297,41 +429,22 @@
       createPDF135() {
         const fileName = this.fileName + '.pdf';
 
-        var doc =
+        let doc =
           this.stateOf +
           '\n' +
           this.report135 +
           '\nDISTRIBUTION PER INSTITUTION POLICY';
-        var title = 'TRANSFER RECORD';
-        var agency = this.agency;
+        let title = 'TRANSFER RECORD';
+        let agency = this.agency;
 
-        var dtLabel =
+        let dtLabel =
           'The following identified persons will be transferred this date';
-        var txtDate = '04/27/2021';
-        var nXfer = '11';
-
-        var schedule = 'SCH K';
-        var from = 'DVI';
-        var to = 'CMC-W';
-        var via1 = 'NKSPRC';
-        var via2 = '';
-
-        // let txtFooter = (currentPage, pageCount) => {
-        //   return currentPage.toString() + " of " + pageCount;
-        // };
-        // let aFooter = (currentPage, pageCount) => {
-        // let pageNums = currentPage.toString() + " of " + pageCount;
-        // return {
-        //   table: {
-        //     body: [
-        //       {
-        //         pageNums,
-        //       },
-        //     ],
-        //   }, // End of table
-        //   colSpan: 3,
-        // };
-        // };
+        let xfrNum = this.schedules.length;
+        let scheduleName = this.schedules[0].schedule;
+        let from = this.schedules[0].destination;
+        let to = this.schedules[0].origin;
+        let vias = this.schedules[0].vias;
+        let xfrDate = this.schedules[0].transferDate;
 
         let dd = {
           pageSize: 'LETTER',
@@ -345,111 +458,6 @@
             };
             return footer;
           },
-
-          // footer: function(currentPage, pageCount) {
-          //   return currentPage.toString() + " of " + pageCount;
-          // },
-
-          // footer: {
-          // footer: function(currentPage, pageCount) {
-          //   let pageNums = currentPage.toString() + " of " + pageCount;
-          //   return {
-          //     table: {
-          //       widths: ["40%", "30%", "30%"],
-          //       body: [
-          //         [
-          //           {
-          //             text: "PREPARED BY:  ",
-          //             style: "hdrSchedule",
-          //             border: [true, true, false, true],
-          //           },
-          //           {
-          //             text: "TITLE:  ",
-          //             style: "hdrSchedule",
-          //             border: [false, true, false, true],
-          //           },
-          //           {
-          //             text: "SENDING INSTITUTION:  ",
-          //             style: "hdrSchedule",
-          //             border: [false, true, true, true],
-          //           },
-          //         ],
-          //         [
-          //           {
-          //             text:
-          //               "Receipt of the above-name persons and their records is acknowledged",
-          //             fontSize: 6,
-          //             alignment: "center",
-          //             colSpan: 3,
-          //           },
-          //           {},
-          //           {},
-          //         ],
-          //         [
-          //           {
-          //             text: "SIGNATURE OF TRANSPORTING OFFICER",
-          //             style: "hdrSchedule",
-          //             border: [true, true, false, true],
-          //             rowSpan: 2,
-          //           },
-          //           {
-          //             text: "TITLE",
-          //             style: "hdrSchedule",
-          //             border: [true, true, false, true],
-          //             rowSpan: 2,
-          //           },
-          //           {
-          //             text: "INSTITUTION  ",
-          //             style: "hdrSchedule",
-          //             border: [true, true, true, true],
-          //             rowSpan: 2,
-          //           },
-          //         ],
-          //         [
-          //           { text: "1", border: [true, false, false, true] },
-          //           { text: "1", border: [false, false, false, true] },
-          //           { text: "1", border: [false, false, true, true] },
-          //         ],
-          //         [
-          //           {
-          //             text: "SIGNATURE OF RECEIVING OFFICER",
-          //             style: "hdrSchedule",
-          //             border: [true, true, false, true],
-          //             rowSpan: 2,
-          //           },
-          //           {
-          //             text: "TITLE",
-          //             style: "hdrSchedule",
-          //             border: [true, true, false, true],
-          //             rowSpan: 2,
-          //           },
-          //           {
-          //             text: "INSTITUTION  ",
-          //             style: "hdrSchedule",
-          //             border: [true, true, true, true],
-          //             rowSpan: 2,
-          //           },
-          //         ],
-          //         [
-          //           { text: "2", border: [true, false, false, true] },
-          //           { text: "2", border: [false, false, false, true] },
-          //           { text: "2", border: [false, false, true, true] },
-          //         ],
-          //         [
-          //           {
-          //             text: pageNums,
-          //             alignment: "right",
-          //             style: "hdrSchedule",
-          //             colSpan: 3,
-          //           },
-          //           {},
-          //           {},
-          //         ],
-          //       ],
-          //       borders: [true, true, true, true],
-          //     }, // End of table
-          //   };
-          // },
 
           content: [
             {
@@ -488,12 +496,12 @@
                       border: [true, true, false, true],
                     },
                     {
-                      text: 'DATE:  ' + txtDate,
+                      text: 'DATE:  ' + xfrDate,
                       style: 'hdrSchedule',
                       border: [false, true, false, true],
                     },
                     {
-                      text: 'NUMBER TRANSFERRING:  ' + nXfer,
+                      text: 'NUMBER TRANSFERRING:  ' + xfrNum,
                       style: 'hdrSchedule',
                       border: [false, true, true, true],
                     },
@@ -506,37 +514,24 @@
                         body: [
                           [
                             {
-                              text: 'SCHEDULE:  ' + schedule,
+                              text: 'SCHEDULE:  ' + scheduleName,
                               style: 'hdrSchedule',
                               border: [false, false, false, false],
-                              rowSpan: 2,
                             },
                             {
                               text: 'FROM:  ' + from,
                               style: 'hdrSchedule',
                               border: [false, false, false, false],
-                              rowSpan: 2,
                             },
                             {
                               text: 'TO:  ' + to,
                               style: 'hdrSchedule',
                               border: [false, false, false, false],
-                              rowSpan: 2,
                             },
                             {
-                              text: 'VIA:  ' + via1,
+                              text: 'VIAS:  ' + vias,
                               style: 'hdrSchedule',
-                              border: [true, false, false, false],
-                            },
-                          ],
-                          [
-                            {},
-                            {},
-                            {},
-                            {
-                              text: 'VIA: ' + via2,
-                              style: 'hdrSchedule',
-                              border: [true, true, false, false],
+                              border: [false, false, false, false],
                             },
                           ],
                         ],
@@ -737,18 +732,18 @@
       createPDF134() {
         const fileName = this.fileName + '.pdf';
 
-        var title = 'RECORDS TRANSFER CHECK SHEET';
-        var txtOriginal = 'Original-Receiving Facility/Region Records';
-        var txtCopy = 'Copy-Sending Facility/Region Records';
+        let title = 'RECORDS TRANSFER CHECK SHEET';
+        let txtOriginal = 'Original-Receiving Facility/Region Records';
+        let txtCopy = 'Copy-Sending Facility/Region Records';
 
-        var txtDate = '04/27/2021';
-        var nXfer = '1';
+        let txtDate = '04/27/2021';
+        let nXfer = '1';
 
-        // var schedule = 'SCH K';
-        var from = 'DVI';
-        var to = 'PVSP';
-        var via1 = 'NKSPRC';
-        var via2 = '';
+        // let schedule = 'SCH K';
+        let from = 'DVI';
+        let to = 'PVSP';
+        let via1 = 'NKSPRC';
+        let via2 = '';
 
         let dd = {
           pageSize: 'LETTER',
@@ -791,7 +786,8 @@
             // =============================
             {
               layout: {
-                fillColor: function (rowIndex, node, columnIndex) {
+                // fillColor: function (rowIndex, node, columnIndex) {
+                fillColor: function (rowIndex) {
                   if (rowIndex < 4) {
                     return null;
                   }
@@ -1821,7 +1817,8 @@
                   width: '*',
                   //layout: 'lightHorizontalLines', // optional
                   layout: {
-                    fillColor: function (rowIndex, node, columnIndex) {
+                    // fillColor: function (rowIndex, node, columnIndex) {
+                    fillColor: function (rowIndex) {
                       return rowIndex % 2 === 0 ? '#F0F0F0' : null;
                     },
                   },
@@ -2183,7 +2180,8 @@
                   width: '*',
                   //layout: 'lightHorizontalLines', // optional
                   layout: {
-                    fillColor: function (rowIndex, node, columnIndex) {
+                    // fillColor: function (rowIndex, node, columnIndex) {
+                    fillColor: function (rowIndex) {
                       return rowIndex % 2 === 0 ? '#F0F0F0' : null;
                     },
                   },
@@ -2334,4 +2332,9 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .selInstitution {
+    background-color: white;
+    border-radius: 5px;
+  }
+</style>
