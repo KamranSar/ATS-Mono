@@ -159,6 +159,22 @@ const actions = {
       rootState.app.loading = false;
     }
   },
+  // readTransfers By Date
+  readTransfersBySchedule: async ({ state, rootState }, schedule) => {
+    try {
+      rootState.app.loading = true;
+      const filter = {
+        query: {
+          schedule: schedule,
+        },
+      };
+      state.transfers = await svcTransfers.find(filter);
+    } catch (error) {
+      return error;
+    } finally {
+      rootState.app.loading = false;
+    }
+  },
   // updateTransfers
   // eslint-disable-next-line no-unused-vars
   updateTransfer: async ({ state, rootState }, transferObj) => {
