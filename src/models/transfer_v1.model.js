@@ -79,9 +79,11 @@ module.exports = function (app) {
 
       // ATS Fields
       cdcrNumber: { type: String, required: true, index: { unique: false } },
+      firstName: { type: String, required: false, default: '' },
+      lastName: { type: String, required: false, default: '' },
       originalEndorsementDate: { type: Date, required: false, default: null },
       currentEndorsementDate: { type: Date, required: false, default: null }, // Needs to be labeled as Current Endorsement Date
-      transferDate: { type: Date, required: false, default: null }, // FIXME remove
+      transferDate: { type: Date, required: false, default: null },
       isTransferred: { type: Boolean, required: false, default: false },
       // scheduleId: { type: mongoose.ObjectId, default: null }, // Schedule._id
       schedule: { type: String, required: false, default: '' }, // FIXME remove
