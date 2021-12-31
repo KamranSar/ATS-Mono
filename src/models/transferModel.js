@@ -19,6 +19,7 @@ function transferModel({
   inHouseRemarks = '',
   isTransferred = false,
   isScheduled = false,
+  scheduleId = '',
 } = {}) {
   return {
     offenderId,
@@ -36,6 +37,7 @@ function transferModel({
     inHouseRemarks,
     isTransferred,
     isScheduled,
+    scheduleId,
   };
 }
 
