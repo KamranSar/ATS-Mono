@@ -62,10 +62,14 @@ const actions = {
   async saveForm({ state, rootState, dispatch }) {
     state.transferData.transferReasonCode = state.selTransferReason.reasonCode;
     state.transferData.transferReasonDesc = state.selTransferReason.reasonDesc;
-
-    if (rootState.schedules && rootState.schedules.selSchedule) {
+    debugger;
+    if (
+      rootState.schedules &&
+      rootState.schedules.selSchedule &&
+      rootState.schedules.selSchedule.length
+    ) {
       const schedules = rootState.schedules.schedules;
-      const selSchedule = rootState.schedules.selSchedule;
+      const selSchedule = rootState.schedules.selSchedule[0];
       for (let schedule of schedules) {
         if (schedule.schedule == selSchedule.schedule) {
           state.transferData.schedule = schedule.schedule; // FIXME

@@ -49,9 +49,9 @@
       color="primary"
     ></v-progress-linear>
     <v-card>
-      <!-- Data table will push to selectedSchedule -->
+      <!-- Data table will push to selSchedule -->
       <v-data-table
-        v-model="selectedSchedule"
+        v-model="selSchedule"
         :headers="headersSchedule"
         item-key="_id"
         :items="schedules"
@@ -236,7 +236,7 @@
       </v-data-table>
     </v-card>
     <!-- /* Endorsement Table Begin    */ -->
-    <v-card v-show="selectedSchedule.length" class="mt-2">
+    <v-card v-show="selSchedule.length" class="mt-2">
       <v-card-title class="blue-grey lighten-4">
         <v-row>
           <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
@@ -407,7 +407,6 @@
       selVias: '',
       transferDate: null,
       seats: 0,
-      selectedSchedule: [],
       dialogSchedule: false,
       dialogDeleteSchedule: false,
       dialogEndorsement: false,
@@ -498,7 +497,7 @@
       ...get('institutions', ['listOfInstitutions']),
       ...sync('institutions', ['selectedInstitution']),
       ...sync('transfers', ['transferData']),
-      ...sync('schedules', ['schedules']),
+      ...sync('schedules', ['schedules', 'selSchedule']),
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
       formEndorsementTitle() {
@@ -508,7 +507,7 @@
       },
     },
     watch: {
-      selectedSchedule: {
+      selSchedule: {
         handler: 'getEndorsements',
         deep: true,
       },
@@ -573,7 +572,7 @@
 
       async initialize() {
         this.endorsements = [];
-        this.selectedSchedule = [];
+        this.selSchedule = [];
         if (this.selectedInstitution) {
           await this.readSchedules({
             query: { origin: this.selectedInstitution.institutionName },
