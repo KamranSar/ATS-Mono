@@ -81,6 +81,11 @@ module.exports = function (app) {
       cdcrNumber: { type: String, required: true, index: { unique: false } },
       firstName: { type: String, required: false, default: '' },
       lastName: { type: String, required: false, default: '' },
+      ethnicity: { type: String, required: false, default: '' },
+      housing: { type: String, required: false, default: '' },
+      securityLevel: { type: String, required: false, default: '' },
+      tbCode: { type: String, required: false, default: '' },
+      caseFactor: { type: String, required: false, default: '' },
       originalEndorsementDate: { type: Date, required: false, default: null },
       currentEndorsementDate: { type: Date, required: false, default: null }, // Needs to be labeled as Current Endorsement Date
       transferDate: { type: Date, required: false, default: null },
