@@ -199,10 +199,6 @@
     name: 'TransferPanel',
     data: () => ({
       schedule: '', // FIXME remove
-      SOMS_DATA_FIELDS,
-      COMMENT_FIELDS,
-      CASE_FACTOR_FIELDS,
-      ENDORSEMENT_FIELDS,
     }),
     computed: {
       ...sync('transfers', ['somsOffender', 'selTransferReason']),
@@ -223,6 +219,18 @@
         } else {
           return `data:image/jpg;base64,${userplaceholder}`;
         }
+      },
+      SOMS_DATA_FIELDS() {
+        return SOMS_DATA_FIELDS(this.somsOffender);
+      },
+      COMMENT_FIELDS() {
+        return COMMENT_FIELDS(this.somsOffender);
+      },
+      CASE_FACTOR_FIELDS() {
+        return CASE_FACTOR_FIELDS(this.somsOffender);
+      },
+      ENDORSEMENT_FIELDS() {
+        return ENDORSEMENT_FIELDS(this.somsOffender);
       },
     },
     methods: {},

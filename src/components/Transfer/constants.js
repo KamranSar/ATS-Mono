@@ -1,12 +1,4 @@
-import store from '@/store';
-
-const somsOffender = store.state.transfers.somsOffender;
-const caseFactor =
-  somsOffender && somsOffender.CaseFactors && somsOffender.CaseFactors.length
-    ? somsOffender.CaseFactors[0]
-    : null;
-
-const SOMS_DATA_FIELDS = [
+const SOMS_DATA_FIELDS = (somsOffender) => [
   {
     label: 'CDCR Number:',
     data:
@@ -71,7 +63,7 @@ const SOMS_DATA_FIELDS = [
   },
 ];
 
-const COMMENT_FIELDS = [
+const COMMENT_FIELDS = (somsOffender) => [
   {
     divider: true,
   },
@@ -91,64 +83,71 @@ const COMMENT_FIELDS = [
   },
 ];
 
-const CASE_FACTOR_FIELDS = [
-  {
-    label: 'SNY:',
-    value: caseFactor && caseFactor.sny_value ? caseFactor.sny_value : '',
-    data: caseFactor && caseFactor.sny_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'CCMS EOP:',
-    value:
-      caseFactor && caseFactor.cccms_eop_value
-        ? caseFactor.cccms_eop_value
-        : '',
-    data: caseFactor && caseFactor.cccms_eop_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'Cocci1:',
-    value: caseFactor && caseFactor.cocci1_value ? caseFactor.cocci1_value : '',
-    data: caseFactor && caseFactor.cocci1_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'Cocci2:',
-    value: caseFactor && caseFactor.cocci2_value ? caseFactor.cocci2_value : '',
-    data: caseFactor && caseFactor.cocci2_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'DPP:',
-    value: caseFactor && caseFactor.dpp_value ? caseFactor.dpp_value : '',
-    data: caseFactor && caseFactor.dpp_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'DDP:',
-    value: caseFactor && caseFactor.ddp_value ? caseFactor.ddp_value : '',
-    data: caseFactor && caseFactor.ddp_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'ICE:',
-    value: caseFactor && caseFactor.ice_value ? caseFactor.ice_value : '',
-    data: caseFactor && caseFactor.ice_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'Retain ASU:',
-    value:
-      caseFactor && caseFactor.retainASU_value
-        ? caseFactor.retainASU_value
-        : '',
-    data: caseFactor && caseFactor.retainASU_flag ? 'Y' : 'N',
-  },
-  {
-    label: 'Transfer MERD:',
-    value:
-      caseFactor && caseFactor.transferMERD_value
-        ? caseFactor.transferMERD_value
-        : '',
-    data: caseFactor && caseFactor.transferMERD_flag ? 'Y' : 'N',
-  },
-];
+const CASE_FACTOR_FIELDS = (somsOffender) => {
+  var caseFactor =
+    somsOffender && somsOffender.CaseFactors && somsOffender.CaseFactors.length
+      ? somsOffender.CaseFactors[0]
+      : null;
+  return [
+    {
+      label: 'SNY:',
+      data: caseFactor && caseFactor.sny_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'CCMS EOP:',
+      value:
+        caseFactor && caseFactor.cccms_eop_value
+          ? caseFactor.cccms_eop_value
+          : '',
+      data: caseFactor && caseFactor.cccms_eop_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'Cocci1:',
+      value:
+        caseFactor && caseFactor.cocci1_value ? caseFactor.cocci1_value : '',
+      data: caseFactor && caseFactor.cocci1_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'Cocci2:',
+      value:
+        caseFactor && caseFactor.cocci2_value ? caseFactor.cocci2_value : '',
+      data: caseFactor && caseFactor.cocci2_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'DPP:',
+      value: caseFactor && caseFactor.dpp_value ? caseFactor.dpp_value : '',
+      data: caseFactor && caseFactor.dpp_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'DDP:',
+      value: caseFactor && caseFactor.ddp_value ? caseFactor.ddp_value : '',
+      data: caseFactor && caseFactor.ddp_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'ICE:',
+      value: caseFactor && caseFactor.ice_value ? caseFactor.ice_value : '',
+      data: caseFactor && caseFactor.ice_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'Retain ASU:',
+      value:
+        caseFactor && caseFactor.retainASU_value
+          ? caseFactor.retainASU_value
+          : '',
+      data: caseFactor && caseFactor.retainASU_flag ? 'Y' : 'N',
+    },
+    {
+      label: 'Transfer MERD:',
+      value:
+        caseFactor && caseFactor.transferMERD_value
+          ? caseFactor.transferMERD_value
+          : '',
+      data: caseFactor && caseFactor.transferMERD_flag ? 'Y' : 'N',
+    },
+  ];
+};
 
-const ENDORSEMENT_FIELDS = [
+const ENDORSEMENT_FIELDS = (somsOffender) => [
   { divider: true },
   {
     label: 'Endorsed To: ',
