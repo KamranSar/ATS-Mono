@@ -48,18 +48,48 @@
     data: () => ({
       somsCDCRNumber: '',
     }),
+    // beforeDestroy() {
+    //   this.selSchedule = [];
+    //   this.selTransferReason = null;
+    // },
     async created() {
       if (this.$route && this.$route.params && this.$route.params.cdcrNumber) {
         this.somsCDCRNumber = this.$route.params.cdcrNumber;
         await this.readOffenderDetails(this.somsCDCRNumber);
+
+        await this.readSchedules({
+          query: {
+            origin:
+              this.somsOffender && this.somsOffender.institutionName
+                ? this.somsOffender.institutionName
+                : '',
+          },
+        });
+
+        const queryObj = {
+          query: {
+            cdcrNumber: this.somsCDCRNumber,
+            schedule:
+              this.selSchedule && this.selSchedule.length
+                ? this.selSchedule[0].schedule
+                : '',
+          },
+        };
+        this.transferData = await this.readTransfers(queryObj);
       }
     },
     computed: {
       ...get('app', ['loading']),
-      ...get('transfers', ['somsOffender']),
+      ...get('transfers', [
+        'somsOffender',
+        'transferData',
+        'selTransferReason',
+      ]),
+      ...get('schedules', ['selSchedule']),
     },
     methods: {
-      ...call('transfers', ['readOffenderDetails']),
+      ...call('transfers', ['readOffenderDetails', 'readTransfers']),
+      ...call('schedules', ['readSchedules']),
     },
   };
 </script>

@@ -144,7 +144,7 @@
       <span>
         <v-select
           label="Schedule"
-          v-model="selSchedule"
+          v-model="selSchedule[0]"
           :items="schedules"
           item-text="schedule"
           item-value="schedule"

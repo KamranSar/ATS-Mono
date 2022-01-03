@@ -74,7 +74,7 @@
                 ></v-select>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createPDF135">
+                <v-icon large color="primary" @click="create135('schedule')">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -245,7 +245,7 @@
 </template>
 
 <script>
-  import findAll from '@/feathers/helpers/findAll.js';
+  // import findAll from '@/feathers/helpers/findAll.js';
   import { get, sync, call } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -256,8 +256,8 @@
     data: (vm) => ({
       loading: false,
       records: null,
-      selectedInstitution: '',
-      listOfInstitutions: [],
+      // selectedInstitution: '',
+      // listOfInstitutions: [],
       schedule: [],
       fileName: 'test',
       stateOf: 'STATE OF CALIFORNIA',
@@ -289,6 +289,7 @@
       maxDate: new Date().toISOString().substr(0, 10),
     }),
     computed: {
+      ...sync('transfers', ['transfers']),
       ...sync('schedules', ['schedules']),
       ...sync('institutions', ['selectedInstitution']),
       ...get('institutions', ['listOfInstitutions']),
@@ -415,22 +416,39 @@
       // get135()
       //
       create135(param) {
-        // let filter = {
-        //   query: {
-        //     $sort: {
-        //       dateReceived: 1,
-        //     },
-        //   },
-        // };
+        let filter = {
+          query: {
+            $sort: {
+              dateReceived: 1,
+            },
+          },
+        };
 
-        // if (param == 'schedule') {
-        //   filter.query.schedule = this.sel135Schedule;
-        // } else if (param == 'cdcr') {
-        //   filter.query.cdcrNumber = this.cdcrNum;
-        // } else {
-        //   alert('Invalid option for CDCR-135 Transfer Record.');
-        //   return;
-        // }
+        if (param == 'schedule') {
+          filter.query.schedule = this.sel135Schedule;
+          // if (!this.schedule) {
+          //   alert('Selected schedule = ', this.schedule);
+          //   return;
+          // }
+          // this.readTransfersBySchedule(filter);
+        } else if (param == 'cdcr') {
+          filter.query.cdcrNumber = this.cdcrNum;
+          // this.readTransfersBySchedule(filter);
+        } else {
+          alert('Invalid option for CDCR-135 Transfer Record.');
+          return;
+        }
+
+        try {
+          this.transfers = this.readTransfers(filter);
+          console.log('create135(): transfers.data => ', this.transfers);
+          if (!this.transfers) {
+            alert('No Transfers found for schedule: ', this.schedule.schedule);
+            return;
+          }
+        } catch (ex) {
+          console.error('create135() exception: ', ex);
+        }
 
         let data = null;
         let row = null;
@@ -439,8 +457,6 @@
           style: 'tblCenter',
           border: [false, false, false, false],
         };
-
-        this.readTransfersBySchedule(this.sel135Schedule);
         let num = 1;
         for (let xfr of this.transfers) {
           // Column 1 - Row Number
@@ -477,6 +493,7 @@
           data.push(row);
         }
 
+        console.log('create135(): data => ', data);
         if (data) {
           this.createPDF135(data);
         } else {
@@ -636,7 +653,7 @@
                             },
                             { text: 'Comments', style: 'tableHeader' },
                           ],
-                          data,
+                          ...data,
                           // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 1
                           // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 2
                           // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 3
@@ -2389,6 +2406,19 @@
         pdfMake.createPdf(dd).download(fileName);
 
         // alert("createPDFBusSeat() Done!");
+      },
+      async readSchedulesByInstitution() {
+        await this.readSchedules({
+          query: {
+            origin: this.selectedInstitution,
+          },
+        });
+      },
+    },
+    watch: {
+      selectedInstitution: {
+        deep: true,
+        handler: 'readSchedulesByInstitution',
       },
     },
   };

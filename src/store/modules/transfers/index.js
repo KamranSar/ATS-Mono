@@ -16,6 +16,7 @@ const getDefaultState = () => {
       reasonCode: '',
       reasonDesc: '',
     },
+    transfers: [],
     showSOMSData: true,
     showHousing: false,
     showPhysical: false,

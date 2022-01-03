@@ -621,6 +621,7 @@
       async saveSchedule() {
         const self = this;
         if (
+          !self.selectedInstitution ||
           !self.editSchedule.schedule ||
           !self.editSchedule.destination ||
           !self.editSchedule.transferDate ||
@@ -633,7 +634,7 @@
           await self.updateSchedule(self.editSchedule);
         } else {
           if (!self.editSchedule.origin) {
-            self.editSchedule.origin = self.selectedInstitution;
+            self.editSchedule.origin = self.selectedInstitution.institutionName;
           }
           console.log('saveSchedule(): origin: ', self.editSchedule.origin);
 
@@ -647,8 +648,10 @@
         console.log(dt);
         try {
           await self.readSchedulesByOrigin({
-            institution: self.selectedInstitution,
-            dateObj: dt,
+            institution: self.selectedInstitution.institutionName,
+            // dateObj: {
+            //   $gte: dt,
+            // },
           });
           self.editSchedule = Object.assign({}, self.defaultSchedule);
         } catch (e) {

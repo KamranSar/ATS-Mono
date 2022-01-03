@@ -222,7 +222,7 @@
       ],
     }),
     async mounted() {
-      await this.readTransfers();
+      this.transfers = await this.readTransfers();
       // TODO: Get departures and arrivals by institition
       // const response = await departuresArrivalsSvc.find({
       //   query: {
