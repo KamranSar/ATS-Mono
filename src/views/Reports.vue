@@ -88,7 +88,7 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createPDF135">
+                <v-icon large color="primary" @click="create135('cdcrNumber')">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -414,7 +414,7 @@
 
       // get135()
       //
-      get135(param) {
+      create135(param) {
         // let filter = {
         //   query: {
         //     $sort: {
@@ -478,7 +478,7 @@
         }
 
         if (data) {
-          createPDF135(data);
+          this.createPDF135(data);
         } else {
           // error message
           alert('Could not create CDCR 135 PDF Document!');
@@ -636,7 +636,7 @@
                             },
                             { text: 'Comments', style: 'tableHeader' },
                           ],
-                          ...data,
+                          data,
                           // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 1
                           // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 2
                           // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 3

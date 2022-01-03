@@ -1043,8 +1043,10 @@
             this.transferData.transferDate = this.schedule.transferDate;
             this.transferData.schedule = this.schedule.schedule;
             this.transferData.scheduleId = this.schedule._id;
-            this.transferData.transferReasonCode = this.selTransferReason.code;
-            this.transferData.transferReasonDesc = this.selTransferReason.desc;
+            this.transferData.transferReasonCode =
+              this.selTransferReason.reasonCode;
+            this.transferData.transferReasonDesc =
+              this.selTransferReason.reasonDesc;
             this.transferData.cdcr135Comments = this.somsOffender.comments; // TODO Need to read from ATS db also
             this.transferData.inHouseRemarks = this.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
             setTimeout(() => {

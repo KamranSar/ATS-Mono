@@ -285,6 +285,7 @@
               <v-select
                 label="Specific Transfer Reason"
                 v-model="selTransferReason"
+                return-object
                 :items="reasons"
                 item-value="reasonCode"
                 item-text="reasonDesc"
@@ -306,17 +307,17 @@
             <v-col cols="2" sm="3" lg="2" align-self="baseline">
               <v-text-field
                 label="Endorsement Date"
-                v-model="editEndorsement.currentEndorsementDate"
+                v-model="editEndorsement.endorsementDate"
                 readonly
               ></v-text-field>
             </v-col>
-            <v-col cols="1" sm="3" lg="2" align-self="baseline">
+            <!-- <v-col cols="1" sm="3" lg="2" align-self="baseline">
               <v-text-field
                 label="Endorsement Details"
                 v-model="editEndorsement.endorsementDetails"
                 readonly
               ></v-text-field>
-            </v-col>
+            </v-col> -->
             <v-col cols="1" sm="2" lg="1" align-self="center">
               <v-btn class="secondary ma-2 btns" @click="saveEndorsement()">
                 SAVE
@@ -437,9 +438,9 @@
         { text: 'Last Name', value: 'lastName' },
         { text: 'First Name', value: 'firstName' },
         { text: 'Housing', value: 'housing' },
-        { text: 'Transfer Reason', value: 'transferReasonDesc' },
+        { text: 'Transfer Reason', value: 'transferReasonCode' },
         { text: 'Endorsement Date', value: 'currentEndorsementDate' },
-        { text: 'Endorsement Details', value: 'endorsementDetails' },
+        // { text: 'Endorsement Details', value: 'endorsementDetails' },
         { text: 'Print', value: 'print' },
         { text: 'Edit/Delete', value: 'actions', sortable: false },
       ],
@@ -466,8 +467,8 @@
         seats: 0,
       },
       selTransferReason: {
-        code: '',
-        desc: '',
+        reasonCode: '',
+        reasonDesc: '',
       },
       endorsements: [],
       editEndorsementIndex: -1,
@@ -475,19 +476,33 @@
         cdcrNumber: '',
         lastName: '',
         firstName: '',
+        ethnicity: '',
         housing: '',
-        transferReasonCode: '',
+        securityLevel: '',
+        tbCode: '',
+        caseFactor: '',
+        transferReason: {
+          reasonCode: '',
+          reasonDesc: '',
+        },
         endorsementDate: '',
-        endorsementDetails: '',
+        // endorsementDetails: '',
       },
       defaultEndorsement: {
         cdcrNumber: '',
         lastName: '',
         firstName: '',
+        ethnicity: '',
         housing: '',
-        transferReason: '',
+        securityLevel: '',
+        tbCode: '',
+        caseFactor: '',
+        transferReason: {
+          reasonCode: '',
+          reasonDesc: '',
+        },
         endorsementDate: '',
-        endorsementDetails: '',
+        // endorsementDetails: '',
       },
     }),
     async created() {
@@ -511,12 +526,6 @@
         handler: 'getEndorsements',
         deep: true,
       },
-      //   selInstitution(newVal, oldVal) {
-      //     if (newVal && newVal !== oldVal) {
-      //       // Get Institution Schedules
-      //       this.getSchedules();
-      //     }
-      //   },
       dialogSchedule(val) {
         val || this.closeSchedule();
       },
@@ -559,6 +568,10 @@
             } else {
               this.endorsements = [];
             }
+            console.log(
+              'getEndorsements(): this.endorsements => ',
+              this.endorsements
+            );
           }
         } catch (error) {
           console.error('getEndorsements', error);
@@ -569,7 +582,6 @@
           });
         }
       },
-
       async initialize() {
         this.endorsements = [];
         this.selSchedule = [];
@@ -578,110 +590,9 @@
             query: { origin: this.selectedInstitution.institutionName },
           });
         }
-        // (this.schedules = [
-        //   {
-        //     scheduleId: 1,
-        //     destination: 'RJD',
-        //     schedule: 'A',
-        //     via: ['FOL-II', 'ASP-II'],
-        //     transferDate: '05/07/2021',
-        //     seats: 10,
-        //   },
-        //   {
-        //     scheduleId: 2,
-        //     destination: 'CCC',
-        //     schedule: 'B',
-        //     via: ['ASP-II', 'RJD-II'],
-        //     transferDate: '06/07/2021',
-        //     seats: 10,
-        //   },
-        //   {
-        //     scheduleId: 3,
-        //     destination: 'CIM',
-        //     schedule: 'C',
-        //     via: ['FOL-II', 'SAC-II'],
-        //     transferDate: '07/07/2021',
-        //     seats: 10,
-        //   },
-        //   {
-        //     scheduleId: 4,
-        //     destination: 'HDSP',
-        //     schedule: 'D',
-        //     via: ['FOL-II', 'CMC-II'],
-        //     transferDate: '08/07/2021',
-        //     seats: 10,
-        //   },
-        // ]),
-        this.endorsements = [
-          // {
-          //   endorsementId: 1,
-          //   scheduleId: 1,
-          //   cdcrNumber: 'E05980',
-          //   lastName: 'Martin',
-          //   firstName: 'David',
-          //   housing: 'D0052',
-          //   transferReason: 'Transfering from Folsom',
-          //   endorsementDate: '12/2/21',
-          //   endorsementDetails: 'Go to Transfer Record',
-          // },
-          // {
-          //   endorsementId: 2,
-          //   scheduleId: 1,
-          //   cdcrNumber: 'AL7263',
-          //   lastName: 'Harris',
-          //   firstName: 'William',
-          //   housing: 'ALAA3',
-          //   transferReason: 'Housing',
-          //   endorsementDate: '12/2/21',
-          //   endorsementDetails: 'Go to Transfer Record',
-          // },
-          // {
-          //   endorsementId: 3,
-          //   scheduleId: 1,
-          //   cdcrNumber: 'AB1234',
-          //   lastName: 'Doe',
-          //   firstName: 'John',
-          //   housing: 'IU-2656',
-          //   transferReason: 'Transfering from Folsom',
-          //   endorsementDate: '12/2/21',
-          //   endorsementDetails: 'Go to Transfer Record',
-          // },
-        ];
-      },
-      getSchedules() {
-        // Read Schedules db for Selected Institution
-        this.loading = true;
-        try {
-          // const query = {
-          //   query: {
-          //     institutionName: this.selectedInstitution,
-          //   },
-          // };
-
-          // const scheduleInfo = await svcSchedule.find(query);
-
-          // console.log('getSchedules(): scheduleInfo => ' + scheduleInfo);
-          // if (scheduleInfo.data.length > 0) {
-          setTimeout(() => {
-            this.loading = false;
-          }, 200);
-          alert('getSchedules() completed successfully!');
-          // }
-        } catch (error) {
-          this.loading = false;
-          if (error.code == 500) {
-            // this.searchOffenderNotFoundErrorDialog = true;
-          } else {
-            // Display a message that an error occurred!!!
-          }
-        }
       },
       openSchedule(schedule) {
-        // this.btnAddEditSchedule = 'Save';
-        //this.editScheduleIndex = this.schedules.indexOf(schedule);
         this.editSchedule = Object.assign({}, schedule);
-        //this.dialogSchedule = true;
-        // this.
       },
       deleteSchedule(schedule) {
         const index = this.schedules.indexOf(schedule);
@@ -707,13 +618,6 @@
           this.editScheduleIndex = -1;
         });
       },
-      // closeSchedule() {
-      // this.dialogSchedule = false;
-      // this.$nextTick(() => {
-      //   this.editSchedule = Object.assign({}, this.defaultSchedule);
-      //   this.editScheduleIndex = -1;
-      // });
-      // },
       async saveSchedule() {
         const self = this;
         if (
@@ -782,6 +686,11 @@
         });
       },
       async saveEndorsement() {
+        // debugger;
+        console.log(
+          'saveEndorsement() this.editEndorsement => ',
+          this.editEndorsement
+        );
         if (this.editEndorsementIndex > -1) {
           Object.assign(
             this.endorsements[this.editEndorsementIndex],
@@ -837,8 +746,12 @@
             this.editEndorsement.cdcrNumber = person.cdcrNumber;
             this.editEndorsement.firstName = person.firstName;
             this.editEndorsement.lastName = person.lastName;
-            this.editEndorsement.endorsementDate = person.endorseDate;
+            this.editEndorsement.ethnicity = person.ethnicity;
             this.editEndorsement.housing = person.housingArea;
+            this.editEndorsement.securityLevel = person.securityLevel;
+            this.editEndorsement.tbCode = person.tbCode;
+            // this.editEndorsement.caseFactor = person.caseFactor;
+            this.editEndorsement.endorsementDate = person.endorseDate;
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;
@@ -861,12 +774,35 @@
           }
         }
       },
-      transferReasonSelected() {
+      transferReasonSelected(ctrl) {
+        console.log('transferReasonSelected(): ', ctrl);
+        // console.log(
+        //   'transferReasonSelected(): this.selTransferReason.code => ',
+        //   this.selTransferReason.reasonCode
+        // );
+        // console.log(
+        //   'transferReasonSelected(): this.selTransferReason.desc => ',
+        //   this.selTransferReason.reasonDesc
+        // );
+
+        // this.editEndorsement.transferReason.reasonCode =
+        //   this.editEndorsement.transferReasonCode =
+        //     this.selTransferReason.reasonCode;
+        this.editEndorsement.transferReason.reasonCode =
+          this.editEndorsement.transferReasonCode = ctrl.reasonCode;
         console.log(
-          'transferReasonSelected(): reason => ',
-          this.selTransferReason
+          'transferReasonSelected(): this.editEndorsement.transferReason.reasonCode => ',
+          this.editEndorsement.transferReason.reasonCode
         );
-        this.editEndorsement.transferReasonCode = this.selTransferReason;
+        // this.editEndorsement.transferReason.reasonDesc =
+        //   this.editEndorsement.transferReasonDesc =
+        //     this.selTransferReason.reasonDesc;
+        this.editEndorsement.transferReason.reasonDesc =
+          this.editEndorsement.transferReasonDesc = ctrl.reasonDesc;
+        console.log(
+          'transferReasonSelected(): this.editEndorsement.transferReason.reasonDesc => ',
+          this.editEndorsement.transferReason.reasonDesc
+        );
       },
     },
   };

@@ -20,6 +20,10 @@ const actions = {
         state.transferData.offenderId = state.somsOffender.offenderId;
         state.transferData.firstName = state.somsOffender.firstName;
         state.transferData.lastName = state.somsOffender.lastName;
+        state.transferData.ethnicity = state.somsOffender.ethnicity;
+        // state.transferData.caseFactor = state.somsOffender.caseFactor;
+        state.transferData.securityLevel = state.somsOffender.securityLevel;
+        state.transferData.tbCode = state.somsOffender.tbCode;
         state.transferData.currentEndorsementDate =
           state.somsOffender.endorseDate;
         state.transferData.originalEndorsementDate =
@@ -60,9 +64,20 @@ const actions = {
     }
   },
   async saveForm({ state, rootState, dispatch }) {
-    state.transferData.transferReasonCode = state.selTransferReason.reasonCode;
-    state.transferData.transferReasonDesc = state.selTransferReason.reasonDesc;
-    debugger;
+    console.log(
+      'saveForm(): state.selTransferReason.reasonCode => ',
+      state.selTransferReason.reasonCode
+    );
+    console.log(
+      'saveForm(): state.selTransferReason.reasonDesc => ',
+      state.selTransferReason.reasonDesc
+    );
+    console.log('saveForm(): state => ', state);
+    state.transferData.transferReasonCode =
+      state.transferData.transferReason.reasonCode;
+    state.transferData.transferReasonDesc =
+      state.transferData.transferReason.reasonDesc;
+    // debugger;
     if (
       rootState.schedules &&
       rootState.schedules.selSchedule &&
