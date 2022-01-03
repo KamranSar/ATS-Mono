@@ -56,7 +56,7 @@ const SOMS_DATA_FIELDS = [
   },
   {
     label: 'TB Code:',
-    data: somsOffender && somsOffender.tabeScore ? somsOffender.tabeScore : '',
+    data: somsOffender && somsOffender.tbCode ? somsOffender.tbCode : '',
   },
   {
     label: 'Mental Health:',
