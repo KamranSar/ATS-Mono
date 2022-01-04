@@ -415,9 +415,10 @@
 
       // get135()
       //
-      create135(param) {
+      async create135(param) {
         let filter = {
           query: {
+            $limit: 50,
             $sort: {
               dateReceived: 1,
             },
@@ -431,8 +432,10 @@
           //   return;
           // }
           // this.readTransfersBySchedule(filter);
-        } else if (param == 'cdcr') {
+        } else if (param == 'cdcrNumber') {
+          let today = new Date().toISOString().split('T')[0];
           filter.query.cdcrNumber = this.cdcrNum;
+          filter.query.transferDate = { $gte: today };
           // this.readTransfersBySchedule(filter);
         } else {
           alert('Invalid option for CDCR-135 Transfer Record.');
@@ -440,8 +443,8 @@
         }
 
         try {
-          this.transfers = this.readTransfers(filter);
-          console.log('create135(): transfers.data => ', this.transfers);
+          this.transfers = await this.readTransfers(filter);
+          console.log('create135(): transfers => ', this.transfers);
           if (!this.transfers) {
             alert('No Transfers found for schedule: ', this.schedule.schedule);
             return;
@@ -450,45 +453,46 @@
           console.error('create135() exception: ', ex);
         }
 
-        let data = null;
-        let row = null;
-        let obj = {
+        let data = [];
+        // let row = [];
+        const obj = {
           text: '',
           style: 'tblCenter',
           border: [false, false, false, false],
         };
         let num = 1;
         for (let xfr of this.transfers) {
+          const row = [];
           // Column 1 - Row Number
-          obj.text = num++;
-          row.push(obj);
+          obj.text = String(num++);
+          row.push(Object.assign({}, obj));
           // Column 2 - CDCR Number
-          obj.text = xfr.cdcrNum;
-          row.push(obj);
+          obj.text = xfr.cdcrNumber;
+          row.push(Object.assign({}, obj));
           // Column 3 - Name
           obj.text = xfr.lastName + ', ' + xfr.firstName;
-          row.push(obj);
+          row.push(Object.assign({}, obj));
           // Column 4 - Level
-          obj.text = 'level'; // FIXME need to add level field
-          row.push(obj);
+          obj.text = xfr.securityLevel;
+          row.push(Object.assign({}, obj));
           // Column 5 - Housing
-          obj.text = 'housing'; // FIXME need to add housing field;
-          row.push(obj);
+          obj.text = xfr.housing;
+          row.push(Object.assign({}, obj));
           // Column 6 - TB Code
-          obj.text = 'val'; // FIXME need to add TB Code field;
-          row.push(obj);
+          obj.text = xfr.tbCode;
+          row.push(Object.assign({}, obj));
           // Column 7 - Ethnic
-          obj.text = 'cf'; // FIXME need to add ethnicity field;
-          row.push(obj);
+          obj.text = xfr.ethnicity;
+          row.push(Object.assign({}, obj));
           // Column 8 - Case Factor
-          obj.text = 'cf'; // FIXME need to add case factor field;
-          row.push(obj);
+          obj.text = xfr.caseFactor;
+          row.push(Object.assign({}, obj));
           // Column 9 - Specific Transfer Reason
           obj.text = xfr.transferReasonCode;
-          row.push(obj);
+          row.push(Object.assign({}, obj));
           // Column 10 - Comments
           obj.text = xfr.cdcr135Comments;
-          row.push(obj);
+          row.push(Object.assign({}, obj));
 
           data.push(row);
         }
