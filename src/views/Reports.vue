@@ -198,10 +198,11 @@
                   v-model="sel134Schedule"
                   class="vselectTxtColor"
                   dense
+                  @change="onChangeSchedule"
                 ></v-select>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createPDF134">
+                <v-icon large color="primary" @click="create134">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -326,33 +327,6 @@
           name: 'Home',
         });
       },
-      // async getInstitutions() {
-      //   try {
-      //     this.loading = true;
-      //     const queryObject = {
-      //       query: {
-      //         $sort: {
-      //           institutionName: 1,
-      //         },
-      //       },
-      //     };
-
-      //     const institutions = await findAll(
-      //       '/api/eis/common/v1/institution',
-      //       queryObject
-      //     );
-
-      //     this.listOfInstitutions = institutions.data;
-
-      //     return this.listOfInstitutions;
-      //   } catch (error) {
-      //     console.error('getInstitutions: ', error);
-      //     this.listOfInstitutions = [];
-      //     return [];
-      //   } finally {
-      //     this.loading = false;
-      //   }
-      // },
       async getSchedulesByInstitution() {
         this.loading = true;
         console.log(
@@ -374,9 +348,9 @@
         }
       },
 
-      onChangeSchedule() {
+      onChangeSchedule(e) {
         for (let s of this.schedules) {
-          if (s.schedule === this.sel135Schedule) {
+          if (s.schedule === e) {
             this.schedule = s;
             break;
           }
@@ -420,7 +394,7 @@
           query: {
             $limit: 50,
             $sort: {
-              dateReceived: 1,
+              transferDate: 1,
             },
           },
         };
@@ -812,21 +786,92 @@
         // alert("createPDF135() Done!");
       },
 
-      createPDF134() {
+      // create134(e)
+      // Called by button clicked
+      // Builds data for 134 report
+      // Calls create134PDF(data) to generate PDF report file
+      //
+      async create134() {
+        // Get transfer for selected schedule
+        let filter = {
+          query: {
+            $limit: 50,
+            $sort: {
+              lastName: 1,
+            },
+            schedule: this.schedule.schedule,
+          },
+        };
+
+        try {
+          this.transfers = await this.readTransfers(filter);
+          console.log('build134Data(): transfers => ', this.transfers);
+          if (!this.transfers) {
+            alert('No Transfers found for schedule: ', this.schedule.schedule);
+            return;
+          }
+        } catch (ex) {
+          console.error('build134Data() exception: ', ex);
+        }
+
+        let data = [];
+        let row = [];
+        let obj = [];
+        for (let xfr of this.transfers) {
+          // Column 1 - CDCR Number
+          obj = {
+            text: xfr.cdcrNumber,
+            style: 'tblLeft',
+          };
+          row.push(Object.assign({}, obj));
+          // Column 2 - Last Name, First Name - colspan = 2
+          obj = {
+            text: xfr.lastName + ', ' + xfr.firstName,
+            style: 'tblLeft',
+            colSpan: 2,
+          };
+          row.push(Object.assign({}, obj));
+          // Column 3 - Empty cell
+          obj = { text: ' ', style: 'tblCenter' };
+          row.push(Object.assign({}, obj));
+          // Column 4 - Discharge Date
+          obj = {
+            text: new Date(xfr.transferDate).toISOString().split('T')[0], // FIXME Replace with Release Date
+            style: 'tblLeft',
+          };
+          row.push(Object.assign({}, obj));
+          // Column 5 - 20 Empty cell
+          for (let i = 5; i < 21; i++) {
+            obj = { text: ' ', style: 'tblCenter' };
+            row.push(Object.assign({}, obj));
+          }
+
+          data.push(row);
+          row = [];
+        }
+        // Fill empty rows to max 24 per page
+
+        console.log('create134(): data => ', data);
+        if (data) {
+          this.create134PDF(data);
+        } else {
+          // error message
+          alert('Could not create CDCR 134 PDF Document!');
+        }
+      },
+      create134PDF(data) {
         const fileName = this.fileName + '.pdf';
 
         let title = 'RECORDS TRANSFER CHECK SHEET';
         let txtOriginal = 'Original-Receiving Facility/Region Records';
         let txtCopy = 'Copy-Sending Facility/Region Records';
 
-        let txtDate = '04/27/2021';
-        let nXfer = '1';
+        let txtDate = this.schedule.transferDate;
+        let nXfer = this.transfers.length;
 
-        // let schedule = 'SCH K';
-        let from = 'DVI';
-        let to = 'PVSP';
-        let via1 = 'NKSPRC';
-        let via2 = '';
+        let from = this.schedule.origin;
+        let to = this.schedule.destination;
+        let vias = this.schedule.vias;
 
         let dd = {
           pageSize: 'LETTER',
@@ -1045,15 +1090,10 @@
                       text: 'FROM:  ' + from,
                       style: 'hdrSchedule',
                       margin: [2, 8, 2, 30],
-                      colSpan: 2,
+                      colSpan: 4,
                     },
                     {}, // Empty columns for alignment purposes
-                    {
-                      text: 'VIA:  ' + via1,
-                      style: 'hdrSchedule',
-                      margin: [2, 8, 2, 30],
-                      colSpan: 2,
-                    },
+                    {},
                     {}, // Empty column for alignment purposes
                     { text: '', colSpan: 16 }, // Empty column occupied by vertical text
                   ],
@@ -1066,7 +1106,7 @@
                     },
                     {}, // Empty columns for alignment purposes
                     {
-                      text: 'VIA:  ' + via2,
+                      text: 'VIAS:  ' + vias,
                       style: 'hdrSchedule',
                       margin: [2, 8, 2, 30],
                       colSpan: 2,
@@ -1082,534 +1122,7 @@
                     { text: 'Discharge Date', style: 'tblHeader' },
                     { text: '', colSpan: 16 }, // Empty column occupied by vertical text
                   ],
-                  [
-                    { text: 'AY8993', style: 'tblLeft' },
-                    { text: 'GOMEZ, ANTHONY', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: '05/31/2042', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
-                  [
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblLeft', colSpan: 2 },
-                    {},
-                    { text: ' ', style: 'tblLeft' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                    { text: ' ', style: 'tblCenter' },
-                  ],
+                  ...data,
                 ],
                 border: [true, true, true, true],
               },
@@ -1650,9 +1163,9 @@
           },
         };
 
-        console.log('createPDF134(): dd => ', dd);
+        console.log('create134PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
-        // alert("createPDF134() Done!");
+        // alert("create134PDF() Done!");
       },
 
       createPDF7344() {
