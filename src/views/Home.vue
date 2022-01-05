@@ -3,7 +3,7 @@
     <v-card-title>
       <h2>Institution Transfers</h2>
     </v-card-title> -->
-  <v-card class="mb-12">
+  <v-card flat class="mb-12">
     <v-card-title class="blue-grey lighten-4">
       <v-row>
         <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
@@ -43,7 +43,7 @@
       absolute
       color="primary"
     ></v-progress-linear>
-    <v-row no-gutters>
+    <v-row class="mx-2 mt-2">
       <v-col cols="6"><h2>Departures</h2></v-col>
       <!-- FIXME remove <v-col cols="6" class="text-right">
           <v-btn x-large class="secondary" href="/transfer">
@@ -60,7 +60,7 @@
       :headers="departureHeaders"
       :items="departingOffenders"
       item-key="cdcrNumber"
-      class="elevation-1"
+      class="elevation-1 mx-4 mb-4 pa-4"
       :search="departureSearch"
       @keypress="filterTransfers"
       :loading="loading"
@@ -122,7 +122,7 @@
         
       </template> -->
     </v-data-table>
-    <v-row class="my-4" no-gutters>
+    <v-row class="mx-2">
       <v-col cols="12"><h2>Arrivals</h2></v-col>
     </v-row>
     <v-data-table
@@ -131,7 +131,7 @@
       :headers="arrivalHeaders"
       :items="arrivingOffenders"
       item-key="cdcrNumber"
-      class="elevation-1"
+      class="elevation-1 mx-4 mb-4 pa-4"
       :search="arrivalSearch"
       @keypress="filterOffenderArrivals"
       no-data-text="No Pending Arrivals"

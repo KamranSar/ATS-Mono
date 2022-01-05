@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-12">
+  <v-card flat class="mb-12">
     <v-card-title class="blue-grey lighten-4">
       <v-row>
         <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
@@ -9,7 +9,7 @@
           cols="4"
           xs="12"
           md="4"
-          class="py-1 selInstitution"
+          class="py-1 colOutline"
           align-self="center"
         >
           <v-autocomplete
@@ -47,7 +47,7 @@
       absolute
       color="primary"
     ></v-progress-linear>
-    <v-card class="my-4">
+    <v-card flat class="my-4">
       <v-row class="mx-2">
         <v-col cols="12" sm="6" lg="3">
           <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
@@ -2003,7 +2003,7 @@
 </script>
 
 <style scoped>
-  .selInstitution {
+  .colOutline {
     background-color: white;
     border-radius: 5px;
   }

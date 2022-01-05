@@ -1,6 +1,6 @@
 <template>
   <v-row class="my-0 pt-2">
-    <v-col cols="10">
+    <v-col cols="10" class="pb-1">
       <v-row no-gutters>
         <v-col cols="1">
           <offender-image
@@ -82,9 +82,9 @@
           </div>
         </v-col>
       </v-row>
-      <v-divider class="pb-2"></v-divider>
+      <!-- <v-divider class="pb-2"></v-divider> -->
     </v-col>
-    <v-col cols="2" class="pb-1" align="right">
+    <v-col cols="2" class="pb-1" align="right" align-self="center">
       <v-dialog v-model="dlgSaveForm" persistent max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn

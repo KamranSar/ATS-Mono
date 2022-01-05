@@ -10,17 +10,17 @@
       color="primary"
     ></v-progress-linear>
 
-    <v-divider></v-divider>
-
-    <v-card-text class="pa-2 ma-0" v-if="somsOffender">
+    <v-card-text class="pa-2 mx-2" v-if="somsOffender">
       <!-- Transfer Header -->
-      <TransferHeader />
+      <TransferHeader class="mr-2" />
+
+      <v-divider></v-divider>
 
       <!-- Transfer Panel -->
-      <TransferPanel />
+      <TransferPanel class="mr-2" />
 
       <!-- Holds Table -->
-      <TransferHoldsTable />
+      <TransferHoldsTable class="mr-2" />
     </v-card-text>
   </v-card>
 </template>
