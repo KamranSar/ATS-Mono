@@ -1,16 +1,37 @@
 <template>
-  <div>
-    <v-card elevation="3" class="ma-4 px-4 pb-4">
-      <h1>ATS Maintenance</h1>
+  <v-card flat class="mb-12">
+    <v-card-title class="blue-grey lighten-4">
+      <v-row>
+        <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
+          <h2>Maintenance</h2>
+        </v-col>
+        <v-col align="right" align-self="center">
+          <!-- <v-btn class="secondary ma-2" @click="dialogSchedule = true">
+            Create Schedule
+          </v-btn> -->
+          <v-icon small color="primary" right>mdi-arrow-left</v-icon>
+          <a @click="goHome" class="text-decoration-none subtitle-2">
+            Back to Home
+          </a>
+        </v-col>
+      </v-row>
+    </v-card-title>
+    <v-progress-linear
+      :active="loading"
+      :indeterminate="loading"
+      absolute
+      color="primary"
+    ></v-progress-linear>
+    <v-card flat class="ma-4">
       <v-data-table
         :headers="headers"
         :items="reasons"
         sort-by="reasonCode"
-        class="elevation-1"
+        class="elevation-1 pa-2"
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Transfer Reason</v-toolbar-title>
+            <v-toolbar-title>Specific Transfer Reasons</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
@@ -88,7 +109,7 @@
         </template>
       </v-data-table>
     </v-card>
-  </div>
+  </v-card>
 </template>
 
 <script>

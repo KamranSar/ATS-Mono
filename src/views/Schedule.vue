@@ -1,9 +1,9 @@
 <template>
-  <v-card class="mb-12">
+  <v-card flat class="mb-12">
     <v-card-title class="blue-grey lighten-4">
       <v-row>
         <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
-          <span>Schedules</span>
+          <h2>Schedules</h2>
         </v-col>
         <v-col
           cols="4"
@@ -48,7 +48,7 @@
       absolute
       color="primary"
     ></v-progress-linear>
-    <v-card>
+    <v-card flat class="ma-4">
       <!-- Data table will push to selSchedule -->
       <v-data-table
         v-model="selSchedule"
@@ -58,7 +58,7 @@
         single-select
         show-select
         sort-by="scheduleId"
-        class="elevation-1 mt-2"
+        class="elevation-1 pa-2 mt-2"
       >
         <template v-slot:top>
           <v-toolbar flat color="white">

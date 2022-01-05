@@ -1,14 +1,19 @@
 <template>
-  <v-card-text>
+  <v-card-title class="blue-grey lighten-4">
     <v-row>
-      <v-col cols="3">
-        <h1 class="black--text">Transfer</h1>
+      <v-col cols="3" xs="12" md="3" class="py-1" align-self="center">
+        <h2>Transfer</h2>
       </v-col>
-      <v-col cols="4">
+      <v-col
+        cols="4"
+        xs="12"
+        md="4"
+        class="py-3 txtCDCRNumber"
+        align-self="center"
+      >
         <v-text-field
           class="pt-1 pb-0 ma-0"
           dense
-          outlined
           clearable
           autocomplete="off"
           label="Enter CDCR Number"
@@ -18,6 +23,7 @@
           @keyup="somsCDCRNumber = somsCDCRNumber.toUpperCase()"
           v-model="somsCDCRNumber"
           hide-details
+          background-color="white"
         >
         </v-text-field>
       </v-col>
@@ -32,14 +38,12 @@
           Search
         </v-btn>
       </v-col>
-      <v-col cols="3">
-        <v-row class="pt-4 mr-3" justify="end"
-          ><v-icon small color="primary" right>mdi-arrow-left</v-icon>
-          <a class="text-decoration-none subtitle-2">Back to Home</a>
-        </v-row>
+      <v-col cols="3" align="right" align-self="center">
+        <v-icon small color="primary" right>mdi-arrow-left</v-icon>
+        <a class="text-decoration-none subtitle-2">Back to Home</a>
       </v-col>
     </v-row>
-  </v-card-text>
+  </v-card-title>
 </template>
 
 <script>
@@ -75,3 +79,10 @@
     watch: {},
   };
 </script>
+
+<style>
+  .txtCDCRNumber {
+    background-color: white;
+    border-radius: 5px;
+  }
+</style>

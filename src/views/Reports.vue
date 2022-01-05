@@ -14,6 +14,7 @@
         >
           <v-autocomplete
             v-model="selectedInstitution"
+            return-object
             :disabled="loading"
             :items="listOfInstitutions"
             color="blue-grey lighten-2"
@@ -100,7 +101,7 @@
             <v-card-title style="line-height: 1rem">
               <v-row>
                 <v-col>
-                  <span style="white-space: nowrap">Advance Transfer</span>
+                  <span style="white-space: nowrap">Advance Transfer </span>
                   <span style="white-space: nowrap">Notice</span>
                   <br />
                   <span style="font-size: 12px">CDCR-7344</span>
@@ -222,14 +223,16 @@
                 <v-select
                   label="Endorsed To"
                   placeholder="Endorsed To"
-                  :items="itemsEndorsedTo"
+                  :items="listOfInstitutions"
+                  item-text="institutionId"
+                  item-value="institutionId"
                   v-model="selEndorsedTo"
                   class="vselectTxtColor"
                   dense
                 ></v-select>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createPDFBusSeat">
+                <v-icon large color="primary" @click="createBusSeatPDF">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -332,11 +335,13 @@
           this.selectedInstitution
         );
         try {
-          const response = await this.readSchedulesByOrigin({
-            institution: this.selectedInstitution,
-          });
-          if (response) {
-            this.schedules = response.data;
+          if (this.selectedInstitution) {
+            const response = await this.readSchedulesByOrigin({
+              institution: this.selectedInstitution,
+            });
+            if (response) {
+              this.schedules = response.data;
+            }
           }
         } catch (e) {
           console.log('getSchedulesByInstitution(): ERROR => ', e);
@@ -365,6 +370,7 @@
         return d.toISOString().substr(0, 10);
       },
 
+      // writeRotatedText(text)
       // define your function for generating rotated text
       writeRotatedText(text) {
         let ctx,
@@ -397,14 +403,14 @@
           },
         };
 
-        if (param == 'schedule') {
+        if (param == 'schedule' && this.sel135Schedule) {
           filter.query.schedule = this.sel135Schedule;
           // if (!this.schedule) {
           //   alert('Selected schedule = ', this.schedule);
           //   return;
           // }
           // this.readTransfersBySchedule(filter);
-        } else if (param == 'cdcrNumber') {
+        } else if (param == 'cdcrNumber' && this.cdcrNum) {
           let today = new Date().toISOString().split('T')[0];
           filter.query.cdcrNumber = this.cdcrNum;
           filter.query.transferDate = { $gte: today };
@@ -755,7 +761,7 @@
         // alert("create135PDF() Done!");
       },
 
-      // create134(e)
+      // create134()
       // Called by button clicked
       // Builds data for 134 report
       // Calls create134PDF(data) to generate PDF report file
@@ -1576,80 +1582,6 @@
                         },
                       ],
                       ...data,
-                      // [
-                      //   {
-                      //     text: '------',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'Thursday, February 22, 2021',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'SCH K',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'CAL-ICE',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'VIA: KVSP,',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '------',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      // ], // End of Row 1
-                      // [
-                      //   {
-                      //     text: 'BC9030',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'AVALOS, JORGE',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'A 001A2004008U',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'II',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'HIS',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: 'USINS',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      // ], // End of Row 2
                     ], // End of Table Body
                     border: [false, false, false, false],
                   },
@@ -1661,44 +1593,107 @@
 
         console.log('create7344PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
-
-        // alert("create7344PDF() Done!");
       },
+      async createBusSeatReport() {
+        let filter = {
+          query: {
+            $limit: 50,
+            $sort: {
+              transferDate: 1,
+            },
+            transferDate: {
+              $gte: this.dateBegin,
+              $lte: this.dateEnd,
+            },
+            destination: this.selEndorsedTo,
+          },
+        };
 
-      createPDFBusSeat() {
+        try {
+          const response = await this.readTransfers(filter);
+          console.log('createBusSeatReport(): response => ', response);
+          if (!response) {
+            alert('No Transfers found for requested date range.');
+            return;
+          }
+          this.n7334Transferring = response.data.length;
+
+          const level = {
+            txtDesc: '',
+            numLevel: '',
+            numScheduled: 0,
+            numUnScheduled: 0,
+            numHold: 0,
+            numTotal: 0,
+          };
+          const levels = [];
+
+          let data = [];
+          let row = [];
+          let obj = [];
+          for (let lvl of levels) {
+            // Column 1 - Level
+            obj = {
+              text: lvl.numLevel,
+              style: 'schEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 2 - Scheduled
+            obj = {
+              text: lvl.numScheduled,
+              style: 'schEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 3 - Unscheduled
+            obj = {
+              text: lvl.numUnScheduled,
+              style: 'schEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 4 - Hold
+            obj = {
+              text: lvl.numHold,
+              style: 'schEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 5 - Total
+            obj = {
+              text: lvl.numTotal,
+              style: 'schEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            data.push(row);
+            row = [];
+          }
+          // Fill empty rows to max 24 per page
+
+          console.log('createBusSeatReport(): data => ', data);
+          if (data) {
+            this.createBusSeatPDF(data);
+          } else {
+            // error message
+            alert('Could not create CDCR Bus Seat Report PDF Document!');
+          }
+        } catch (ex) {
+          console.error('createBusSeatReport() exception: ', ex);
+        }
+      },
+      createBusSeatPDF(data) {
         const fileName = this.fileName + '.pdf';
         // playground requires you to assign document definition to a variable called dd
 
-        // Report fields to be sent in when building report
-        // Institution
-        // Report Name
-        // Date Range
-        // Assigned To
-        // Column Names
-        // Column values
-        // let doc = this.stateOf + '\n' + this.report135 + '\nDISTRIBUTION PER INSTITUTION POLICY';
-        // let title = 'TRANSFER RECORD';
-        // let agency = this.agency;
-
-        // let dtLabel = 'The following identified persons will be transferred this date';
-        // let txtDate = '04/27/2021';
-        // let nXfer = '11';
-
-        // let schedule = 'SCH K';
-        // let from = 'DVI';
-        // let to = 'CMC-W';
-        // let via1 = 'NKSPRC';
-        // let via2 = '';
-
-        // if (!this.buildPDFHeaderRow()) {
-        //   // Display Error Message
-        //   return;
-        // }
-        // this.buildPDFRowData();
-
         const today = new Date();
-        //console.log('new Date(): today', today);
-        const m = today.getMonth();
+        const m = today.getMonth() + 1;
         const mm = m < 10 ? '0' + m : m;
         const d = today.getDate();
         const day = d < 10 ? '0' + d : d;
@@ -1708,36 +1703,11 @@
         const mins = ms < 10 ? '0' + ms : ms;
         const dateNow =
           mm + '/' + day + '/' + today.getFullYear() + ' ' + hh + ':' + mins;
-        //console.log('dateNow: ', dateNow);
-
-        // const assigned = this.assignedTo == '' ? 'ALL' : this.assignedTo;
 
         let paperType = 'LETTER';
-        // let lenSeparatorLine = 712;
-        // let rtltColumn = { width: '*', text: '' };
-
-        // if (this.pdfColWidth.length > 6) {
-        //   paperType = 'LEGAL';
-        //   lenSeparatorLine = 927;
-        // }
-
-        // if (this.pdfColWidth.length > 11) {
-        //   paperType = 'TABLOID';
-        //   lenSeparatorLine = 1142;
-        // }
-
-        // if (this.pdfColWidth.length > 16) {
-        //   paperType = 'B3';
-        //   lenSeparatorLine = 1337;
-        //   rtltColumn = [];
-        // }
-
-        // console.log(
-        //   'printPDFReport(): this.pdfColWidth.length => ' + this.pdfColWidth.length + ', paperType => ' + paperType
-        // );
 
         // Test data
-        this.selInstitutions = 'DVI';
+        //this.selInstitutions = 'DVI';
         this.reportTitle = 'BUS SEAT REPORT';
 
         const dd = {
@@ -1852,7 +1822,7 @@
             {
               columns: [
                 {
-                  text: 'Endorsed To : DVI', // + this.to,
+                  text: 'Endorsed To : ' + this.selEndorsedTo,
                   style: 'header',
                 },
               ],
@@ -1919,6 +1889,7 @@
                           // margin: [ 2, 3, 2, 3],
                         },
                       ],
+                      // ...data,
                       [
                         {
                           text: '----- ACP - Alternative Custody Program -----',
@@ -2009,10 +1980,10 @@
           ],
         };
 
-        console.log('createPDFBusSeat(): dd => ', dd);
+        console.log('createBusSeatPDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
 
-        // alert("createPDFBusSeat() Done!");
+        // alert("createBusSeatPDF() Done!");
       },
       async readSchedulesByInstitution() {
         await this.readSchedules({

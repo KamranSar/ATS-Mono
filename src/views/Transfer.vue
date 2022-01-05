@@ -20,6 +20,7 @@
               @keyup="somsCDCRNumber = somsCDCRNumber.toUpperCase()"
               v-model="somsCDCRNumber"
               hide-details
+              background-color="white"
             >
             </v-text-field>
           </v-col>
