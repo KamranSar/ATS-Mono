@@ -13,7 +13,11 @@
           no-data-text="No Holds"
           no-results-text="No Holds Found"
         >
-          <template v-slot:top class="pb-4" style="boder: 1px solid lightgray">
+          <span style="color: rgba(0, 0, 0, 0.6); font-size: 14px">
+            Holds
+          </span>
+          <template> </template>
+          <!-- <template v-slot:top class="pb-4" style="boder: 1px solid lightgray">
             <span style="color: rgba(0, 0, 0, 0.6); font-size: 14px">
               Holds
             </span>
@@ -108,7 +112,7 @@
               mdi-pencil
             </v-icon>
             <v-icon small @click="deleteHoldItem(item)"> mdi-delete </v-icon>
-          </template>
+          </template> -->
         </v-data-table>
       </div>
     </v-col>
@@ -147,67 +151,66 @@
         { text: 'Reason', value: 'holdType' },
         { text: 'Exp. Date', value: 'expirationDate' },
         { text: 'Comments', value: 'comments' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        // { text: 'Actions', value: 'actions', sortable: false },
       ],
       holds: [],
     }),
     computed: {
-      formTitleCF() {
-        return this.editedCaseFactorIndex === -1
-          ? 'New Case Factor'
-          : 'Edit Case Factor';
-      },
+      // formTitleCF() {
+      //   return this.editedCaseFactorIndex === -1
+      //     ? 'New Case Factor'
+      //     : 'Edit Case Factor';
+      // },
       formTitleHold() {
         return this.editedHoldIndex === -1 ? 'New Hold' : 'Edit Hold';
       },
     },
     methods: {
       // Hold Methods
-      filterHolds() {},
-      cancelHold() {
-        this.dlgEditHold = false;
-        this.$nextTick(() => {
-          this.editedHoldItem = Object.assign({}, this.defaultHoldItem);
-          this.editedHoldIndex = -1;
-        });
-      },
-      saveHold() {
-        if (this.editedHoldIndex > -1) {
-          Object.assign(this.holds[this.editedHoldIndex], this.editedHoldItem);
-        } else {
-          this.holds.push(this.editedHoldItem);
-        }
-        this.cancelHold();
-      },
-
-      deleteHoldItem(item) {
-        this.editedHoldIndex = this.caseFactors.indexOf(item);
-        this.editedHoldItem = Object.assign({}, item);
-        this.dlgDeleteHold = true;
-      },
-      cancelDeleteHold() {
-        this.dlgDeleteHold = false;
-        this.$nextTick(() => {
-          this.editedHoldItem = Object.assign({}, this.defaultHoldItem);
-          this.editedHoldIndex = -1;
-        });
-      },
-      confirmDeleteHold() {
-        this.holds.splice(this.editedHoldIndex, 1);
-        this.cancelDeleteCaseFactor();
-      },
-      cancelDeleteCaseFactor() {
-        this.dlgDeleteCF = false;
-        this.$nextTick(() => {
-          this.editedCaseFactorItem = Object.assign({}, this.defaultItem);
-          this.editedCaseFactorIndex = -1;
-        });
-      },
-      editHoldItem(item) {
-        this.editedHoldIndex = this.holds.indexOf(item);
-        this.editedHoldItem = Object.assign({}, item);
-        this.dlgEditHold = true;
-      },
+      // filterHolds() {},
+      // cancelHold() {
+      //   this.dlgEditHold = false;
+      //   this.$nextTick(() => {
+      //     this.editedHoldItem = Object.assign({}, this.defaultHoldItem);
+      //     this.editedHoldIndex = -1;
+      //   });
+      // },
+      // saveHold() {
+      //   if (this.editedHoldIndex > -1) {
+      //     Object.assign(this.holds[this.editedHoldIndex], this.editedHoldItem);
+      //   } else {
+      //     this.holds.push(this.editedHoldItem);
+      //   }
+      //   this.cancelHold();
+      // },
+      // deleteHoldItem(item) {
+      //   this.editedHoldIndex = this.caseFactors.indexOf(item);
+      //   this.editedHoldItem = Object.assign({}, item);
+      //   this.dlgDeleteHold = true;
+      // },
+      // cancelDeleteHold() {
+      //   this.dlgDeleteHold = false;
+      //   this.$nextTick(() => {
+      //     this.editedHoldItem = Object.assign({}, this.defaultHoldItem);
+      //     this.editedHoldIndex = -1;
+      //   });
+      // },
+      // confirmDeleteHold() {
+      //   this.holds.splice(this.editedHoldIndex, 1);
+      //   this.cancelDeleteCaseFactor();
+      // },
+      // cancelDeleteCaseFactor() {
+      //   this.dlgDeleteCF = false;
+      //   this.$nextTick(() => {
+      //     this.editedCaseFactorItem = Object.assign({}, this.defaultItem);
+      //     this.editedCaseFactorIndex = -1;
+      //   });
+      // },
+      // editHoldItem(item) {
+      //   this.editedHoldIndex = this.holds.indexOf(item);
+      //   this.editedHoldItem = Object.assign({}, item);
+      //   this.dlgEditHold = true;
+      // },
     },
   };
 </script>
