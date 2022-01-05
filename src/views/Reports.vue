@@ -130,14 +130,12 @@
                   </template>
                   <v-date-picker
                     v-model="dateBegin"
-                    :min="minDate"
-                    :max="maxDate"
                     @input="dateBeginMenu = false"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createPDF7344">
+                <v-icon large color="primary" @click="create7344">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -165,8 +163,6 @@
                   </template>
                   <v-date-picker
                     v-model="dateEnd"
-                    :min="minDate"
-                    :max="maxDate"
                     @input="dateEndMenu = false"
                   ></v-date-picker>
                 </v-menu>
@@ -251,6 +247,7 @@
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
   export default {
     name: 'Reports',
@@ -288,6 +285,7 @@
       dpEnd: '',
       minDate: vm.getMinDate(),
       maxDate: new Date().toISOString().substr(0, 10),
+      n7334Transferring: 0,
     }),
     computed: {
       ...sync('transfers', ['transfers']),
@@ -473,16 +471,16 @@
 
         console.log('create135(): data => ', data);
         if (data) {
-          this.createPDF135(data);
+          this.create135PDF(data);
         } else {
           // error message
           alert('Could not create CDCR 135 PDF Document!');
         }
       },
 
-      // createPDF135()
+      // create135PDF()
       //
-      createPDF135(data) {
+      create135PDF(data) {
         const fileName = this.fileName + '.pdf';
 
         let doc =
@@ -632,35 +630,6 @@
                             { text: 'Comments', style: 'tableHeader' },
                           ],
                           ...data,
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 1
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 2
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 3
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 4
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 5
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 6
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 7
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 8
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 9
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 10
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 11
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 12
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 13
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 14
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 15
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 16
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 17
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 18
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 19
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 20
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 21
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 22
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 23
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 24
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 25
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 26
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 27
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 28
-                          // [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], // Row 29
                         ],
                       },
                       colSpan: 3,
@@ -781,9 +750,9 @@
           },
         };
 
-        console.log('createPDF135(): dd => ', dd);
+        console.log('create135PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
-        // alert("createPDF135() Done!");
+        // alert("create135PDF() Done!");
       },
 
       // create134(e)
@@ -1167,44 +1136,192 @@
         pdfMake.createPdf(dd).download(fileName);
         // alert("create134PDF() Done!");
       },
+      async create7344() {
+        // Get transfer for selected schedule
+        let filter = {
+          query: {
+            $limit: 50,
+            $sort: {
+              transferDate: 1,
+            },
+            transferDate: {
+              $gte: this.dateBegin,
+              $lte: this.dateEnd,
+            },
+          },
+        };
 
-      createPDF7344() {
+        try {
+          // this.transfers = await this.readTransfers(filter);
+          const response = await departuresArrivalsSvc.find(filter);
+          console.log('create7344(): response => ', response);
+          if (!response) {
+            alert('No Transfers found for requested date range.');
+            return;
+          }
+          this.n7334Transferring = response.data.length;
+
+          let data = [];
+          let row = [];
+          let obj = [];
+          let sch = '';
+          for (let xfr of response.data) {
+            if (sch !== xfr.schedule) {
+              sch = xfr.schedule;
+
+              // Column 1 - dashes
+              obj = {
+                text: '-----',
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 2 - Date - Weekday, Month day, Year format
+              const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              };
+              const strDate = new Date(xfr.transferDate).toLocaleDateString(
+                'en-US',
+                options
+              );
+              obj = {
+                text: strDate,
+                style: 'schEntry',
+                border: [false, false, false, false],
+                colSpan: 2,
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 3 - Empty column
+              obj = {
+                text: ' ',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 4 - Schedule
+              obj = {
+                text: xfr.schedule,
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 5 - Destination
+              obj = {
+                text: xfr.destination,
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 6 - Vias
+              obj = {
+                text: xfr.vias,
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 7 - dashes
+              obj = {
+                text: '-----',
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              data.push(row);
+              row = [];
+            }
+
+            // Column 1 - CDCR Number
+            obj = {
+              text: xfr.cdcrNumber,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 2 - Last Name, First Name - colspan = 2
+            obj = {
+              text: xfr.lastName + ', ' + xfr.firstName,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+              colSpan: 2,
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 3 - Empty column
+            obj = {
+              text: ' ',
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 4 - Housing
+            obj = {
+              text: xfr.housing,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 5 - Security Level
+            obj = {
+              text: xfr.securityLevel,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 6 - Ethnicity
+            obj = {
+              text: xfr.ethnicity,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 7 - Specific Transfer Reason
+            obj = {
+              text: xfr.transferReasonCode,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            data.push(row);
+            row = [];
+          }
+          // Fill empty rows to max 24 per page
+
+          console.log('create7344(): data => ', data);
+          if (data) {
+            this.create7344PDF(data);
+          } else {
+            // error message
+            alert('Could not create CDCR 7344 PDF Document!');
+          }
+        } catch (ex) {
+          console.error('create7344() exception: ', ex);
+        }
+      },
+      create7344PDF(data) {
         this.bError = false;
-        console.log('createPDF7344(): requests => ' + this.requests);
+        console.log('create7344PDF(): data => ' + data);
 
         const fileName = this.fileName + '.pdf';
         // playground requires you to assign document definition to a variable called dd
 
-        // Report fields to be sent in when building report
-        // Institution
-        // Report Name
-        // Date Range
-        // Assigned To
-        // Column Names
-        // Column values
-        // let doc = this.stateOf + '\n' + this.report135 + '\nDISTRIBUTION PER INSTITUTION POLICY';
-        // let title = 'TRANSFER RECORD';
-        // let agency = this.agency;
-
-        // let dtLabel = 'The following identified persons will be transferred this date';
-        // let txtDate = '04/27/2021';
-        // let nXfer = '11';
-
-        // let schedule = 'SCH K';
-        // let from = 'DVI';
-        // let to = 'CMC-W';
-        // let via1 = 'NKSPRC';
-        // let via2 = '';
-
-        // if (!this.buildPDFHeaderRow()) {
-        //   // Display Error Message
-        //   return;
-        // }
-        // this.buildPDFRowData();
-
         const today = new Date();
         //console.log('new Date(): today', today);
-        const m = today.getMonth();
+        const m = today.getMonth() + 1;
         const mm = m < 10 ? '0' + m : m;
         const d = today.getDate();
         const day = d < 10 ? '0' + d : d;
@@ -1214,36 +1331,8 @@
         const mins = ms < 10 ? '0' + ms : ms;
         const dateNow =
           mm + '/' + day + '/' + today.getFullYear() + ' ' + hh + ':' + mins;
-        //console.log('dateNow: ', dateNow);
-
-        // const assigned = this.assignedTo == '' ? 'ALL' : this.assignedTo;
 
         let paperType = 'LETTER';
-        // let lenSeparatorLine = 712;
-        // let rtltColumn = { width: '*', text: '' };
-
-        // if (this.pdfColWidth.length > 6) {
-        //   paperType = 'LEGAL';
-        //   lenSeparatorLine = 927;
-        // }
-
-        // if (this.pdfColWidth.length > 11) {
-        //   paperType = 'TABLOID';
-        //   lenSeparatorLine = 1142;
-        // }
-
-        // if (this.pdfColWidth.length > 16) {
-        //   paperType = 'B3';
-        //   lenSeparatorLine = 1337;
-        //   rtltColumn = [];
-        // }
-
-        // console.log(
-        //   'printPDFReport(): this.pdfColWidth.length => ' + this.pdfColWidth.length + ', paperType => ' + paperType
-        // );
-
-        // Test data
-        this.selInstitutions = 'DVI';
         this.reportTitle = 'ADVANCE TRANSFER NOTICE';
 
         const dd = {
@@ -1336,7 +1425,7 @@
               columns: [
                 {
                   //text: 'Institutions Name: ' + this.selInstitutions,
-                  text: 'Institution Name: ' + this.selInstitutions,
+                  text: 'Institution Name: ' + this.selectedInstitution,
                   style: 'header',
                   margin: [0, 8, 0, 0],
                 },
@@ -1385,8 +1474,7 @@
             {
               columns: [
                 {
-                  // text: 'RE: NUMBER TRANSFERRING ' + this.records.count,
-                  text: 'RE : NUMBER TRANSFERRING ',
+                  text: 'RE : NUMBER TRANSFERRING ' + this.n7334Transferring,
                   style: 'header',
                   margin: [0, 3, 0, 0],
                 },
@@ -1443,6 +1531,7 @@
                     // body: [this.pdfHeaderRow, ...this.pdfData],
                     body: [
                       [
+                        // Header Row
                         {
                           text: 'CDCR #',
                           style: 'tblHeader',
@@ -1486,80 +1575,81 @@
                           // margin: [ 2, 3, 2, 3],
                         },
                       ],
-                      [
-                        {
-                          text: '------',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'Thursday, February 22, 2021',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'SCH K',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'CAL-ICE',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'VIA: KVSP,',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '------',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                      ], // End of Row 1
-                      [
-                        {
-                          text: 'BC9030',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'AVALOS, JORGE',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'A 001A2004008U',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'II',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'HIS',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: 'USINS',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                      ], // End of Row 2
+                      ...data,
+                      // [
+                      //   {
+                      //     text: '------',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'Thursday, February 22, 2021',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'SCH K',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'CAL-ICE',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'VIA: KVSP,',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '------',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      // ], // End of Row 1
+                      // [
+                      //   {
+                      //     text: 'BC9030',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'AVALOS, JORGE',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'A 001A2004008U',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'II',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'HIS',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: 'USINS',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      // ], // End of Row 2
                     ], // End of Table Body
                     border: [false, false, false, false],
                   },
@@ -1569,10 +1659,10 @@
           ],
         };
 
-        console.log('createPDF7344(): dd => ', dd);
+        console.log('create7344PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
 
-        // alert("createPDF7344() Done!");
+        // alert("create7344PDF() Done!");
       },
 
       createPDFBusSeat() {
