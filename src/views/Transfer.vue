@@ -601,7 +601,6 @@
                   :headers="holdsHeader"
                   :items="holds"
                   class="elevation-1"
-                  @keypress="filterHolds"
                   no-data-text="No Holds"
                   no-results-text="No Holds Found"
                 >
@@ -1012,6 +1011,7 @@
             this.somsOffender = offenderInfo.data[0];
             console.log('searchOffender(): offender => ', this.somsOffender);
             // this.holds = offenderInfo.data[0].TransferHolds;
+            debugger;
             this.holds = this.somsOffender.TransferHolds;
             console.log('searchOffender(): holds => ', this.holds);
             // this.caseFactors = offenderInfo.data[0].caseFactors;
@@ -1122,7 +1122,7 @@
         this.cancelDeleteCaseFactor();
       },
       // Hold Methods
-      filterHolds() {},
+      // filterHolds() {},
       editHoldItem(item) {
         this.editedHoldIndex = this.holds.indexOf(item);
         this.editedHoldItem = Object.assign({}, item);

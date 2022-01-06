@@ -54,13 +54,13 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
     label: 'Mental Health:',
     data: somsOffender && somsOffender.Mental ? somsOffender.Mental : '',
   },
-  {
-    label: 'Override Reason: ',
-    data:
-      somsOffender && somsOffender.overrideReason
-        ? somsOffender.overrideReason
-        : '',
-  },
+  // {
+  //   label: 'Override Reason: ',
+  //   data:
+  //     somsOffender && somsOffender.overrideReason
+  //       ? somsOffender.overrideReason
+  //       : '',
+  // },
 ];
 
 const COMMENT_FIELDS = (somsOffender) => [
@@ -151,8 +151,8 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
   { divider: true },
   {
     label: 'Endorsed To: ',
-    data:
-      somsOffender && somsOffender.institution ? somsOffender.institution : '',
+    data: somsOffender && somsOffender.program ? somsOffender.program : '',
+    // somsOffender && somsOffender.institution ? somsOffender.institution : '',
   },
   { break: true },
   {
@@ -174,6 +174,14 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
     data:
       somsOffender && somsOffender.expirationEndorsementDate
         ? somsOffender.expirationEndorsementDate
+        : '',
+  },
+  { break: true },
+  {
+    label: 'Override Reason: ',
+    data:
+      somsOffender && somsOffender.overrideReason
+        ? somsOffender.overrideReason
         : '',
   },
 ];
