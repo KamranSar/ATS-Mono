@@ -1,6 +1,6 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
-const { discard, setNow, iff, disallow, isProvider } = require('feathers-hooks-common');
+const { discard, setNow, iff, alterItems, isProvider } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
 const { logSvcMsg, setUserID, fixQueryType } = require('cdcrhooks');
 const server = require('../../service-config').server;
@@ -39,7 +39,32 @@ module.exports = {
   },
 
   after: {
-    all: [logSvcMsg()],
+    all: [
+      logSvcMsg(),
+      alterItems((rec) => {
+        if (rec && rec.transferDate) {
+          rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          });
+        }
+        if (rec && rec.originalEndorsementDate) {
+          rec.originalEndorsementDate = new Date(rec.originalEndorsementDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          });
+        }
+        if (rec && rec.currentEndorsementDate) {
+          rec.currentEndorsementDate = new Date(rec.currentEndorsementDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          });
+        }
+      }),
+    ],
     find: [
       redisCache.after({ expiration: 600 }), // 10 minutes
     ],
