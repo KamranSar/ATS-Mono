@@ -58,7 +58,7 @@
       :items-per-page="itemsPerPage"
       dense
       :headers="departureHeaders"
-      :items="departingOffenders"
+      :items="departures"
       item-key="cdcrNumber"
       class="elevation-1 mx-4 mb-4 pa-4"
       :search="departureSearch"
@@ -129,7 +129,7 @@
       :items-per-page="itemsPerPage"
       dense
       :headers="arrivalHeaders"
-      :items="arrivingOffenders"
+      :items="arrivals"
       item-key="cdcrNumber"
       class="elevation-1 mx-4 mb-4 pa-4"
       :search="arrivalSearch"
@@ -180,7 +180,7 @@
 
 <script>
   import { get, sync, call } from 'vuex-pathify';
-  // import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
+  import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
   export default {
     name: 'Home',
@@ -189,8 +189,8 @@
       loading: false,
       departureSearch: '',
       arrivalSearch: '',
-      departingOffenders: [],
-      arrivingOffenders: [],
+      departures: [],
+      arrivals: [],
       departureHeaders: [
         {
           text: 'CDCR Number',
@@ -201,8 +201,8 @@
         { text: 'Name', value: 'fullName' },
         { text: 'Destination', value: 'destination' },
         { text: 'VIAs', value: 'vias' },
-        { text: 'Transfer Reason', value: 'transferReason' },
-        { text: 'Endorsement Date', value: 'endorseDate' },
+        { text: 'Transfer Reason', value: 'transferReasonCode' },
+        { text: 'Endorsement Date', value: 'transferDate' },
         { text: 'Release Date', value: 'releaseDate' },
         { text: 'Print 135', value: 'print135' },
         { text: 'Updates?', value: 'updates' },
@@ -214,15 +214,16 @@
           value: 'cdcrNumber',
         },
         { text: 'Name', value: 'fullName' },
-        { text: 'Transfer From', value: 'location' },
-        { text: 'Transfer Reason', value: 'transferReason' },
-        { text: 'Endorsement Date', value: 'endorseDate' },
+        { text: 'Transfer From', value: 'origin' },
+        { text: 'Transfer Reason', value: 'transferReasonCode' },
+        { text: 'Endorsement Date', value: 'transferDate' },
         { text: 'Release Date', value: 'releaseDate' },
         { text: 'Pre-Print 135', value: 'preprint135' },
       ],
     }),
     async mounted() {
-      this.transfers = await this.readTransfers();
+      this.onChangeInstitution();
+      //this.transfers = await this.readTransfers();
       // TODO: Get departures and arrivals by institition
       // const response = await departuresArrivalsSvc.find({
       //   query: {
@@ -232,13 +233,101 @@
       // console.log('DEP ARR: ', response);
     },
     methods: {
-      ...call('schedules', ['readSchedulesByOrigin']),
-      ...call('transfers', ['readTransfersByInstitution']),
+      // ...call('schedules', ['readSchedulesByOrigin']),
+      // ...call('transfers', ['readTransfersByInstitution']),
 
+      getInstitutionId(location) {
+        if (!location) {
+          // FIXME write out an error message
+          return '';
+        }
+
+        console.log('getInstitutionId(): location => ', location);
+        console.log(
+          'getInstitutionId(): listOfInstitutions',
+          this.listOfInstitutions
+        );
+        for (let i of this.listOfInstitutions) {
+          // console.log('getInstitutionId(): i => ', i);
+          if (i.institutionName == location) {
+            return i.institutionId;
+          }
+        }
+
+        return 'NF';
+      },
+      async getDepartures() {
+        let filter = {
+          query: {
+            $sort: {
+              transferDate: 1,
+            },
+            // transferDate: {
+            //   $gte: this.dateBegin,
+            //   $lte: this.dateEnd,
+            // },
+          },
+        };
+
+        if (this.selectedInstitution) {
+          filter.query.origin = this.selectedInstitution.institutionName;
+        }
+        try {
+          // this.transfers = await this.readTransfers(filter);
+          const response = await departuresArrivalsSvc.find(filter);
+          console.log('getDepartures(): response => ', response);
+          this.departures = response.data;
+          console.log('getDepartures(): departures => ', this.departures);
+          if (!response) {
+            alert(
+              'No Transfers found for institution: ',
+              this.selectedInstitution
+            );
+            return;
+          }
+        } catch (ex) {
+          console.error('getDepartures() exception: ', ex);
+        }
+      },
+      async getArrivals() {
+        let filter = {
+          query: {
+            $sort: {
+              transferDate: 1,
+            },
+            // transferDate: {
+            //   $gte: this.dateBegin,
+            //   $lte: this.dateEnd,
+            // },
+          },
+        };
+
+        if (this.selectedInstitution) {
+          filter.query.destination = this.getInstitutionId(
+            this.selectedInstitution.institutionName
+          );
+        }
+        try {
+          // this.transfers = await this.readTransfers(filter);
+          const response = await departuresArrivalsSvc.find(filter);
+          console.log('getArrivals(): response => ', response);
+          this.arrivals = response.data;
+          console.log('getArrivals(): departures => ', this.departures);
+          if (!response) {
+            alert(
+              'No Transfers found for institution: ',
+              this.selectedInstitution
+            );
+            return;
+          }
+        } catch (ex) {
+          console.error('getArrivals() exception: ', ex);
+        }
+      },
       /**
        * This method reads the schedule for the selected institution
        */
-      async readTransfers() {
+      /*       async readTransfers() {
         await this.readTransfersByInstitution(
           this.selectedInstitution.institutionName
         );
@@ -268,14 +357,17 @@
           }
         });
       },
-
+ */
       // syncSOMS() {
       //   this.loading = true;
       //   setTimeout(() => {
       //     this.loading = false;
       //   }, 3000);
       // },
-      onChangeInstitution() {},
+      onChangeInstitution() {
+        this.getDepartures();
+        this.getArrivals();
+      },
       // searchOffender(){
       //   console.log("I don't work yet :)")
       // },
