@@ -1011,7 +1011,6 @@
             this.somsOffender = offenderInfo.data[0];
             console.log('searchOffender(): offender => ', this.somsOffender);
             // this.holds = offenderInfo.data[0].TransferHolds;
-            debugger;
             this.holds = this.somsOffender.TransferHolds;
             console.log('searchOffender(): holds => ', this.holds);
             // this.caseFactors = offenderInfo.data[0].caseFactors;

@@ -77,7 +77,6 @@ const actions = {
       state.transferData.transferReason.reasonCode;
     state.transferData.transferReasonDesc =
       state.transferData.transferReason.reasonDesc;
-    // debugger;
     if (
       rootState.schedules &&
       rootState.schedules.selSchedule &&
@@ -129,8 +128,9 @@ const actions = {
     }
   },
 
+  // eslint-disable-next-line no-unused-vars
   init: async ({ dispatch }) => {
-    await dispatch('readTransfers');
+    // await dispatch('readTransfers');
   },
 
   // readTransfers
@@ -138,6 +138,14 @@ const actions = {
     try {
       rootState.app.loading = true;
       const response = await svcTransfers.find(queryObj);
+      if (response && response.data) {
+        for (let item of response.data) {
+          item.transferReason = {
+            reasonCode: item.transferReasonCode,
+            reasonDesc: item.transferReasonDesc,
+          };
+        }
+      }
       return response && response.data ? response.data : [];
     } catch (error) {
       console.error(error);

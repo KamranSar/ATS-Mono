@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { get, call } from 'vuex-pathify';
+  import { get, call, sync } from 'vuex-pathify';
   import TransferSearch from '@/components/Transfer/TransferSearch.vue';
   import TransferHeader from '@/components/Transfer/TransferHeader.vue';
   import TransferPanel from '@/components/Transfer/TransferPanel.vue';
@@ -75,16 +75,16 @@
                 : '',
           },
         };
-        this.transferData = await this.readTransfers(queryObj);
+        console.log({ queryObj });
+        const [responseData] = await this.readTransfers(queryObj);
+        this.transferData = responseData ? responseData : {};
+        // this.transferData = await this.readTransfers(queryObj);
       }
     },
     computed: {
+      ...sync('transfers', ['transferData']),
       ...get('app', ['loading']),
-      ...get('transfers', [
-        'somsOffender',
-        'transferData',
-        'selTransferReason',
-      ]),
+      ...get('transfers', ['somsOffender', 'selTransferReason']),
       ...get('schedules', ['selSchedule']),
     },
     methods: {

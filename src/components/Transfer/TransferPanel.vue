@@ -201,8 +201,9 @@
       schedule: '', // FIXME remove
     }),
     computed: {
-      ...sync('transfers', ['somsOffender', 'selTransferReason']),
+      ...sync('transfers', ['selTransferReason']),
       ...get('transfers', [
+        'somsOffender',
         'showSOMSData',
         'showHousing',
         'showPhysical',

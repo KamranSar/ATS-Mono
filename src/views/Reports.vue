@@ -232,7 +232,7 @@
                 ></v-select>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createBusSeatPDF">
+                <v-icon large color="primary" @click="createBusSeat">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -251,6 +251,7 @@
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
+  import cloneDeep from 'lodash.clonedeep';
 
   export default {
     name: 'Reports',
@@ -1318,6 +1319,97 @@
           console.error('create7344() exception: ', ex);
         }
       },
+
+      // getStartDate()
+      //
+      getStartDate() {},
+      // getEndData()
+      //
+      getEndDate() {},
+      // getScheduled(data)
+      //
+      getScheduled(data) {
+        console.log('getScheduled(): data => ', data);
+        // const level = {
+        //   securityLevel: '',
+        //   txtDesc: '',
+        //   numLevel: '',
+        //   numScheduled: 0,
+        //   numUnScheduled: 0,
+        //   numHold: 0,
+        //   numTotal: 0,
+        // };
+        // level.institution = data.institution;
+
+        // let arrInstitutions = [];
+        // for (let i of data) {
+        //   if (!arrInstitutions.includes(i.institution)) {
+        //     arrInstitutions.push(i.institution);
+        //   }
+        // }
+
+        // let arrSecLvl = [];
+        // for (let d of data) {
+        //   if (!arrSecLvl.includes(d.securityLevel)) {
+        //     arrSecLvl.push(d.securityLevel);
+        //   }
+        // }
+
+        // let lvl = Object.assign({}, level);
+        // for (let seclevel of arrSecLvl) {
+        //   for (let rec of data) {
+        //     if (lvl.securityLevel != rec.securityLevel) {
+        //       // Does one already exist
+        //       let newLevel = false;
+        //       for (let l of arrSecLvl) {
+        //         if (l.securityLevel === rec.securityLevel) {
+        //           lvl = l; // Grab existing record
+        //           newLevel = false;
+        //         } else {
+        //           lvl = Object.assign({}, level); // Create new record
+        //           newLevel = true;
+        //         }
+        //       }
+
+        //       if (rec.schedule) {
+        //         lvl.numScheduled++;
+        //       } else {
+        //         lvl.numUnScheduled++;
+        //       }
+
+        //       if (rec.transferHolds) {
+        //         if (
+        //           rec.transferDate > rec.transferHolds.effectiveDate &&
+        //           rec.transferDate < rec.transferHolds.expirationDate
+        //         )
+        //           lvl.numHold++;
+        //       }
+        //     }
+        //   }
+        // }
+      },
+      getUnscheduled() {},
+      getHolds() {},
+      getInstitutionId(location) {
+        if (!location) {
+          // FIXME write out an error message
+          return '';
+        }
+
+        console.log('getInstitutionId(): location => ', location);
+        console.log(
+          'getInstitutionId(): listOfInstitutions',
+          this.listOfInstitutions
+        );
+        for (let i of this.listOfInstitutions) {
+          // console.log('getInstitutionId(): i => ', i);
+          if (i.institutionName == location) {
+            return i.institutionId;
+          }
+        }
+
+        return 'NF';
+      },
       create7344PDF(data) {
         this.bError = false;
         console.log('create7344PDF(): data => ' + data);
@@ -1594,31 +1686,52 @@
         console.log('create7344PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
       },
-      async createBusSeatReport() {
+      async createBusSeat() {
         let filter = {
           query: {
-            $limit: 50,
             $sort: {
-              transferDate: 1,
+              origin: 1,
             },
-            transferDate: {
-              $gte: this.dateBegin,
-              $lte: this.dateEnd,
-            },
-            destination: this.selEndorsedTo,
+            // transferDate: {
+            //   $gte: this.dateBegin,
+            //   $lte: this.dateEnd,
+            // },
           },
         };
 
+        // const dtStart = this.getStartDate();
+        // const dtEnd = this.getEndDate();
+        // if (dtStart) {
+        //   filter.transferDate = {
+        //     $gte: dtStart,
+        //     $lte: dtEnd,
+        //   };
+        // }
+
+        if (this.selEndorsedTo) {
+          filter.query.destination = this.selEndorsedTo;
+        }
+        console.log('crateBusSeat(): filter => ', filter);
+
         try {
-          const response = await this.readTransfers(filter);
-          console.log('createBusSeatReport(): response => ', response);
+          const response = await departuresArrivalsSvc.find(filter);
+          // const response = await this.readTransfers(filter);
+          console.log(
+            'createBusSeat(): departuresArrivalsSvc.find(filter): response => ',
+            response
+          );
           if (!response) {
             alert('No Transfers found for requested date range.');
             return;
           }
-          this.n7334Transferring = response.data.length;
+          //this.n7334Transferring = response.data.length;
 
-          const level = {
+          const endorser = {
+            origin: '',
+            dest: '',
+            securityLevel: [],
+          };
+          const objLevel = {
             txtDesc: '',
             numLevel: '',
             numScheduled: 0,
@@ -1626,58 +1739,252 @@
             numHold: 0,
             numTotal: 0,
           };
-          const levels = [];
+
+          let arrInstitutions = [];
+          for (let i of response.data) {
+            if (!arrInstitutions.includes(i.origin)) {
+              arrInstitutions.push(i.origin);
+            }
+          }
+          console.log(
+            'createBusSeat(): arrInstitutions[] => ',
+            arrInstitutions
+          );
+
+          let slData = [];
+          let arrLevels = [];
+          for (let x of arrInstitutions) {
+            arrLevels = [];
+            // let obj = Object.assign({}, endorser);
+            let obj = cloneDeep(endorser);
+            obj.origin = x;
+            obj.destination = this.selectedInstitution;
+            for (let y of response.data) {
+              if (y.origin == x) {
+                if (!arrLevels.includes(y.securityLevel)) {
+                  arrLevels.push(y.securityLevel);
+                }
+              }
+            }
+
+            let s = 0;
+            let u = 0;
+            let h = 0;
+            for (let l of arrLevels) {
+              for (let z of response.data) {
+                if (z.origin == x) {
+                  if (z.securityLevel == l) {
+                    if (z.schedule) {
+                      s++;
+                    } else {
+                      u++;
+                    }
+                    if (z.transferHolds) {
+                      h++;
+                    }
+                  }
+                }
+              }
+              // let objlvl = Object.assign({}, objLevel);
+              let objlvl = cloneDeep(objLevel);
+              objlvl.txtDesc = l;
+              objlvl.numScheduled = s;
+              objlvl.numUnScheduled = u;
+              objlvl.numHold = h;
+              objlvl.total = s + u;
+              obj.securityLevel.push(Object.assign({}, objlvl));
+              console.log('createBusSeat(): objLevel => ', obj);
+            }
+
+            slData.push(Object.assign({}, obj));
+            console.log('createBusSeat(): slData => ', slData);
+          }
+
+          // const levels = [];
+
+          // Loop through response records
+          // add values to appropriate level objects
+          // for (let r of response.data) {
+          //   if (levels.length == 0) {
+          //     level.numLevel = r.securityLevel;
+          //   }
+          // }
+          // this.getScheduled(response.data);
 
           let data = [];
           let row = [];
           let obj = [];
-          for (let lvl of levels) {
-            // Column 1 - Level
+          let location = '';
+          for (let o of slData) {
+            if (o.origin != location) {
+              console.log('createBusSeat(): o => ', o);
+              location = o.origin;
+              let insId = this.getInstitutionId(location);
+              console.log('createBusSeat(): institutionId => ', insId);
+              const strText = ` ----- ${insId} - ${location} -----`;
+              // Insert Origin row
+              // Column 1 - Location string
+              obj = {
+                text: strText,
+                style: 'schEntry',
+                border: [false, false, false, false],
+                colSpan: 5,
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 2 - Empty
+              obj = {
+                text: ' ',
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 3 - Empty
+              obj = {
+                text: ' ',
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 4 - Empty
+              obj = {
+                text: ' ',
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 5 - Empty
+              obj = {
+                text: ' ',
+                style: 'schEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              data.push(row);
+              row = [];
+              console.log('createBusSeat(): data => ', data);
+            }
+
+            let nScheduled = 0;
+            let nUnscheduled = 0;
+            let nHolds = 0;
+            let nTotal = 0;
+            for (let sl of o.securityLevel) {
+              console.log('createBusSeat(): sl => ', sl);
+              // Column 1 - Level
+              obj = {
+                text: sl.txtDesc,
+                style: 'tblEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              console.log(
+                'createBusSeat(): sl.numScheduled => ',
+                sl.numScheduled
+              );
+
+              // Column 2 - Scheduled
+              nScheduled += sl.numScheduled;
+              console.log('createBusSeat(): nScheduled => ', nScheduled);
+              console.log(
+                'createBusSeat(): sl.numScheduled => ',
+                sl.numScheduled
+              );
+              let szTxt = sl.numScheduled.toString();
+              obj = {
+                text: szTxt,
+                style: 'tblEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 3 - Unscheduled
+              nUnscheduled += sl.numUnScheduled;
+              szTxt = sl.numUnScheduled.toString();
+              obj = {
+                text: szTxt,
+                style: 'tblEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 4 - Hold
+              nHolds += sl.numHold;
+              szTxt = sl.numHold.toString();
+              obj = {
+                text: szTxt,
+                style: 'tblEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              // Column 5 - Total
+              nTotal += nScheduled + nUnscheduled;
+              szTxt = nTotal.toString();
+              obj = {
+                text: szTxt,
+                style: 'tblEntry',
+                border: [false, false, false, false],
+              };
+              row.push(Object.assign({}, obj));
+
+              data.push(row);
+              row = [];
+              console.log('createBusSeat(): data => ', data);
+            }
+
+            // Insert Totals row
+            // Column 1 - Location string
             obj = {
-              text: lvl.numLevel,
-              style: 'schEntry',
+              text: 'Total',
+              style: 'tblEntry',
               border: [false, false, false, false],
             };
             row.push(Object.assign({}, obj));
 
-            // Column 2 - Scheduled
+            // Column 2 - Scheduled Total
             obj = {
-              text: lvl.numScheduled,
-              style: 'schEntry',
+              text: nScheduled.toString(),
+              style: 'tblEntry',
               border: [false, false, false, false],
             };
             row.push(Object.assign({}, obj));
 
-            // Column 3 - Unscheduled
+            // Column 3 - Unscheduled Totals
             obj = {
-              text: lvl.numUnScheduled,
-              style: 'schEntry',
+              text: nUnscheduled.toString(),
+              style: 'tblEntry',
               border: [false, false, false, false],
             };
             row.push(Object.assign({}, obj));
 
-            // Column 4 - Hold
+            // Column 4 - Hold Totals
             obj = {
-              text: lvl.numHold,
-              style: 'schEntry',
+              text: nHolds.toString(),
+              style: 'tblEntry',
               border: [false, false, false, false],
             };
             row.push(Object.assign({}, obj));
 
-            // Column 5 - Total
+            // Column 5 - Totals
             obj = {
-              text: lvl.numTotal,
-              style: 'schEntry',
+              text: nTotal.toString(),
+              style: 'tblEntry',
               border: [false, false, false, false],
             };
             row.push(Object.assign({}, obj));
 
             data.push(row);
             row = [];
+            console.log('createBusSeat(): data => ', data);
           }
-          // Fill empty rows to max 24 per page
-
-          console.log('createBusSeatReport(): data => ', data);
+          //   // Fill empty rows to max 24 per page
+          console.log('createBusSeat(): data => ', data);
           if (data) {
             this.createBusSeatPDF(data);
           } else {
@@ -1685,10 +1992,12 @@
             alert('Could not create CDCR Bus Seat Report PDF Document!');
           }
         } catch (ex) {
-          console.error('createBusSeatReport() exception: ', ex);
+          console.error('createBusSeat() exception: ', ex);
         }
       },
       createBusSeatPDF(data) {
+        console.log('createBusSeat(): data => ', data);
+
         const fileName = this.fileName + '.pdf';
         // playground requires you to assign document definition to a variable called dd
 
@@ -1709,6 +2018,8 @@
         // Test data
         //this.selInstitutions = 'DVI';
         this.reportTitle = 'BUS SEAT REPORT';
+        const from = this.selectedInstitution; // FIXME Replace with institutionId. selectedInstitution needs to be an object
+        const dest = this.selEndorsedTo ? this.selEndorsedTo : 'ALL';
 
         const dd = {
           defaultStyle: {
@@ -1744,10 +2055,11 @@
 
             schEntry: {
               bold: true,
-              fontSize: 9,
+              fontSize: 10,
             },
 
             tblEntry: {
+              alignment: 'center',
               fontSize: 10,
             },
           },
@@ -1767,7 +2079,7 @@
             {
               columns: [
                 {
-                  text: this.from,
+                  text: from,
                   style: 'header',
                 },
                 {
@@ -1822,7 +2134,7 @@
             {
               columns: [
                 {
-                  text: 'Endorsed To : ' + this.selEndorsedTo,
+                  text: 'Endorsed To : ' + dest,
                   style: 'header',
                 },
               ],
@@ -1889,88 +2201,88 @@
                           // margin: [ 2, 3, 2, 3],
                         },
                       ],
-                      // ...data,
-                      [
-                        {
-                          text: '----- ACP - Alternative Custody Program -----',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '',
-                          style: 'schEntry',
-                          border: [false, false, false, false],
-                        },
-                      ], // End of Row 1
-                      [
-                        {
-                          text: '1',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '0',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '2',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '0',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '2',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                      ], // End of Row 2
-                      [
-                        {
-                          text: 'Total',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '0',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '2',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '0',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                        {
-                          text: '2',
-                          style: 'tblEntry',
-                          border: [false, false, false, false],
-                        },
-                      ], // End of Row 2
+                      ...data,
+                      // [
+                      //   {
+                      //     text: '----- ACP - Alternative Custody Program -----',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '',
+                      //     style: 'schEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      // ], // End of Row 1
+                      // [
+                      //   {
+                      //     text: '1',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '0',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '2',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '0',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '2',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      // ], // End of Row 2
+                      // [
+                      //   {
+                      //     text: 'Total',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '0',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '2',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '0',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      //   {
+                      //     text: '2',
+                      //     style: 'tblEntry',
+                      //     border: [false, false, false, false],
+                      //   },
+                      // ], // End of Row 2
                     ], // End of Table Body
                     border: [false, false, false, false],
                   },
