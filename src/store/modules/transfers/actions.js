@@ -20,6 +20,7 @@ const actions = {
         state.transferData.offenderId = state.somsOffender.offenderId;
         state.transferData.firstName = state.somsOffender.firstName;
         state.transferData.lastName = state.somsOffender.lastName;
+        state.transferData.releaseDate = state.somsOffender.releaseDate;
         state.transferData.ethnicity = state.somsOffender.ethnicity;
         // state.transferData.caseFactor = state.somsOffender.caseFactor;
         state.transferData.securityLevel = state.somsOffender.securityLevel;
