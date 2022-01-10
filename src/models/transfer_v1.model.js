@@ -81,6 +81,7 @@ module.exports = function (app) {
       cdcrNumber: { type: String, required: true, index: { unique: false } },
       firstName: { type: String, required: false, default: '' },
       lastName: { type: String, required: false, default: '' },
+      releaseDate: { type: Date, required: false, default: null },
       ethnicity: { type: String, required: false, default: '' },
       housing: { type: String, required: false, default: '' },
       securityLevel: { type: String, required: false, default: '' },

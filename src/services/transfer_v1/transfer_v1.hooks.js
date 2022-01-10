@@ -42,6 +42,13 @@ module.exports = {
     all: [
       logSvcMsg(),
       alterItems((rec) => {
+        if (rec && rec.releaseDate) {
+          rec.releaseDate = new Date(rec.releaseDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          });
+        }
         if (rec && rec.transferDate) {
           rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
             year: 'numeric',

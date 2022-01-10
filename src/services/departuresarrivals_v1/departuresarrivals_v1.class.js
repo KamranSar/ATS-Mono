@@ -1,4 +1,4 @@
-const transfer_v1Service = require('../transfer_v1/transfer_v1.service');
+// const transfer_v1Service = require('../transfer_v1/transfer_v1.service');
 
 /* eslint-disable no-unused-vars */
 const serviceName = require('path').basename(__filename, '.class.js');
@@ -20,6 +20,8 @@ exports.ServiceClass = class ServiceClass {
     const transfers = [];
     params.paginate = false;
     const ret = await scheduleService.find(params);
+    console.log('departuresarrivals scheduleService.find(): response => ', ret);
+    console.log('departuresarrivals: params => ', params);
     for (let x of ret) {
       let filter = {
         paginate: false,
@@ -28,6 +30,8 @@ exports.ServiceClass = class ServiceClass {
         },
       };
       x.transfers = await transferService.find(filter);
+      console.log('departuresarrivals transferService.find(): response => ');
+      console.log('departuresarrivals: params => ', filter);
       for (let y of x.transfers) {
         y.transferId = y._id;
         const v = omit({ ...y, ...x }, ['_id', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'transfers', '__v']);
