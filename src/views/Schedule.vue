@@ -93,11 +93,17 @@
             <!-- <v-col cols="1" sm="2" lg="1" align-self="center">
             <v-text-field label="Via 2" v-model="via2"></v-text-field>
           </v-col> -->
-            <v-col cols="2" sm="4" lg="2" align-self="baseline">
+            <!-- <v-col cols="2" sm="4" lg="2" align-self="baseline">
               <v-text-field
                 label="Transfer Date"
                 v-model="editSchedule.transferDate"
               ></v-text-field>
+            </v-col> -->
+            <v-col cols="2" sm="4" lg="2" align-self="start">
+              <DatePicker
+                label="Transfer Date"
+                v-model="editSchedule.transferDate"
+              />
               <!-- <v-date-picker
               label="Transfer Date"
               v-model="transferDate"
@@ -303,8 +309,10 @@
   import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
   // import svcSchedule from '@/feathers/services/offender/details.service.js';
   import { get, sync, call } from 'vuex-pathify';
+  import DatePicker from '@/components/util/DatePicker.vue';
 
   export default {
+    components: { DatePicker },
     name: 'Schedules',
 
     data: () => ({

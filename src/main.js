@@ -6,6 +6,7 @@ import router from '@/router';
 import store from '@/store';
 import myApp from '@/config/myApp.js';
 import feathersClient from '@/feathers/index.js';
+import { VueMaskDirective } from 'v-mask';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 import { getNewToken } from '@/config/private/helpers/index.js';
 import '@mdi/font/css/materialdesignicons.css';
@@ -29,6 +30,7 @@ Vue.prototype.$feathers = feathersClient;
 Vue.prototype.$vuetify = vuetify;
 
 Vue.use(VueCompositionAPI);
+Vue.directive('mask', VueMaskDirective);
 
 new Vue({
   vuetify,
