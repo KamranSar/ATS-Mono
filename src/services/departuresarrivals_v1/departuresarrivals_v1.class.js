@@ -28,6 +28,7 @@ exports.ServiceClass = class ServiceClass {
         query: {
           scheduleId: x._id,
         },
+        headers: params.headers,
       };
       x.transfers = await transferService.find(filter);
       console.log('departuresarrivals transferService.find(): response => ');
