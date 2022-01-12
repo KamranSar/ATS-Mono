@@ -10,8 +10,9 @@ module.exports = function (app) {
   const { Schema } = mongooseClient;
   const schema = new Schema(
     {
+      title: { type: String, index: { unique: true }, required: true },
       origin: { type: String, required: true },
-      schedule: { type: String, index: { unique: true }, required: true },
+      originId: { type: String, required: true },
       destination: { type: String, required: true },
       // destination should be the same field as endorsedToSecurityLevel
       vias: [
