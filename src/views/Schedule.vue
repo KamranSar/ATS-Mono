@@ -66,7 +66,7 @@
             <v-col cols="1" sm="2" lg="1" align-self="baseline">
               <v-text-field
                 label="Schedule"
-                v-model="editSchedule.schedule"
+                v-model="editSchedule.title"
               ></v-text-field>
             </v-col>
             <v-col cols="2" sm="4" lg="2" align-self="baseline">
@@ -103,6 +103,7 @@
               <DatePicker
                 label="Transfer Date"
                 v-model="editSchedule.transferDate"
+                align="top"
               />
               <!-- <v-date-picker
               label="Transfer Date"
@@ -135,12 +136,10 @@
           </router-link>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="openSchedule(item, schedules)">
+          <v-icon small class="mr-2" @click="openSchedule(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteSchedule(item, schedule._id)">
-            mdi-delete
-          </v-icon>
+          <v-icon small @click="scheduleDelete(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>
           <span>No Results</span>
@@ -219,7 +218,7 @@
             <v-col cols="2" sm="3" lg="2" align-self="baseline">
               <v-text-field
                 label="Endorsement Date"
-                v-model="editEndorsement.endorsementDate"
+                v-model="editEndorsement.currentEndorsementDate"
                 readonly
               ></v-text-field>
             </v-col>
@@ -238,31 +237,6 @@
             <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
               <v-btn class="secondary ma-2 btns">Filter</v-btn>
             </v-col>
-            <v-dialog v-model="dialogDeleteEndorsement" max-width="500px">
-              <v-card>
-                <v-card-title class="headline">
-                  Are you sure you want to delete this inmate?
-                </v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="closeDeleteEndorsement"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="deleteEndorsementConfirm()"
-                  >
-                    Delete Inmate
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </v-toolbar>
         </template>
 
@@ -277,16 +251,10 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-icon
-            small
-            class="mr-2"
-            @click="openEndorsement(item, endorsements)"
-          >
+          <v-icon small class="mr-2" @click="openEndorsement(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteEndorsement(item, endInmate._id)">
-            mdi-delete
-          </v-icon>
+          <v-icon small @click="deleteEndorsement(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:item.print="{ item }">
           <router-link to="">
@@ -317,7 +285,7 @@
 
     data: () => ({
       loading: false,
-      scheduleName: '',
+      title: '',
       selDestination: '',
       selVias: '',
       transferDate: null,
@@ -327,7 +295,7 @@
       dialogEndorsement: false,
       dialogDeleteEndorsement: false,
       headersSchedule: [
-        { text: 'Schedule', value: 'schedule' },
+        { text: 'Schedule', value: 'title' },
         {
           text: 'Destination',
           align: 'start',
@@ -365,8 +333,9 @@
       editSchedule: {
         id: '',
         origin: '',
+        originId: '',
         destination: '',
-        schedule: '',
+        title: '',
         vias: [],
         transferDate: '',
         seats: 0,
@@ -374,8 +343,9 @@
       defaultSchedule: {
         id: '',
         origin: '',
+        originId: '',
         destination: '',
-        schedule: '',
+        title: '',
         vias: [],
         transferDate: '',
         seats: 0,
@@ -388,34 +358,52 @@
       editEndorsementIndex: -1,
       editEndorsement: {
         cdcrNumber: '',
-        lastName: '',
         firstName: '',
+        lastName: '',
         ethnicity: '',
         housing: '',
         securityLevel: '',
         tbCode: '',
         caseFactor: '',
+        releaseDate: null,
+        originalEndorsementDate: null,
+        currentEndorsementDate: null,
+        transferDate: null,
+        scheduleName: '',
+        scheduleId: '',
+        transferReasonCode: '',
+        transferReasonDesc: '',
         transferReason: {
           reasonCode: '',
           reasonDesc: '',
         },
-        endorsementDate: '',
+        cdcr135Comments: '',
+        inHouseRemarks: '',
         // endorsementDetails: '',
       },
       defaultEndorsement: {
         cdcrNumber: '',
-        lastName: '',
         firstName: '',
+        lastName: '',
         ethnicity: '',
         housing: '',
         securityLevel: '',
         tbCode: '',
         caseFactor: '',
+        releaseDate: null,
+        originalEndorsementDate: null,
+        currentEndorsementDate: null,
+        transferDate: null,
+        scheduleName: '',
+        scheduleId: '',
+        transferReasonCode: '',
+        transferReasonDesc: '',
         transferReason: {
           reasonCode: '',
           reasonDesc: '',
         },
-        endorsementDate: '',
+        cdcr135Comments: '',
+        inHouseRemarks: '',
         // endorsementDetails: '',
       },
     }),
@@ -440,20 +428,9 @@
         handler: 'getEndorsements',
         deep: true,
       },
-      dialogSchedule(val) {
-        val || this.closeSchedule();
-      },
-      dialogEndorsement(val) {
-        val || this.closeEndorsement();
-      },
-      dialogDeleteSchedule(val) {
-        val || this.closeScheduleDelete();
-      },
-      dialogDeleteEndorsement(val) {
-        val || this.closeEndorsementDelete();
-      },
     },
     methods: {
+      ...call('app', ['SET_SNACKBAR']),
       ...call('schedules', [
         'createSchedule',
         'readSchedules',
@@ -462,40 +439,13 @@
         'updateSchedule',
         'deleteSchedule',
       ]),
+      ...call('transfers', ['deleteTransfer']),
+      // Example of how to change name of method call
+      //   new name       :  existing name
+      // { DeleteSchedule: 'deleteSchedule' }
+
       ...call('transfers', ['saveForm']),
       ...call('app', ['SET_SNACKBAR']),
-      async getEndorsements(newVal, oldVal) {
-        function _getId(data) {
-          return data && data[0] && data[0]._id ? data[0]._id : '';
-        }
-        try {
-          const oldId = _getId(oldVal);
-          const newId = _getId(newVal);
-          if (newId && newId !== oldId) {
-            const response = await svcTransfers.find({
-              query: {
-                schedule: newVal[0].schedule,
-              },
-            });
-            if (response.data && response.data.length) {
-              this.endorsements = response.data;
-            } else {
-              this.endorsements = [];
-            }
-            console.log(
-              'getEndorsements(): this.endorsements => ',
-              this.endorsements
-            );
-          }
-        } catch (error) {
-          console.error('getEndorsements', error);
-          this.SET_SNACKBAR({
-            bottom: true,
-            center: true,
-            message: 'Failed to fetch endorsements, try again later.',
-          });
-        }
-      },
       async initialize() {
         this.endorsements = [];
         this.selSchedule = [];
@@ -503,138 +453,14 @@
           await this.readSchedules({
             query: { origin: this.selectedInstitution.institutionName },
           });
-        }
-      },
-      openSchedule(schedule) {
-        this.editSchedule = Object.assign({}, schedule);
-      },
-      deleteSchedule(schedule) {
-        const index = this.schedules.indexOf(schedule);
-        confirm('Are you sure you want to delete this schedule?') &&
-          this.schedules.splice(index, 1);
-      },
-      deleteScheduleConfirm() {
-        this.schedules.splice(this.editScheduleIndex, 1);
-        this.closeScheduleDelete();
-      },
-      closeDeleteSchedule() {
-        this.dialogDeleteSchedule = false;
-        this.search = false;
-        this.$nextTick(() => {
-          this.editSchedule = Object.assign({}, this.defaultSchedule);
-          this.editScheduleIndex = -1;
-        });
-      },
-      closeScheduleDelete() {
-        this.dialogScheduleDelete = false;
-        this.$nextTick(() => {
-          this.editSchedule = Object.assign({}, this.defaultSchedule);
-          this.editScheduleIndex = -1;
-        });
-      },
-      async saveSchedule() {
-        const self = this;
-        if (
-          !self.selectedInstitution ||
-          !self.editSchedule.schedule ||
-          !self.editSchedule.destination ||
-          !self.editSchedule.transferDate ||
-          self.editSchedule.seats == 0
-        ) {
-          alert('A required field is empty.');
-          return;
-        }
-        if (self.editSchedule._id) {
-          await self.updateSchedule(self.editSchedule);
         } else {
-          if (!self.editSchedule.origin) {
-            self.editSchedule.origin = self.selectedInstitution.institutionName;
-          }
-          console.log('saveSchedule(): origin: ', self.editSchedule.origin);
-
-          try {
-            await self.createSchedule(self.editSchedule);
-          } catch (e) {
-            console.error(e);
-          }
+          this.schedules = [];
         }
-        const dt = Date.now();
-        console.log(dt);
-        try {
-          await self.readSchedulesByOrigin({
-            institution: self.selectedInstitution.institutionName,
-            // dateObj: {
-            //   $gte: dt,
-            // },
-          });
-          self.editSchedule = Object.assign({}, self.defaultSchedule);
-        } catch (e) {
-          console.error(e);
-        }
-        // this.closeSchedule();
-      },
-      openEndorsement(endInmate) {
-        this.editEndorsementIndex = this.endorsements.indexOf(endInmate);
-        this.editEndorsement = Object.assign({}, endInmate);
-        this.dialogEndorsement = true;
-      },
-      deleteEndorsement(endInmate) {
-        const index = this.endorsements.indexOf(endInmate);
-        confirm('Are you sure you want to delete this Inmate?') &&
-          this.endorsements.splice(index, 1);
-      },
-      deleteEndorsementConfirm() {
-        this.endorsements.splice(this.editEndorsementIndex, 1);
-        this.closeEndorsementDelete();
-      },
-      closeDeleteEndorsement() {
-        this.dialogDeleteEndorsement = false;
-        this.search = false;
-        this.$nextTick(() => {
-          this.editEndorsement = Object.assign({}, this.defaultEndorsement);
-          this.editEndorsementIndex = -1;
-        });
-      },
-      closeEndorsement() {
-        this.dialogEndorsement = false;
-        this.$nextTick(() => {
-          this.editEndorsement = Object.assign({}, this.defaultEndorsement);
-          this.editEndorsementIndex = -1;
-        });
-      },
-      async saveEndorsement() {
-        console.log(
-          'saveEndorsement() this.editEndorsement => ',
-          this.editEndorsement
-        );
-        if (this.editEndorsementIndex > -1) {
-          Object.assign(
-            this.endorsements[this.editEndorsementIndex],
-            this.editEndorsement
-          );
-        } else {
-          this.endorsements.push(this.editEndorsement);
-        }
-
-        // Assign the endorsement to the transferData object
-        // And have saveForm save the transferData
-        this.transferData = this.editEndorsement;
-        await this.saveForm();
-        this.closeEndorsement();
-      },
-      closeEndorsementDelete() {
-        this.dialogEndorsementDelete = false;
-        this.$nextTick(() => {
-          this.editEndorsement = Object.assign({}, this.defaultEndorsement);
-          this.editEndorsementIndex = -1;
-        });
-      },
-      goHome() {
-        this.$router.push({
-          name: 'Home',
-        });
       },
       async getOffender() {
+        if (!this.editEndorsement.cdcrNumber) {
+          return;
+        }
         this.loading = true;
         try {
           const query = {
@@ -667,7 +493,7 @@
             this.editEndorsement.securityLevel = person.securityLevel;
             this.editEndorsement.tbCode = person.tbCode;
             // this.editEndorsement.caseFactor = person.caseFactor;
-            this.editEndorsement.endorsementDate = person.endorseDate;
+            this.editEndorsement.currentEndorsementDate = person.endorseDate;
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;
@@ -690,35 +516,211 @@
           }
         }
       },
+      goHome() {
+        this.$router.push({
+          name: 'Home',
+        });
+      },
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
+      },
+      openSchedule(item) {
+        //console.log('openSchedule(): schedule => ', item);
+        this.editSchedule = Object.assign({}, item);
+      },
+      async removeSchedule(id) {
+        if (id) {
+          try {
+            await this.deleteSchedule(id);
+            this.setSnackbar('Successfully deleted schedule!', 'success', 3000);
+          } catch (ex) {
+            console.error(ex);
+            this.setSnackbar(`Failed to delete schedule!`, 'error', 3000);
+            return false;
+          }
+        } else {
+          this.setSnackbar('Cannot remove schedule. id = ', id);
+          return false;
+        }
+
+        return true;
+      },
+      scheduleDelete(item) {
+        console.log('scheduleDelete(): item => ', item);
+        const index = this.schedules.indexOf(item);
+
+        let res = confirm('Are you sure you want to delete this schedule?');
+        if (res) {
+          res = this.removeSchedule(item._id);
+          if (res) {
+            this.schedules.splice(index, 1);
+          }
+        }
+      },
+      async saveSchedule() {
+        const self = this;
+        if (
+          !self.selectedInstitution ||
+          !self.editSchedule.title ||
+          !self.editSchedule.destination ||
+          !self.editSchedule.transferDate ||
+          self.editSchedule.seats == 0
+        ) {
+          alert('A required field is empty.');
+          return;
+        }
+        if (self.editSchedule._id) {
+          try {
+            await self.updateSchedule(self.editSchedule);
+            this.setSnackbar(`Successfully updated schedule!`, 'success', 3000);
+          } catch (e) {
+            console.error(e);
+            this.setSnackbar(`Failed to update schedule!`, 'error', 3000);
+            return;
+          }
+        } else {
+          if (!self.editSchedule.origin) {
+            self.editSchedule.origin = self.selectedInstitution.institutionName;
+          }
+          if (!self.editSchedule.originId) {
+            self.editSchedule.originId = self.selectedInstitution.institutionId;
+          }
+
+          try {
+            await self.createSchedule(self.editSchedule);
+            this.setSnackbar(`Successfully created schedule!`, 'success', 3000);
+          } catch (e) {
+            console.error(e);
+            this.setSnackbar(`Failed to create schedule!`, 'error', 3000);
+            return;
+          }
+        }
+        // Clear the edit boxes
+        self.editSchedule = Object.assign({}, self.defaultSchedule);
+
+        const dt = Date.now();
+        console.log(dt);
+        try {
+          await self.readSchedulesByOrigin({
+            institution: self.selectedInstitution.institutionName,
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      },
       transferReasonSelected(ctrl) {
         console.log('transferReasonSelected(): ', ctrl);
-        // console.log(
-        //   'transferReasonSelected(): this.selTransferReason.code => ',
-        //   this.selTransferReason.reasonCode
-        // );
-        // console.log(
-        //   'transferReasonSelected(): this.selTransferReason.desc => ',
-        //   this.selTransferReason.reasonDesc
-        // );
-
-        // this.editEndorsement.transferReason.reasonCode =
-        //   this.editEndorsement.transferReasonCode =
-        //     this.selTransferReason.reasonCode;
-        this.editEndorsement.transferReason.reasonCode =
+        if (ctrl) {
           this.editEndorsement.transferReasonCode = ctrl.reasonCode;
-        console.log(
-          'transferReasonSelected(): this.editEndorsement.transferReason.reasonCode => ',
-          this.editEndorsement.transferReason.reasonCode
-        );
-        // this.editEndorsement.transferReason.reasonDesc =
-        //   this.editEndorsement.transferReasonDesc =
-        //     this.selTransferReason.reasonDesc;
-        this.editEndorsement.transferReason.reasonDesc =
           this.editEndorsement.transferReasonDesc = ctrl.reasonDesc;
+        }
+      },
+      async getEndorsements(newVal, oldVal) {
+        console.log('getEndorsements(): newVal => ', newVal);
+        console.log('getEndorsements(): oldVal => ', oldVal);
+        function _getId(data) {
+          return data && data[0] && data[0]._id ? data[0]._id : '';
+        }
+        try {
+          const oldId = _getId(oldVal);
+          const newId = _getId(newVal);
+          if (newId && newId !== oldId) {
+            let filter = {
+              query: {
+                scheduleId: newVal[0]._id,
+              },
+            };
+            console.log('filter : ', filter);
+            console.log('newVal', newVal);
+            const response = await svcTransfers.find(filter);
+            if (response.data && response.data.length) {
+              this.endorsements = response.data;
+            } else {
+              this.endorsements = [];
+            }
+            // console.log(
+            //   'getEndorsements(): this.endorsements => ',
+            //   this.endorsements
+            // );
+          }
+        } catch (error) {
+          console.error('getEndorsements', error);
+          this.setSnackbar(
+            'Failed to fetch endorsements, try again later.',
+            'error',
+            3000
+          );
+        }
+      },
+      openEndorsement(item) {
+        this.editEndorsement = Object.assign({}, item);
+        this.selTransferReason = {
+          reasonCode: this.editEndorsement.transferReasonCode,
+          reasonDesc: this.editEndorsement.transferReasonDesc,
+        };
+      },
+      async removeEndorsement(id) {
+        if (id) {
+          try {
+            await this.deleteTransfer(id);
+            this.setSnackbar(
+              'Successfully deleted endorsement!',
+              'success',
+              3000
+            );
+          } catch (ex) {
+            console.error(ex);
+            this.setSnackbar(`Failed to delete endorsement!`, 'error', 3000);
+            return false;
+          }
+        } else {
+          this.setSnackbar('Cannot remove endorsement. id = ', id);
+          return false;
+        }
+
+        return true;
+      },
+      deleteEndorsement(item) {
+        console.log('deleteEndorsement(): item => ', item);
+        const index = this.endorsements.indexOf(item);
+
+        let res = confirm('Are you sure you want to delete this endorsement?');
+        if (res) {
+          res = this.removeEndorsement(item._id);
+          if (res) {
+            this.endorsements.splice(index, 1);
+            this.editEndorsement = Object.assign({}, this.defaultEndorsement);
+          }
+        }
+      },
+      async saveEndorsement() {
         console.log(
-          'transferReasonSelected(): this.editEndorsement.transferReason.reasonDesc => ',
-          this.editEndorsement.transferReason.reasonDesc
+          'saveEndorsement() this.editEndorsement => ',
+          this.editEndorsement
         );
+
+        // Assign the endorsement to the transferData object
+        // And have saveForm save the transferData
+        this.transferData = this.editEndorsement;
+
+        try {
+          await this.saveForm();
+          this.setSnackbar('Success!', 'success', 3000);
+          this.editEndorsement = Object.assign({}, this.defaultEndorsement);
+          this.selTransferReason = null;
+
+          // await this.getEndorsements(this.selSchedule, []);
+        } catch (ex) {
+          console.error(ex);
+          this.setSnackbar(`Failure!`, 'error', 3000);
+          return false;
+        }
       },
     },
   };

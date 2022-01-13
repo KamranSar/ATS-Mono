@@ -146,8 +146,8 @@
           label="Schedule"
           v-model="selSchedule[0]"
           :items="schedules"
-          item-text="schedule"
-          item-value="schedule"
+          item-text="title"
+          item-value="title"
           return-object
           class="my-2 pl-1"
           clearable
@@ -156,10 +156,14 @@
         ></v-select>
       </span>
       <span class="font-weight-bold pr-4">Vias: </span>
-      <span class="float-right">{{ schedule.vias }}</span>
+      <span class="float-right" v-if="selSchedule[0]">
+        {{ selSchedule[0].vias.join(',') }}
+      </span>
       <br />
       <span class="font-weight-bold pr-4">Transfer Date: </span>
-      <span class="float-right">{{ schedule.transferDate }}</span>
+      <span class="float-right" v-if="selSchedule[0]">
+        {{ selSchedule[0].transferDate }}
+      </span>
       <span class="mt-4">
         <v-select
           label="Specific Transfer Reason"
@@ -197,9 +201,7 @@
 
   export default {
     name: 'TransferPanel',
-    data: () => ({
-      schedule: '', // FIXME remove
-    }),
+    data: () => ({}),
     computed: {
       ...sync('transfers', ['selTransferReason']),
       ...get('transfers', [

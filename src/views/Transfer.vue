@@ -549,8 +549,8 @@
                   label="Schedule"
                   v-model="selSchedule"
                   :items="schedules"
-                  item-text="schedule"
-                  item-value="schedule"
+                  item-text="title"
+                  item-value="title"
                   return-object
                   class="my-2 pl-1"
                   clearable
@@ -757,7 +757,7 @@
         originalEndorsementDate: null,
         expirationEndorsementDate: null,
         transferDate: null,
-        schedule: '', // FIXME remove
+        title: '', // FIXME remove
         scheduleId: '', // TODO update
         transferReasonCode: '',
         transferReasonDesc: '',
@@ -860,7 +860,7 @@
         dateEndorsementExpiration: null,
         transferDate: null,
         isTransfered: false,
-        // schedule: '',
+        // title: '',
         isScheduled: false,
         transferReason: '',
         vias: [],
@@ -941,7 +941,7 @@
         scheduleId: 0,
         origin: '',
         destination: '',
-        schedule: '',
+        title: '',
         vias: [],
         transferDate: '',
         seats: 10,
@@ -1041,7 +1041,7 @@
             this.transferData.originalEndorsementDate =
               this.somsOffender.dateEndorsementOriginal;
             this.transferData.transferDate = this.schedule.transferDate;
-            this.transferData.schedule = this.schedule.schedule;
+            this.transferData.title = this.schedule.title;
             this.transferData.scheduleId = this.schedule._id;
             this.transferData.transferReasonCode =
               this.selTransferReason.reasonCode;
@@ -1167,8 +1167,8 @@
         // for (let i = 0; i < this.schedules.length; i++) {
         for (let schedule of this.schedules) {
           // if (this.schedules[i].schedule == this.selSchedule) {
-          if (schedule.schedule == this.selSchedule.schedule) {
-            this.transferData.schedule = schedule.schedule; // FIXME
+          if (schedule.title == this.selSchedule.title) {
+            this.transferData.title = schedule.title; // FIXME
             this.transferData.scheduleId = schedule._id;
             this.transferData.transferDate = schedule.transferDate;
             this.transferData.institution = schedule.origin;

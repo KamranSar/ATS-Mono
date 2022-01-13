@@ -32,6 +32,10 @@ const actions = {
         state.transferData.cdcr135Comments = state.somsOffender.comments; // TODO Need to read from ATS db also
         state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
 
+        console.log(
+          'readOffenderDetails(): state.transferData => ',
+          state.transferData
+        );
         router.push({
           name: 'Transfer Details',
           params: {
@@ -65,19 +69,7 @@ const actions = {
     }
   },
   async saveForm({ state, rootState, dispatch }) {
-    console.log(
-      'saveForm(): state.selTransferReason.reasonCode => ',
-      state.selTransferReason.reasonCode
-    );
-    console.log(
-      'saveForm(): state.selTransferReason.reasonDesc => ',
-      state.selTransferReason.reasonDesc
-    );
     console.log('saveForm(): state => ', state);
-    state.transferData.transferReasonCode =
-      state.transferData.transferReason.reasonCode;
-    state.transferData.transferReasonDesc =
-      state.transferData.transferReason.reasonDesc;
     if (
       rootState.schedules &&
       rootState.schedules.selSchedule &&
@@ -86,8 +78,8 @@ const actions = {
       const schedules = rootState.schedules.schedules;
       const selSchedule = rootState.schedules.selSchedule[0];
       for (let schedule of schedules) {
-        if (schedule.schedule == selSchedule.schedule) {
-          state.transferData.schedule = schedule.schedule; // FIXME
+        if (schedule.title == selSchedule.title) {
+          state.transferData.title = schedule.title;
           state.transferData.scheduleId = schedule._id;
           state.transferData.transferDate = schedule.transferDate;
           state.transferData.institution = schedule.origin;
@@ -96,27 +88,20 @@ const actions = {
       }
     }
 
-    // validate data
-    // call api to send data to db
-    // interrogate response - success or failure
     state.transferData.isScheduled = true;
 
     console.log('saveForm(): transferData => ', state.transferData);
-    if (state.transferData._id) {
-      await dispatch('updateTransfer', state.transferData);
-    } else {
-      await dispatch('createTransfer', state.transferData);
-      // show successful message
+    try {
+      if (state.transferData._id) {
+        await dispatch('updateTransfer', state.transferData);
+        console.log('savForm(): Successfully updated Transfer!');
+      } else {
+        await dispatch('createTransfer', state.transferData);
+        console.log('savForm(): Successfully created Transfer!');
+      }
+    } catch (ex) {
+      console.error(ex);
     }
-    // const response = await transfer.create(this.transferData);
-    // console.log('saveForm(): response => ', response);
-    // response._id;
-    // response.cdcrNumber;
-    // setTimeout(() => {
-    //   //   this.loading = false;
-    //   alert('Save completed successfully!');
-    //   // this.displayOffender = false;
-    // }, 1000);
   },
   // eslint-disable-next-line no-unused-vars
   createTransfer: async ({ state, rootState }, transferObj) => {
@@ -189,12 +174,12 @@ const actions = {
     }
   },
   // readTransfers By Date
-  readTransfersBySchedule: async ({ state, rootState }, schedule) => {
+  readTransfersBySchedule: async ({ state, rootState }, scheduleName) => {
     try {
       rootState.app.loading = true;
       const filter = {
         query: {
-          schedule: schedule,
+          name: scheduleName,
         },
       };
       state.transfers = await svcTransfers.find(filter);

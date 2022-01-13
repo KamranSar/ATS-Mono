@@ -53,10 +53,13 @@
     //   this.selTransferReason = null;
     // },
     async created() {
+      console.log('created()');
       if (this.$route && this.$route.params && this.$route.params.cdcrNumber) {
         this.somsCDCRNumber = this.$route.params.cdcrNumber;
+        console.log('created(): this.somsCDCRNumber => ', this.somsCDCRNumber);
         await this.readOffenderDetails(this.somsCDCRNumber);
 
+        console.log('created(): readOffenderDetails()');
         await this.readSchedules({
           query: {
             origin:
@@ -69,22 +72,29 @@
         const queryObj = {
           query: {
             cdcrNumber: this.somsCDCRNumber,
-            schedule:
+            scheduleId:
               this.selSchedule && this.selSchedule.length
-                ? this.selSchedule[0].schedule
+                ? this.selSchedule[0].scheduleId
                 : '',
           },
         };
         console.log({ queryObj });
         const [responseData] = await this.readTransfers(queryObj);
         this.transferData = responseData ? responseData : {};
+        console.log('created(): this.transferData => ', this.transferData);
+        this.selTransferReason = {
+          reasonCode: this.transferData.transferReasonCode,
+          reasonDesc: this.transferData.transferReasonDesc,
+        };
+        // if (this.transferData && this.transferData.length) {
+        // }
         // this.transferData = await this.readTransfers(queryObj);
       }
     },
     computed: {
-      ...sync('transfers', ['transferData']),
+      ...sync('transfers', ['transferData', 'selTransferReason']),
       ...get('app', ['loading']),
-      ...get('transfers', ['somsOffender', 'selTransferReason']),
+      ...get('transfers', ['somsOffender']),
       ...get('schedules', ['selSchedule']),
     },
     methods: {

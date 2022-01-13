@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <v-card flat class="mb-12">
     <v-card-title class="blue-grey lighten-4">
@@ -63,16 +64,28 @@
             <v-row no-gutters>
               <v-col cols="6" class="mx-4">
                 <v-select
+                  label="Schedule"
+                  v-model="selSchedule[0]"
+                  :items="schedules"
+                  item-text="title"
+                  item-value="title"
+                  return-object
+                  class="my-2 pl-1"
+                  clearable
+                  hide-details="true"
+                  dense
+                ></v-select>
+                <!-- <v-select
                   label="By Schedule"
                   placeholder="Schedule"
                   :items="schedules"
-                  item-text="schedule"
-                  item-value="schedule"
+                  item-text="title"
+                  item-value="title"
                   v-model="sel135Schedule"
                   class="vselectTxtColor"
                   dense
                   @change="onChangeSchedule"
-                ></v-select>
+                ></v-select> -->
               </v-col>
               <v-col cols="1" class="mx-4">
                 <v-icon large color="primary" @click="create135('schedule')">
@@ -132,6 +145,7 @@
                   <v-date-picker
                     v-model="dateBegin"
                     @input="dateBeginMenu = false"
+                    @change="onChangeBeginDate"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -187,16 +201,28 @@
             <v-row no-gutters>
               <v-col cols="6" class="mx-4">
                 <v-select
+                  label="Schedule"
+                  v-model="selSchedule[0]"
+                  :items="schedules"
+                  item-text="title"
+                  item-value="title"
+                  return-object
+                  class="my-2 pl-1"
+                  clearable
+                  hide-details="true"
+                  dense
+                ></v-select>
+                <!-- <v-select
                   label="By Schedule"
                   placeholder="Schedule"
                   :items="schedules"
-                  item-text="schedule"
-                  item-value="schedule"
+                  item-text="title"
+                  item-value="title"
                   v-model="sel134Schedule"
                   class="vselectTxtColor"
                   dense
                   @change="onChangeSchedule"
-                ></v-select>
+                ></v-select> -->
               </v-col>
               <v-col cols="1" class="mx-4">
                 <v-icon large color="primary" @click="create134">
@@ -261,7 +287,7 @@
       // selectedInstitution: '',
       // listOfInstitutions: [],
       schedule: [],
-      fileName: 'test',
+      // fileName: 'test',
       stateOf: 'STATE OF CALIFORNIA',
       agency: 'DEPARTMENT OF CORRECTIONS AND REHABILITATION',
       report135: 'CDCR 135 (Rev. 03/06)',
@@ -293,24 +319,26 @@
     }),
     computed: {
       ...sync('transfers', ['transfers']),
-      ...sync('schedules', ['schedules']),
+      ...sync('schedules', ['schedules', 'selSchedule']),
       ...sync('institutions', ['selectedInstitution']),
       ...get('institutions', ['listOfInstitutions']),
       ...get('users', ['loggedInUser']),
     },
     async mounted() {
       // await this.getInstitutions();
-      if (
-        this.loggedInUser &&
-        this.loggedInUser.somsinfo &&
-        this.loggedInUser.somsinfo.organizationName
-      ) {
-        this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
-        console.log('selectedInstitution: ', this.selectedInstitution);
-      }
-      await this.getSchedulesByInstitution();
+      // if (
+      //   this.loggedInUser &&
+      //   this.loggedInUser.somsinfo &&
+      //   this.loggedInUser.somsinfo.organizationName
+      // ) {
+      // this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
+      // console.log('selectedInstitution: ', this.selectedInstitution);
+      // }
+      // await this.getSchedulesByInstitution();
+      await this.readSchedulesByInstitution();
     },
     methods: {
+      ...call('app', ['SET_SNACKBAR']),
       ...call('schedules', [
         'readSchedules',
         'readSchedulesByDate',
@@ -329,36 +357,14 @@
           name: 'Home',
         });
       },
-      async getSchedulesByInstitution() {
-        this.loading = true;
-        console.log(
-          'getSchedulesByInstitution(): selectedInstitution => ',
-          this.selectedInstitution
-        );
-        try {
-          if (this.selectedInstitution) {
-            const response = await this.readSchedulesByOrigin({
-              institution: this.selectedInstitution,
-            });
-            if (response) {
-              this.schedules = response.data;
-            }
-          }
-        } catch (e) {
-          console.log('getSchedulesByInstitution(): ERROR => ', e);
-          this.schedules = [];
-        } finally {
-          this.loading = false;
-        }
-      },
-
-      onChangeSchedule(e) {
-        for (let s of this.schedules) {
-          if (s.schedule === e) {
-            this.schedule = s;
-            break;
-          }
-        }
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
       },
       // getMinDate()
       // sets the min date for DatePicker
@@ -391,8 +397,30 @@
         ctx.restore();
         return canvas.toDataURL();
       },
+      // getInstitutionId(location)
+      // Returns the abbreviated institution id
+      // for the provided location
+      getInstitutionId(location) {
+        if (!location) {
+          // FIXME write out an error message
+          return '';
+        }
 
-      // get135()
+        console.log('getInstitutionId(): location => ', location);
+        console.log(
+          'getInstitutionId(): listOfInstitutions',
+          this.listOfInstitutions
+        );
+        for (let i of this.listOfInstitutions) {
+          // console.log('getInstitutionId(): i => ', i);
+          if (i.institutionName == location) {
+            return i.institutionId;
+          }
+        }
+
+        return 'NF';
+      },
+      // create135()
       //
       async create135(param) {
         let filter = {
@@ -404,8 +432,10 @@
           },
         };
 
-        if (param == 'schedule' && this.sel135Schedule) {
-          filter.query.schedule = this.sel135Schedule;
+        // if (param == 'schedule' && this.sel135Schedule) {
+        //   filter.query.title = this.sel135Schedule;
+        if (param == 'schedule' && this.selSchedule) {
+          filter.query.scheduleId = this.selSchedule._id;
           // if (!this.schedule) {
           //   alert('Selected schedule = ', this.schedule);
           //   return;
@@ -422,10 +452,11 @@
         }
 
         try {
+          console.log('create135(): filter => ', filter);
           this.transfers = await this.readTransfers(filter);
           console.log('create135(): transfers => ', this.transfers);
           if (!this.transfers) {
-            alert('No Transfers found for schedule: ', this.schedule.schedule);
+            alert('No Transfers found for schedule: ', this.schedule.title);
             return;
           }
         } catch (ex) {
@@ -436,7 +467,7 @@
         // let row = [];
         const obj = {
           text: '',
-          style: 'tblCenter',
+          style: 'tblData',
           border: [false, false, false, false],
         };
         let num = 1;
@@ -486,47 +517,46 @@
       },
 
       // create135PDF()
-      //
+      // Creates a Transfer Record
+      // Creates a pdf file using PDFMake
+      // ********************************
       create135PDF(data) {
-        const fileName = this.fileName + '.pdf';
+        console.log('create135PDF(): data => ', data);
 
         let doc =
           this.stateOf +
           '\n' +
           this.report135 +
           '\nDISTRIBUTION PER INSTITUTION POLICY';
-        let title = 'TRANSFER RECORD';
+        let reportTitle = 'TRANSFER RECORD';
         let agency = this.agency;
 
         let dtLabel =
           'The following identified persons will be transferred this date';
         let xfrNum = this.schedules.length;
-        let scheduleName = this.schedules[0].schedule;
+        let title = this.schedules[0].title;
         let from = this.schedules[0].destination;
-        let to = this.schedules[0].origin;
+        let to = this.getInstitutionId(this.schedules[0].origin);
         let vias = this.schedules[0].vias;
         let xfrDate = this.schedules[0].transferDate;
 
+        let today = new Date().toISOString();
+        let fileName = `135_${today}.pdf`;
+        if (data.length === 1) {
+          fileName = `135_${this.cdcrNum}_${today}.pdf`;
+        } else {
+          fileName = `135_${this.schedules[0].title}_${today}.pdf`;
+        }
+
         let dd = {
           pageSize: 'LETTER',
-          pageMargins: [10, 10, 10, 16],
+          pageMargins: [10, 80, 10, 160],
           borders: [true, true, true, true],
-          footer: function (currentPage, pageCount) {
-            let footer = {
-              text: currentPage.toString() + ' of ' + pageCount,
-              fontSize: 9,
-              alignment: 'center',
-            };
-            return footer;
-          },
-
-          content: [
-            {
-              style: '',
+          header: function () {
+            //currentPage, pageCount, pageSize) {
+            let header = {
+              margin: [10, 10, 10, 10],
               table: {
-                headerRows: 4,
-                // dontBreakRows: true,
-                //keepWithHeaderRows: 1,
                 widths: ['auto', '*', 'auto'],
                 body: [
                   // Row 1 - Title
@@ -537,7 +567,7 @@
                       border: [true, true, false, true],
                     },
                     {
-                      text: title,
+                      text: reportTitle,
                       style: 'tblCenter',
                       border: [false, true, false, true],
                       // alignment: 'center',
@@ -575,7 +605,7 @@
                         body: [
                           [
                             {
-                              text: 'SCHEDULE:  ' + scheduleName,
+                              text: 'SCHEDULE:  ' + title,
                               style: 'hdrSchedule',
                               border: [false, false, false, false],
                             },
@@ -603,49 +633,21 @@
                     {},
                     [],
                   ],
-                  // Row 4 - Main Table
+                ],
+              },
+            };
+
+            return header;
+          },
+
+          footer: function (currentPage, pageCount) {
+            let footer = {
+              margin: [10, 10, 10, 10],
+              table: {
+                widths: ['35%', '30%', '35%'],
+                body: [
                   [
-                    {
-                      layout: 'lightHorizontalLines',
-                      table: {
-                        widths: [
-                          'auto',
-                          'auto',
-                          '*',
-                          'auto',
-                          'auto',
-                          'auto',
-                          'auto',
-                          'auto',
-                          'auto',
-                          'auto',
-                        ],
-                        body: [
-                          [
-                            { text: '#', style: 'tableHeader' },
-                            { text: 'CDCR Number', style: 'tableHeader' },
-                            { text: 'Name', style: 'tableHeader' },
-                            { text: 'Level', style: 'tableHeader' },
-                            { text: 'Housing', style: 'tableHeader' },
-                            { text: 'TB Cd', style: 'tableHeader' },
-                            { text: 'Ethnic', style: 'tableHeader' },
-                            { text: 'Case Factor', style: 'tableHeader' },
-                            {
-                              text: 'Specific Transfer Reason',
-                              style: 'tableHeader',
-                            },
-                            { text: 'Comments', style: 'tableHeader' },
-                          ],
-                          ...data,
-                        ],
-                      },
-                      colSpan: 3,
-                    },
-                    {},
-                    {},
-                  ],
-                  // Row 5 - Footer Row 1
-                  [
+                    // Row 1
                     {
                       text: 'PREPARED BY',
                       style: 'hdrSchedule',
@@ -666,10 +668,12 @@
                     },
                   ],
                   [
+                    // Row 2
                     {
                       text: 'Receipt of the above-name persons and their records is acknowledged',
                       fontSize: 8,
                       alignment: 'center',
+                      margin: [2, 2, 2, 16],
                       colSpan: 3,
                     },
                     {},
@@ -715,18 +719,87 @@
                       margin: [2, 2, 2, 16],
                     },
                   ],
-                  // [
-                  //   {
-                  //     text: function(currentPage, pageCount) {return currentPage.toString() + " of " + pageCount;},
-                  //     alignment: "right",
-                  //     style: "hdrSchedule",
-                  //     colSpan: 3,
-                  //   },
-                  //   {},
-                  //   {},
-                  // ],
+                  [
+                    {
+                      text: currentPage.toString() + ' of ' + pageCount,
+                      fontSize: 9,
+                      alignment: 'center',
+                      border: [false, false, false, false],
+                      colSpan: 3,
+                    },
+                    {},
+                    {},
+                  ],
                 ],
-                border: [true, true, true, true],
+              },
+            };
+
+            return footer;
+          },
+
+          content: [
+            {
+              style: '',
+              layout: {
+                // code from lightHorizontalLines:
+                hLineWidth: function (i, node) {
+                  if (i === 0 || i === node.table.body.length) {
+                    return 0;
+                  }
+                  return i === node.table.headerRows ? 2 : 1;
+                },
+                // eslint-disable-next-line no-unused-vars
+                vLineWidth: function (i) {
+                  return 0;
+                },
+                hLineColor: function (i) {
+                  return i === 1 ? 'black' : '#aaa';
+                },
+                paddingLeft: function (i) {
+                  return i === 0 ? 0 : 8;
+                },
+                paddingRight: function (i, node) {
+                  return i === node.table.widths.length - 1 ? 0 : 8;
+                },
+                // code for zebra style:
+                fillColor: function (i) {
+                  return i % 2 !== 0 ? '#F0F0F0' : null;
+                },
+              },
+              table: {
+                layout: 'lightHorizontalLines',
+                headerRows: 1,
+                widths: [
+                  'auto',
+                  'auto',
+                  'auto',
+                  'auto',
+                  'auto',
+                  'auto',
+                  'auto',
+                  'auto',
+                  'auto',
+                  '*',
+                ],
+                body: [
+                  [
+                    { text: '#', style: 'tblHeader' },
+                    { text: 'CDCR #', style: 'tblHeader' },
+                    { text: 'Name', style: 'tblHeader' },
+                    { text: 'Level', style: 'tblHeader' },
+                    { text: 'Housing', style: 'tblHeader' },
+                    { text: 'TB Cd', style: 'tblHeader' },
+                    { text: 'Ethnic', style: 'tblHeader' },
+                    { text: 'Case Factor', style: 'tblHeader' },
+                    {
+                      // text: 'Specific Transfer Reason',
+                      text: 'Reason',
+                      style: 'tblHeader',
+                    },
+                    { text: 'Comments', style: 'tblHeader' },
+                  ],
+                  ...data,
+                ],
               },
             },
           ],
@@ -734,11 +807,6 @@
             hdrLeft: {
               bold: true,
               fontSize: 7,
-            },
-            tblCenter: {
-              alignment: 'center',
-              bold: true,
-              fontSize: 10,
             },
             hdrRight: {
               alignment: 'right',
@@ -749,10 +817,18 @@
               bold: true,
               fontSize: 8,
             },
-            tableHeader: {
+            tblHeader: {
               bold: true,
               fontSize: 8,
               color: 'black',
+            },
+            tblData: {
+              fontSize: 9,
+            },
+            tblCenter: {
+              alignment: 'center',
+              bold: true,
+              fontSize: 10,
             },
           },
         };
@@ -761,21 +837,35 @@
         pdfMake.createPdf(dd).download(fileName);
         // alert("create135PDF() Done!");
       },
-
       // create134()
-      // Called by button clicked
       // Builds data for 134 report
       // Calls create134PDF(data) to generate PDF report file
-      //
+      // ********************************
       async create134() {
         // Get transfer for selected schedule
+        console.log('create134(): this.selSchedule => ', this.selSchedule[0]);
+        if (!this.selSchedule[0]) {
+          this.setSnackbar(
+            'Schedule not selected. Please select a schedule and try again.'
+          );
+          // let res = confirm(
+          //   'A schedule was not selected. Click OK to print an empty Transfer Check Sheet. Click CANCEL to select a schedule and try again.'
+          // );
+          // if (res) {
+          //   this.transfers = [];
+          //   goto;
+          //   EmptySheet;
+          // } else {
+          //   return;
+          // }
+        }
         let filter = {
           query: {
             $limit: 50,
             $sort: {
               lastName: 1,
             },
-            schedule: this.schedule.schedule,
+            scheduleId: this.selSchedule[0]._id,
           },
         };
 
@@ -783,7 +873,10 @@
           this.transfers = await this.readTransfers(filter);
           console.log('build134Data(): transfers => ', this.transfers);
           if (!this.transfers) {
-            alert('No Transfers found for schedule: ', this.schedule.schedule);
+            alert(
+              'No Transfers found for schedule: ',
+              this.selSchedule[0].title
+            );
             return;
           }
         } catch (ex) {
@@ -825,7 +918,35 @@
           data.push(row);
           row = [];
         }
+
+        // [EmptySheet];
         // Fill empty rows to max 24 per page
+        const nXfrs =
+          this.transfers.length < 24
+            ? this.transfers.length
+            : this.transfers.length % 24;
+        const len = 24 - nXfrs;
+        const emptyColumn = {
+          text: ' ',
+          style: 'tblLeft',
+          // border: [false, false, false, false],
+        };
+        const col2 = {
+          text: ' ',
+          style: 'tblLeft',
+          colSpan: 2,
+        };
+        for (let i = 0; i < len; i++) {
+          for (let n = 0; n < 20; n++) {
+            if (n !== 1) {
+              row.push(Object.assign({}, emptyColumn));
+            } else {
+              row.push(Object.assign({}, col2));
+            }
+          }
+          data.push(row);
+          row = [];
+        }
 
         console.log('create134(): data => ', data);
         if (data) {
@@ -835,19 +956,28 @@
           alert('Could not create CDCR 134 PDF Document!');
         }
       },
+      // create134PDF()
+      // Creates a Transfer Check Sheet
+      // Creates a pdf file using PDFMake
+      // ********************************
       create134PDF(data) {
-        const fileName = this.fileName + '.pdf';
+        console.log('create134PDF(): data => ' + data);
+
+        // const fileName = this.fileName + '.pdf';
+        let today = new Date().toISOString();
 
         let title = 'RECORDS TRANSFER CHECK SHEET';
         let txtOriginal = 'Original-Receiving Facility/Region Records';
         let txtCopy = 'Copy-Sending Facility/Region Records';
 
-        let txtDate = this.schedule.transferDate;
         let nXfer = this.transfers.length;
 
-        let from = this.schedule.origin;
-        let to = this.schedule.destination;
-        let vias = this.schedule.vias;
+        let from = this.selSchedule[0].origin;
+        let to = this.selSchedule[0].destination;
+        let vias = this.selSchedule[0].vias;
+        let txtDate = this.selSchedule[0].transferDate;
+
+        const fileName = `134_${from}_${today}.pdf`;
 
         let dd = {
           pageSize: 'LETTER',
@@ -1143,7 +1273,44 @@
         pdfMake.createPdf(dd).download(fileName);
         // alert("create134PDF() Done!");
       },
+      // create7344()
+      // Builds data for 7344 report
+      // Calls create7344PDF(data) to generate PDF report file
+      // ********************************
       async create7344() {
+        if (!this.selectedInstitution) {
+          console.log(
+            'create7344(): selectedInstitution => ',
+            this.selectedInstitution
+          );
+          this.setSnackbar('Please select an Instittution.', 'error', 3000);
+          return;
+        }
+
+        if (!this.dateBegin) {
+          console.log('create7344(): dateBegin => ', this.dateBegin);
+          this.setSnackbar('Please select a Begin date.', 'error', 3000);
+          return;
+        }
+
+        if (!this.dateEnd) {
+          console.log('create7344(): dateEnd => ', this.dateEnd);
+          this.setSnackbar('Please select a End date.', 'error', 3000);
+          return;
+        }
+
+        if (this.dateBegin > this.dateEnd) {
+          console.log(
+            `create7344(): dateBegin => ${this.dateBegin}. dateEnd => ${this.dateEnd}.`
+          );
+          this.setSnackbar(
+            'The date range is invalid. End date is earlier than Begin date. Please fix and try again.',
+            'error',
+            6000
+          );
+          return;
+        }
+
         // Get transfer for selected schedule
         let filter = {
           query: {
@@ -1155,6 +1322,7 @@
               $gte: this.dateBegin,
               $lte: this.dateEnd,
             },
+            origin: this.selectedInstitution.institutionName,
           },
         };
 
@@ -1162,7 +1330,7 @@
           // this.transfers = await this.readTransfers(filter);
           const response = await departuresArrivalsSvc.find(filter);
           console.log('create7344(): response => ', response);
-          if (!response) {
+          if (response.data.length == 0) {
             alert('No Transfers found for requested date range.');
             return;
           }
@@ -1173,14 +1341,15 @@
           let obj = [];
           let sch = '';
           for (let xfr of response.data) {
-            if (sch !== xfr.schedule) {
-              sch = xfr.schedule;
+            if (sch !== xfr.title) {
+              sch = xfr.title;
 
               // Column 1 - dashes
               obj = {
                 text: '-----',
                 style: 'schEntry',
                 border: [false, false, false, false],
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
@@ -1200,6 +1369,7 @@
                 style: 'schEntry',
                 border: [false, false, false, false],
                 colSpan: 2,
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
@@ -1207,14 +1377,16 @@
               obj = {
                 text: ' ',
                 border: [false, false, false, false],
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
               // Column 4 - Schedule
               obj = {
-                text: xfr.schedule,
+                text: xfr.title,
                 style: 'schEntry',
                 border: [false, false, false, false],
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
@@ -1223,6 +1395,7 @@
                 text: xfr.destination,
                 style: 'schEntry',
                 border: [false, false, false, false],
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
@@ -1231,6 +1404,7 @@
                 text: xfr.vias,
                 style: 'schEntry',
                 border: [false, false, false, false],
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
@@ -1239,6 +1413,7 @@
                 text: '-----',
                 style: 'schEntry',
                 border: [false, false, false, false],
+                fillColor: '#F0F0F0',
               };
               row.push(Object.assign({}, obj));
 
@@ -1307,7 +1482,19 @@
             row = [];
           }
           // Fill empty rows to max 24 per page
-
+          // const len = 20 - response.data.length;
+          // const emptyColumn = {
+          //   text: ' ',
+          //   style: 'tblEntry',
+          //   border: [false, false, false, false],
+          // };
+          // for (let i = 0; i < len; i++) {
+          //   for (let n = 0; n < 7; n++) {
+          //     row.push(Object.assign({}, emptyColumn));
+          //   }
+          //   data.push(row);
+          //   row = [];
+          // }
           console.log('create7344(): data => ', data);
           if (data) {
             this.create7344PDF(data);
@@ -1319,103 +1506,14 @@
           console.error('create7344() exception: ', ex);
         }
       },
-
-      // getStartDate()
-      //
-      getStartDate() {},
-      // getEndData()
-      //
-      getEndDate() {},
-      // getScheduled(data)
-      //
-      getScheduled(data) {
-        console.log('getScheduled(): data => ', data);
-        // const level = {
-        //   securityLevel: '',
-        //   txtDesc: '',
-        //   numLevel: '',
-        //   numScheduled: 0,
-        //   numUnScheduled: 0,
-        //   numHold: 0,
-        //   numTotal: 0,
-        // };
-        // level.institution = data.institution;
-
-        // let arrInstitutions = [];
-        // for (let i of data) {
-        //   if (!arrInstitutions.includes(i.institution)) {
-        //     arrInstitutions.push(i.institution);
-        //   }
-        // }
-
-        // let arrSecLvl = [];
-        // for (let d of data) {
-        //   if (!arrSecLvl.includes(d.securityLevel)) {
-        //     arrSecLvl.push(d.securityLevel);
-        //   }
-        // }
-
-        // let lvl = Object.assign({}, level);
-        // for (let seclevel of arrSecLvl) {
-        //   for (let rec of data) {
-        //     if (lvl.securityLevel != rec.securityLevel) {
-        //       // Does one already exist
-        //       let newLevel = false;
-        //       for (let l of arrSecLvl) {
-        //         if (l.securityLevel === rec.securityLevel) {
-        //           lvl = l; // Grab existing record
-        //           newLevel = false;
-        //         } else {
-        //           lvl = Object.assign({}, level); // Create new record
-        //           newLevel = true;
-        //         }
-        //       }
-
-        //       if (rec.schedule) {
-        //         lvl.numScheduled++;
-        //       } else {
-        //         lvl.numUnScheduled++;
-        //       }
-
-        //       if (rec.transferHolds) {
-        //         if (
-        //           rec.transferDate > rec.transferHolds.effectiveDate &&
-        //           rec.transferDate < rec.transferHolds.expirationDate
-        //         )
-        //           lvl.numHold++;
-        //       }
-        //     }
-        //   }
-        // }
-      },
-      getUnscheduled() {},
-      getHolds() {},
-      getInstitutionId(location) {
-        if (!location) {
-          // FIXME write out an error message
-          return '';
-        }
-
-        console.log('getInstitutionId(): location => ', location);
-        console.log(
-          'getInstitutionId(): listOfInstitutions',
-          this.listOfInstitutions
-        );
-        for (let i of this.listOfInstitutions) {
-          // console.log('getInstitutionId(): i => ', i);
-          if (i.institutionName == location) {
-            return i.institutionId;
-          }
-        }
-
-        return 'NF';
-      },
+      // create7344PDF()
+      // Creates a Advanced Transfer Notice
+      // Creates a pdf file using PDFMake
+      // ********************************
       create7344PDF(data) {
-        this.bError = false;
         console.log('create7344PDF(): data => ' + data);
 
-        const fileName = this.fileName + '.pdf';
-        // playground requires you to assign document definition to a variable called dd
+        // const fileName = this.fileName + '.pdf';
 
         const today = new Date();
         //console.log('new Date(): today', today);
@@ -1432,6 +1530,10 @@
 
         let paperType = 'LETTER';
         this.reportTitle = 'ADVANCE TRANSFER NOTICE';
+
+        const fileName = `7344_${
+          this.selectedInstitution.institutionId
+        }_${today.toISOString()}.pdf`;
 
         const dd = {
           defaultStyle: {
@@ -1523,7 +1625,9 @@
               columns: [
                 {
                   //text: 'Institutions Name: ' + this.selInstitutions,
-                  text: 'Institution Name: ' + this.selectedInstitution,
+                  text:
+                    'Institution Name: ' +
+                    this.selectedInstitution.institutionId,
                   style: 'header',
                   margin: [0, 8, 0, 0],
                 },
@@ -1597,13 +1701,13 @@
               columns: [
                 {
                   width: '*',
-                  //layout: 'lightHorizontalLines', // optional
-                  layout: {
-                    // eslint-disable-next-line
-                    fillColor: function (rowIndex, node, columnIndex) {
-                      return rowIndex % 2 === 0 ? '#F0F0F0' : null;
-                    },
-                  },
+                  layout: 'lightHorizontalLines', // optional
+                  // layout: {
+                  //   // eslint-disable-next-line
+                  //   fillColor: function (rowIndex, node, columnIndex) {
+                  //     return rowIndex % 2 === 0 ? '#F0F0F0' : null;
+                  //   },
+                  //},
                   table: {
                     // headers are automatically repeated if the table spans over multiple pages
                     // you can declare how many rows should be treated as headers
@@ -1686,6 +1790,10 @@
         console.log('create7344PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
       },
+      // createBusSeat()
+      // Builds data for Bus Seat report
+      // Calls createBusSeatPDF(data) to generate PDF report file
+      // ********************************
       async createBusSeat() {
         let filter = {
           query: {
@@ -1774,7 +1882,7 @@
               for (let z of response.data) {
                 if (z.origin == x) {
                   if (z.securityLevel == l) {
-                    if (z.schedule) {
+                    if (z.title) {
                       s++;
                     } else {
                       u++;
@@ -1995,11 +2103,14 @@
           console.error('createBusSeat() exception: ', ex);
         }
       },
+      // createBusSeatPDF()
+      // Creates a Bus Seat report
+      // Creates a pdf file using PDFMake
+      // ********************************
       createBusSeatPDF(data) {
         console.log('createBusSeat(): data => ', data);
 
-        const fileName = this.fileName + '.pdf';
-        // playground requires you to assign document definition to a variable called dd
+        // const fileName = this.fileName + '.pdf';
 
         const today = new Date();
         const m = today.getMonth() + 1;
@@ -2020,6 +2131,8 @@
         this.reportTitle = 'BUS SEAT REPORT';
         const from = this.selectedInstitution; // FIXME Replace with institutionId. selectedInstitution needs to be an object
         const dest = this.selEndorsedTo ? this.selEndorsedTo : 'ALL';
+
+        const fileName = `BusSeat_${dest}_${today.toISOString()}.pdf`;
 
         const dd = {
           defaultStyle: {
@@ -2297,12 +2410,22 @@
 
         // alert("createBusSeatPDF() Done!");
       },
+      // readSchedulesByInstitution
+      // Retrieves the schedules based on
+      // the institution selected
       async readSchedulesByInstitution() {
-        await this.readSchedules({
-          query: {
-            origin: this.selectedInstitution,
-          },
-        });
+        let filter = {};
+        if (this.selectedInstitution) {
+          filter = {
+            query: {
+              origin: this.selectedInstitution.institutionName,
+            },
+          };
+        }
+        await this.readSchedules(filter);
+      },
+      onChangeBeginDate(ctrl) {
+        console.log('onChangeBeginDate(): ctrl => ', ctrl);
       },
     },
     watch: {

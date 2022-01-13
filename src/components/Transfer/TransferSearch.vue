@@ -48,6 +48,7 @@
 
 <script>
   import { sync, call } from 'vuex-pathify';
+  import transferModel from '@/models/transferModel.js';
 
   export default {
     name: 'TransferSearch',
@@ -60,6 +61,8 @@
     data: () => ({}),
     computed: {
       ...sync('app', ['loading']),
+      ...sync('transfers', ['transferData', 'selTransferReason']),
+      ...sync('schedules', ['selSchedule']),
       somsCDCRNumber: {
         get() {
           return this.value;
@@ -73,6 +76,9 @@
       ...call('ap', ['SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails']),
       async searchOffender() {
+        this.transferData = transferModel();
+        this.selSchedule = [];
+        this.selTransferReason = {};
         await this.readOffenderDetails(this.somsCDCRNumber);
       },
     },

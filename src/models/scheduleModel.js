@@ -5,16 +5,18 @@
  */
 function scheduleModel({
   origin = '',
+  originId = '',
   destination = '',
-  schedule = '',
+  title = '',
   vias = [],
   transferDate = null,
   seats = 0,
 } = {}) {
   return {
     origin,
+    originId,
     destination,
-    schedule,
+    title,
     vias,
     transferDate,
     seats,
