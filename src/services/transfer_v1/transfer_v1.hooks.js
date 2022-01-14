@@ -33,7 +33,7 @@ module.exports = {
     ],
     get: [redisCache.before()],
     create: [setUserID('updatedBy', 'createdBy'), setNow('createdAt'), setNow('updatedAt')],
-    update: [setUserID('updatedBy'), setNow('updatedAt')],
+    update: [setUserID('updatedBy'), setNow('updatedAt'), discard('createdAt', 'createdBy')],
     patch: [setUserID('updatedBy'), setNow('updatedAt'), discard('createdAt', 'createdBy')],
     remove: [],
   },

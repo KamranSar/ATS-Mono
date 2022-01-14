@@ -1,6 +1,6 @@
 // mongoseservice_v1-model.js - A mongoose model
 //
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
@@ -24,6 +24,8 @@ module.exports = function (app) {
       transferDate: { type: Date, required: true },
       seats: { type: Number, default: 0 },
       remainingSeats: { type: Number, default: 0 },
+      // createdBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
+      // updatedBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
     },
     {
       timestamps: true,

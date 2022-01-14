@@ -2,7 +2,7 @@ const { authenticate } = require('@feathersjs/authentication').hooks;
 const redisCache = require('feathers-redis-cache').hooks;
 const { discard, setNow, iff, alterItems, isProvider } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
-const { logSvcMsg, setUserIDAsString, fixQueryType } = require('cdcrhooks');
+const { logSvcMsg, setUserID, fixQueryType } = require('cdcrhooks');
 const server = require('../../service-config').server;
 const authActive = process.env.NODE_ENV != 'development' || server.authActive ? true : false;
 
@@ -39,9 +39,9 @@ module.exports = {
       redisCache.before(),
     ],
     get: [redisCache.before()],
-    create: [setUserIDAsString('updatedBy'), setNow('createdAt'), setNow('updatedAt')],
-    update: [setUserIDAsString('updatedBy'), setNow('updatedAt'), discard('createdAt')],
-    patch: [setUserIDAsString('updatedBy'), setNow('updatedAt'), discard('createdAt')],
+    create: [setUserID('updatedBy', 'createdBy'), setNow('createdAt'), setNow('updatedAt')],
+    update: [setUserID('updatedBy'), setNow('updatedAt'), discard('createdAt', 'createdBy')],
+    patch: [setUserID('updatedBy'), setNow('updatedAt'), discard('createdAt', 'createdBy')],
     remove: [],
   },
 
