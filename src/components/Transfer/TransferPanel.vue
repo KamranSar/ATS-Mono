@@ -9,12 +9,12 @@
         <template v-for="(field, index) in SOMS_DATA_FIELDS">
           <v-divider :key="index" v-if="field.divider" class="pb-2"></v-divider>
           <template v-else>
-            <span :key="'label-' + index" class="font-weight-bold pr-4">{{
-              field.label
-            }}</span>
-            <span :key="'data-' + index" class="float-right">{{
-              field.data
-            }}</span>
+            <span :key="'label-' + index" class="font-weight-bold pr-4">
+              {{ field.label }}
+            </span>
+            <span :key="'data-' + index" class="float-right">
+              {{ field.data }}
+            </span>
             <br :key="'break-' + index" />
           </template>
         </template>
@@ -81,7 +81,7 @@
           <v-divider
             v-if="comment.divider"
             :key="'divider-' + index"
-            class="pb-2"
+            class="pb-1"
           ></v-divider>
           <v-textarea
             v-else
@@ -92,6 +92,7 @@
             no-resize
             rows="3"
             dense
+            @blur="updateComments"
           ></v-textarea>
         </template>
       </div>
@@ -156,12 +157,12 @@
         ></v-select>
       </span>
       <span class="font-weight-bold pr-4">Vias: </span>
-      <span class="float-right" v-if="selSchedule[0]">
+      <span class="float-right" v-if="selSchedule && selSchedule[0]">
         {{ selSchedule[0].vias.join(',') }}
       </span>
       <br />
       <span class="font-weight-bold pr-4">Transfer Date: </span>
-      <span class="float-right" v-if="selSchedule[0]">
+      <span class="float-right" v-if="selSchedule && selSchedule[0]">
         {{ selSchedule[0].transferDate }}
       </span>
       <span class="mt-4">
@@ -176,6 +177,7 @@
           hide-details="true"
           clearable
           dense
+          @change="transferReasonSelected"
         >
           <template v-slot:item="{ item, on, attrs }">
             <v-list-item v-on="on" v-bind="attrs">
@@ -203,7 +205,7 @@
     name: 'TransferPanel',
     data: () => ({}),
     computed: {
-      ...sync('transfers', ['selTransferReason']),
+      ...sync('transfers', ['transferData', 'selTransferReason']),
       ...get('transfers', [
         'somsOffender',
         'showSOMSData',
@@ -236,6 +238,27 @@
         return ENDORSEMENT_FIELDS(this.somsOffender);
       },
     },
-    methods: {},
+    methods: {
+      updateComments(ctrl) {
+        console.log('updateComments(): ctrl', ctrl);
+        console.log('updateComments(): transferData =>', this.transferData);
+        if (ctrl) {
+          console.log('updateComments(): transferData =>', this.transferData);
+          this.transferData.comments = ctrl.data;
+        }
+        console.log('updateComments(): transferData =>', this.transferData);
+      },
+      transferReasonSelected(ctrl) {
+        console.log('transferReasonSelected(): ctrl => ', ctrl);
+        console.log(
+          'transferReasonSelected(): transferData =>',
+          this.transferData
+        );
+        if (ctrl) {
+          this.transferData.transferReasonCode = ctrl.reasonCode;
+          this.transferData.transferReasonDesc = ctrl.reasonDesc;
+        }
+      },
+    },
   };
 </script>

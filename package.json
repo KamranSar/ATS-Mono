@@ -22,7 +22,7 @@
     "new": "hygen new"
   },
   "dependencies": {
-    "@azure/msal-browser": "^2.20.0",
+    "@azure/msal-browser": "^2.21.0",
     "@feathersjs/authentication-client": "^4.5.11",
     "@feathersjs/feathers": "^4.5.11",
     "@feathersjs/rest-client": "^4.5.11",

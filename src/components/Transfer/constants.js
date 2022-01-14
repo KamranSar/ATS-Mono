@@ -1,3 +1,13 @@
+// function getSecLvl(somsOffender) {
+//   console.log('getSecLvl(): somsOffender => ', somsOffender);
+//   console.log(
+//     'getSecLvl(): somsOffender.securityLevel => ',
+//     somsOffender.securityLevel
+//   );
+//   return somsOffender && somsOffender.securityLevel
+//     ? somsOffender.securityLevel
+//     : '';
+// }
 const SOMS_DATA_FIELDS = (somsOffender) => [
   {
     label: 'CDCR Number:',
@@ -34,7 +44,7 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
   },
   {
     label: 'Security Level:',
-    value:
+    data:
       somsOffender && somsOffender.securityLevel
         ? somsOffender.securityLevel
         : '',
@@ -69,10 +79,7 @@ const COMMENT_FIELDS = (somsOffender) => [
   },
   {
     label: 'CDC 135/Status Report Comments',
-    data:
-      somsOffender && somsOffender.cdcr135Comments
-        ? somsOffender.cdcr135Comments
-        : '',
+    data: somsOffender && somsOffender.comments ? somsOffender.comments : '',
   },
   {
     label: 'In-House Remarks',

@@ -13,7 +13,10 @@ const actions = {
         },
       };
 
+      console.log('readOffenderDetails(): query => ', query);
       const response = await somsOffender.find(query);
+      console.log('readOffenderDetails(): response => ', response);
+
       if (response && response.data && response.data.length) {
         state.somsOffender = response.data[0];
         state.transferData.cdcrNumber = state.somsOffender.cdcrNumber;
@@ -23,13 +26,14 @@ const actions = {
         state.transferData.releaseDate = state.somsOffender.releaseDate;
         state.transferData.ethnicity = state.somsOffender.ethnicity;
         // state.transferData.caseFactor = state.somsOffender.caseFactor;
+        state.transferData.housing = state.somsOffender.housingArea;
         state.transferData.securityLevel = state.somsOffender.securityLevel;
         state.transferData.tbCode = state.somsOffender.tbCode;
         state.transferData.currentEndorsementDate =
           state.somsOffender.endorseDate;
         state.transferData.originalEndorsementDate =
           state.somsOffender.dateEndorsementOriginal;
-        state.transferData.cdcr135Comments = state.somsOffender.comments; // TODO Need to read from ATS db also
+        state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
         state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
 
         console.log(
@@ -70,32 +74,31 @@ const actions = {
   },
   async saveForm({ state, rootState, dispatch }) {
     console.log('saveForm(): state => ', state);
-    if (
-      rootState.schedules &&
-      rootState.schedules.selSchedule &&
-      rootState.schedules.selSchedule.length
-    ) {
+    if (rootState.schedules && rootState.schedules.selSchedule[0]) {
       const schedules = rootState.schedules.schedules;
       const selSchedule = rootState.schedules.selSchedule[0];
       for (let schedule of schedules) {
+        console.log('saveForm(): schedule => ', schedule);
         if (schedule.title == selSchedule.title) {
           state.transferData.title = schedule.title;
           state.transferData.scheduleId = schedule._id;
           state.transferData.transferDate = schedule.transferDate;
-          state.transferData.institution = schedule.origin;
+          // state.transferData.institution = schedule.origin;
           break;
         }
       }
+    } else {
+      console.log('saveForm(): rootState.schedules => ', rootState.schedules);
     }
-
-    state.transferData.isScheduled = true;
 
     console.log('saveForm(): transferData => ', state.transferData);
     try {
+      // if (state.transferData._id) {
       if (state.transferData._id) {
         await dispatch('updateTransfer', state.transferData);
         console.log('savForm(): Successfully updated Transfer!');
       } else {
+        state.transferData.isScheduled = true;
         await dispatch('createTransfer', state.transferData);
         console.log('savForm(): Successfully created Transfer!');
       }
@@ -124,6 +127,7 @@ const actions = {
     try {
       rootState.app.loading = true;
       const response = await svcTransfers.find(queryObj);
+      console.log('readTransfers(): response => ', response);
       if (response && response.data) {
         for (let item of response.data) {
           item.transferReason = {
@@ -194,6 +198,7 @@ const actions = {
   updateTransfer: async ({ state, rootState }, transferObj) => {
     try {
       rootState.app.loading = true;
+      console.log('updateTransfer(): transferObj => ', transferObj);
       await svcTransfers.update(transferObj._id, transferObj);
     } catch (error) {
       return error;

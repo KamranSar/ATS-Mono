@@ -572,7 +572,7 @@
           obj.text = xfr.transferReasonCode;
           row.push(Object.assign({}, obj));
           // Column 10 - Comments
-          obj.text = xfr.cdcr135Comments;
+          obj.text = xfr.comments;
           row.push(Object.assign({}, obj));
 
           data.push(row);

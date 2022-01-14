@@ -291,7 +291,7 @@
                 <v-divider class="pb-2"></v-divider>
                 <v-textarea
                   label="CDC 135/Status Report Comments"
-                  v-model="transferData.cdcr135Comments"
+                  v-model="transferData.comments"
                   outlined
                   no-resize
                   rows="3"
@@ -579,7 +579,7 @@
                   hide-details="true"
                   clearable
                   dense
-                  @change="transferReasonSelected"
+                  @change="transferReasonSelected2"
                 >
                   <template v-slot:item="{ item, on, attrs }">
                     <v-list-item v-on="on" v-bind="attrs">
@@ -761,7 +761,7 @@
         scheduleId: '', // TODO update
         transferReasonCode: '',
         transferReasonDesc: '',
-        cdcr135Comments: '',
+        comments: '',
         inHouseRemarks: '',
         isTransferred: false,
         isScheduled: false,
@@ -864,7 +864,7 @@
         isScheduled: false,
         transferReason: '',
         vias: [],
-        cdcr135Comments: '',
+        comments: '',
         inHouseRemarks: '',
       },
       selEndorsedTo: '',
@@ -1047,7 +1047,7 @@
               this.selTransferReason.reasonCode;
             this.transferData.transferReasonDesc =
               this.selTransferReason.reasonDesc;
-            this.transferData.cdcr135Comments = this.somsOffender.comments; // TODO Need to read from ATS db also
+            this.transferData.comments = this.somsOffender.comments; // TODO Need to read from ATS db also
             this.transferData.inHouseRemarks = this.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
             setTimeout(() => {
               this.loading = false;
@@ -1177,15 +1177,13 @@
         }
       },
       // transferReasonSelected
-      transferReasonSelected() {
-        console.log(
-          'transferReasonSelected(): reason => ',
-          this.selTransferReason
-        );
-        this.transferData.transferReasonCode =
-          this.selTransferReason.reasonCode;
-        this.transferData.transferReasonDesc =
-          this.selTransferReason.reasonDesc;
+      transferReasonSelected2(ctrl) {
+        debugger;
+        console.log('transferReasonSelected(): ', ctrl);
+        if (ctrl) {
+          this.transferData.transferReasonCode = ctrl.reasonCode;
+          this.transferData.transferReasonDesc = ctrl.reasonDesc;
+        }
       },
       // Cancel Form
       cancelForm() {

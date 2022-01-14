@@ -377,7 +377,7 @@
           reasonCode: '',
           reasonDesc: '',
         },
-        cdcr135Comments: '',
+        comments: '',
         inHouseRemarks: '',
         // endorsementDetails: '',
       },
@@ -402,7 +402,7 @@
           reasonCode: '',
           reasonDesc: '',
         },
-        cdcr135Comments: '',
+        comments: '',
         inHouseRemarks: '',
         // endorsementDetails: '',
       },
@@ -715,7 +715,7 @@
           this.editEndorsement = Object.assign({}, this.defaultEndorsement);
           this.selTransferReason = null;
 
-          // await this.getEndorsements(this.selSchedule, []);
+          await this.getEndorsements(this.selSchedule, []);
         } catch (ex) {
           console.error(ex);
           this.setSnackbar(`Failure!`, 'error', 3000);

@@ -1,6 +1,7 @@
 // This example module wraps around a Feathers service
 import service from '@/feathers/services/institution/institution.service.js';
 import findAll from '@/feathers/helpers/findAll.js';
+// eslint-disable-next-line no-unused-vars
 import { defaultAdminRole } from '@/config/myApp.js';
 import { make } from 'vuex-pathify';
 const getDefaultState = () => {
@@ -18,6 +19,7 @@ const mutations = {
 };
 const actions = {
   ...make.actions(state),
+  // eslint-disable-next-line no-unused-vars
   getInstitutions: async ({ state, rootState, rootGetters }) => {
     {
       try {

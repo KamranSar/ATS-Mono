@@ -23,6 +23,7 @@ const actions = {
       rootState.app.loading = true;
       const response = await findAll(svcSchedules, queryObj);
       state.schedules = response.data;
+      return response && response.data ? response.data : [];
     } catch (error) {
       return error;
     } finally {

@@ -48,54 +48,107 @@
     data: () => ({
       somsCDCRNumber: '',
     }),
-    // beforeDestroy() {
-    //   this.selSchedule = [];
-    //   this.selTransferReason = null;
-    // },
     async created() {
       console.log('created()');
       if (this.$route && this.$route.params && this.$route.params.cdcrNumber) {
         this.somsCDCRNumber = this.$route.params.cdcrNumber;
-        console.log('created(): this.somsCDCRNumber => ', this.somsCDCRNumber);
-        await this.readOffenderDetails(this.somsCDCRNumber);
+        console.log(
+          'TransferDetails:created(): this.somsCDCRNumber => ',
+          this.somsCDCRNumber
+        );
+        try {
+          await this.readOffenderDetails(this.somsCDCRNumber);
+        } catch (ex) {
+          console.log(
+            'TransferDetails.vue:created(): readOffenderDetails() exception => ',
+            ex
+          );
+        }
 
-        console.log('created(): readOffenderDetails()');
-        await this.readSchedules({
-          query: {
-            origin:
-              this.somsOffender && this.somsOffender.institutionName
-                ? this.somsOffender.institutionName
-                : '',
-          },
-        });
+        try {
+          const queryObj = {
+            query: {
+              cdcrNumber: this.somsCDCRNumber,
+            },
+          };
+          console.log('created(): queryObj => ', { queryObj });
+          const [responseData] = await this.readTransfers(queryObj);
+          console.log('created(): responseData => ', responseData);
+          if (responseData) {
+            this.transferData._id = responseData._id;
+            this.transferData.scheduleId = responseData.scheduleId;
+            this.transferData.isScheduled = responseData.isScheduled;
+            this.transferData.transferReasonCode =
+              responseData.transferReasonCode &&
+              this.transferData.transferReasonCode !=
+                responseData.transferReasonCode
+                ? responseData.transferReasonCode
+                : this.transferData.transferReasonCode;
+            this.transferData.transferReasonDesc =
+              responseData.transferReasonDesc &&
+              this.transferData.transferReasonDesc !=
+                responseData.transferReasonDesc
+                ? responseData.transferReasonDesc
+                : this.transferData.transferReasonDesc;
+          }
+          console.log('created(): this.transferData => ', this.transferData);
+          this.selTransferReason = {
+            reasonCode: this.transferData.transferReasonCode,
+            reasonDesc: this.transferData.transferReasonDesc,
+          };
+        } catch (ex) {
+          console.log(
+            'TransferDetails.vue:created():readTransfers() exception => ',
+            ex
+          );
+        }
 
-        const queryObj = {
-          query: {
-            cdcrNumber: this.somsCDCRNumber,
-            scheduleId:
-              this.selSchedule && this.selSchedule.length
-                ? this.selSchedule[0].scheduleId
-                : '',
-          },
-        };
-        console.log({ queryObj });
-        const [responseData] = await this.readTransfers(queryObj);
-        this.transferData = responseData ? responseData : {};
-        console.log('created(): this.transferData => ', this.transferData);
-        this.selTransferReason = {
-          reasonCode: this.transferData.transferReasonCode,
-          reasonDesc: this.transferData.transferReasonDesc,
-        };
-        // if (this.transferData && this.transferData.length) {
-        // }
-        // this.transferData = await this.readTransfers(queryObj);
+        try {
+          console.log('TransferDetails.vue:created(): readSchedules()');
+          const respSchedules = await this.readSchedules({
+            query: {
+              origin:
+                this.somsOffender && this.somsOffender.institutionName
+                  ? this.somsOffender.institutionName
+                  : '',
+            },
+          });
+          console.log('created(): responseData => ', respSchedules);
+          if (respSchedules && this.transferData.scheduleId) {
+            console.log(
+              'TransferDetails.vue:created(): this.transferData.scheduleId => ',
+              this.transferData.scheduleId
+            );
+            console.log(
+              'TransferDetails.vue:created(): respSchedules => ',
+              respSchedules
+            );
+
+            for (let schedule of respSchedules) {
+              console.log(
+                'TransferDetails.vue:created(): schedule._id => ',
+                schedule._id
+              );
+              if (this.transferData.scheduleId == schedule._id) {
+                this.selSchedule[0].value = schedule;
+                break;
+              }
+            }
+          }
+        } catch (ex) {
+          console.log(
+            'TransferDetails.vue->created()->readSchedules() exception => ',
+            ex
+          );
+        }
       }
     },
     computed: {
       ...sync('transfers', ['transferData', 'selTransferReason']),
+      ...sync('schedules', ['selSchedule']),
       ...get('app', ['loading']),
-      ...get('transfers', ['somsOffender']),
       ...get('schedules', ['selSchedule']),
+      ...get('transfers', ['somsOffender']),
     },
     methods: {
       ...call('transfers', ['readOffenderDetails', 'readTransfers']),
