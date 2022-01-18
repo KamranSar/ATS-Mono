@@ -6,6 +6,13 @@ const { logSvcMsg, setUserID, fixQueryType } = require('cdcrhooks');
 const server = require('../../service-config').server;
 const authActive = process.env.NODE_ENV != 'development' || server.authActive ? true : false;
 
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+function formatDate(date) {
+  return [padTo2Digits(date.getUTCMonth() + 1), padTo2Digits(date.getUTCDate()), date.getUTCFullYear()].join('/');
+}
+
 module.exports = {
   before: {
     all: [
@@ -43,32 +50,36 @@ module.exports = {
       logSvcMsg(),
       alterItems((rec) => {
         if (rec && rec.releaseDate) {
-          rec.releaseDate = new Date(rec.releaseDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          });
+          // rec.releaseDate = new Date(rec.releaseDate).toLocaleDateString('en-US', {
+          //   year: 'numeric',
+          //   month: '2-digit',
+          //   day: '2-digit',
+          // });
+          rec.releaseDate = formatDate(rec.releaseDate);
         }
         if (rec && rec.transferDate) {
-          rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          });
+          // rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
+          //   year: 'numeric',
+          //   month: '2-digit',
+          //   day: '2-digit',
+          // });
+          rec.transferDate = formatDate(rec.transferDate);
         }
         if (rec && rec.originalEndorsementDate) {
-          rec.originalEndorsementDate = new Date(rec.originalEndorsementDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          });
+          // rec.originalEndorsementDate = new Date(rec.originalEndorsementDate).toLocaleDateString('en-US', {
+          //   year: 'numeric',
+          //   month: '2-digit',
+          //   day: '2-digit',
+          // });
+          rec.originalEndorsementDate = formatDate(rec.originalEndorsementDate);
         }
         if (rec && rec.currentEndorsementDate) {
-          rec.currentEndorsementDate = new Date(rec.currentEndorsementDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          });
+          // rec.currentEndorsementDate = new Date(rec.currentEndorsementDate).toLocaleDateString('en-US', {
+          //   year: 'numeric',
+          //   month: '2-digit',
+          //   day: '2-digit',
+          // });
+          rec.currentEndorsementDate = formatDate(rec.currentEndorsementDate);
         }
       }),
     ],

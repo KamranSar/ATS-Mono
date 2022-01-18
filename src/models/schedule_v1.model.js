@@ -24,8 +24,8 @@ module.exports = function (app) {
       transferDate: { type: Date, required: true },
       seats: { type: Number, default: 0 },
       remainingSeats: { type: Number, default: 0 },
-      // createdBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
-      // updatedBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
+      createdBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
+      updatedBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
     },
     {
       timestamps: true,

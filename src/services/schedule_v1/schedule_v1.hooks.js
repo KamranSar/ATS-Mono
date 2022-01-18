@@ -6,6 +6,13 @@ const { logSvcMsg, setUserID, fixQueryType } = require('cdcrhooks');
 const server = require('../../service-config').server;
 const authActive = process.env.NODE_ENV != 'development' || server.authActive ? true : false;
 
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+function formatDate(date) {
+  return [padTo2Digits(date.getUTCMonth() + 1), padTo2Digits(date.getUTCDate()), date.getUTCFullYear()].join('/');
+}
+
 module.exports = {
   before: {
     all: [
@@ -51,11 +58,12 @@ module.exports = {
       //alterItems((rec) => (rec.transferDate = new Date(rec.transferDate).setHours(0, 0, 0, 0))),
       alterItems((rec) => {
         if (rec && rec.transferDate) {
-          rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          });
+          // rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
+          //   year: 'numeric',
+          //   month: '2-digit',
+          //   day: '2-digit',
+          // });
+          rec.transferDate = formatDate(rec.transferDate);
         }
       }),
     ],

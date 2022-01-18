@@ -31,8 +31,8 @@ module.exports = function (app) {
       transferReasonDesc: { type: String, required: false, default: '' },
       comments: { type: String, default: '' },
       inHouseRemarks: { type: String, default: '' },
-      // createdBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
-      // updatedBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
+      createdBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
+      updatedBy: { type: mongoose.ObjectId, required: true }, // The user who made the last change
     },
     {
       timestamps: true,
