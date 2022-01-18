@@ -261,19 +261,8 @@
     }),
     async mounted() {
       this.onChangeInstitution();
-      //this.transfers = await this.readTransfers();
-      // TODO: Get departures and arrivals by institition
-      // const response = await departuresArrivalsSvc.find({
-      //   query: {
-      //     institution: this.selectedInstitution.institutionName,
-      //   },
-      // });
-      // console.log('DEP ARR: ', response);
     },
     methods: {
-      // ...call('schedules', ['readSchedulesByOrigin']),
-      // ...call('transfers', ['readTransfersByInstitution']),
-
       getInstitutionId(location) {
         if (!location) {
           // FIXME write out an error message
@@ -362,53 +351,10 @@
           console.error('getArrivals() exception: ', ex);
         }
       },
-      /**
-       * This method reads the schedule for the selected institution
-       */
-      /*       async readTransfers() {
-         await this.readTransfersByInstitution(
-           this.selectedInstitution.institutionName
-         );
-         // For each transfer at the institution
-         this.transfers.forEach((offender) => {
-           // Find their schedule...
-           const schedule = this.schedules.find(
-             (sch) => sch.schedule === offender.schedule
-           );
-
-           if (schedule) {
-             // Departing
-             // An offender is departing from the institution
-             // if the schedule he/she is assigned to has a different origin
-             if (schedule.origin === this.selectedInstitution.institutionName) {
-               this.departingOffenders.push(offender);
-             }
-
-             // Arrivals
-             // An offender is arriving if the schedules destination
-             // is the selected institution
-             // if (
-             //   schedule.destination === this.selectedInstitution.institutionId
-             // ) {
-             //   this.arrivingOffenders.push(offender);
-             // }
-           }
-         });
-       },
-  */
-      // syncSOMS() {
-      //   this.loading = true;
-      //   setTimeout(() => {
-      //     this.loading = false;
-      //   }, 3000);
-      // },
       onChangeInstitution() {
         this.getDepartures();
         this.getArrivals();
       },
-      // searchOffender(){
-      //   console.log("I don't work yet :)")
-      // },
       // eslint-disable-next-line no-unused-vars
       filterTransfers(value, search, item) {
         return (

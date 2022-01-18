@@ -74,15 +74,17 @@ const actions = {
   },
   async saveForm({ state, rootState, dispatch }) {
     console.log('saveForm(): state => ', state);
-    if (rootState.schedules && rootState.schedules.selSchedule[0]) {
+    if (rootState.schedules && rootState.schedules.selSchedule) {
       const schedules = rootState.schedules.schedules;
-      const selSchedule = rootState.schedules.selSchedule[0];
+      const selSchedule = rootState.schedules.selSchedule;
       for (let schedule of schedules) {
         console.log('saveForm(): schedule => ', schedule);
-        if (schedule.title == selSchedule.title) {
+        if (schedule.title === selSchedule.title) {
+          // FIXME Check to make sure fields are valid
           state.transferData.title = schedule.title;
           state.transferData.scheduleId = schedule._id;
           state.transferData.transferDate = schedule.transferDate;
+          state.transferData.vias = schedule.vias;
           // state.transferData.institution = schedule.origin;
           break;
         }
@@ -199,7 +201,7 @@ const actions = {
     try {
       rootState.app.loading = true;
       console.log('updateTransfer(): transferObj => ', transferObj);
-      await svcTransfers.update(transferObj._id, transferObj);
+      await svcTransfers.patch(transferObj._id, transferObj);
     } catch (error) {
       return error;
     } finally {

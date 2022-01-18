@@ -65,7 +65,7 @@
               <v-col cols="6" class="mx-4">
                 <v-select
                   label="Schedule"
-                  v-model="selSchedule[0]"
+                  v-model="selSchedule"
                   :items="schedules"
                   item-text="title"
                   item-value="title"
@@ -202,7 +202,7 @@
               <v-col cols="6" class="mx-4">
                 <v-select
                   label="Schedule"
-                  v-model="selSchedule[0]"
+                  v-model="selSchedule"
                   :items="schedules"
                   item-text="title"
                   item-value="title"
@@ -843,8 +843,8 @@
       // ********************************
       async create134() {
         // Get transfer for selected schedule
-        console.log('create134(): this.selSchedule => ', this.selSchedule[0]);
-        if (!this.selSchedule[0]) {
+        console.log('create134(): this.selSchedule => ', this.selSchedule);
+        if (!this.selSchedule || !this.selSchedule.scheduleId) {
           this.setSnackbar(
             'Schedule not selected. Please select a schedule and try again.'
           );
@@ -865,7 +865,7 @@
             $sort: {
               lastName: 1,
             },
-            scheduleId: this.selSchedule[0]._id,
+            scheduleId: this.selSchedule._id,
           },
         };
 
@@ -873,10 +873,7 @@
           this.transfers = await this.readTransfers(filter);
           console.log('build134Data(): transfers => ', this.transfers);
           if (!this.transfers) {
-            alert(
-              'No Transfers found for schedule: ',
-              this.selSchedule[0].title
-            );
+            alert('No Transfers found for schedule: ', this.selSchedule.title);
             return;
           }
         } catch (ex) {
@@ -972,10 +969,10 @@
 
         let nXfer = this.transfers.length;
 
-        let from = this.selSchedule[0].origin;
-        let to = this.selSchedule[0].destination;
-        let vias = this.selSchedule[0].vias;
-        let txtDate = this.selSchedule[0].transferDate;
+        let from = this.selSchedule.origin;
+        let to = this.selSchedule.destination;
+        let vias = this.selSchedule.vias;
+        let txtDate = this.selSchedule.transferDate;
 
         const fileName = `134_${from}_${today}.pdf`;
 

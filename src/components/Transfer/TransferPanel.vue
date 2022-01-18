@@ -145,7 +145,7 @@
       <span>
         <v-select
           label="Schedule"
-          v-model="selSchedule[0]"
+          v-model="selSchedule"
           :items="schedules"
           item-text="title"
           item-value="title"
@@ -157,13 +157,13 @@
         ></v-select>
       </span>
       <span class="font-weight-bold pr-4">Vias: </span>
-      <span class="float-right" v-if="selSchedule && selSchedule[0]">
-        {{ selSchedule[0].vias.join(',') }}
+      <span class="float-right" v-if="selSchedule && selSchedule.vias">
+        {{ selSchedule.vias.join(',') }}
       </span>
       <br />
       <span class="font-weight-bold pr-4">Transfer Date: </span>
-      <span class="float-right" v-if="selSchedule && selSchedule[0]">
-        {{ selSchedule[0].transferDate }}
+      <span class="float-right" v-if="selSchedule && selSchedule.transferDate">
+        {{ selSchedule.transferDate }}
       </span>
       <span class="mt-4">
         <v-select

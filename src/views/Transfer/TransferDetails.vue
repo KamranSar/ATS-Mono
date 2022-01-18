@@ -31,6 +31,8 @@
   import TransferHeader from '@/components/Transfer/TransferHeader.vue';
   import TransferPanel from '@/components/Transfer/TransferPanel.vue';
   import TransferHoldsTable from '@/components/Transfer/TransferHoldsTable.vue';
+  // import { setSnackbar } from '@/helpers/snackbar.js';
+
   export default {
     name: 'TransferDetails',
     props: {
@@ -90,6 +92,12 @@
                 responseData.transferReasonDesc
                 ? responseData.transferReasonDesc
                 : this.transferData.transferReasonDesc;
+          } else {
+            this.setSnackbar(
+              `Unable to read Transfer for cdcr number: ${this.somsCDCRNumber}`,
+              'error',
+              6000
+            );
           }
           console.log('created(): this.transferData => ', this.transferData);
           this.selTransferReason = {
@@ -130,7 +138,7 @@
                 schedule._id
               );
               if (this.transferData.scheduleId == schedule._id) {
-                this.selSchedule[0].value = schedule;
+                this.selSchedule = schedule;
                 break;
               }
             }
@@ -147,7 +155,7 @@
       ...sync('transfers', ['transferData', 'selTransferReason']),
       ...sync('schedules', ['selSchedule']),
       ...get('app', ['loading']),
-      ...get('schedules', ['selSchedule']),
+      // ...get('schedules', ['selSchedule']),
       ...get('transfers', ['somsOffender']),
     },
     methods: {

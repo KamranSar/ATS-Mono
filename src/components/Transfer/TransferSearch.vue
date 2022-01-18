@@ -77,7 +77,7 @@
       ...call('transfers', ['readOffenderDetails']),
       async searchOffender() {
         this.transferData = transferModel();
-        this.selSchedule = [];
+        this.selSchedule = {};
         this.selTransferReason = {};
         await this.readOffenderDetails(this.somsCDCRNumber);
       },

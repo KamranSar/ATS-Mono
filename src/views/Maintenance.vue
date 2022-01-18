@@ -117,6 +117,7 @@
 
   export default {
     data: () => ({
+      loading: false,
       dialog: false,
       dialogDelete: false,
       headers: [
@@ -148,12 +149,12 @@
     },
 
     watch: {
-      // dialog(val) {
-      //   val || this.close();
-      // },
-      // dialogDelete(val) {
-      //   val || this.closeDelete();
-      // },
+      dialog(val) {
+        val || this.close();
+      },
+      dialogDelete(val) {
+        val || this.closeDelete();
+      },
     },
 
     created() {
@@ -169,52 +170,57 @@
       ]),
       initialize() {},
 
+      goHome() {
+        this.$router.push({
+          name: 'Home',
+        });
+      },
       editItem(item) {
-        // this.editedIndex = this.reasons.indexOf(item);
+        this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialog = true;
       },
 
       deleteItem(item) {
-        // this.editedIndex = this.reasons.indexOf(item);
+        this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialogDelete = true;
       },
 
       async deleteItemConfirm() {
-        // this.reasons.splice(this.editedIndex, 1);
+        this.reasons.splice(this.editedIndex, 1);
         await this.deleteReason(this.editedItem._id);
         this.editedItem = Object.assign({}, this.defaultItem);
         this.readReasons();
         this.dialogDelete = false;
-        // this.closeDelete();
+        this.closeDelete();
       },
 
       close() {
         this.dialog = false;
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem);
-          // this.editedIndex = -1;
+          this.editedIndex = -1;
         });
       },
 
       closeDelete() {
         this.dialogDelete = false;
-        // this.$nextTick(() => {
-        // this.editedItem = Object.assign({}, this.defaultItem);
-        //this.editedIndex = -1;
-        // });
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
       },
 
       async save() {
-        // if (this.editedIndex > -1) {
-        if (this.editedItem._id) {
-          // Object.assign(this.reasons[this.editedIndex], this.editedItem);
+        if (this.editedIndex > -1) {
+          // if (this.editedItem._id) {
+          Object.assign(this.reasons[this.editedIndex], this.editedItem);
           // Update
           await this.updateReason(this.editedItem);
         } else {
           // Create Reason
-          // this.reasons.push(this.editedItem);
+          this.reasons.push(this.editedItem);
           await this.createReason(this.editedItem);
         }
         await this.readReasons();

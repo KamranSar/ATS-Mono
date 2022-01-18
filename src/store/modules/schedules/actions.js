@@ -104,7 +104,7 @@ const actions = {
     try {
       rootState.app.loading = true;
 
-      await svcSchedules.update(scheduleObj._id, scheduleObj);
+      await svcSchedules.patch(scheduleObj._id, scheduleObj);
     } catch (error) {
       return error;
     } finally {
