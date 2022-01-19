@@ -68,6 +68,7 @@ docker run \
 --expose ${MT_AUTH_PORT} \
 --name $IMAGE_NAME \
 --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
+
 # mt-eis-common
 IMAGE_NAME="mt-eis-common"
 if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then

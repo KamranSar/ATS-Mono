@@ -411,17 +411,15 @@
           reasonCode: selected.TransferReasonCode,
           reasonDesc: selected.TransferReasonDesc,
         };
-        this.selSchedule = [
-          {
-            origin: selected.origin,
-            originId: selected.originId,
-            destination: selected.destination,
-            title: selected.title,
-            vias: selected.vias,
-            transferDate: selected.transferDate,
-            seats: selected.seats,
-          },
-        ];
+        this.selSchedule = {
+          origin: selected.origin,
+          originId: selected.originId,
+          destination: selected.destination,
+          title: selected.title,
+          vias: selected.vias,
+          transferDate: selected.transferDate,
+          seats: selected.seats,
+        };
       },
       routeToDetails(item) {
         console.log('routeToDetails: item = ', item);

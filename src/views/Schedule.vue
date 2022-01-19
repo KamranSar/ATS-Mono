@@ -51,7 +51,7 @@
     <v-card flat class="ma-4">
       <!-- Data table will push to selSchedule -->
       <v-data-table
-        v-model="selSchedule"
+        v-model="selectedSchedule"
         :headers="headersSchedule"
         item-key="_id"
         :items="schedules"
@@ -59,6 +59,7 @@
         show-select
         sort-by="scheduleId"
         class="elevation-1 pa-2 mt-2"
+        @item-selected="onSelectedSchedule"
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
@@ -150,7 +151,7 @@
       </v-data-table>
     </v-card>
     <!-- /* Endorsement Table Begin    */ -->
-    <v-card v-show="selSchedule.length" class="mt-2">
+    <v-card v-show="selectedSchedule.length" class="mt-2">
       <v-card-title class="blue-grey lighten-4">
         <v-row>
           <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
@@ -293,6 +294,7 @@
     name: 'Schedules',
 
     data: () => ({
+      selectedSchedule: [],
       loading: false,
       title: '',
       selDestination: '',
@@ -432,12 +434,12 @@
           : 'Edit Endorsement';
       },
     },
-    watch: {
-      selSchedule: {
-        handler: 'getEndorsements',
-        deep: true,
-      },
-    },
+    // watch: {
+    //   selectedSchedule: {
+    //     handler: 'onSelectedSchedule',
+    //     deep: true,
+    //   },
+    // },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       ...call('schedules', [
@@ -457,7 +459,7 @@
       ...call('app', ['SET_SNACKBAR']),
       async initialize() {
         this.endorsements = [];
-        this.selSchedule = [];
+        this.selSchedule = {};
         if (this.selectedInstitution) {
           await this.readSchedules({
             query: { origin: this.selectedInstitution.institutionName },
@@ -630,23 +632,44 @@
           this.editEndorsement.transferReasonDesc = ctrl.reasonDesc;
         }
       },
+
+      // eslint-disable-next-line no-unused-vars
+      onSelectedSchedule(item) {
+        if (item.value) {
+          // Schedule Selected
+          this.selSchedule = item.item;
+          this.getEndorsements(item.item, {});
+        } else {
+          this.selSchedule = {};
+          this.endorsements = [];
+        }
+        // if (this.selectedSchedule.length) {
+        //   this.selSchedule = this.selectedSchedule[0];
+        //   this.getEndorsements();
+        // } else {
+        //   this.selSchedule = {};
+        // }
+      },
       async getEndorsements(newVal, oldVal) {
         console.log('getEndorsements(): newVal => ', newVal);
         console.log('getEndorsements(): oldVal => ', oldVal);
-        function _getId(data) {
-          return data && data[0] && data[0]._id ? data[0]._id : '';
-        }
+        // function _getId(data) {
+        //   return data && data[0] && data[0]._id ? data[0]._id : '';
+        // }
         try {
-          const oldId = _getId(oldVal);
-          const newId = _getId(newVal);
+          // const oldId = _getId(oldVal);
+          // const newId = _getId(newVal);
+          const oldId = oldVal._id || '';
+          const newId = newVal._id || '';
+
           if (newId && newId !== oldId) {
             let filter = {
               query: {
-                scheduleId: newVal[0]._id,
+                scheduleId: newId,
               },
             };
             console.log('filter : ', filter);
-            console.log('newVal', newVal);
+            console.log('newId', newId);
             const response = await svcTransfers.find(filter);
             if (response.data && response.data.length) {
               this.endorsements = response.data;
@@ -720,17 +743,19 @@
 
         try {
           await this.saveForm();
+          //this.endorsements.push(this.editEndorsement);
           this.setSnackbar('Success!', 'success', 3000);
           this.editEndorsement = Object.assign({}, this.defaultEndorsement);
           this.selTransferReason = null;
 
-          await this.getEndorsements(this.selSchedule, []);
+          await this.getEndorsements(this.selSchedule, {});
         } catch (ex) {
           console.error(ex);
           this.setSnackbar(`Failure!`, 'error', 3000);
           return false;
         }
       },
+      // eslint-disable-next-line no-unused-vars
       async create135(item, param) {
         // let filter = {
         //   query: {

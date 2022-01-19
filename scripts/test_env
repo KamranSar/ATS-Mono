@@ -16,8 +16,8 @@ IMAGE_REPO_DOMAIN=fdctwebharbor.accounts.cdcr.ca.gov
 #
 # Harbor Repo Credentials
 #------------------------
-IMAGE_REPO_USER=admin
-IMAGE_REPO_PSWD=Harbor12345
+IMAGE_REPO_USER=readonly
+IMAGE_REPO_PSWD=H@rb0r3p0
 #
 # Harbor Repo Folders & Version
 #------------------------------
