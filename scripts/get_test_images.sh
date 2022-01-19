@@ -27,7 +27,7 @@ echo "."
 ALL_ImageArray=(${REQ_ContainerArray[*]} ${OPT_ContainerArray[*]})
 for imageName in "${ALL_ImageArray[@]}"
 do
-    if [[ $imageName = "mt-"* ]]; then
+    if [[ $imageName == "mt-"* ]] && [[ $imageName != "mt-ingress" ]]; then
        echo docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${imageName}:${IMAGE_VER}
        docker pull ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${imageName}:${IMAGE_VER}
     else

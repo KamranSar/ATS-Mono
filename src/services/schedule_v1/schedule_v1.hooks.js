@@ -63,7 +63,8 @@ module.exports = {
           //   month: '2-digit',
           //   day: '2-digit',
           // });
-          rec.transferDate = formatDate(rec.transferDate);
+          // console.warn('***** DEBUG - schedule.hook. rec.transferDate => ', rec.transferDate);
+          rec.transferDate = formatDate(new Date(rec.transferDate));
         }
       }),
     ],

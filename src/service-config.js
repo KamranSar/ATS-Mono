@@ -43,13 +43,6 @@ module.exports = {
       enabled: true,
       description: 'Gets departing offenders from institution on that day',
     },
-    // {
-    //   // Only an example
-    //   name: 'customservice',
-    //   version: 'v1',
-    //   enabled: false,
-    //   description: 'Example of a basic Custom service.',
-    // },
   ],
 };
 //*** DO NOT MODIFY THIS CODE ***//

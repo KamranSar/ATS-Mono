@@ -20,8 +20,8 @@ exports.ServiceClass = class ServiceClass {
     const transfers = [];
     params.paginate = false;
     const ret = await scheduleService.find(params);
-    console.log('departuresarrivals scheduleService.find(): response => ', ret);
-    console.log('departuresarrivals: params => ', params);
+    // console.log('departuresarrivals scheduleService.find(): response => ', ret);
+    // console.log('departuresarrivals: params => ', params);
     for (let x of ret) {
       let filter = {
         paginate: false,
@@ -31,8 +31,8 @@ exports.ServiceClass = class ServiceClass {
         headers: params.headers,
       };
       x.transfers = await transferService.find(filter);
-      console.log('departuresarrivals transferService.find(): response => ');
-      console.log('departuresarrivals: params => ', filter);
+      // console.log('departuresarrivals transferService.find(): response => ');
+      // console.log('departuresarrivals: params => ', filter);
       for (let y of x.transfers) {
         y.transferId = y._id;
         const v = omit({ ...y, ...x }, ['_id', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'transfers', '__v']);

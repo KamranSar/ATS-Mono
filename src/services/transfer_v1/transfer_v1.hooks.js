@@ -55,7 +55,8 @@ module.exports = {
           //   month: '2-digit',
           //   day: '2-digit',
           // });
-          rec.releaseDate = formatDate(rec.releaseDate);
+          console.warn('***** DEBUG - transfer.hook. rec.releaseDate => ', rec.releaseDate);
+          rec.releaseDate = formatDate(new Date(rec.releaseDate));
         }
         if (rec && rec.transferDate) {
           // rec.transferDate = new Date(rec.transferDate).toLocaleDateString('en-US', {
@@ -63,7 +64,8 @@ module.exports = {
           //   month: '2-digit',
           //   day: '2-digit',
           // });
-          rec.transferDate = formatDate(rec.transferDate);
+          // console.warn('***** DEBUG - transfer.hook. rec.transferdate => ', rec.transferDate);
+          rec.transferDate = formatDate(new Date(rec.transferDate));
         }
         if (rec && rec.originalEndorsementDate) {
           // rec.originalEndorsementDate = new Date(rec.originalEndorsementDate).toLocaleDateString('en-US', {
@@ -71,7 +73,8 @@ module.exports = {
           //   month: '2-digit',
           //   day: '2-digit',
           // });
-          rec.originalEndorsementDate = formatDate(rec.originalEndorsementDate);
+          // console.warn('***** DEBUG - transfer.hook. rec.originalEndorsementDate => ', rec.originalEndorsementDate);
+          rec.originalEndorsementDate = formatDate(new Date(rec.originalEndorsementDate));
         }
         if (rec && rec.currentEndorsementDate) {
           // rec.currentEndorsementDate = new Date(rec.currentEndorsementDate).toLocaleDateString('en-US', {
@@ -79,7 +82,8 @@ module.exports = {
           //   month: '2-digit',
           //   day: '2-digit',
           // });
-          rec.currentEndorsementDate = formatDate(rec.currentEndorsementDate);
+          // console.warn('***** DEBUG - transfer.hook. rec.currentEndorsementDate => ', rec.currentEndorsementDate);
+          rec.currentEndorsementDate = formatDate(new Date(rec.currentEndorsementDate));
         }
       }),
     ],
