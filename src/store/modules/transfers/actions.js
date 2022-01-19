@@ -97,8 +97,11 @@ const actions = {
     try {
       // if (state.transferData._id) {
       if (state.transferData._id) {
-        await dispatch('updateTransfer', state.transferData);
-        console.log('savForm(): Successfully updated Transfer!');
+        const response = await dispatch('updateTransfer', state.transferData);
+        // debugger;
+        if (response && response.data) {
+          console.log('savForm(): Successfully updated Transfer!');
+        }
       } else {
         state.transferData.isScheduled = true;
         await dispatch('createTransfer', state.transferData);
@@ -201,7 +204,8 @@ const actions = {
     try {
       rootState.app.loading = true;
       console.log('updateTransfer(): transferObj => ', transferObj);
-      await svcTransfers.patch(transferObj._id, transferObj);
+      const response = await svcTransfers.patch(transferObj._id, transferObj);
+      return response && response.data ? response.data : [];
     } catch (error) {
       return error;
     } finally {
@@ -213,7 +217,8 @@ const actions = {
   deleteTransfer: async ({ state, rootState }, id) => {
     try {
       rootState.app.loading = true;
-      await svcTransfers.remove(id);
+      const response = await svcTransfers.remove(id);
+      return response && response.data ? response.data : [];
     } catch (error) {
       return error;
     } finally {

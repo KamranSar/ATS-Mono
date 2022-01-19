@@ -27,6 +27,7 @@ const routes = [
       hasAnyRoles: [
         defaultAdminRole.name,
         'Institution Administrator',
+        'Institution User',
         'Guest',
       ],
     },
@@ -45,6 +46,7 @@ const routes = [
       hasAnyRoles: [
         defaultAdminRole.name,
         'Institution Administrator',
+        'Institution User',
         'Guest',
       ],
     },
@@ -60,6 +62,7 @@ const routes = [
       hasAnyRoles: [
         defaultAdminRole.name,
         'Institution Administrator',
+        'Institution User',
         'Guest',
       ],
     },
@@ -75,6 +78,7 @@ const routes = [
       hasAnyRoles: [
         defaultAdminRole.name,
         'Institution Administrator',
+        'Institution User',
         'Guest',
       ],
     },
@@ -90,6 +94,7 @@ const routes = [
       hasAnyRoles: [
         defaultAdminRole.name,
         'Institution Administrator',
+        'Institution User',
         'Guest',
       ],
     },
@@ -112,10 +117,10 @@ const routes = [
         name: 'Users',
         component: () =>
           import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
-        // meta: {
-        //   beforeResolve: (to, from, next) => hasAllRoles(to, from, next),
-        //   hasAllRoles: [defaultAdminRole.name, 'asdfasdfasdf'],
-        // },
+        meta: {
+          beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+          hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
+        },
       },
     ],
   },

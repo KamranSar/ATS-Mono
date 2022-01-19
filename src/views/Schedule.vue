@@ -15,7 +15,7 @@
           <v-autocomplete
             v-model="selectedInstitution"
             return-object
-            @change="initialize"
+            @change="onSelectedInstitution"
             :disabled="loading"
             :items="listOfInstitutions"
             color="blue-grey lighten-2"
@@ -62,8 +62,14 @@
         @item-selected="onSelectedSchedule"
       >
         <template v-slot:top>
-          <v-toolbar flat color="white">
-            <!-- <v-toolbar-title>FOLSOM STATE PRISON - Schedules</v-toolbar-title> -->
+          <v-toolbar
+            flat
+            color="white"
+            v-show="
+              enableEditing &&
+              $hasAnyRoles(['Institution Administrator', 'Institution User'])
+            "
+          >
             <v-col cols="1" sm="2" lg="1" align-self="baseline">
               <v-text-field
                 label="Schedule"
@@ -91,25 +97,12 @@
                 clearable
               ></v-select>
             </v-col>
-            <!-- <v-col cols="1" sm="2" lg="1" align-self="center">
-            <v-text-field label="Via 2" v-model="via2"></v-text-field>
-          </v-col> -->
-            <!-- <v-col cols="2" sm="4" lg="2" align-self="baseline">
-              <v-text-field
-                label="Transfer Date"
-                v-model="editSchedule.transferDate"
-              ></v-text-field>
-            </v-col> -->
             <v-col cols="2" sm="4" lg="2" align-self="start">
               <DatePicker
                 label="Transfer Date"
                 v-model="editSchedule.transferDate"
                 align="top"
               />
-              <!-- <v-date-picker
-              label="Transfer Date"
-              v-model="transferDate"
-            ></v-date-picker> -->
             </v-col>
             <v-col cols="1" sm="2" lg="1" align-self="baseline">
               <v-text-field
@@ -117,7 +110,6 @@
                 v-model="editSchedule.seats"
               ></v-text-field>
             </v-col>
-            <!-- <v-col cols="5" sm="1" md="2" lg="5">&nbsp;</v-col> -->
             <v-spacer></v-spacer>
             <v-col cols="1" sm="2" lg="1" align-self="center">
               <v-btn class="secondary ma-2 btns" @click="saveSchedule()">
@@ -149,133 +141,140 @@
           <span>No Results</span>
         </template>
       </v-data-table>
-    </v-card>
-    <!-- /* Endorsement Table Begin    */ -->
-    <v-card v-show="selectedSchedule.length" class="mt-2">
-      <v-card-title class="blue-grey lighten-4">
-        <v-row>
-          <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
-            <span>Endorsements</span>
-          </v-col>
-          <v-spacer></v-spacer>
-        </v-row>
-      </v-card-title>
-      <v-data-table
-        :headers="headersEndorsements"
-        :items="endorsements"
-        sort-by="lastName"
-        class="elevation-1"
-      >
-        <template v-slot:top>
-          <v-toolbar flat color="white">
-            <v-col cols="1" sm="2" lg="1" align-self="baseline">
-              <v-text-field
-                label="CDCR #"
-                v-model="editEndorsement.cdcrNumber"
-                @blur="getOffender"
-              ></v-text-field>
+      <v-card v-show="selectedSchedule.length >= 1" class="mt-2 pb-4">
+        <v-card-title class="blue-grey lighten-4">
+          <v-row>
+            <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
+              <span>Endorsements</span>
             </v-col>
-            <v-col cols="1" sm="3" lg="1" align-self="baseline">
-              <v-text-field
-                label="Last Name"
-                v-model="editEndorsement.lastName"
-                readonly
-              ></v-text-field>
-            </v-col>
-            <v-col cols="1" sm="3" lg="1" align-self="baseline">
-              <v-text-field
-                label="First Name"
-                v-model="editEndorsement.firstName"
-                readonly
-              ></v-text-field>
-            </v-col>
-            <v-col cols="1" sm="2" lg="1" align-self="baseline">
-              <v-text-field
-                label="Housing"
-                v-model="editEndorsement.housing"
-                readonly
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2" sm="3" lg="2" align-self="baseline">
-              <v-select
-                label="Specific Transfer Reason"
-                v-model="selTransferReason"
-                return-object
-                :items="reasons"
-                item-value="reasonCode"
-                item-text="reasonDesc"
-                class="mt-4 pl-1"
-                hide-details="true"
-                clearable
-                dense
-                @change="transferReasonSelected"
-              >
-                <template v-slot:item="{ item, on, attrs }">
-                  <v-list-item v-on="on" v-bind="attrs">
-                    <v-list-item-content>
-                      {{ item.reasonCode }} - {{ item.reasonDesc }}
-                    </v-list-item-content>
-                  </v-list-item>
-                </template>
-              </v-select>
-            </v-col>
-            <v-col cols="2" sm="3" lg="2" align-self="baseline">
-              <v-text-field
-                label="Endorsement Date"
-                v-model="editEndorsement.currentEndorsementDate"
-                readonly
-              ></v-text-field>
-            </v-col>
-            <!-- <v-col cols="1" sm="3" lg="2" align-self="baseline">
-              <v-text-field
-                label="Endorsement Details"
-                v-model="editEndorsement.endorsementDetails"
-                readonly
-              ></v-text-field>
-            </v-col> -->
-            <v-col cols="1" sm="2" lg="1" align-self="center">
-              <v-btn class="secondary ma-2 btns" @click="saveEndorsement()">
-                SAVE
-              </v-btn>
-            </v-col>
-            <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
-              <v-btn class="secondary ma-2 btns">Filter</v-btn>
-            </v-col>
-          </v-toolbar>
-        </template>
+            <v-spacer></v-spacer>
+          </v-row>
+        </v-card-title>
+        <v-data-table
+          :headers="headersEndorsements"
+          :items="endorsements"
+          sort-by="lastName"
+          flat
+          class="ma-2"
+        >
+          <template v-slot:top>
+            <v-toolbar
+              flat
+              color="white"
+              v-show="
+                enableEditing &&
+                $hasAnyRoles(['Institution Administrator', 'Institution User'])
+              "
+            >
+              <v-col cols="1" sm="2" lg="1" align-self="baseline">
+                <v-text-field
+                  label="CDCR #"
+                  v-model="editEndorsement.cdcrNumber"
+                  @blur="getOffender"
+                  @change="onChangeCDCRNumber"
+                  @keyup="onChangeCDCRNumber"
+                  clearable
+                  @click:clear="onClearCDCRNumber"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="1" sm="3" lg="1" align-self="baseline">
+                <v-text-field
+                  label="Last Name"
+                  v-model="editEndorsement.lastName"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="1" sm="3" lg="1" align-self="baseline">
+                <v-text-field
+                  label="First Name"
+                  v-model="editEndorsement.firstName"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="1" sm="2" lg="1" align-self="baseline">
+                <v-text-field
+                  label="Housing"
+                  v-model="editEndorsement.housing"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2" sm="3" lg="2" align-self="baseline">
+                <v-select
+                  label="Specific Transfer Reason"
+                  v-model="selTransferReason"
+                  return-object
+                  :items="reasons"
+                  item-value="reasonCode"
+                  item-text="reasonDesc"
+                  class="mt-4 pl-1"
+                  hide-details="true"
+                  clearable
+                  @change="transferReasonSelected"
+                >
+                  <template v-slot:item="{ item, on, attrs }">
+                    <v-list-item v-on="on" v-bind="attrs">
+                      <v-list-item-content>
+                        {{ item.reasonCode }} - {{ item.reasonDesc }}
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="2" sm="3" lg="2" align-self="baseline">
+                <v-text-field
+                  label="Endorsement Date"
+                  v-model="editEndorsement.currentEndorsementDate"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col cols="1" sm="2" lg="1" align-self="center">
+                <v-btn
+                  :disabled="btnSaveEndorsement"
+                  class="secondary ma-2 btns"
+                  @click="saveEndorsement()"
+                >
+                  SAVE
+                </v-btn>
+              </v-col>
+              <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
+                <v-btn class="secondary ma-2 btns">Filter</v-btn>
+              </v-col>
+            </v-toolbar>
+          </template>
 
-        <template v-slot:item.cdcrNumber="{ item }">
-          <router-link
-            :to="{
-              name: 'Transfer Details',
-              params: { cdcrNumber: item.cdcrNumber },
-            }"
-            >{{ item.cdcrNumber }}</router-link
-          >
-        </template>
+          <template v-slot:item.cdcrNumber="{ item }">
+            <router-link
+              :to="{
+                name: 'Transfer Details',
+                params: { cdcrNumber: item.cdcrNumber },
+              }"
+              >{{ item.cdcrNumber }}</router-link
+            >
+          </template>
 
-        <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="openEndorsement(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon small @click="deleteEndorsement(item)">mdi-delete</v-icon>
-        </template>
-        <template v-slot:item.print="{ item }">
-          <v-icon
-            color="primary"
-            class="ml-5"
-            @click="create135(item, 'cdcrNumber')"
-          >
-            mdi-file-document
-          </v-icon>
-        </template>
-        <template v-slot:no-data>
-          <span>No Results</span>
-        </template>
-      </v-data-table>
-      <!-- </div> -->
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="openEndorsement(item)">
+              mdi-pencil
+            </v-icon>
+            <v-icon small @click="deleteEndorsement(item)">mdi-delete</v-icon>
+          </template>
+          <template v-slot:item.print="{ item }">
+            <v-icon
+              color="primary"
+              class="ml-5"
+              @click="create135(item, 'cdcrNumber')"
+            >
+              mdi-file-document
+            </v-icon>
+          </template>
+          <template v-slot:no-data>
+            <span>No Results</span>
+          </template>
+        </v-data-table>
+        <!-- </div> -->
+      </v-card>
     </v-card>
-    <!-- /* Endorsement Table end    */ -->
   </v-card>
 </template>
 
@@ -294,6 +293,7 @@
     name: 'Schedules',
 
     data: () => ({
+      enableEditing: false,
       selectedSchedule: [],
       loading: false,
       title: '',
@@ -305,6 +305,7 @@
       dialogDeleteSchedule: false,
       dialogEndorsement: false,
       dialogDeleteEndorsement: false,
+      btnSaveEndorsement: true,
       headersSchedule: [
         { text: 'Schedule', value: 'title' },
         {
@@ -337,9 +338,7 @@
         { text: 'Print', value: 'print' },
         { text: 'Edit/Delete', value: 'actions', sortable: false },
       ],
-
       Vias: ['FOL-II', 'SAC-II', 'CSP-II', 'ASP-II', 'RJD-II', 'CMC-II'],
-
       editScheduleIndex: -1,
       editSchedule: {
         id: '',
@@ -419,7 +418,7 @@
       },
     }),
     async created() {
-      this.initialize();
+      this.onSelectedInstitution();
     },
     computed: {
       ...get('institutions', ['listOfInstitutions']),
@@ -450,22 +449,43 @@
         'updateSchedule',
         'deleteSchedule',
       ]),
-      ...call('transfers', ['deleteTransfer']),
+      ...call('transfers', ['readTransfers', 'deleteTransfer']),
       // Example of how to change name of method call
       //   new name       :  existing name
       // { DeleteSchedule: 'deleteSchedule' }
 
       ...call('transfers', ['saveForm']),
       ...call('app', ['SET_SNACKBAR']),
-      async initialize() {
+      async onSelectedInstitution() {
         this.endorsements = [];
         this.selSchedule = {};
+        this.selectedSchedule = [];
         if (this.selectedInstitution) {
           await this.readSchedules({
             query: { origin: this.selectedInstitution.institutionName },
           });
+          if (
+            this.loggedInUser &&
+            this.loggedInUser.somsinfo &&
+            this.loggedInUser.somsinfo.organizationName &&
+            this.loggedInUser.somsinfo.organizationName ===
+              this.selectedInstitution.institutionName
+          ) {
+            this.enableEditing = true;
+          } else {
+            this.enableEditing = false;
+          }
+          // console.log(
+          //   'onSelectedInstitution(): selectedSchedule',
+          //   this.selectedSchedule
+          // );
         } else {
+          // console.log(
+          //   'onSelectedInstitution(): selectedSchedule',
+          //   this.selectedSchedule
+          // );
           this.schedules = [];
+          this.enableEditing = false;
         }
       },
       async getOffender() {
@@ -484,18 +504,23 @@
 
           if (offenderInfo.data.length > 0) {
             const person = offenderInfo.data[0];
-            console.log('searchOffender(): offender => ', offenderInfo.data[0]);
-            //     if (
-            //       this.somsOffender &&
-            //       this.somsOffender.institutionName &&
-            //       this.loggedInUser &&
-            //       this.loggedInUser.somsinfo &&
-            //       this.loggedInUser.somsinfo.organizationName &&
-            //       this.somsOffender.institutionName !==
-            //         this.loggedInUser.somsinfo.organizationName
-            //     ) {
-            //       throw Error('You do not belong to this institution');
-            //     }
+            // console.log('searchOffender(): offender => ', offenderInfo.data[0]);
+            if (
+              this.loggedInUser &&
+              this.loggedInUser.somsinfo &&
+              this.loggedInUser.somsinfo.organizationName &&
+              person &&
+              person.institutionName &&
+              person.institutionName !==
+                this.loggedInUser.somsinfo.organizationName
+            ) {
+              let res = confirm(
+                `This person's institutions does not match yours. Are you sure you want to proceed?`
+              );
+              if (!res) {
+                return;
+              }
+            }
             this.editEndorsement.cdcrNumber = person.cdcrNumber;
             this.editEndorsement.firstName = person.firstName;
             this.editEndorsement.lastName = person.lastName;
@@ -508,6 +533,7 @@
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;
+              this.btnSaveEndorsement = false;
             }, 500);
 
             this.somsCDCRNumber = '';
@@ -562,8 +588,36 @@
 
         return true;
       },
-      scheduleDelete(item) {
-        console.log('scheduleDelete(): item => ', item);
+      async endorsementsExists(item) {
+        let filter = {
+          query: {
+            $limit: 0,
+            scheduleId: item._id,
+          },
+        };
+        // console.log('filter : ', filter);
+        const response = await svcTransfers.find(filter);
+        // console.log('endorsementsExists(): response => ', response);
+        if (response && response.total) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      async scheduleDelete(item) {
+        // console.log('scheduleDelete(): item => ', item);
+        debugger;
+        const exists = await this.endorsementsExists(item);
+        // console.log('scheduleDelete(): exists => ', exists);
+        if (exists) {
+          this.setSnackbar(
+            'Please delete the transfers assigned to the schedule before deleting the scdedule.',
+            'error',
+            5000
+          );
+          return;
+        }
+
         const index = this.schedules.indexOf(item);
 
         let res = confirm('Are you sure you want to delete this schedule?');
@@ -626,7 +680,7 @@
         }
       },
       transferReasonSelected(ctrl) {
-        console.log('transferReasonSelected(): ', ctrl);
+        // console.log('transferReasonSelected(): ', ctrl);
         if (ctrl) {
           this.editEndorsement.transferReasonCode = ctrl.reasonCode;
           this.editEndorsement.transferReasonDesc = ctrl.reasonDesc;
@@ -643,22 +697,11 @@
           this.selSchedule = {};
           this.endorsements = [];
         }
-        // if (this.selectedSchedule.length) {
-        //   this.selSchedule = this.selectedSchedule[0];
-        //   this.getEndorsements();
-        // } else {
-        //   this.selSchedule = {};
-        // }
       },
       async getEndorsements(newVal, oldVal) {
-        console.log('getEndorsements(): newVal => ', newVal);
-        console.log('getEndorsements(): oldVal => ', oldVal);
-        // function _getId(data) {
-        //   return data && data[0] && data[0]._id ? data[0]._id : '';
-        // }
+        // console.log('getEndorsements(): newVal => ', newVal);
+        // console.log('getEndorsements(): oldVal => ', oldVal);
         try {
-          // const oldId = _getId(oldVal);
-          // const newId = _getId(newVal);
           const oldId = oldVal._id || '';
           const newId = newVal._id || '';
 
@@ -668,8 +711,8 @@
                 scheduleId: newId,
               },
             };
-            console.log('filter : ', filter);
-            console.log('newId', newId);
+            // console.log('filter : ', filter);
+            // console.log('newId', newId);
             const response = await svcTransfers.find(filter);
             if (response.data && response.data.length) {
               this.endorsements = response.data;
@@ -719,7 +762,7 @@
         return true;
       },
       deleteEndorsement(item) {
-        console.log('deleteEndorsement(): item => ', item);
+        // console.log('deleteEndorsement(): item => ', item);
         const index = this.endorsements.indexOf(item);
 
         let res = confirm('Are you sure you want to delete this endorsement?');
@@ -732,119 +775,140 @@
         }
       },
       async saveEndorsement() {
-        console.log(
-          'saveEndorsement() this.editEndorsement => ',
-          this.editEndorsement
-        );
+        // console.log(
+        //   'saveEndorsement() this.editEndorsement => ',
+        //   this.editEndorsement
+        // );
 
         // Assign the endorsement to the transferData object
         // And have saveForm save the transferData
         this.transferData = this.editEndorsement;
 
         try {
-          await this.saveForm();
-          //this.endorsements.push(this.editEndorsement);
-          this.setSnackbar('Success!', 'success', 3000);
-          this.editEndorsement = Object.assign({}, this.defaultEndorsement);
-          this.selTransferReason = null;
+          const response = await this.saveForm();
+          // debugger;
+          if (response && response.data) {
+            this.setSnackbar('Success!', 'success', 3000);
+            this.editEndorsement = Object.assign({}, this.defaultEndorsement);
+            this.selTransferReason = null;
+            this.btnSaveEndorsement = true;
 
-          await this.getEndorsements(this.selSchedule, {});
+            await this.getEndorsements(this.selSchedule, {});
+          }
         } catch (ex) {
           console.error(ex);
           this.setSnackbar(`Failure!`, 'error', 3000);
           return false;
         }
       },
+      // getInstitutionId(location)
+      // Returns the abbreviated institution id
+      // for the provided location
+      getInstitutionId(location) {
+        if (!location) {
+          // FIXME write out an error message
+          return '';
+        }
+
+        console.log('getInstitutionId(): location => ', location);
+        console.log(
+          'getInstitutionId(): listOfInstitutions',
+          this.listOfInstitutions
+        );
+        for (let i of this.listOfInstitutions) {
+          // console.log('getInstitutionId(): i => ', i);
+          if (i.institutionName == location) {
+            return i.institutionId;
+          }
+        }
+
+        return 'NF';
+      },
       // eslint-disable-next-line no-unused-vars
       async create135(item, param) {
-        // let filter = {
-        //   query: {
-        //     $limit: 50,
-        //     $sort: {
-        //       transferDate: 1,
-        //     },
-        //   },
-        // };
-        // if (param == 'schedule' && item.scheduleId) {
-        //   filter.query.scheduleId = item.scheduleId;
-        // } else if (param == 'cdcrNumber' && item.cdcrNumber) {
-        //   let today = new Date().toISOString().split('T')[0];
-        //   filter.query.cdcrNumber = item.cdcrNumber;
-        //   filter.query.transferDate = { $gte: today };
-        // } else {
-        //   alert('Invalid option for CDCR-135 Transfer Record.');
-        //   return;
-        // }
-        // try {
-        //   console.log('create135(): filter => ', filter);
-        //   this.transfers = await this.readTransfers(filter);
-        //   console.log('create135(): transfers => ', this.transfers);
-        //   if (!this.transfers) {
-        //     alert('No Transfers found for schedule: ', item.schedule.title);
-        //     return;
-        //   }
-        // } catch (ex) {
-        //   console.error('create135() exception: ', ex);
-        // }
-        // // let items = [];
-        // // if (item) {
-        // //   items.push(item);
-        // // } else {
-        // //   console.log('create135(): item => ', item);
-        // // }
-        // let data = [];
-        // // let row = [];
-        // const obj = {
-        //   text: '',
-        //   style: 'tblData',
-        //   border: [false, false, false, false],
-        // };
-        // let num = 1;
-        // for (let xfr of this.transfers) {
-        //   const row = [];
-        //   // Column 1 - Row Number
-        //   obj.text = String(num++);
-        //   row.push(Object.assign({}, obj));
-        //   // Column 2 - CDCR Number
-        //   obj.text = xfr.cdcrNumber;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 3 - Name
-        //   obj.text = xfr.lastName + ', ' + xfr.firstName;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 4 - Level
-        //   obj.text = xfr.securityLevel;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 5 - Housing
-        //   obj.text = xfr.housing;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 6 - TB Code
-        //   obj.text = xfr.tbCode;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 7 - Ethnic
-        //   obj.text = xfr.ethnicity;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 8 - Case Factor
-        //   obj.text = xfr.caseFactor;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 9 - Specific Transfer Reason
-        //   obj.text = xfr.transferReasonCode;
-        //   row.push(Object.assign({}, obj));
-        //   // Column 10 - Comments
-        //   obj.text = xfr.comments;
-        //   row.push(Object.assign({}, obj));
-        //   data.push(row);
-        // }
-        // console.log('create135(): data => ', data);
-        // if (data) {
-        //   // this.create135PDF(data, item);
-        // } else {
-        //   // error message
-        //   alert('Could not create CDCR 135 PDF Document!');
-        // }
+        let filter = {
+          query: {
+            $limit: 50,
+            $sort: {
+              transferDate: 1,
+            },
+          },
+        };
+        if (param == 'schedule' && item._id) {
+          filter.query.scheduleId = item._id;
+        } else if (param == 'cdcrNumber' && item.cdcrNumber) {
+          let today = new Date().toISOString().split('T')[0];
+          filter.query.cdcrNumber = item.cdcrNumber;
+          filter.query.transferDate = { $gte: today };
+        } else {
+          alert('Invalid option for CDCR-135 Transfer Record.');
+          return;
+        }
+        try {
+          console.log('create135(): filter => ', filter);
+          this.transfers = await this.readTransfers(filter);
+          console.log('create135(): transfers => ', this.transfers);
+          if (!this.transfers) {
+            alert('No Transfers found for schedule: ', item.schedule.title);
+            return;
+          }
+        } catch (ex) {
+          console.error('create135() exception: ', ex);
+        }
+
+        let data = [];
+        // let row = [];
+        const obj = {
+          text: '',
+          style: 'tblData',
+          border: [false, false, false, false],
+        };
+        let num = 1;
+        for (let xfr of this.transfers) {
+          const row = [];
+          // Column 1 - Row Number
+          obj.text = String(num++);
+          row.push(Object.assign({}, obj));
+          // Column 2 - CDCR Number
+          obj.text = xfr.cdcrNumber;
+          row.push(Object.assign({}, obj));
+          // Column 3 - Name
+          obj.text = xfr.lastName + ', ' + xfr.firstName;
+          row.push(Object.assign({}, obj));
+          // Column 4 - Level
+          obj.text = xfr.securityLevel;
+          row.push(Object.assign({}, obj));
+          // Column 5 - Housing
+          obj.text = xfr.housing;
+          row.push(Object.assign({}, obj));
+          // Column 6 - TB Code
+          obj.text = xfr.tbCode;
+          row.push(Object.assign({}, obj));
+          // Column 7 - Ethnic
+          obj.text = xfr.ethnicity;
+          row.push(Object.assign({}, obj));
+          // Column 8 - Case Factor
+          obj.text = xfr.caseFactor;
+          row.push(Object.assign({}, obj));
+          // Column 9 - Specific Transfer Reason
+          obj.text = xfr.transferReasonCode;
+          row.push(Object.assign({}, obj));
+          // Column 10 - Comments
+          obj.text = xfr.comments;
+          row.push(Object.assign({}, obj));
+          data.push(row);
+        }
+        console.log('create135(): data => ', data);
+        if (data) {
+          this.create135PDF(data, item, param);
+        } else {
+          // error message
+          alert('Could not create CDCR 135 PDF Document!');
+        }
       },
       // create135PDF()
       //
-      create135PDF(data, item) {
+      create135PDF(data, item, param) {
         console.log('create135PDF(): data => ', data);
 
         // const fileName = this.fileName + '.pdf';
@@ -857,20 +921,24 @@
 
         let dtLabel =
           'The following identified persons will be transferred this date';
-        let xfrNum = this.schedules[0].length;
-        let title = item.schedules[0].title;
-        let from = item.schedules[0].destination;
-        let to = this.getInstitutionId(this.schedules[0].origin);
-        let vias = this.schedules[0].vias;
-        let xfrDate = this.schedules[0].transferDate;
 
+        debugger;
         let today = Date.now();
         let fileName = '';
-        if (data.length === 1) {
+        if (param == 'cdcrNumber') {
           fileName = `135_${item.cdcrNumber}_${today}.pdf`;
+          item = this.selSchedule;
         } else {
           fileName = `135_${item.title}_${today}.pdf`;
         }
+
+        // let xfrNum = this.schedules[0].length;
+        let xfrNum = data.length;
+        let title = item.title;
+        let to = item.destination;
+        let from = this.getInstitutionId(item.origin);
+        let vias = item.vias;
+        let xfrDate = item.transferDate;
 
         let dd = {
           pageSize: 'LETTER',
@@ -1160,6 +1228,21 @@
         console.log('create135PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
         // alert("create135PDF() Done!");
+      },
+      onClearCDCRNumber() {
+        this.editEndorsement = Object.assign({}, this.defaultEndorsement);
+        this.btnSaveEndorsement = true;
+        this.selTransferReason = {};
+      },
+      onChangeCDCRNumber() {
+        if (this.editEndorsement.cdcrNumber) {
+          this.editEndorsement.cdcrNumber =
+            this.editEndorsement.cdcrNumber.toUpperCase();
+        } else {
+          this.editEndorsement = Object.assign({}, this.defaultEndorsement);
+          this.btnSaveEndorsement = true;
+          this.selTransferReason = {};
+        }
       },
     },
   };

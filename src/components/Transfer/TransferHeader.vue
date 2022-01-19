@@ -93,6 +93,7 @@
             v-on="on"
             @click="dlgSaveForm = true"
             dense
+            :disabled="btnSave"
           >
             <v-icon>mdi-content-save-outline</v-icon>
             Save
@@ -138,12 +139,35 @@
     },
     data: () => ({
       dlgSaveForm: false,
+      btnSave: true,
       btnInfo: true,
       btnHousing: true,
       btnPhysical: true,
       btnMedical: true,
     }),
+    async created() {
+      // console.log(
+      //   'TransferHeader: created(): loggedInUser/orgName => ',
+      //   this.loggedInUser.somsinfo.organizationName
+      // );
+      // console.log(
+      //   'TransferHeader: created(): offender/orgName => ',
+      //   this.somsOffender.institutionName
+      // );
+      if (
+        this.loggedInUser &&
+        this.loggedInUser.somsinfo &&
+        this.loggedInUser.somsinfo.organizationName &&
+        this.loggedInUser.somsinfo.organizationName ===
+          this.somsOffender.institutionName
+      ) {
+        this.btnSave = false;
+      } else {
+        this.btnSave = true;
+      }
+    },
     computed: {
+      ...get('users', ['loggedInUser']),
       ...get('transfers', ['somsOffender']),
       ...sync('transfers', [
         'showSOMSData',

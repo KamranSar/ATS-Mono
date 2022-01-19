@@ -49,11 +49,11 @@ const actions = {
 
           // FIXME: Remove Default of Avenal State Priston below...
           // Can't read schedules for an institution that DNE
-          if (!state.selectedInstitution) {
-            state.selectedInstitution = state.listOfInstitutions.find(
-              (inst) => inst.institutionName === 'Avenal State Prison'
-            );
-          }
+          // if (!state.selectedInstitution) {
+          // state.selectedInstitution = state.listOfInstitutions.find(
+          // (inst) => inst.institutionName === 'Avenal State Prison'
+          // );
+          // }
         }
       } catch (error) {
         console.error('getInstitutions: ', error);

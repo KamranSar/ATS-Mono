@@ -99,6 +99,8 @@
                   label="By CDCR #"
                   v-model="cdcrNum"
                   dense
+                  @change="cdcrNum = cdcrNum.toUpperCase()"
+                  @keyup="cdcrNum = cdcrNum.toUpperCase()"
                 ></v-text-field>
               </v-col>
               <v-col cols="1" class="mx-4">
