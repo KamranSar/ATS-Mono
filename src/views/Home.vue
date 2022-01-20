@@ -547,8 +547,8 @@
           'The following identified persons will be transferred this date';
         let xfrNum = items.length;
         let title = items[0].title;
-        let from = items[0].destination;
-        let to = this.getInstitutionId(items[0].origin);
+        let to = items[0].destination;
+        let from = this.getInstitutionId(items[0].origin);
         let vias = items[0].vias;
         let xfrDate = items[0].transferDate;
 

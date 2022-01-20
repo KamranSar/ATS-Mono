@@ -40,7 +40,9 @@
       </v-col>
       <v-col cols="3" align="right" align-self="center">
         <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-        <a class="text-decoration-none subtitle-2">Back to Home</a>
+        <a class="text-decoration-none subtitle-2" @click="goHome"
+          >Back to Home</a
+        >
       </v-col>
     </v-row>
   </v-card-title>
@@ -75,6 +77,11 @@
     methods: {
       ...call('ap', ['SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails']),
+      goHome() {
+        this.$router.push({
+          name: 'Home',
+        });
+      },
       async searchOffender() {
         this.transferData = transferModel();
         this.selSchedule = {};

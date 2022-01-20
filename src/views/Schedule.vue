@@ -36,7 +36,7 @@
             Create Schedule
           </v-btn> -->
           <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-          <a @click="goHome" class="text-decoration-none subtitle-2">
+          <a class="text-decoration-none subtitle-2" @click="goHome">
             Back to Home
           </a>
         </v-col>
