@@ -154,6 +154,7 @@
           clearable
           hide-details="true"
           dense
+          @change="scheduleSelected"
         ></v-select>
       </span>
       <span class="font-weight-bold pr-4">Vias: </span>
@@ -203,7 +204,9 @@
 
   export default {
     name: 'TransferPanel',
-    data: () => ({}),
+    data: () => ({
+      alertHasBeenViewed: false,
+    }),
     computed: {
       ...sync('transfers', ['transferData', 'selTransferReason']),
       ...get('transfers', [
@@ -257,6 +260,17 @@
         if (ctrl) {
           this.transferData.transferReasonCode = ctrl.reasonCode;
           this.transferData.transferReasonDesc = ctrl.reasonDesc;
+        }
+      },
+      scheduleSelected(ctrl) {
+        console.log(`TransferPanel: scheduleSelelcted(): ctrl => ${ctrl}`);
+        if (
+          !this.alertHasBeenViewed &&
+          this.somsOffender.TransferHolds &&
+          this.somsOffender.TransferHolds.length > 0
+        ) {
+          alert(`This person has one or more holds!`);
+          this.alertHasBeenViewed = true;
         }
       },
     },

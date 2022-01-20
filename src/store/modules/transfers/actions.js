@@ -99,22 +99,26 @@ const actions = {
       if (state.transferData._id) {
         const response = await dispatch('updateTransfer', state.transferData);
         // debugger;
-        if (response && response.data) {
-          console.log('savForm(): Successfully updated Transfer!');
-        }
+        // if (response && response._id) {
+        // console.log('savForm(): Successfully updated Transfer!');
+        return response;
+        // }
       } else {
         state.transferData.isScheduled = true;
-        await dispatch('createTransfer', state.transferData);
-        console.log('savForm(): Successfully created Transfer!');
+        const response = await dispatch('createTransfer', state.transferData);
+        return response;
       }
     } catch (ex) {
       console.error(ex);
     }
+    return [];
   },
   // eslint-disable-next-line no-unused-vars
   createTransfer: async ({ state, rootState }, transferObj) => {
     try {
-      await svcTransfers.create(transferObj);
+      const response = await svcTransfers.create(transferObj);
+      // debugger;
+      return response;
     } catch (error) {
       return error;
     } finally {
@@ -205,7 +209,8 @@ const actions = {
       rootState.app.loading = true;
       console.log('updateTransfer(): transferObj => ', transferObj);
       const response = await svcTransfers.patch(transferObj._id, transferObj);
-      return response && response.data ? response.data : [];
+      // debugger;
+      return response;
     } catch (error) {
       return error;
     } finally {
@@ -218,7 +223,7 @@ const actions = {
     try {
       rootState.app.loading = true;
       const response = await svcTransfers.remove(id);
-      return response && response.data ? response.data : [];
+      return response;
     } catch (error) {
       return error;
     } finally {

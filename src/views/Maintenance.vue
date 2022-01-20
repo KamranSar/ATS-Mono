@@ -6,9 +6,6 @@
           <h2>Maintenance</h2>
         </v-col>
         <v-col align="right" align-self="center">
-          <!-- <v-btn class="secondary ma-2" @click="dialogSchedule = true">
-            Create Schedule
-          </v-btn> -->
           <v-icon small color="primary" right>mdi-arrow-left</v-icon>
           <a @click="goHome" class="text-decoration-none subtitle-2">
             Back to Home
@@ -33,8 +30,25 @@
           <v-toolbar flat>
             <v-toolbar-title>Specific Transfer Reasons</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="500px">
+            <v-col cols="2" sm="4" lg="2" align-self="baseline">
+              <v-text-field
+                v-model="editedItem.reasonCode"
+                label="Code"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2" sm="4" lg="2" align-self="baseline">
+              <v-text-field
+                v-model="editedItem.reasonDesc"
+                label="Description"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2" sm="4" lg="2" align-self="baseline">
+              <v-btn color="secondary" class="mb-2" dark @click="save">
+                <v-icon>mdi-content-save-outline</v-icon>
+                Save
+              </v-btn>
+            </v-col>
+            <!-- <v-dialog v-model="dialog" max-width="500px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="secondary"
@@ -42,6 +56,7 @@
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
+                  :disabled="disableNew"
                 >
                   New Transfer Reason
                 </v-btn>
@@ -78,7 +93,7 @@
                   <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
                 </v-card-actions>
               </v-card>
-            </v-dialog>
+            </v-dialog> -->
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
                 <v-card-title class="headline">
@@ -102,10 +117,7 @@
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
-          <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-        </template>
-        <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize"> Reset </v-btn>
+          <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -113,7 +125,8 @@
 </template>
 
 <script>
-  import { sync, call } from 'vuex-pathify';
+  import { get, sync, call } from 'vuex-pathify';
+  // import hasAnyRoles from '@/router/guards/hasAnyRoles.js';
 
   export default {
     data: () => ({
@@ -140,8 +153,8 @@
         reasonDesc: '',
       },
     }),
-
     computed: {
+      ...get('users', ['loggedInUser']),
       ...sync('reasons', ['reasons']),
       formTitle() {
         return this.editedItem._id ? 'New Item' : 'Edit Item';
@@ -149,18 +162,13 @@
     },
 
     watch: {
-      dialog(val) {
-        val || this.close();
-      },
+      // dialog(val) {
+      //   val || this.close();
+      // },
       dialogDelete(val) {
         val || this.closeDelete();
       },
     },
-
-    created() {
-      this.initialize();
-    },
-
     methods: {
       ...call('reasons', [
         'createReason',
@@ -168,8 +176,6 @@
         'updateReason',
         'deleteReason',
       ]),
-      initialize() {},
-
       goHome() {
         this.$router.push({
           name: 'Home',
@@ -178,7 +184,7 @@
       editItem(item) {
         this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
-        this.dialog = true;
+        // this.dialog = true;
       },
 
       deleteItem(item) {
@@ -196,13 +202,13 @@
         this.closeDelete();
       },
 
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
+      // close() {
+      //   this.dialog = false;
+      //   this.$nextTick(() => {
+      //     this.editedItem = Object.assign({}, this.defaultItem);
+      //     this.editedIndex = -1;
+      //   });
+      // },
 
       closeDelete() {
         this.dialogDelete = false;
@@ -213,18 +219,23 @@
       },
 
       async save() {
-        if (this.editedIndex > -1) {
-          // if (this.editedItem._id) {
-          Object.assign(this.reasons[this.editedIndex], this.editedItem);
-          // Update
-          await this.updateReason(this.editedItem);
-        } else {
-          // Create Reason
-          this.reasons.push(this.editedItem);
-          await this.createReason(this.editedItem);
+        try {
+          if (this.editedIndex > -1) {
+            // if (this.editedItem._id) {
+            Object.assign(this.reasons[this.editedIndex], this.editedItem);
+            // Update
+            await this.updateReason(this.editedItem);
+          } else {
+            // Create Reason
+            this.reasons.push(this.editedItem);
+            await this.createReason(this.editedItem);
+          }
+          this.editedItem = this.defaultItem;
+        } catch (ex) {
+          console.error(ex);
         }
-        await this.readReasons();
-        this.close();
+        // await this.readReasons();
+        // this.close();
       },
     },
   };

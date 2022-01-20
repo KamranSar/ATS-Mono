@@ -230,7 +230,7 @@
               <v-spacer></v-spacer>
               <v-col cols="1" sm="2" lg="1" align-self="center">
                 <v-btn
-                  :disabled="btnSaveEndorsement"
+                  :disabled="disableSaveEndorsementButton"
                   class="secondary ma-2 btns"
                   @click="saveEndorsement()"
                 >
@@ -305,7 +305,7 @@
       dialogDeleteSchedule: false,
       dialogEndorsement: false,
       dialogDeleteEndorsement: false,
-      btnSaveEndorsement: true,
+      disableSaveEndorsementButton: true,
       headersSchedule: [
         { text: 'Schedule', value: 'title' },
         {
@@ -514,13 +514,24 @@
               person.institutionName !==
                 this.loggedInUser.somsinfo.organizationName
             ) {
-              let res = confirm(
+              const res = confirm(
                 `This person's institutions does not match yours. Are you sure you want to proceed?`
               );
               if (!res) {
+                this.loading = false;
                 return;
               }
             }
+            if (person.TransferHolds && person.TransferHolds.length > 0) {
+              const resp = confirm(
+                `This person has one or more holds! do you want to continue with this transfer?`
+              );
+              if (!resp) {
+                this.loading = false;
+                return;
+              }
+            }
+
             this.editEndorsement.cdcrNumber = person.cdcrNumber;
             this.editEndorsement.firstName = person.firstName;
             this.editEndorsement.lastName = person.lastName;
@@ -533,7 +544,7 @@
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;
-              this.btnSaveEndorsement = false;
+              this.disableSaveEndorsementButton = false;
             }, 500);
 
             this.somsCDCRNumber = '';
@@ -606,7 +617,7 @@
       },
       async scheduleDelete(item) {
         // console.log('scheduleDelete(): item => ', item);
-        debugger;
+        // debugger;
         const exists = await this.endorsementsExists(item);
         // console.log('scheduleDelete(): exists => ', exists);
         if (exists) {
@@ -686,7 +697,6 @@
           this.editEndorsement.transferReasonDesc = ctrl.reasonDesc;
         }
       },
-
       // eslint-disable-next-line no-unused-vars
       onSelectedSchedule(item) {
         if (item.value) {
@@ -739,6 +749,7 @@
           reasonCode: this.editEndorsement.transferReasonCode,
           reasonDesc: this.editEndorsement.transferReasonDesc,
         };
+        this.disableSaveEndorsementButton = false;
       },
       async removeEndorsement(id) {
         if (id) {
@@ -787,11 +798,11 @@
         try {
           const response = await this.saveForm();
           // debugger;
-          if (response && response.data) {
+          if (response && response._id) {
             this.setSnackbar('Success!', 'success', 3000);
             this.editEndorsement = Object.assign({}, this.defaultEndorsement);
             this.selTransferReason = null;
-            this.btnSaveEndorsement = true;
+            this.disableSaveEndorsementButton = true;
 
             await this.getEndorsements(this.selSchedule, {});
           }
@@ -922,7 +933,7 @@
         let dtLabel =
           'The following identified persons will be transferred this date';
 
-        debugger;
+        // debugger;
         let today = Date.now();
         let fileName = '';
         if (param == 'cdcrNumber') {
@@ -1231,7 +1242,7 @@
       },
       onClearCDCRNumber() {
         this.editEndorsement = Object.assign({}, this.defaultEndorsement);
-        this.btnSaveEndorsement = true;
+        this.disableSaveEndorsementButton = true;
         this.selTransferReason = {};
       },
       onChangeCDCRNumber() {
@@ -1240,7 +1251,7 @@
             this.editEndorsement.cdcrNumber.toUpperCase();
         } else {
           this.editEndorsement = Object.assign({}, this.defaultEndorsement);
-          this.btnSaveEndorsement = true;
+          this.disableSaveEndorsementButton = true;
           this.selTransferReason = {};
         }
       },

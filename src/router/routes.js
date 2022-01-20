@@ -4,8 +4,8 @@
 
 import checkForChildren from '@/router/helpers/checkForChildren.js';
 import defaultRoutes from '@/config/private/router/routes.js'; // [Home, Login Logout, Sign Out, Users, 4oh4]
-import Account from '@/views/Settings/Account.vue';
-import UserPreferences from '@/views/Settings/UserPreferences.vue';
+// import Account from '@/views/Settings/Account.vue';
+// import UserPreferences from '@/views/Settings/UserPreferences.vue';
 /* eslint-disable */
 import hasAnyRoles from '@/router/guards/hasAnyRoles.js';
 // import hasAllRoles from '@/router/guards/hasAllRoles.js';
@@ -76,10 +76,10 @@ const routes = [
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [
-        defaultAdminRole.name,
+        // defaultAdminRole.name,
         'Institution Administrator',
         'Institution User',
-        'Guest',
+        // 'Guest',
       ],
     },
   },
@@ -107,7 +107,7 @@ const routes = [
       import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [defaultAdminRole.name],
+      hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
     },
     children: [
       {
@@ -124,33 +124,33 @@ const routes = [
       },
     ],
   },
-  {
-    icon: 'mdi-cog-outline',
-    path: '/settings',
-    name: 'Settings',
-    component: () =>
-      import(
-        /* webpackChunkName: "settings" */ '@/views/Settings/Settings.vue'
-      ),
-    children: [
-      {
-        name: 'Account',
-        path: 'account',
-        icon: 'mdi-account-outline',
-        component: Account,
-      },
-      {
-        name: 'Preferences',
-        path: 'user-preferences',
-        icon: 'mdi-cog-outline',
-        component: UserPreferences,
-        // meta: {
-        //   beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-        //   hasAnyRoles: ['System Administrator'],
-        // },
-      },
-    ],
-  },
+  // {
+  //   icon: 'mdi-cog-outline',
+  //   path: '/settings',
+  //   name: 'Settings',
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "settings" */ '@/views/Settings/Settings.vue'
+  //     ),
+  //   children: [
+  //     {
+  //       name: 'Account',
+  //       path: 'account',
+  //       icon: 'mdi-account-outline',
+  //       component: Account,
+  //     },
+  //     {
+  //       name: 'Preferences',
+  //       path: 'user-preferences',
+  //       icon: 'mdi-cog-outline',
+  //       component: UserPreferences,
+  //       // meta: {
+  //       //   beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+  //       //   hasAnyRoles: ['System Administrator'],
+  //       // },
+  //     },
+  //   ],
+  // },
 ];
 
 // #region getRoutesByName
@@ -224,7 +224,7 @@ const ToolbarItems = getRoutesByName([
   'Home',
   'Login',
   'Logout',
-  { name: 'Settings', parentOnly: true },
+  // { name: 'Settings', parentOnly: true },
   'CDCR Dashboard',
 ]);
 // Routes used in BottomNavBar.vue
@@ -237,9 +237,9 @@ const LeftNavItems = getRoutesByName([
   'Maintenance',
   'Reports',
   'Admin',
-  { name: 'Settings', parentOnly: true },
+  // { name: 'Settings', parentOnly: true },
   'Login',
-  'Settings',
+  // 'Settings',
   'Logout',
 ]);
 
