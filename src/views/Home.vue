@@ -516,7 +516,8 @@
           obj.text = xfr.transferReasonCode;
           row.push(Object.assign({}, obj));
           // Column 10 - Comments
-          obj.text = xfr.comments;
+          // obj.text = xfr.comments;
+          obj.text = xfr.inHouseRemarks;
           row.push(Object.assign({}, obj));
 
           data.push(row);

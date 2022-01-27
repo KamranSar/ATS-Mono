@@ -503,7 +503,8 @@
           obj.text = xfr.transferReasonCode;
           row.push(Object.assign({}, obj));
           // Column 10 - Comments
-          obj.text = xfr.comments;
+          // obj.text = xfr.comments;
+          obj.text = xfr.inHouseRemarks;
           row.push(Object.assign({}, obj));
 
           data.push(row);
@@ -537,8 +538,8 @@
           'The following identified persons will be transferred this date';
         let xfrNum = this.schedules.length;
         let title = this.schedules[0].title;
-        let from = this.schedules[0].destination;
-        let to = this.getInstitutionId(this.schedules[0].origin);
+        let to = this.schedules[0].destination;
+        let from = this.getInstitutionId(this.schedules[0].origin);
         let vias = this.schedules[0].vias;
         let xfrDate = this.schedules[0].transferDate;
 
