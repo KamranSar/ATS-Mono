@@ -847,10 +847,11 @@
       async create134() {
         // Get transfer for selected schedule
         console.log('create134(): this.selSchedule => ', this.selSchedule);
-        if (!this.selSchedule || !this.selSchedule.scheduleId) {
+        if (!this.selSchedule || !this.selSchedule._id) {
           this.setSnackbar(
             'Schedule not selected. Please select a schedule and try again.'
           );
+          return;
           // let res = confirm(
           //   'A schedule was not selected. Click OK to print an empty Transfer Check Sheet. Click CANCEL to select a schedule and try again.'
           // );
@@ -964,7 +965,7 @@
         console.log('create134PDF(): data => ' + data);
 
         // const fileName = this.fileName + '.pdf';
-        let today = new Date().toISOString();
+        let today = new Date().toISOString().split('T')[0];
 
         let title = 'RECORDS TRANSFER CHECK SHEET';
         let txtOriginal = 'Original-Receiving Facility/Region Records';
@@ -972,7 +973,7 @@
 
         let nXfer = this.transfers.length;
 
-        let from = this.selSchedule.origin;
+        let from = this.getInstitutionId(this.selSchedule.origin);
         let to = this.selSchedule.destination;
         let vias = this.selSchedule.vias;
         let txtDate = this.selSchedule.transferDate;

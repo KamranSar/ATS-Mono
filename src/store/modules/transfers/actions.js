@@ -98,7 +98,6 @@ const actions = {
       // if (state.transferData._id) {
       if (state.transferData._id) {
         const response = await dispatch('updateTransfer', state.transferData);
-        // debugger;
         // if (response && response._id) {
         // console.log('savForm(): Successfully updated Transfer!');
         return response;
@@ -117,7 +116,6 @@ const actions = {
   createTransfer: async ({ state, rootState }, transferObj) => {
     try {
       const response = await svcTransfers.create(transferObj);
-      // debugger;
       return response;
     } catch (error) {
       return error;
@@ -209,7 +207,6 @@ const actions = {
       rootState.app.loading = true;
       console.log('updateTransfer(): transferObj => ', transferObj);
       const response = await svcTransfers.patch(transferObj._id, transferObj);
-      // debugger;
       return response;
     } catch (error) {
       return error;

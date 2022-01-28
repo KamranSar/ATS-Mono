@@ -617,7 +617,6 @@
       },
       async scheduleDelete(item) {
         // console.log('scheduleDelete(): item => ', item);
-        // debugger;
         const exists = await this.endorsementsExists(item);
         // console.log('scheduleDelete(): exists => ', exists);
         if (exists) {
@@ -797,7 +796,6 @@
 
         try {
           const response = await this.saveForm();
-          // debugger;
           if (response && response._id) {
             this.setSnackbar('Success!', 'success', 3000);
             this.editEndorsement = Object.assign({}, this.defaultEndorsement);
@@ -934,7 +932,6 @@
         let dtLabel =
           'The following identified persons will be transferred this date';
 
-        // debugger;
         let today = Date.now();
         let fileName = '';
         if (param == 'cdcrNumber') {
