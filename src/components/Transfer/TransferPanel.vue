@@ -243,11 +243,22 @@
     },
     methods: {
       updateComments(ctrl) {
-        console.log('updateComments(): ctrl', ctrl);
+        console.log('updateComments(): ctrl => ', ctrl.target._value);
         console.log('updateComments(): transferData =>', this.transferData);
         if (ctrl) {
-          console.log('updateComments(): transferData =>', this.transferData);
-          this.transferData.comments = ctrl.data;
+          if (ctrl.target.labels[0].innerText === 'In-House Remarks') {
+            this.transferData.inHouseRemarks = ctrl.target._value;
+            console.log(
+              'updateComments(): transferData.inHouseRemarks =>',
+              this.transferData.inHouseRemarks
+            );
+          } else {
+            this.transferData.comments = ctrl.target._value;
+            console.log(
+              'updateComments(): transferData.comments =>',
+              this.transferData.comments
+            );
+          }
         }
         console.log('updateComments(): transferData =>', this.transferData);
       },
