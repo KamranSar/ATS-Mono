@@ -20,6 +20,12 @@ const HEADERS = [
     display: true,
   },
   {
+    text: 'Email',
+    value: 'user.emailAddress',
+    align: 'start',
+    display: false,
+  },
+  {
     text: 'User Principal Name',
     value: 'soms_upn',
     display: true,
@@ -43,7 +49,7 @@ const HEADERS = [
   },
   {
     text: 'Roles',
-    value: 'appuserroles',
+    value: 'roles',
     align: 'start',
     display: true,
   },
@@ -60,16 +66,23 @@ const HEADERS = [
     display: false,
   },
   {
-    text: 'Email',
-    value: 'user.email',
-    align: 'start',
-    display: false,
-  },
-  {
     text: 'Last Login',
-    value: 'updatedAt',
+    value: 'appsession',
     align: 'end',
     display: true,
+    sort: (a, b) => {
+      const sessionObj = {
+        updatedAt: new Date(2099, 1, 1).toISOString(),
+      };
+      if (!a) {
+        a = sessionObj;
+      }
+      if (!b) {
+        b = sessionObj;
+      }
+
+      return a.updatedAt.localeCompare(b.updatedAt);
+    },
   },
 ];
 
@@ -81,7 +94,7 @@ const OPTIONS = {
   multiSort: true,
   mustSort: false,
   page: 1,
-  sortBy: ['soms_upn', 'updatedAt'],
+  sortBy: ['somsinfo.organizationName', 'somsinfo.displayName'],
   sortDesc: [true, true],
 };
 
@@ -94,4 +107,17 @@ const PAGINATION = {
   itemsLength: null,
 };
 
-export { HEADERS, OPTIONS, PAGINATION };
+const SAVE_TYPE = {
+  APPEND: {
+    text: 'Add',
+    value: 'ADD',
+    tooltip: 'Will add to current roles',
+  },
+  OVERWRITE: {
+    text: 'Overwrite',
+    value: 'OVERWRITE WITH',
+    tooltip: 'Will overwrite current roles',
+  },
+};
+
+export { HEADERS, OPTIONS, PAGINATION, SAVE_TYPE };
