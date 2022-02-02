@@ -43,74 +43,11 @@
               ></v-text-field>
             </v-col>
             <v-col cols="2" sm="4" lg="2" align-self="baseline">
-              <v-btn color="secondary" class="mb-2" dark @click="save">
-                <v-icon>mdi-content-save-outline</v-icon>
+              <v-btn color="secondary" class="mb-2" dark @click="saveReason">
+                <v-icon>mdi-content-saveReason-outline</v-icon>
                 Save
               </v-btn>
             </v-col>
-            <!-- <v-dialog v-model="dialog" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="secondary"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
-                  :disabled="disableNew"
-                >
-                  New Transfer Reason
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.reasonCode"
-                          label="Code"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.reasonDesc"
-                          label="Description"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog> -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card>
-                <v-card-title class="headline">
-                  Are you sure you want to delete this item?
-                </v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeDelete">
-                    Cancel
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="deleteItemConfirm">
-                    OK
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </v-toolbar>
         </template>
         <template v-slot:item.actions="{ item }">
@@ -126,13 +63,10 @@
 
 <script>
   import { get, sync, call } from 'vuex-pathify';
-  // import hasAnyRoles from '@/router/guards/hasAnyRoles.js';
 
   export default {
     data: () => ({
       loading: false,
-      dialog: false,
-      dialogDelete: false,
       headers: [
         {
           text: 'Code',
@@ -145,10 +79,12 @@
       ],
       editedIndex: -1,
       editedItem: {
+        id: '',
         reasonCode: '',
         reasonDesc: '',
       },
       defaultItem: {
+        id: '',
         reasonCode: '',
         reasonDesc: '',
       },
@@ -156,20 +92,15 @@
     computed: {
       ...get('users', ['loggedInUser']),
       ...sync('reasons', ['reasons']),
-      formTitle() {
-        return this.editedItem._id ? 'New Item' : 'Edit Item';
-      },
     },
 
     watch: {
-      // dialog(val) {
-      //   val || this.close();
-      // },
       dialogDelete(val) {
         val || this.closeDelete();
       },
     },
     methods: {
+      ...call('app', ['SET_SNACKBAR']),
       ...call('reasons', [
         'createReason',
         'readReasons',
@@ -181,61 +112,94 @@
           name: 'Home',
         });
       },
-      editItem(item) {
-        this.editedIndex = this.reasons.indexOf(item);
-        this.editedItem = Object.assign({}, item);
-        // this.dialog = true;
-      },
-
-      deleteItem(item) {
-        this.editedIndex = this.reasons.indexOf(item);
-        this.editedItem = Object.assign({}, item);
-        this.dialogDelete = true;
-      },
-
-      async deleteItemConfirm() {
-        this.reasons.splice(this.editedIndex, 1);
-        await this.deleteReason(this.editedItem._id);
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.readReasons();
-        this.dialogDelete = false;
-        this.closeDelete();
-      },
-
-      // close() {
-      //   this.dialog = false;
-      //   this.$nextTick(() => {
-      //     this.editedItem = Object.assign({}, this.defaultItem);
-      //     this.editedIndex = -1;
-      //   });
-      // },
-
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
         });
       },
+      editItem(item) {
+        console.log('editItem(): item', item);
+        this.editedIndex = this.reasons.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        console.log('editItem(): this.editedItem', this.editedItem);
+      },
+      async reasonDelete(id) {
+        if (id) {
+          try {
+            await this.deleteReason(id);
+            this.setSnackbar('Successfully deleted reason!', 'success', 3000);
+          } catch (ex) {
+            console.error(ex);
+            this.setSnackbar(`Failed to delete reason!`, 'error', 3000);
+            return false;
+          }
+        } else {
+          this.setSnackbar('Cannot remove reason. id = ', id);
+          return false;
+        }
 
-      async save() {
+        return true;
+      },
+      async deleteItem(item) {
+        const index = this.reasons.indexOf(item);
+
+        let res = confirm('Are you sure you want to delete this reason?');
+        if (res) {
+          res = this.reasonDelete(item._id);
+          if (res) {
+            this.reasons.splice(index, 1);
+            if (this.editedItem._id === item._id) {
+              this.editedItem = {};
+            }
+          }
+        }
+      },
+      async saveReason() {
         try {
-          if (this.editedIndex > -1) {
-            // if (this.editedItem._id) {
-            Object.assign(this.reasons[this.editedIndex], this.editedItem);
-            // Update
-            await this.updateReason(this.editedItem);
+          let response = [];
+          console.log('saveReason(): this.editedItem => ', this.editedItem);
+          if (this.editedItem._id) {
+            // Update Reason
+            response = await this.updateReason(this.editedItem);
+            console.log('saveReason(): updateReason(): response => ', response);
+            if (response) {
+              Object.assign(this.reasons[this.editedIndex], response);
+            }
           } else {
             // Create Reason
-            this.reasons.push(this.editedItem);
-            await this.createReason(this.editedItem);
+            console.log('saveReason(): createReason(): checking for duplicate');
+            for (let r of this.reasons) {
+              if (r.reasonCode === this.editedItem.reasonCode) {
+                this.setSnackbar(
+                  `Duplicate code: ${this.editedItem.reasonCode}`,
+                  'error',
+                  3000
+                );
+                console.log('saveReason(): createReason(): duplicate found');
+                return;
+              }
+            }
+            response = await this.createReason(this.editedItem);
+            console.log('saveReason(): createReason(): response => ', response);
+            if (response) {
+              this.reasons.push(response);
+            }
           }
-          this.editedItem = this.defaultItem;
+          if (response) {
+            this.editedItem = {};
+            console.log('saveReason(): this.editedItem => ', this.editedItem);
+            this.editedIndex = -1;
+            console.log('saveReason(): this.editedIndex => ', this.editedIndex);
+          } else {
+            // TODO error message
+          }
         } catch (ex) {
           console.error(ex);
         }
-        // await this.readReasons();
-        // this.close();
       },
     },
   };

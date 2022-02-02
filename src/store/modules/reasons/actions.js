@@ -1,9 +1,11 @@
 import svcReasons from '@/feathers/services/reasons/reasons.service.js';
+import findAll from '@/feathers/helpers/findAll.js';
 
 const actions = {
   createReason: async ({ rootState }, reasonObj) => {
     try {
-      await svcReasons.create(reasonObj);
+      const response = await svcReasons.create(reasonObj);
+      return response;
     } catch (error) {
       return error;
     } finally {
@@ -16,11 +18,20 @@ const actions = {
   },
 
   // readReason
-  readReasons: async ({ state, rootState }) => {
+  readReasons: async ({ state, rootState }, queryObj) => {
     try {
       rootState.app.loading = true;
-      const response = await svcReasons.find();
+      if (!queryObj) {
+        queryObj = {
+          query: {
+            $sort: { reasonCode: 1 },
+          },
+        };
+      }
+      // const response = await svcReasons.find({
+      const response = await findAll(svcReasons, queryObj);
       state.reasons = response.data;
+      return response && response.data ? response.data : [];
     } catch (error) {
       return error;
     } finally {
@@ -31,7 +42,8 @@ const actions = {
   updateReason: async ({ rootState }, reasonObj) => {
     try {
       rootState.app.loading = true;
-      await svcReasons.update(reasonObj._id, reasonObj);
+      const response = await svcReasons.patch(reasonObj._id, reasonObj);
+      return response;
     } catch (error) {
       return error;
     } finally {
