@@ -6,7 +6,7 @@ const serverData = require('./service-config').server;
 
 module.exports = function (app) {
   if (serverData.mongooseEnabled) {
-    const { server, port, database, connectTimeoutMS, poolSize } = app.get('mongodb');
+    const { server, port, database, connectTimeoutMS } = app.get('mongodb');
     if (!server || server.length < 1 || !port || port.length < 1) {
       logger.error('MongoDb (Mongoose) server or port must be specified in configuration, exiting...');
       process.exit(1);
@@ -17,14 +17,13 @@ module.exports = function (app) {
     debug('Connecting to mongoDb (Mongoose) database (%s) using connection string: %s', database, connUrlMidTier);
     mongoose
       .connect(connUrlMidTier, {
-        useCreateIndex: true,
         useNewUrlParser: true,
         useUnifiedTopology: true,
         connectTimeoutMS: connectTimeoutMS,
-        poolSize: poolSize,
       })
       .then(() => {
-        if (process.env.NODE_ENV === 'production') logger.info('Successfully connected to mongoDb (Mongoose) database (%s) at %s', database, connUrlMidTier);
+        if (process.env.NODE_ENV === 'production')
+          logger.info('Successfully connected to mongoDb (Mongoose) database (%s) at %s', database, connUrlMidTier);
         else debug('Successfully connected to mongoDb (Mongoose) database (%s) at %s', database, connUrlMidTier);
         app.mongooseConnected = true;
       })
@@ -33,7 +32,6 @@ module.exports = function (app) {
         process.exit(1);
       });
 
-    mongoose.Promise = global.Promise;
     app.set('mongooseClient', mongoose);
   }
 };

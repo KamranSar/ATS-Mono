@@ -3,7 +3,7 @@
   "port": "APP_PORT",
   "authentication": {
     "jwtOptions": {
-      "expiresIn": "15m"
+      "expiresIn": "24h"
     }
   }
 }

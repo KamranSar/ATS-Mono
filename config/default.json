@@ -43,8 +43,7 @@
     "server": "MTMONGO_SVR",
     "port": "MTMONGO_PORT",
     "database": "midtier",
-    "connectTimeoutMS": 10000,
-    "poolSize": 5
+    "connectTimeoutMS": 10000
   },
   "mssql": {
     "host": "MSSQL_SVR",
