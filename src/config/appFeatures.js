@@ -19,6 +19,16 @@ const MULTIPLE_USER_ROLES_ENABLED = false; // This feature flag allows assigning
  */
 const CLIENT_ROLES_ENABLED = true; // This will be deprecated when the MT moved to server side roles
 
+/**
+ * If the loggedInUser has access to the user management page...
+ * this flag only allows them to manage users from their own institution.
+ */
+const MANAGE_BY_INSTITUTION_ENABLED = true;
+
+/**
+ * !FOR TESTING PURPOSES ONLY
+ * */
+const FAKE_ROLES_ENABLED = false && ['System Administrator']; // Set to true to add these roles to getNewToken for the loggedInUser
 export {
   LEFT_DRAW_ENABLED,
   RIGHT_DRAW_ENABLED,
@@ -26,4 +36,6 @@ export {
   WEB_SOCKETS_ENABLED,
   MULTIPLE_USER_ROLES_ENABLED,
   CLIENT_ROLES_ENABLED,
+  MANAGE_BY_INSTITUTION_ENABLED,
+  FAKE_ROLES_ENABLED,
 };

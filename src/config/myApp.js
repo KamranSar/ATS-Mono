@@ -5,7 +5,14 @@ const isDev = window.location.hostname.includes('dev'); // (internal only)
 const isTst = window.location.hostname.includes('test'); // (internal and external/public)
 const isPoc = window.location.hostname.includes('poc'); // (internal and external/public)
 
-// TODO: Define a default role for the first logged in user.
+/**
+ * The object, defaultAdminRole is used in conjunction with the appFeature CLIENT_ROLES_ENABLED.
+ *
+ * @deprecated >v0.6.0 vue-frontend-template
+ * Be sure to remove all references after CLIENT_ROLES_ENABLED is set to false.
+ *
+ * TODO: Define a default role for the first logged in user.
+ */
 const defaultAdminRole = {
   name: 'System Administrator',
   description: 'Gives access to manage users in the application',

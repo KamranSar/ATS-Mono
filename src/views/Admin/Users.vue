@@ -231,14 +231,10 @@
           <template v-slot:item.roles="{ item: user }">
             <v-row no-gutters justify="center" align="center">
               <v-col>
-                <!-- Remove ternary and keep second condition when CLIENT_ROLES_ENABLED preference is removed -->
                 <v-autocomplete
+                  v-if="canAdminister(user)"
                   v-model="user.roles"
-                  :items="
-                    CLIENT_ROLES_ENABLED
-                      ? appRoles
-                      : appRoles.filter((r) => user.roles.includes(r.name))
-                  "
+                  :items="appRoles"
                   chips
                   no-data-text="No roles have been assigned..."
                   label="Assigned Roles"
@@ -291,6 +287,7 @@
                     </v-list-item>
                   </template>
                 </v-autocomplete>
+                <span v-else>{{ user.roles.join(', ') }}</span>
               </v-col>
               <v-col cols="auto" v-if="!CLIENT_ROLES_ENABLED">
                 <v-btn icon @click="manageSelected(user)">
@@ -367,10 +364,12 @@
   import UserAvatar from '@/components/util/UserAvatar.vue';
   import { formatDistanceToNow, parseISO, isThisWeek } from 'date-fns';
   import Panel from '@/components/layouts/Panel.vue';
+  import { defaultAdminRole } from '@/config/myApp.js';
   import { get, sync, call } from 'vuex-pathify';
   import {
     CLIENT_ROLES_ENABLED,
     MULTIPLE_USER_ROLES_ENABLED,
+    MANAGE_BY_INSTITUTION_ENABLED,
   } from '@/config/appFeatures.js';
   import { HEADERS, OPTIONS } from '@/components/Users/constants.js';
   import cloneDeep from 'lodash.clonedeep';
@@ -418,6 +417,7 @@
         debug(this.appRolesMap);
         return [...this.appRolesMap.values()];
       },
+      appUserRoles: get('users/getAppUserRoles'),
       visibleHeaders() {
         return this.headers.filter((h) => h.display);
       },
@@ -432,6 +432,85 @@
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       ...call('users', ['saveUserRoles']),
+      /**
+       * isDefaultAdmin function
+       *
+       * This could be a computed but kept as a method
+       * to be consistent with it's cousin isInstitutionUser(institution)
+       *
+       * @returns {Boolean} true|false
+       */
+      isDefaultAdmin() {
+        if (this.appUserRoles.includes(defaultAdminRole.name)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      /**
+       * isInstitutionUser(institution) function
+       * This helper function is used by MANAGE_BY_INSTITUTION_ENABLED
+       *
+       * Takes in the institutuion object and compares it to the loggedInUsers organization Name
+       * @param {Object} - Institution object
+       */
+      isInstitutionUser(institution) {
+        if (
+          institution &&
+          institution.somsinfo &&
+          institution.somsinfo.organizationName &&
+          this.loggedInUser.somsinfo &&
+          this.loggedInUser.somsinfo.organizationName &&
+          this.loggedInUser.somsinfo.organizationName ===
+            institution.somsinfo.organizationName
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      /**
+       * Checks if the loggedInUser can administer the user passed in from the table.
+       *
+       * The fact that loggedInUser can access this page is enough to give them permission to manage user roles.
+       * Just need to check if user passed in has a higher role..
+       * If for whatever reason they got here and don't have any priority... we set it to 9999
+       *
+       * @returns {Boolean}
+       */
+      canAdminister(user) {
+        let canAdminister = false;
+
+        const _getUserPriority = (user) => {
+          const roles =
+            user && user.roles
+              ? user.roles
+              : user.appuserroles && user.appuserroles.roles
+              ? user.appuserroles.roles
+              : [];
+          const userRoles = roles.map((userRoleName) =>
+            this.$myApp.approles.find((role) => role.name === userRoleName)
+          );
+          return userRoles.length ? userRoles[0].priority : 9999;
+        };
+
+        // If user is defaultAdmin, then no need to check anything else...
+        if (this.isDefaultAdmin()) {
+          return true;
+        }
+
+        // Check priority levels...
+        const loggedInUserHighestPriority = _getUserPriority(this.loggedInUser);
+        const userHighestPriority = _getUserPriority(user);
+        canAdminister = loggedInUserHighestPriority <= userHighestPriority;
+
+        // Some applications track institution and manage roles by instutition...
+        // This is to support that management style...
+        canAdminister =
+          MANAGE_BY_INSTITUTION_ENABLED && this.isInstitutionUser(user);
+
+        return canAdminister;
+      },
       /**
        * @param user - The selected user in listOfUsers
        * @deprecated >v0.6.0 vue-frontend-template

@@ -68,9 +68,9 @@ const getters = {
         if (!highestPriorityLevel) {
           return false;
         }
-
         return role.priority >= highestPriorityLevel;
       });
+
       return appRoles;
     } else if (
       state.loggedInUser &&
@@ -78,7 +78,12 @@ const getters = {
       state.loggedInUser.appinfo.roles &&
       state.loggedInUser.appinfo.roles.length
     ) {
-      return state.loggedInUser.appinfo.roles;
+      // FIXME: Return this in sorted order...
+      // Remember to include priority when moving to backend.
+      const userRoles = getters.appUserRoles;
+      return state.loggedInUser.appinfo.roles.filter((r) =>
+        userRoles.includes(r.name)
+      );
     } else {
       return [];
     }
