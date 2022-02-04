@@ -4,6 +4,7 @@ import myApp from '@/config/myApp';
 import feathers from '@/feathers/index.js';
 import modules from '@/store/modules/index.js';
 import onLogout from '@/config/hooks/onLogout.js';
+import clearMsalTokens from '@/config/private/helpers/clearMsalTokens';
 
 /**
  * logout
@@ -51,6 +52,8 @@ async function logout() {
             modules[k].mutations.resetState
         )
         .map((moduleName) => store.commit(`${moduleName}/resetState`));
+
+      clearMsalTokens();
 
       store.dispatch('app/SET_SNACKBAR', {
         top: true,

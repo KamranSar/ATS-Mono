@@ -30,6 +30,8 @@
   import getNewToken from '@/config/private/helpers/getNewToken';
   import onInit from '@/config/hooks/onInit.js';
   import onLogin from '@/config/hooks/onLogin.js';
+  import clearMsalTokens from '@/config/private/helpers/clearMsalTokens';
+
   export default {
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-add-branding-in-azure-ad-apps
     name: 'SignInWithMicrosoftButton',
@@ -73,6 +75,7 @@
               message: 'User cancelled or authentication failed.',
               color: 'error',
             });
+            clearMsalTokens();
           } finally {
             this.loading = false;
           }
