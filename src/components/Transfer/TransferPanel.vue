@@ -1,7 +1,7 @@
 <template>
   <v-row class="my-0">
     <!-- Data/Photo/Housing... Column -->
-    <v-col cols="3" sm="6" md="3" lg="3">
+    <v-col cols="3" sm="6" md="3" lg="3" class="pb-0 mb-0">
       <!-- Data -->
       <div v-show="showSOMSData">
         <span>Persons Information</span>
@@ -90,16 +90,16 @@
             v-model="comment.data"
             outlined
             no-resize
-            rows="3"
+            rows="8"
             dense
-            @blur="updateComments"
+            readonly
           ></v-textarea>
         </template>
       </div>
     </v-col>
 
     <!-- Case Factors Column -->
-    <v-col cols="3" sm="6" md="3" lg="3">
+    <v-col cols="3" sm="6" md="3" lg="3" class="pb-0 mb-0">
       <div>
         <span>Case Factors</span>
         <v-divider class="pb-2"></v-divider>
@@ -118,28 +118,65 @@
     </v-col>
 
     <!-- Endorsement Column -->
-    <v-col cols="3" sm="6" md="3" lg="3">
+    <v-col cols="3" sm="6" md="3" lg="3" class="pb-0 mb-0">
       <span>Endorsement Information</span>
-      <template v-for="(field, index) in ENDORSEMENT_FIELDS">
-        <v-divider
-          :key="'divider-' + index"
-          v-if="field.divider"
-          class="pb-2"
-        ></v-divider>
-        <br :key="'break-' + index" v-else-if="field.break" />
-        <template v-else>
-          <span :key="'label-' + index" class="font-weight-bold pr-4">{{
-            field.label
-          }}</span>
-          <span :key="'data-' + index" class="float-right">{{
-            field.data
-          }}</span>
-        </template>
-      </template>
+      <v-divider class="pb-2"></v-divider>
+      <table width="100%">
+        <tr v-for="(field, index) in ENDORSEMENT_FIELDS" :key="index">
+          <td
+            :key="'label-' + index"
+            class="font-weight-bold pr-4"
+            style="white-space: nowrap"
+          >
+            {{ field.label }}
+          </td>
+          <td style="text-align: right">
+            <span
+              :key="'data-' + index"
+              style="
+                overflow: hidden;
+                text-align: right;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              "
+            >
+              {{ field.data }}
+            </span>
+          </td>
+        </tr>
+      </table>
+      <!-- <span :key="'label-' + index" class="font-weight-bold pr-4">
+            {{ field.label }}
+          </span>
+          <span
+            :key="'data-' + index"
+            class=""
+            style="
+              overflow: hidden;
+              text-align: right;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              width: 125px;
+            "
+          >
+            {{ field.data }}
+          </span> -->
+      <!-- </template>
+      </table> -->
+      <v-divider class="pb-2"></v-divider>
+      <v-textarea
+        v-model="transferData.inHouseRemarks"
+        label="In-House Remarks"
+        outlined
+        no-resize
+        rows="3"
+        dense
+        @blur="updateComments"
+      ></v-textarea>
     </v-col>
 
     <!-- Schedule Column -->
-    <v-col cols="3" sm="6" md="3" lg="3">
+    <v-col cols="3" sm="6" md="3" lg="3" class="pb-0 mb-0">
       <span>Schedule Information</span>
       <v-divider class="pb-2"></v-divider>
       <span>
@@ -189,6 +226,16 @@
           </template>
         </v-select>
       </span>
+      <v-divider class="pb-2"></v-divider>
+      <v-textarea
+        v-model="transferData.comments"
+        label="CDCR 135/Status Report Comments"
+        outlined
+        no-resize
+        rows="3"
+        dense
+        @blur="updateComments"
+      ></v-textarea>
     </v-col>
   </v-row>
 </template>

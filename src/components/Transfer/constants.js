@@ -78,16 +78,16 @@ const COMMENT_FIELDS = (somsOffender) => [
     divider: true,
   },
   {
-    label: 'CDC 135/Status Report Comments',
+    label: 'SOMS Comments',
     data: somsOffender && somsOffender.comments ? somsOffender.comments : '',
   },
-  {
-    label: 'In-House Remarks',
-    data:
-      somsOffender && somsOffender.inHouseRemarks
-        ? somsOffender.inHouseRemarks
-        : '',
-  },
+  // {
+  //   label: 'SOMS Remarks',
+  //   data:
+  //     somsOffender && somsOffender.inHouseRemarks
+  //       ? somsOffender.inHouseRemarks
+  //       : '',
+  // },
 ];
 
 const CASE_FACTOR_FIELDS = (somsOffender) => {

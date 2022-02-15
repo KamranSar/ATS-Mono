@@ -19,7 +19,7 @@ function transferModel({
   originalEndorsementDate = null,
   expirationEndorsementDate = null,
   title = '',
-  scheduleId = '',
+  scheduleId = null,
   transferReasonCode = '',
   transferReasonDesc = '',
   comments = '',
