@@ -149,8 +149,8 @@
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   // import { setSnackbar } from '@/helpers/snackbar.js';
 
-  import jsPDF from 'jspdf';
-  import 'jspdf-autotable';
+  // import jsPDF from 'jspdf';
+  // import 'jspdf-autotable';
 
   export default {
     name: 'Endorsements',
@@ -467,45 +467,45 @@
           seats: selected.seats,
         };
       },
-      createPDF() {
-        const source = this.$refs['myTable'];
-        let rows = [];
-        let columnHeader = [
-          'CDCR #',
-          'Name',
-          'Endorsed To',
-          'Level',
-          'Endorsed Date',
-          'Release Date',
-          'Case Factor',
-          'Ethnicity',
-          'Housing',
-          'In House Remarks',
-        ];
-        let pdfName = 'endorsements';
-        source.items.forEach((element) => {
-          const temp = [
-            element.cdcrNumber,
-            element.lastName + ', ' + element.firstName,
-            element.endorsedTo,
-            element.securityLevel,
-            element.originalEndorsementDate,
-            element.releaseDate,
-            element.caseFactor,
-            element.ethnicity,
-            element.housingArea,
-            element.inHouseRemarks,
-          ];
-          rows.push(temp);
-        });
-        const doc = new jsPDF({
-          orientation: 'landscape',
-          unit: 'in',
-          format: [22, 17],
-        });
-        doc.autoTable(columnHeader, rows);
-        doc.save(pdfName + '.pdf');
-      },
+      // createPDF() {
+      //   const source = this.$refs['myTable'];
+      //   let rows = [];
+      //   let columnHeader = [
+      //     'CDCR #',
+      //     'Name',
+      //     'Endorsed To',
+      //     'Level',
+      //     'Endorsed Date',
+      //     'Release Date',
+      //     'Case Factor',
+      //     'Ethnicity',
+      //     'Housing',
+      //     'In House Remarks',
+      //   ];
+      //   let pdfName = 'endorsements';
+      //   source.items.forEach((element) => {
+      //     const temp = [
+      //       element.cdcrNumber,
+      //       element.lastName + ', ' + element.firstName,
+      //       element.endorsedTo,
+      //       element.securityLevel,
+      //       element.originalEndorsementDate,
+      //       element.releaseDate,
+      //       element.caseFactor,
+      //       element.ethnicity,
+      //       element.housingArea,
+      //       element.inHouseRemarks,
+      //     ];
+      //     rows.push(temp);
+      //   });
+      //   const doc = new jsPDF({
+      //     orientation: 'landscape',
+      //     unit: 'in',
+      //     format: [22, 17],
+      //   });
+      //   doc.autoTable(columnHeader, rows);
+      //   doc.save(pdfName + '.pdf');
+      // },
     },
     computed: {
       ...sync('transfers', ['transfers', 'selTransferReason', 'transferData']),
