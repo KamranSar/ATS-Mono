@@ -47,6 +47,7 @@
     ></v-progress-linear> -->
     <v-data-table
       ref="myTable"
+      :search="endorsementSearch"
       :items-per-page="itemsPerPage"
       dense
       :headers="Headers"
@@ -56,7 +57,6 @@
       @keypress="filterEndorsements"
       :loading="loading"
       :options="dataOptions"
-      multi-sort
       show-select
       loading-text="Syncing Data with SOMS... Please wait"
       no-data-text="No Endorsements"
@@ -100,9 +100,6 @@
       </template> -->
       <template v-slot:item.endorsedTo="{ item }">
         <span>{{ getInstitutionId(item.endorseInstitution) }}</span>
-      </template>
-      <template v-slot:item.level="{ item }">
-        <span>{{ setSecurityLevel(item) }}</span>
       </template>
       <template v-slot:item.endorseDate="{ item }">
         <span class="nowrap">{{ formatDate(item.endorseDate) }}</span>
@@ -171,7 +168,7 @@
         { text: 'Last Name', value: 'lastName' },
         { text: 'First Name', value: 'firstName' },
         { text: 'Endorsed To', value: 'endorsedTo' },
-        { text: 'Level', value: 'securityLevel' },
+        { text: 'Level', value: 'endorseSecurityLevel' },
         { text: 'Endorsed Date', value: 'endorseDate' },
         { text: 'Expired Date', value: 'expirationDate' },
         { text: 'Release Date', value: 'releaseDate' },

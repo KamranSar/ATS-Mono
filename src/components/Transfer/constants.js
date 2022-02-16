@@ -100,14 +100,14 @@ const CASE_FACTOR_FIELDS = (somsOffender) => {
       label: 'SNY:',
       data: caseFactor && caseFactor.sny_flag ? 'Y' : 'N',
     },
-    {
-      label: 'CCMS EOP:',
-      value:
-        caseFactor && caseFactor.cccms_eop_value
-          ? caseFactor.cccms_eop_value
-          : '',
-      data: caseFactor && caseFactor.cccms_eop_flag ? 'Y' : 'N',
-    },
+    // {
+    //   label: 'CCCMS EOP:',
+    //   value:
+    //     caseFactor && caseFactor.cccms_eop_value
+    //       ? caseFactor.cccms_eop_value
+    //       : '',
+    //   data: caseFactor && caseFactor.cccms_eop_flag ? 'Y' : 'N',
+    // },
     {
       label: 'Cocci1:',
       value:
