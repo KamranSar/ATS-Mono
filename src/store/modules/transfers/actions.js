@@ -1,6 +1,6 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 import somsOffender from '@/feathers/services/offender/details.service.js';
-import router from '@/router/';
+// import router from '@/router/';
 // import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
 const actions = {
@@ -16,13 +16,19 @@ const actions = {
       console.log('readOffenderDetails(): query => ', query);
       const response = await somsOffender.find(query);
       console.log('readOffenderDetails(): response => ', response);
-
+      console.log(
+        'readOffenderDetails(): transferData => ',
+        state.transferData
+      );
       if (response && response.data && response.data.length) {
         state.somsOffender = response.data[0];
         state.transferData.cdcrNumber = state.somsOffender.cdcrNumber;
         state.transferData.offenderId = state.somsOffender.offenderId;
         state.transferData.firstName = state.somsOffender.firstName;
         state.transferData.lastName = state.somsOffender.lastName;
+        state.transferData.institutionName = state.somsOffender.institutionName;
+        state.transferData.institutionPartyId =
+          state.somsOffender.institutionId;
         state.transferData.releaseDate = state.somsOffender.releaseDate;
         state.transferData.ethnicity = state.somsOffender.ethnicity;
         // state.transferData.caseFactor = state.somsOffender.caseFactor;
@@ -32,20 +38,26 @@ const actions = {
         state.transferData.currentEndorsementDate =
           state.somsOffender.endorseDate;
         state.transferData.originalEndorsementDate =
-          state.somsOffender.dateEndorsementOriginal;
-        state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
-        state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
+          state.somsOffender.signedDate;
+        state.transferData.expirationEndorsementDate =
+          state.somsOffender.expirationDate;
+        state.transferData.endorsedToName =
+          state.somsOffender.institutionName === state.somsOffender.institution
+            ? ''
+            : state.somsOffender.institution;
+        // state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
+        // state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
 
         console.log(
           'readOffenderDetails(): state.transferData => ',
           state.transferData
         );
-        router.push({
-          name: 'Transfer Details',
-          params: {
-            cdcrNumber,
-          },
-        });
+        // router.push({
+        //   name: 'Transfer Details',
+        //   params: {
+        //     cdcrNumber,
+        //   },
+        // });
       } else {
         dispatch(
           'app/SET_SNACKBAR',
@@ -85,7 +97,7 @@ const actions = {
           state.transferData.scheduleId = schedule._id;
           state.transferData.transferDate = schedule.transferDate;
           state.transferData.vias = schedule.vias;
-          // state.transferData.institution = schedule.origin;
+          state.transferData.isScheduled = true;
           break;
         }
       }
@@ -95,17 +107,14 @@ const actions = {
 
     console.log('saveForm(): transferData => ', state.transferData);
     try {
-      // if (state.transferData._id) {
       if (state.transferData._id) {
-        const response = await dispatch('updateTransfer', state.transferData);
-        // if (response && response._id) {
-        // console.log('savForm(): Successfully updated Transfer!');
-        return response;
-        // }
+        return await dispatch('updateTransfer', state.transferData);
+        // const response = await dispatch('updateTransfer', state.transferData);
+        // return response;
       } else {
-        state.transferData.isScheduled = true;
-        const response = await dispatch('createTransfer', state.transferData);
-        return response;
+        return await dispatch('createTransfer', state.transferData);
+        // const response = await dispatch('createTransfer', state.transferData);
+        // return response;
       }
     } catch (ex) {
       console.error(ex);
@@ -123,12 +132,10 @@ const actions = {
       rootState.app.loading = false;
     }
   },
-
   // eslint-disable-next-line no-unused-vars
   init: async ({ dispatch }) => {
     // await dispatch('readTransfers');
   },
-
   // readTransfers
   readTransfers: async ({ rootState }, queryObj) => {
     try {

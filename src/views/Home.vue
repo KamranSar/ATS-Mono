@@ -264,16 +264,11 @@
     },
     methods: {
       getInstitutionId(location) {
-        if (!location) {
+        if (!location && this.listOfInstitutions.length > 0) {
           // FIXME write out an error message
           return '';
         }
 
-        console.log('getInstitutionId(): location => ', location);
-        console.log(
-          'getInstitutionId(): listOfInstitutions',
-          this.listOfInstitutions
-        );
         for (let i of this.listOfInstitutions) {
           // console.log('getInstitutionId(): i => ', i);
           if (i.institutionName == location) {
@@ -516,8 +511,7 @@
           obj.text = xfr.transferReasonCode;
           row.push(Object.assign({}, obj));
           // Column 10 - Comments
-          // obj.text = xfr.comments;
-          obj.text = xfr.inHouseRemarks;
+          obj.text = xfr.comments;
           row.push(Object.assign({}, obj));
 
           data.push(row);

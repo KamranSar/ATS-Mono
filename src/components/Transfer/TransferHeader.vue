@@ -111,16 +111,7 @@
               <v-btn color="primary" text @click="dlgSaveForm = false">
                 No
               </v-btn>
-              <v-btn
-                color="primary"
-                text
-                @click="
-                  dlgSaveForm = false;
-                  saveForm();
-                "
-              >
-                Yes
-              </v-btn>
+              <v-btn color="primary" text @click="saveTransfer"> Yes </v-btn>
             </v-card-actions>
           </v-card>
         </template>
@@ -168,7 +159,8 @@
     },
     computed: {
       ...get('users', ['loggedInUser']),
-      ...get('transfers', ['somsOffender']),
+      ...get('transfers', ['transferData', 'somsOffender']),
+      ...sync('institutions', ['listOfInstitutions']),
       ...sync('transfers', [
         'showSOMSData',
         'showHousing',
@@ -187,6 +179,37 @@
         this.showPhysical = choice == 'physical' ? true : false;
         this.showMedical = choice == 'medical' ? true : false;
         this.showComments = choice == 'comments' ? true : false;
+      },
+      async saveTransfer() {
+        this.dlgSaveForm = false;
+        try {
+          console.log(
+            'saveTransfer(): this.listOfInstitutions => ',
+            this.listOfInstitutions
+          );
+          console.log(
+            'saveTransfer(): this.transferData => ',
+            this.transferData
+          );
+          let objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.institutionName &&
+              this.transferData.institutionName === inst.institutionName
+          );
+          console.log('saveRemarks(): objIns => ', objIns);
+          if (objIns) {
+            this.transferData.institutionId = objIns.institutionId;
+            console.log(
+              'saveTransfer(): this.transferData.institutionId => ',
+              this.transferData.institutionId
+            );
+          }
+          await this.saveForm();
+        } catch (ex) {
+          console.error(ex);
+          // Set Snackbar
+        }
       },
     },
   };

@@ -75,7 +75,7 @@
       },
     },
     methods: {
-      ...call('ap', ['SET_SNACKBAR']),
+      ...call('app', ['SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails']),
       goHome() {
         this.$router.push({
@@ -87,6 +87,15 @@
         this.selSchedule = {};
         this.selTransferReason = {};
         await this.readOffenderDetails(this.somsCDCRNumber);
+        if (this.transferData.cdcrNumber) {
+          let cdcrNumber = this.transferData.cdcrNumber;
+          this.$router.push({
+            name: 'Transfer Details',
+            params: {
+              cdcrNumber,
+            },
+          });
+        }
       },
     },
     watch: {},

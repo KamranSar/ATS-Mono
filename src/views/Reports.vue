@@ -55,7 +55,52 @@
             <v-card-title style="line-height: 1rem">
               <v-row>
                 <v-col>
-                  <span style="white-space: nowrap">Transfer Record</span>
+                  <span class="title">Bus Order Seat Request</span>
+                </v-col>
+              </v-row>
+            </v-card-title>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-menu
+                  v-model="dateEndorsedMenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      dense
+                      label="Endorsed Date"
+                      prepend-inner-icon="mdi-calendar"
+                      v-bind="attrs"
+                      v-on="on"
+                      placeholder=" "
+                      v-model="dateEndorsed"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="dateEndorsed"
+                    @input="dateEndorsedMenu = false"
+                    @change="onChangeEndorsedDate"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="1" class="mx-4">
+                <v-icon large color="primary" @click="createBusOrderSeat">
+                  mdi-file-document
+                </v-icon>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
+            <v-card-title style="line-height: 1rem">
+              <v-row>
+                <v-col>
+                  <span class="title">Transfer Record</span>
                   <br />
                   <span style="font-size: 12px">CDCR-135</span>
                 </v-col>
@@ -116,8 +161,7 @@
             <v-card-title style="line-height: 1rem">
               <v-row>
                 <v-col>
-                  <span style="white-space: nowrap">Advance Transfer </span>
-                  <span style="white-space: nowrap">Notice</span>
+                  <span class="title">Advance Transfer Notice</span>
                   <br />
                   <span style="font-size: 12px">CDCR-7344</span>
                 </v-col>
@@ -193,8 +237,7 @@
             <v-card-title style="line-height: 1rem">
               <v-row>
                 <v-col>
-                  <span style="white-space: nowrap">Transfer Check Sheet</span>
-                  <!-- <span style="white-space: nowrap">Sheet</span> -->
+                  <span class="title">Transfer Check Sheet</span>
                   <br />
                   <span style="font-size: 12px">CDCR-134</span>
                 </v-col>
@@ -239,7 +282,7 @@
             <v-card-title style="line-height: 1rem">
               <v-row>
                 <v-col>
-                  <span style="white-space: nowrap">Bus Seat Report</span>
+                  <span class="title">Bus Seat Report</span>
                   <br />
                   <!-- Line below is colored the same as background to hide text & to make things line up -->
                   <span style="font-size: 12px; color: #cfd8dc">.</span>
@@ -280,16 +323,14 @@
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
   import cloneDeep from 'lodash.clonedeep';
+  // import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
+  // import { setSnackbar } from '@/helpers/snackbar.js';
 
   export default {
     name: 'Reports',
     data: (vm) => ({
       loading: false,
-      records: null,
-      // selectedInstitution: '',
-      // listOfInstitutions: [],
       schedule: [],
-      // fileName: 'test',
       stateOf: 'STATE OF CALIFORNIA',
       agency: 'DEPARTMENT OF CORRECTIONS AND REHABILITATION',
       report135: 'CDCR 135 (Rev. 03/06)',
@@ -297,18 +338,12 @@
       report7344: 'CDCR FORM 7344 (XX/XX)',
       pdfHeaderRow: [],
       pdfData: [],
-      // Textbbxes, dropdowns, etc.
-      openPanel: null,
-      chbx135CDCRNum: false,
-      show135CDCRNum: true,
       cdcrNum: '',
-      chbx135Schedule: false,
-      show135Schedules: true,
       sel135Schedule: '',
       sel134Schedule: '',
-      itemsSchedules: ['Schedule K', 'Schedule L', 'Schedule F'],
       selEndorsedTo: '',
-      itemsEndorsedTo: ['Endorse 1', 'Endorse 2', 'Endorse 3'],
+      dateEndorsed: null,
+      dateEndorsedMenu: false,
       dateBeginMenu: false,
       dateBegin: '',
       dpBegin: '',
@@ -399,6 +434,23 @@
         ctx.restore();
         return canvas.toDataURL();
       },
+      // readSchedulesByInstitution
+      // Retrieves the schedules based on
+      // the institution selected
+      async readSchedulesByInstitution() {
+        let filter = {};
+        if (this.selectedInstitution) {
+          filter = {
+            query: {
+              origin: this.selectedInstitution.institutionName,
+            },
+          };
+        }
+        await this.readSchedules(filter);
+      },
+      onChangeBeginDate(ctrl) {
+        console.log('onChangeBeginDate(): ctrl => ', ctrl);
+      },
       // getInstitutionId(location)
       // Returns the abbreviated institution id
       // for the provided location
@@ -422,8 +474,13 @@
 
         return 'NF';
       },
-      // create135()
+      // ******************************
+      // Methods to create PDF documents
       //
+
+      // create135()
+      // retrieves and creates the data
+      // to be loaded in the PDF doc
       async create135(param) {
         let filter = {
           query: {
@@ -503,8 +560,7 @@
           obj.text = xfr.transferReasonCode;
           row.push(Object.assign({}, obj));
           // Column 10 - Comments
-          // obj.text = xfr.comments;
-          obj.text = xfr.inHouseRemarks;
+          obj.text = xfr.comments;
           row.push(Object.assign({}, obj));
 
           data.push(row);
@@ -841,7 +897,7 @@
         // alert("create135PDF() Done!");
       },
       // create134()
-      // Builds data for 134 report
+      // Builds the document format for the 134 report
       // Calls create134PDF(data) to generate PDF report file
       // ********************************
       async create134() {
@@ -1275,7 +1331,7 @@
         // alert("create134PDF() Done!");
       },
       // create7344()
-      // Builds data for 7344 report
+      // Builds the document format for the 7344 report
       // Calls create7344PDF(data) to generate PDF report file
       // ********************************
       async create7344() {
@@ -2105,7 +2161,7 @@
         }
       },
       // createBusSeatPDF()
-      // Creates a Bus Seat report
+      // Creates the document format for the Bus Seat report
       // Creates a pdf file using PDFMake
       // ********************************
       createBusSeatPDF(data) {
@@ -2130,7 +2186,7 @@
         // Test data
         //this.selInstitutions = 'DVI';
         this.reportTitle = 'BUS SEAT REPORT';
-        const from = this.selectedInstitution; // FIXME Replace with institutionId. selectedInstitution needs to be an object
+        const from = this.selectedInstitution.institutionId; // FIXME Replace with institutionId. selectedInstitution needs to be an object
         const dest = this.selEndorsedTo ? this.selEndorsedTo : 'ALL';
 
         const fileName = `BusSeat_${dest}_${today.toISOString()}.pdf`;
@@ -2411,22 +2467,472 @@
 
         // alert("createBusSeatPDF() Done!");
       },
-      // readSchedulesByInstitution
-      // Retrieves the schedules based on
-      // the institution selected
-      async readSchedulesByInstitution() {
-        let filter = {};
-        if (this.selectedInstitution) {
-          filter = {
-            query: {
-              origin: this.selectedInstitution.institutionName,
+      onChangeEndorsedDate(ctrl) {
+        console.log('onChangeEndorsedDate(); ctrl => ', ctrl);
+      },
+      async createBusOrderSeat() {
+        let filter = {
+          query: {
+            $limit: 500,
+            $sort: {
+              endorsedDate: 1,
             },
+          },
+        };
+
+        if (this.selectedInstitution) {
+          filter.query.institutionId = this.selectedInstitution.institutionId;
+          filter.query.endorseInstitution = {
+            $ne: this.selectedInstitution.institutionName,
           };
         }
-        await this.readSchedules(filter);
+
+        let endorsements = [];
+        try {
+          const response = await this.readTransfers(filter);
+          // const response = await endorsedOffenders(filter);
+          if (response) {
+            endorsements = response;
+            console.log(
+              'createBusOrderSeat(): readTransfers(): endorsements => ',
+              endorsements
+            );
+          } else {
+            alert(
+              'No Endorsements found for institution: ',
+              this.selectedInstitution.institutionName
+            );
+            return;
+          }
+
+          let data = [];
+          let row = [];
+          let obj = [];
+          let location = '';
+          for (let e of endorsements) {
+            if (e.endorsedToName != location) {
+              console.log('createBusOrderSeat(): e => ', e);
+              location = e.endorsedToName;
+              // let insId = this.getInstitutionId(location);
+              let insId = e.endorsedToId;
+              console.log('createBusOrderSeat(): endorsedId => ', insId);
+              const strText = ` ----- ${insId} --- ${location} -----`;
+              // Insert Origin row
+              // Column 1 - Location string
+              obj = {
+                text: strText,
+                style: 'schEntry',
+                border: [false, false, false, false],
+                colSpan: 11,
+              };
+              row.push(Object.assign({}, obj));
+
+              for (let i = 0; i < 10; i++) {
+                // Column 2 thru 11 - Empty
+                obj = {
+                  text: ' ',
+                  style: 'schEntry',
+                  border: [false, false, false, false],
+                };
+                row.push(Object.assign({}, obj));
+              }
+
+              data.push(row);
+              row = [];
+              console.log('createBusOrderSeat(): data => ', data);
+            }
+
+            // Column 1 - CDCR Number
+            console.log('createBusOrderSeat(): cdcrNumber => ', e.cdcrNumber);
+            obj = {
+              text: e.cdcrNumber,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 2 - Name
+            obj = {
+              text: e.lastName + ', ' + e.firstName,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 3 - Schedule
+            obj = {
+              text: e.schedule,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 4 - Level
+            obj = {
+              text: e.securityLevel,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 5 - Endorsed Date
+            obj = {
+              text: e.currentEndorsementDate,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 6 - Endorsement Expiration Date
+            obj = {
+              text: e.expirationEndorsementDate,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 7 - Release Date
+            obj = {
+              text: e.releaseDate,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 8 - Case Factor
+            obj = {
+              text: e.caseFactor,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 9 - Ethnicity
+            obj = {
+              text: e.ethnicity,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 10 - Housing
+            obj = {
+              text: e.housing,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Column 11 - In House Remarks
+            obj = {
+              text: e.inHouseRemarks,
+              style: 'tblEntry',
+              border: [false, false, false, false],
+            };
+            row.push(Object.assign({}, obj));
+
+            // Add row to data to be pushed to PDF
+            data.push(row);
+            row = [];
+            console.log('createBusOrderSeat(): data => ', data);
+          }
+          //   // Fill empty rows to max 24 per page
+          console.log('createBusOrderSeat(): data => ', data);
+          if (data) {
+            this.createBusOrderSeatPDF(data);
+          } else {
+            // error message
+            alert('Could not create CDCR Bus Order Seat Request PDF Document!');
+          }
+        } catch (ex) {
+          console.error('createBusOrderSeat() exception: ', ex);
+        }
       },
-      onChangeBeginDate(ctrl) {
-        console.log('onChangeBeginDate(): ctrl => ', ctrl);
+      // createBusOrderSeatPDF()
+      // Creates the document format for the Bus Order Seat Request report
+      // Creates a pdf file using PDFMake
+      // ********************************
+      createBusOrderSeatPDF(data) {
+        console.log('createBusOrderSeatPDF(): data => ', data);
+
+        // const fileName = this.fileName + '.pdf';
+
+        const today = new Date();
+        const m = today.getMonth() + 1;
+        const mm = m < 10 ? '0' + m : m;
+        const d = today.getDate();
+        const day = d < 10 ? '0' + d : d;
+        const h = today.getHours();
+        const hh = h < 10 ? '0' + h : h;
+        const ms = today.getMinutes();
+        const mins = ms < 10 ? '0' + ms : ms;
+        const dateNow =
+          mm + '/' + day + '/' + today.getFullYear() + ' ' + hh + ':' + mins;
+
+        let paperType = 'LETTER';
+
+        // Test data
+        //this.selInstitutions = 'DVI';
+        this.reportTitle = 'BUS ORDER SEAT REQUEST';
+        const from = this.selectedInstitution.institutionId; // FIXME Replace with institutionId. selectedInstitution needs to be an object
+        console.log('createBusOrderSeatPDF(): from => ', from);
+        // const dest = this.selEndorsedTo ? this.selEndorsedTo : 'ALL';
+
+        const fileName = `BusOrderSeat_${from}_${today.toISOString()}.pdf`;
+
+        const dd = {
+          defaultStyle: {
+            fontSize: 11,
+          },
+
+          pageSize: paperType, // 'LETTER'
+          pageOrientation: 'LANDSCAPE',
+          pageMargins: [25, 25, 25, 25],
+
+          styles: {
+            header: {
+              bold: true,
+              fontSize: 9,
+            },
+
+            appName: {
+              bold: true,
+              fontSize: 10,
+            },
+
+            reportTitle: {
+              alignment: 'center',
+              bold: true,
+              fontSize: 11,
+            },
+
+            tblHeader: {
+              bold: true,
+              fontSize: 10,
+              margin: [2, 3, 2, 3],
+            },
+
+            schEntry: {
+              bold: true,
+              fontSize: 10,
+            },
+
+            tblEntry: {
+              alignment: 'center',
+              fontSize: 10,
+            },
+          },
+
+          footer: function (currentPage, pageCount) {
+            let footer = {
+              text: currentPage.toString() + ' of ' + pageCount,
+              alignment: 'center',
+            };
+            return footer;
+          },
+
+          content: [
+            // =============================
+            // Report From & Date
+            // =============================
+            {
+              columns: [
+                {
+                  text: from,
+                  style: 'header',
+                },
+                {
+                  text: dateNow, //'02/11/2021 08:08:08 AM',
+                  style: 'header',
+                  alignment: 'right',
+                },
+              ],
+            },
+            // =============================
+            // Agency
+            // =============================
+            {
+              columns: [
+                {
+                  text: this.agency,
+                  style: 'header',
+                  alignment: 'center',
+                  margin: [0, 2, 0, 0],
+                },
+              ],
+            },
+            // =============================
+            // Application Name
+            // =============================
+            {
+              columns: [
+                {
+                  text: this.appName,
+                  style: 'header',
+                  alignment: 'center',
+                  margin: [0, 2, 0, 0],
+                },
+              ],
+            },
+            // =============================
+            // Report Title
+            // =============================
+            {
+              columns: [
+                {
+                  text: this.reportTitle,
+                  style: 'header',
+                  alignment: 'center',
+                  margin: [0, 2, 0, 0],
+                },
+              ],
+            },
+            // =============================
+            // Endorsed To
+            // =============================
+            {
+              columns: [
+                {
+                  text: '',
+                  style: 'header',
+                },
+              ],
+            },
+            // =============================
+            // Table of Report Records
+            // =============================
+            {
+              columns: [
+                {
+                  width: '*',
+                  //layout: 'lightHorizontalLines', // optional
+                  layout: {
+                    // eslint-disable-next-line
+                    fillColor: function (rowIndex, node, columnIndex) {
+                      return rowIndex % 2 === 0 ? '#F0F0F0' : null;
+                    },
+                  },
+                  table: {
+                    // headers are automatically repeated if the table spans over multiple pages
+                    // you can declare how many rows should be treated as headers
+                    headerRows: 1,
+
+                    // Determines the width of each column.
+                    // auto = fit to contents
+                    // * = stretch to fill
+                    // widths: ['*', 'auto', 'auto', '*', 'auto', 'auto', 'auto', 'auto', 'auto', '*'],
+                    // widths: this.pdfColWidth,
+                    widths: [
+                      '*',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                      'auto',
+                    ],
+
+                    // The ... is a operator that expands the array or flattens
+                    // The header row is then combined with the data to make one array
+                    // body: [this.pdfHeaderRow, ...this.pdfData],
+                    body: [
+                      [
+                        {
+                          // Column 1
+                          text: 'CDCR #',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 2
+                          text: 'Name',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 3
+                          text: 'Scheduled',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 4
+                          text: 'Level',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 5
+                          text: 'Endorsed Date',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 6
+                          text: 'Expire Date',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 7
+                          text: 'Release Date',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 8
+                          text: 'Case Factors',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 9
+                          text: 'Ethnicity',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 10
+                          text: 'Housing',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                        {
+                          // Column 11
+                          text: 'Remarks',
+                          style: 'tblHeader',
+                          border: [false, true, false, true],
+                          // margin: [ 2, 3, 2, 3],
+                        },
+                      ],
+                      ...data,
+                    ], // End of Table Body
+                    border: [false, false, false, false],
+                  },
+                },
+              ],
+            },
+          ],
+        };
+
+        console.log('createBusOrderSeatPDF(): dd => ', dd);
+        pdfMake.createPdf(dd).download(fileName);
+
+        // alert("createBusOrderSeatPDF() Done!");
       },
     },
     watch: {
@@ -2439,6 +2945,11 @@
 </script>
 
 <style scoped>
+  .title {
+    word-break: keep-all;
+    line-height: 0.8;
+  }
+
   .colOutline {
     background-color: white;
     border-radius: 5px;

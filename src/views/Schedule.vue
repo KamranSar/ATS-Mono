@@ -252,6 +252,9 @@
               >{{ item.cdcrNumber }}</router-link
             >
           </template>
+          <template v-slot:item.isScheduled="{ item }">
+            {{ item.isScheduled ? 'Y' : 'N' }}
+          </template>
 
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="openEndorsement(item)">
@@ -287,6 +290,7 @@
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  // import { setSnackbar } from '@/helpers/snackbar.js';
 
   export default {
     components: { DatePicker },
@@ -331,9 +335,11 @@
         },
         { text: 'Last Name', value: 'lastName' },
         { text: 'First Name', value: 'firstName' },
-        { text: 'Housing', value: 'housing' },
+        // { text: 'Housing', value: 'housing' },
+        { text: 'Scheduled', value: 'isScheduled' },
         { text: 'Transfer Reason', value: 'transferReasonCode' },
         { text: 'Endorsement Date', value: 'currentEndorsementDate' },
+        { text: 'Expire Date', value: 'expirationEndorsementDate' },
         // { text: 'Endorsement Details', value: 'endorsementDetails' },
         { text: 'Print', value: 'print' },
         { text: 'Edit/Delete', value: 'actions', sortable: false },
@@ -421,24 +427,13 @@
       this.onSelectedInstitution();
     },
     computed: {
-      ...get('institutions', ['listOfInstitutions']),
-      ...sync('institutions', ['selectedInstitution']),
+      // ...get('institutions', ['listOfInstitutions']),
+      ...sync('institutions', ['selectedInstitution', 'listOfInstitutions']),
       ...sync('transfers', ['transferData']),
       ...sync('schedules', ['schedules', 'selSchedule']),
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
-      formEndorsementTitle() {
-        return this.editEndorsementIndex === -1
-          ? 'New Endorsement'
-          : 'Edit Endorsement';
-      },
     },
-    // watch: {
-    //   selectedSchedule: {
-    //     handler: 'onSelectedSchedule',
-    //     deep: true,
-    //   },
-    // },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       ...call('schedules', [
@@ -449,13 +444,19 @@
         'updateSchedule',
         'deleteSchedule',
       ]),
-      ...call('transfers', ['readTransfers', 'deleteTransfer']),
+      ...call('transfers', ['readTransfers', 'deleteTransfer', 'saveForm']),
       // Example of how to change name of method call
       //   new name       :  existing name
       // { DeleteSchedule: 'deleteSchedule' }
-
-      ...call('transfers', ['saveForm']),
-      ...call('app', ['SET_SNACKBAR']),
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
+      },
       async onSelectedInstitution() {
         this.endorsements = [];
         this.selSchedule = {};
@@ -567,15 +568,6 @@
       goHome() {
         this.$router.push({
           name: 'Home',
-        });
-      },
-      setSnackbar(msg, result, timeout) {
-        this.SET_SNACKBAR({
-          top: true,
-          center: true,
-          message: msg,
-          color: result,
-          timeout: timeout,
         });
       },
       openSchedule(item) {
@@ -717,14 +709,16 @@
           if (newId && newId !== oldId) {
             let filter = {
               query: {
-                scheduleId: newId,
+                endorsedToId: newVal.destination,
+                $or: [{ scheduleId: newId }, { isScheduled: false }],
               },
             };
-            // console.log('filter : ', filter);
+            console.log('getEndorsements(): filter : ', filter);
             // console.log('newId', newId);
-            const response = await svcTransfers.find(filter);
-            if (response.data && response.data.length) {
-              this.endorsements = response.data;
+            // const response = await svcTransfers.find(filter);
+            const response = await this.readTransfers(filter);
+            if (response) {
+              this.endorsements = response;
             } else {
               this.endorsements = [];
             }
@@ -846,9 +840,9 @@
         if (param == 'schedule' && item._id) {
           filter.query.scheduleId = item._id;
         } else if (param == 'cdcrNumber' && item.cdcrNumber) {
-          let today = new Date().toISOString().split('T')[0];
+          // let today = new Date().toISOString().split('T')[0];
           filter.query.cdcrNumber = item.cdcrNumber;
-          filter.query.transferDate = { $gte: today };
+          // filter.query.transferDate = { $gte: today };
         } else {
           alert('Invalid option for CDCR-135 Transfer Record.');
           return;
@@ -903,8 +897,7 @@
           obj.text = xfr.transferReasonCode;
           row.push(Object.assign({}, obj));
           // Column 10 - Comments
-          // obj.text = xfr.comments;
-          obj.text = xfr.inHouseRemarks;
+          obj.text = xfr.comments;
           row.push(Object.assign({}, obj));
           data.push(row);
         }

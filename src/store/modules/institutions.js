@@ -46,14 +46,6 @@ const actions = {
             (inst) =>
               inst.institutionName === loggedInUser.somsinfo.organizationName
           );
-
-          // FIXME: Remove Default of Avenal State Priston below...
-          // Can't read schedules for an institution that DNE
-          // if (!state.selectedInstitution) {
-          // state.selectedInstitution = state.listOfInstitutions.find(
-          // (inst) => inst.institutionName === 'Avenal State Prison'
-          // );
-          // }
         }
       } catch (error) {
         console.error('getInstitutions: ', error);
@@ -70,10 +62,19 @@ const actions = {
     await dispatch('getInstitutions');
   },
 };
+const getters = {
+  getInstitutionByName: (state) => (name) => {
+    console.log('getInstitutionByName(): name => ', name);
+    return state.listOfInstitutions.find(
+      (inst) => name == inst.institutionName
+    );
+  },
+};
 // Vuex Store
 export default {
   namespaced: true,
   state,
   mutations,
   actions,
+  getters,
 };

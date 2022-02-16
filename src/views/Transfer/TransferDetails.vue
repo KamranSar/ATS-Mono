@@ -92,11 +92,31 @@
                 responseData.transferReasonDesc
                 ? responseData.transferReasonDesc
                 : this.transferData.transferReasonDesc;
+            this.transferData.comments = responseData.comments;
+            this.transferData.inHouseRemarks = responseData.inHouseRemarks;
+            this.transferData.endorsedToName = responseData.endorsedToName;
+            this.transferData.endorsedToId = responseData.endorsedToId;
+            this.transferData.endorsedToPartyId =
+              responseData.endorsedToPartyId;
           } else {
+            console.log('getInstitutionByName()');
+            const institution = this.getInstitutionByName(
+              this.somsOffender.institution
+            );
+            if (institution) {
+              console.log(
+                'getInstitutionByName(): institution => ',
+                institution
+              );
+              this.transferData.endorsedToName = institution.institutionName;
+              this.transferData.endorsedToId = institution.institutionId;
+              this.transferData.endorsedToPartyId =
+                institution.institutionPartyId;
+            }
             this.setSnackbar(
-              `Unable to read Transfer for cdcr number: ${this.somsCDCRNumber}`,
-              'error',
-              6000
+              `No record has been saved yet for cdcr number: ${this.somsCDCRNumber}`,
+              'info',
+              3000
             );
           }
           console.log('created(): this.transferData => ', this.transferData);
@@ -155,12 +175,23 @@
       ...sync('transfers', ['transferData', 'selTransferReason']),
       ...sync('schedules', ['selSchedule']),
       ...get('app', ['loading']),
+      ...get('institutions', ['listOfInstitutions', 'getInstitutionByName']),
       // ...get('schedules', ['selSchedule']),
       ...get('transfers', ['somsOffender']),
     },
     methods: {
+      ...call('app', ['SET_ALERT', 'SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails', 'readTransfers']),
       ...call('schedules', ['readSchedules']),
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
+      },
     },
   };
 </script>

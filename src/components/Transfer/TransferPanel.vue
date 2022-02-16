@@ -145,24 +145,6 @@
           </td>
         </tr>
       </table>
-      <!-- <span :key="'label-' + index" class="font-weight-bold pr-4">
-            {{ field.label }}
-          </span>
-          <span
-            :key="'data-' + index"
-            class=""
-            style="
-              overflow: hidden;
-              text-align: right;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              width: 125px;
-            "
-          >
-            {{ field.data }}
-          </span> -->
-      <!-- </template>
-      </table> -->
       <v-divider class="pb-2"></v-divider>
       <v-textarea
         v-model="transferData.inHouseRemarks"

@@ -100,6 +100,22 @@ const routes = [
     },
   },
   {
+    icon: 'mdi-cog-outline',
+    path: '/endorsements',
+    name: 'Endorsements',
+    component: () =>
+      import(/* webpackChunkName: "Endorsements" */ '@/views/Endorsements.vue'),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      hasAnyRoles: [
+        // defaultAdminRole.name,
+        'Institution Administrator',
+        'Institution User',
+        // 'Guest',
+      ],
+    },
+  },
+  {
     icon: 'mdi-account-key-outline',
     name: 'Admin',
     path: '/admin',
@@ -232,6 +248,7 @@ const BottomNavItems = getRoutesByName(['Home', 'Admin', 'Login', 'Logout']);
 // Routes used in NavDrawerLeft.vue
 const LeftNavItems = getRoutesByName([
   'Home',
+  'Endorsements',
   'Schedule',
   'Transfer',
   'Maintenance',

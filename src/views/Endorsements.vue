@@ -55,6 +55,8 @@
       class="elevation-1 ma-4 pa-4"
       @keypress="filterEndorsements"
       :loading="loading"
+      :options="dataOptions"
+      multi-sort
       show-select
       loading-text="Syncing Data with SOMS... Please wait"
       no-data-text="No Endorsements"
@@ -93,25 +95,59 @@
           {{ item.cdcrNumber }}
         </a> -->
       </template>
-      <template v-slot:item.fullName="{ item }">
-        <span>{{ item.firstName }}, {{ item.lastName }}</span>
-      </template>
+      <!-- <template v-slot:item.fullName="{ item }">
+        <span>{{ item.lastName }}, {{ item.firstName }}</span>
+      </template> -->
       <template v-slot:item.endorsedTo="{ item }">
         <span>{{ getInstitutionId(item.endorseInstitution) }}</span>
       </template>
       <template v-slot:item.level="{ item }">
         <span>{{ setSecurityLevel(item) }}</span>
       </template>
+      <template v-slot:item.endorseDate="{ item }">
+        <span class="nowrap">{{ formatDate(item.endorseDate) }}</span>
+      </template>
+      <template v-slot:item.expirationDate="{ item }">
+        <span class="nowrap">{{ formatDate(item.expirationDate) }}</span>
+      </template>
+      <template v-slot:item.releaseDate="{ item }">
+        <span class="nowrap">{{ formatDate(item.releaseDate) }}</span>
+      </template>
+      <template v-slot:item.inHouseRemarks="{ item }">
+        <v-btn icon @click.stop="openRemarks(item)">
+          <v-icon>mdi-pencil</v-icon>
+        </v-btn>
+      </template>
     </v-data-table>
+    <v-dialog v-model="dlgRemarks" width="500">
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+          In-House Remarks
+        </v-card-title>
+
+        <v-card-text>
+          <v-textarea v-model="remarks" />
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="cancelRemarks()">CANCEL</v-btn>
+          <v-btn color="primary" text @click="saveRemarks()">SAVE</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
   import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
-  import { get, sync } from 'vuex-pathify';
+  import { get, call, sync } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  // import { setSnackbar } from '@/helpers/snackbar.js';
 
   import jsPDF from 'jspdf';
   import 'jspdf-autotable';
@@ -119,7 +155,9 @@
   export default {
     name: 'Endorsements',
     data: () => ({
-      selEndorsement: [],
+      remarks: '',
+      dlgRemarks: false,
+      selEndorsement: null,
       itemsPerPage: 10,
       loading: false,
       endorsementSearch: '',
@@ -130,9 +168,10 @@
           align: 'start',
           value: 'cdcrNumber',
         },
-        { text: 'Name', value: 'fullName' },
+        { text: 'Last Name', value: 'lastName' },
+        { text: 'First Name', value: 'firstName' },
         { text: 'Endorsed To', value: 'endorsedTo' },
-        { text: 'Level', value: 'level' },
+        { text: 'Level', value: 'securityLevel' },
         { text: 'Endorsed Date', value: 'endorseDate' },
         { text: 'Expired Date', value: 'expirationDate' },
         { text: 'Release Date', value: 'releaseDate' },
@@ -141,151 +180,168 @@
         { text: 'Housing', value: 'housingArea' },
         { text: 'In House Remarks', value: 'inHouseRemarks' },
       ],
-      SampleData: [
-        {
-          cdcrNumber: 'AY4411',
-          firstName: 'JOSE',
-          lastName: 'LERMA',
-          endorsedTo: 'CAC',
-          securityLevel: 'II',
-          originalEndorsementDate: '01/07/22',
-          releaseDate: '2030-06-23',
-          caseFactor: '',
-          ethnicity: 'HIS',
-          housingArea: 'A 003 2221001UP',
-          inHouseRemarks: 'CAC-II, EXPIRES 07/06/22 CS=33 NO HR, CWRS=0, VAX',
-        },
-        {
-          cdcrNumber: 'BH5119',
-          firstName: '',
-          lastName: 'DAVIS',
-          endorsedTo: 'CAL',
-          securityLevel: 'IV',
-          originalEndorsementDate: '12/10/21',
-          releaseDate: '2026-09-20',
-          caseFactor: '270',
-          ethnicity: 'BLA',
-          housingArea: 'A 003 2203001UP',
-          inHouseRemarks:
-            'CALC-IV(270), EXPIRES 06/08/22 CS=66 NO HR, CWRS=0, UNVAX',
-        },
-        {
-          cdcrNumber: 'AY4940',
-          firstName: 'MIGUEL',
-          lastName: 'JIMENEZ',
-          endorsedTo: 'CAL',
-          securityLevel: 'IV',
-          originalEndorsementDate: '01/13/22',
-          releaseDate: '2032-02-10',
-          caseFactor: '',
-          ethnicity: 'HIS',
-          housingArea: 'A 010 2221001LP',
-          inHouseRemarks:
-            'CAL-IV, EXPIRES 07/12/22 CS=64, ASU LOS 44 NO HR, CWRS=0, VAX',
-        },
-        {
-          cdcrNumber: 'BF5834',
-          firstName: 'RICHARD',
-          lastName: 'RAY',
-          endorsedTo: 'CCC',
-          securityLevel: 'III',
-          originalEndorsementDate: '01/07/22',
-          releaseDate: '2026-01-21',
-          caseFactor: '',
-          ethnicity: 'HIS',
-          housingArea: 'B 010 1118001LP',
-          inHouseRemarks: 'CCC-III, OTC ONLY NCD 03-21-22',
-        },
-        {
-          cdcrNumber: 'BH1236',
-          firstName: 'THEO',
-          lastName: 'COBBS',
-          endorsedTo: 'CEN',
-          securityLevel: 'III',
-          originalEndorsementDate: '12/24/21',
-          releaseDate: '2024-11-09',
-          caseFactor: '',
-          ethnicity: 'BLA',
-          housingArea: 'C 014 1003002UP',
-          inHouseRemarks:
-            'CEN-II, EXPIRES 06/22/22 CS=39 DNH, DLT, LB, GF, CWRS=4, UNVAX',
-        },
-        {
-          cdcrNumber: 'F85942',
-          firstName: 'FERNANDO',
-          lastName: 'OCEGUERA',
-          endorsedTo: 'CEN',
-          securityLevel: 'IV',
-          originalEndorsementDate: '01/04/22',
-          releaseDate: '2025-09-08',
-          caseFactor: '270, DLT,',
-          ethnicity: 'HIS',
-          housingArea: 'A 006 1131001LP',
-          inHouseRemarks:
-            'CEN-IV(270), EXPIRES 07/03/22 CS=74 DNH, DLT, LB, GF, CWRS=4, VAX',
-        },
-        {
-          cdcrNumber: 'AB8856',
-          firstName: 'DANIEL',
-          lastName: 'DIAZ',
-          endorsedTo: 'CEN',
-          securityLevel: 'IV',
-          originalEndorsementDate: '01/14/22',
-          releaseDate: '2024-05-07',
-          caseFactor: '270',
-          ethnicity: 'HIS',
-          housingArea: 'A 004 2206001LP',
-          inHouseRemarks: 'CEN-IV, EXPIRES 07/13/22 CS=33 NO HR, CWRS=0, VAX',
-        },
-        {
-          cdcrNumber: 'BL0492',
-          firstName: 'CARL',
-          lastName: 'NELSON',
-          endorsedTo: 'CHCF',
-          securityLevel: 'II',
-          originalEndorsementDate: '01/19/22',
-          releaseDate: '2029-06-28',
-          caseFactor: 'NDPF',
-          ethnicity: 'WHI',
-          housingArea: 'B 012 2222001UP',
-          inHouseRemarks:
-            'CHCF-II(NDPF), EXPIRES 07/18/22 CS=31 NO HR, CWRS=7, VAX',
-        },
-        {
-          cdcrNumber: 'BL1745',
-          firstName: 'ROBERT',
-          lastName: 'MANSON',
-          endorsedTo: 'CIM',
-          securityLevel: 'I',
-          originalEndorsementDate: '01/12/22',
-          releaseDate: '2022-09-19',
-          caseFactor: 'SEC, NDPF',
-          ethnicity: 'BLA',
-          housingArea: 'D 022 2014005UP',
-          inHouseRemarks:
-            'CIM-I(SEC/NDPF), EXPIRES 07/11/22 CS=8 NO HR, CWRS=2, VAX',
-        },
-        {
-          cdcrNumber: 'AY4924',
-          firstName: 'MICHAEL',
-          lastName: 'JOHNSON',
-          endorsedTo: 'CIM',
-          securityLevel: 'I',
-          originalEndorsementDate: '01/19/22',
-          releaseDate: '2030-02-17',
-          caseFactor: 'SEC, NDPF',
-          ethnicity: 'BLA',
-          housingArea: 'A 024 1000143LP',
-          inHouseRemarks:
-            'CIM-I(SEC, NDPF), EXPIRES 07/18/22 CS=15 LB, CWRS=10, VAX',
-        },
-      ],
+      dataOptions: {
+        // page: number,
+        // itemsPerPage: number,
+        sortBy: ['endorseDate'],
+        // sortDesc: boolean[],
+        // groupBy: string[],
+        // groupDesc: boolean[],
+        // multiSort: boolean,
+        // mustSort: boolean
+      },
+      snackbarOptions: {
+        top: true,
+        center: true,
+        message: '',
+        color: '',
+        timeout: 6000,
+      },
     }),
     async mounted() {
       this.onChangeInstitution();
       this.getEndorsements();
     },
     methods: {
+      ...call('app', ['SET_SNACKBAR']),
+      ...call('transfers', [
+        'readTransfers',
+        'readOffenderDetails',
+        'saveForm',
+      ]),
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
+      },
+      async openRemarks(item) {
+        if (!item) {
+          // TODO add message
+          this.dlgRemarks = false;
+          return;
+        }
+        this.selEndorsement = item;
+        this.dlgRemarks = true;
+
+        console.log('openRemarks(): item =>', item);
+
+        try {
+          let filter = {
+            query: {
+              cdcrNumber: item.cdcrNumber,
+            },
+          };
+          console.log('openRemarks(): filter =>', filter);
+          let response = await this.readTransfers(filter);
+          if (response && response.length > 0) {
+            console.log(
+              'openRemarks(): readTransfers(): response => ',
+              response
+            );
+            this.transferData = response[0];
+            this.remarks = this.transferData.inHouseRemarks;
+            console.log('openRemarks(): transferData =>', this.transferData);
+          } else {
+            console.log('openRemarks(): readOffenderDetails()');
+            await this.readOffenderDetails(item.cdcrNumber);
+            console.log(
+              'openRemarks(): this.transferData => ',
+              this.transferData
+            );
+          }
+        } catch (ex) {
+          // setSnackbar error
+          console.error(ex);
+        }
+      },
+      cancelRemarks() {
+        console.log('cancelRemarks()');
+        this.dlgRemarks = false;
+        this.selEndorsement = null;
+        this.transferData = null;
+        this.remarks = '';
+      },
+      async saveRemarks() {
+        console.log('saveRemarks(): transferData => ', this.transferData);
+        // console.log(
+        //   'saveRemarks(): transferData.inHouseRemarks',
+        //   this.transferData.inHouseRemarks
+        // );
+        console.log('saveRemarks(): remarks => ', this.remarks);
+
+        // if (
+        //   !this.transferData &&
+        //   this.remarks !== this.transferData.inHouseRemarks
+        // ) {
+        try {
+          console.log('saveRemarks(): this.remarks => ', this.remarks);
+          console.log(
+            'saveRemarks(): this.transferData.inHouseRemarks => ',
+            this.transferData.inHouseRemarks
+          );
+          this.transferData.inHouseRemarks = this.remarks;
+
+          console.log(
+            'saveRemarks(): this.transferData.institutionName => ',
+            this.transferData.institutionName
+          );
+          let objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.institutionName &&
+              inst.institutionName === this.transferData.institutionName
+          );
+          console.log('saveRemarks(): objIns => ', objIns);
+          if (!this.transferData.institutionName) {
+            this.transferData.institutionName = objIns.institutionName;
+          }
+          if (!this.transferData.institutionId) {
+            this.transferData.institutionId = objIns.institutionId;
+          }
+          if (!this.transferData.institutionPartyId) {
+            this.transferData.institutionPartyId = objIns.institutionPartyId;
+          }
+
+          objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.endorsedToName &&
+              inst.institutionName === this.transferData.endorsedToName
+          );
+          console.log('saveRemarks(): objIns => ', objIns);
+          if (!this.transferData.endorsedToName) {
+            this.transferData.endorsedToName = objIns.institutionName;
+          }
+          if (!this.transferData.endorsedToId) {
+            this.transferData.endorsedToId = objIns.institutionId;
+          }
+          if (!this.transferData.endorsedToPartyId) {
+            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
+          }
+
+          const response = await this.saveForm();
+
+          if (response) {
+            // setSnackbar successful
+            this.setSnackbar('Successfully saved remarks!', 'succesful', 2000);
+          } else {
+            // setSnackbar error
+            this.setSnackbar('Error saving remarks!', 'error', 6000);
+          }
+        } catch (ex) {
+          // setSnackbar error
+          console.error(ex);
+          this.setSnackbar('Error occurred saving remarks!', 'error', 6000);
+        }
+        // } else {
+        //   this.setSnackbar('Remarks did not change.', 'info', 2000);
+        // }
+        this.cancelRemarks();
+      },
       goHome() {
         this.$router.push({
           name: 'Home',
@@ -295,6 +351,14 @@
         return item.endoreSecurityLevel !== 'NA'
           ? item.endoreSecurityLevel
           : item.securityLevel;
+      },
+      formatDate(item) {
+        // 0123/56/78
+        const y = item.substr(2, 2);
+        const m = item.substr(5, 2);
+        const d = item.substr(8, 2);
+        const result = m + '/' + d + '/' + y;
+        return result;
       },
       getInstitutionId(location) {
         if (!location) {
@@ -444,9 +508,9 @@
       },
     },
     computed: {
-      ...sync('transfers', ['transfers', 'selTransferReason']),
+      ...sync('transfers', ['transfers', 'selTransferReason', 'transferData']),
       ...sync('institutions', ['selectedInstitution']),
-      ...get('institutions', ['listOfInstitutions']),
+      ...get('institutions', ['listOfInstitutions', 'getInstitutionByName']),
       ...get('users', ['loggedInUser']),
       appUserRoles() {
         return this.$store.get('users/getAppUserRoles');
@@ -460,5 +524,8 @@
   .selInstitution {
     background-color: white;
     border-radius: 5px;
+  }
+  .nowrap {
+    white-space: nowrap;
   }
 </style>
