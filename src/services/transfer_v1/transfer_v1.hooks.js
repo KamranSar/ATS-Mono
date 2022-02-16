@@ -85,6 +85,15 @@ module.exports = {
           // console.warn('***** DEBUG - transfer.hook. rec.currentEndorsementDate => ', rec.currentEndorsementDate);
           rec.currentEndorsementDate = formatDate(new Date(rec.currentEndorsementDate));
         }
+        if (rec && rec.expirationEndorsementDate) {
+          // rec.currentEndorsementDate = new Date(rec.currentEndorsementDate).toLocaleDateString('en-US', {
+          //   year: 'numeric',
+          //   month: '2-digit',
+          //   day: '2-digit',
+          // });
+          // console.warn('***** DEBUG - transfer.hook. rec.currentEndorsementDate => ', rec.currentEndorsementDate);
+          rec.expirationEndorsementDate = formatDate(new Date(rec.expirationEndorsementDate));
+        }
       }),
     ],
     find: [
