@@ -167,8 +167,8 @@
         },
         { text: 'Last Name', value: 'lastName' },
         { text: 'First Name', value: 'firstName' },
-        { text: 'Endorsed To', value: 'endorsedTo' },
-        { text: 'Level', value: 'endorseSecurityLevel' },
+        { text: 'Level', value: 'securityLevel' },
+        { text: 'Endorsed To/Level', value: 'endorsedTo' },
         { text: 'Endorsed Date', value: 'endorseDate' },
         { text: 'Expired Date', value: 'expirationDate' },
         { text: 'Release Date', value: 'releaseDate' },
@@ -345,8 +345,8 @@
         });
       },
       setSecurityLevel(item) {
-        return item.endoreSecurityLevel !== 'NA'
-          ? item.endoreSecurityLevel
+        return item.endorseSecurityLevel !== 'NA'
+          ? item.endorseSecurityLevel
           : item.securityLevel;
       },
       formatDate(item) {

@@ -601,7 +601,7 @@
         // console.log('filter : ', filter);
         const response = await svcTransfers.find(filter);
         // console.log('endorsementsExists(): response => ', response);
-        if (response && response.total) {
+        if (response && response.total > 0) {
           return true;
         } else {
           return false;

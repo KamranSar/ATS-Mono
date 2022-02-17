@@ -60,10 +60,10 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
     label: 'TB Code:',
     data: somsOffender && somsOffender.tbCode ? somsOffender.tbCode : '',
   },
-  {
-    label: 'Mental Health:',
-    data: somsOffender && somsOffender.Mental ? somsOffender.Mental : '',
-  },
+  // {
+  //   label: 'Mental Health:',
+  //   data: somsOffender && somsOffender.mhLoc ? somsOffender.mhLoc : '',
+  // },
   // {
   //   label: 'Override Reason: ',
   //   data:
@@ -98,7 +98,10 @@ const CASE_FACTOR_FIELDS = (somsOffender) => {
   return [
     {
       label: 'SNY:',
-      data: caseFactor && caseFactor.sny_flag ? 'Y' : 'N',
+      data:
+        caseFactor && caseFactor.sny_value && caseFactor.sny_flag
+          ? caseFactor.sny_value
+          : 'N',
     },
     // {
     //   label: 'CCCMS EOP:',
@@ -110,46 +113,84 @@ const CASE_FACTOR_FIELDS = (somsOffender) => {
     // },
     {
       label: 'Cocci1:',
-      value:
-        caseFactor && caseFactor.cocci1_value ? caseFactor.cocci1_value : '',
-      data: caseFactor && caseFactor.cocci1_flag ? 'Y' : 'N',
+      // value:
+      //   caseFactor && caseFactor.cocci1_value ? caseFactor.cocci1_value : '',
+      // data: caseFactor && caseFactor.cocci1_flag ? 'Y' : 'N',
+      data:
+        caseFactor && caseFactor.cocci1_value && caseFactor.cocci1_flag
+          ? caseFactor.cocci1_value
+          : 'N',
     },
     {
       label: 'Cocci2:',
-      value:
-        caseFactor && caseFactor.cocci2_value ? caseFactor.cocci2_value : '',
-      data: caseFactor && caseFactor.cocci2_flag ? 'Y' : 'N',
+      // value:
+      //   caseFactor && caseFactor.cocci2_value ? caseFactor.cocci2_value : '',
+      // data: caseFactor && caseFactor.cocci2_flag ? 'Y' : 'N',
+      data:
+        caseFactor && caseFactor.cocci2_value && caseFactor.cocci2_flag
+          ? caseFactor.cocci2_value
+          : 'N',
     },
     {
       label: 'DPP:',
-      value: caseFactor && caseFactor.dpp_value ? caseFactor.dpp_value : '',
-      data: caseFactor && caseFactor.dpp_flag ? 'Y' : 'N',
+      // value: caseFactor && caseFactor.dpp_value ? caseFactor.dpp_value : '',
+      // data: caseFactor && caseFactor.dpp_flag ? 'Y' : 'N',
+      data:
+        caseFactor && caseFactor.dpp_value && caseFactor.dpp_flag
+          ? caseFactor.dpp_value
+          : 'N',
     },
     {
       label: 'DDP:',
-      value: caseFactor && caseFactor.ddp_value ? caseFactor.ddp_value : '',
-      data: caseFactor && caseFactor.ddp_flag ? 'Y' : 'N',
+      // value: caseFactor && caseFactor.ddp_value ? caseFactor.ddp_value : '',
+      // data: caseFactor && caseFactor.ddp_flag ? 'Y' : 'N',
+      data:
+        caseFactor && caseFactor.ddp_value && caseFactor.ddp_flag
+          ? caseFactor.ddp_value
+          : 'N',
     },
     {
       label: 'ICE:',
-      value: caseFactor && caseFactor.ice_value ? caseFactor.ice_value : '',
-      data: caseFactor && caseFactor.ice_flag ? 'Y' : 'N',
+      // value: caseFactor && caseFactor.ice_value ? caseFactor.ice_value : '',
+      // data: caseFactor && caseFactor.ice_flag ? 'Y' : 'N',
+      data:
+        caseFactor && caseFactor.ice_value && caseFactor.ice_flag
+          ? caseFactor.ice_value
+          : 'N',
     },
     {
       label: 'Retain ASU:',
-      value:
-        caseFactor && caseFactor.retainASU_value
+      // value:
+      //   caseFactor && caseFactor.retainASU_value
+      //     ? caseFactor.retainASU_value
+      //     : '',
+      // data: caseFactor && caseFactor.retainASU_flag ? 'Y' : 'N',
+      data:
+        caseFactor &&
+        caseFactor.retainASU_value &&
+        caseFactor.retainASU_flag &&
+        caseFactor.retainASU_flag === 'Y'
           ? caseFactor.retainASU_value
-          : '',
-      data: caseFactor && caseFactor.retainASU_flag ? 'Y' : 'N',
+          : 'N',
     },
     {
       label: 'Transfer MERD:',
-      value:
-        caseFactor && caseFactor.transferMERD_value
+      // value:
+      //   caseFactor && caseFactor.transferMERD_value
+      //     ? caseFactor.transferMERD_value
+      //     : '',
+      // data: caseFactor && caseFactor.transferMERD_flag ? 'Y' : 'N',
+      data:
+        caseFactor &&
+        caseFactor.transferMERD_value &&
+        caseFactor.transferMERD_flag &&
+        caseFactor.transferMERD_flag === 'Y'
           ? caseFactor.transferMERD_value
-          : '',
-      data: caseFactor && caseFactor.transferMERD_flag ? 'Y' : 'N',
+          : 'N',
+    },
+    {
+      label: 'Mental Health:',
+      data: somsOffender && somsOffender.mhLoc ? somsOffender.mhLoc : 'N',
     },
   ];
 };
@@ -165,9 +206,7 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
   {
     label: 'Original Date: ',
     data:
-      somsOffender && somsOffender.originalEndorsementDate
-        ? somsOffender.originalEndorsementDate
-        : '',
+      somsOffender && somsOffender.signedDate ? somsOffender.signedDate : '',
   },
   { break: true },
   {
@@ -179,8 +218,8 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
   {
     label: 'Expiration Date: ',
     data:
-      somsOffender && somsOffender.expirationEndorsementDate
-        ? somsOffender.expirationEndorsementDate
+      somsOffender && somsOffender.expirationDate
+        ? somsOffender.expirationDate
         : '',
   },
   { break: true },

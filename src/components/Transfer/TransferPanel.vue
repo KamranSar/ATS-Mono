@@ -104,11 +104,15 @@
         <span>Case Factors</span>
         <v-divider class="pb-2"></v-divider>
         <table width="100%">
+          <tr>
+            <td class="font-size-sm pr-4">Case Factor</td>
+            <td class="float-right">Yes/No/Value</td>
+          </tr>
           <tr v-for="(caseFactor, index) in CASE_FACTOR_FIELDS" :key="index">
             <td class="font-weight-bold pr-4">{{ caseFactor.label }}</td>
-            <td>
+            <!-- <td>
               {{ caseFactor.value }}
-            </td>
+            </td> -->
             <td class="float-right">
               {{ caseFactor.data }}
             </td>

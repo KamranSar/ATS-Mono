@@ -11,6 +11,7 @@ import hasAnyRoles from '@/router/guards/hasAnyRoles.js';
 // import hasAllRoles from '@/router/guards/hasAllRoles.js';
 /* eslint-enable */
 import { defaultAdminRole } from '@/config/myApp.js';
+import { mdiFileSign } from '@mdi/js';
 
 const routes = [
   ...defaultRoutes,
@@ -100,7 +101,7 @@ const routes = [
     },
   },
   {
-    icon: 'mdi-cog-outline',
+    icon: mdiFileSign,
     path: '/endorsements',
     name: 'Endorsements',
     component: () =>
