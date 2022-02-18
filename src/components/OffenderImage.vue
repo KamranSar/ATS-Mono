@@ -3,7 +3,7 @@
     class="white--text pa-0 ma-0"
     :src="displayPhoto"
     contain
-    max-height="200px"
+    max-height="250px"
     v-bind="$attrs"
     @click="$emit('click')"
   >

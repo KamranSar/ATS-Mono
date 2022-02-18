@@ -21,7 +21,7 @@
             </span>
           </div>
         </v-col> -->
-        <v-col cols="3">
+        <v-col cols="4">
           <table>
             <tr>
               <td rowspan="2" class="pr-1">
@@ -30,6 +30,7 @@
                   width="40px"
                   :somsOffender="somsOffender"
                   @click="showInfo('photo')"
+                  style="border: 1px solid gray"
                 ></offender-image>
               </td>
               <td>

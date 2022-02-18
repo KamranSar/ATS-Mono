@@ -22,14 +22,8 @@
 
       <!-- Photo -->
       <div v-show="showPhoto" class="photo-lg">
-        <v-img class="white--text" :src="displayPhoto">
-          <template v-slot:placeholder>
-            <v-progress-circular
-              indeterminate
-              color="grey lighten-5"
-            ></v-progress-circular>
-          </template>
-        </v-img>
+        <offender-image class="white--text" :somsOffender="somsOffender">
+        </offender-image>
       </div>
 
       <!-- Housing -->
@@ -226,6 +220,7 @@
   </v-row>
 </template>
 <script>
+  import OffenderImage from '@/components/OffenderImage.vue';
   import { sync, get } from 'vuex-pathify';
   import { userplaceholder } from '@/assets/userplaceholder.js';
   import {
@@ -237,6 +232,9 @@
 
   export default {
     name: 'TransferPanel',
+    components: {
+      OffenderImage,
+    },
     data: () => ({
       alertHasBeenViewed: false,
     }),
