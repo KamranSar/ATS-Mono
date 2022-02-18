@@ -32,9 +32,6 @@
           </v-autocomplete>
         </v-col>
         <v-col align="right" align-self="center">
-          <!-- <v-btn class="secondary ma-2" @click="dialogSchedule = true">
-            Create Schedule
-          </v-btn> -->
           <v-icon small color="primary" right>mdi-arrow-left</v-icon>
           <a @click="goHome" class="text-decoration-none subtitle-2">
             Back to Home
@@ -93,6 +90,61 @@
                 </v-icon>
               </v-col>
             </v-row>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-select
+                  label="Endorsed To"
+                  placeholder="Endorsed To"
+                  :items="listOfInstitutions"
+                  item-text="institutionId"
+                  item-value="institutionId"
+                  v-model="selEndorsedTo"
+                  class="vselectTxtColor"
+                  dense
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col class="mx-4 mb-4">
+                <v-checkbox
+                  v-model="includeScheduled"
+                  label="Include Scheduled Offenders"
+                  color="success"
+                  hide-details
+                  dense
+                ></v-checkbox>
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <v-col cols="6" class="mx-4">
+                <v-menu
+                  v-model="arrivalDateMenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      dense
+                      label="Arrival Date"
+                      prepend-inner-icon="mdi-calendar"
+                      v-bind="attrs"
+                      v-on="on"
+                      placeholder=" "
+                      v-model="arrivalDate"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="arrivalDate"
+                    @input="arrivalDateMenu = false"
+                    @change="onChangeArrivalDate"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="1" class="mx-4">&nbsp;</v-col>
+            </v-row>
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" lg="3">
@@ -120,17 +172,6 @@
                   hide-details="true"
                   dense
                 ></v-select>
-                <!-- <v-select
-                  label="By Schedule"
-                  placeholder="Schedule"
-                  :items="schedules"
-                  item-text="title"
-                  item-value="title"
-                  v-model="sel135Schedule"
-                  class="vselectTxtColor"
-                  dense
-                  @change="onChangeSchedule"
-                ></v-select> -->
               </v-col>
               <v-col cols="1" class="mx-4">
                 <v-icon large color="primary" @click="create135('schedule')">
@@ -330,6 +371,9 @@
     name: 'Reports',
     data: (vm) => ({
       loading: false,
+      includeScheduled: false,
+      arrivalDateMenu: false,
+      arrivalDate: null,
       schedule: [],
       stateOf: 'STATE OF CALIFORNIA',
       agency: 'DEPARTMENT OF CORRECTIONS AND REHABILITATION',
@@ -362,16 +406,6 @@
       ...get('users', ['loggedInUser']),
     },
     async mounted() {
-      // await this.getInstitutions();
-      // if (
-      //   this.loggedInUser &&
-      //   this.loggedInUser.somsinfo &&
-      //   this.loggedInUser.somsinfo.organizationName
-      // ) {
-      // this.selectedInstitution = this.loggedInUser.somsinfo.organizationName;
-      // console.log('selectedInstitution: ', this.selectedInstitution);
-      // }
-      // await this.getSchedulesByInstitution();
       await this.readSchedulesByInstitution();
     },
     methods: {
@@ -451,6 +485,12 @@
       onChangeBeginDate(ctrl) {
         console.log('onChangeBeginDate(): ctrl => ', ctrl);
       },
+      onChangeEndorsedDate(ctrl) {
+        console.log('onChangeEndorsedDate(); ctrl => ', ctrl);
+      },
+      onChangeArrivalDate(ctrl) {
+        console.log('onChangeEndorsedDate(); ctrl => ', ctrl);
+      },
       // getInstitutionId(location)
       // Returns the abbreviated institution id
       // for the provided location
@@ -474,9 +514,11 @@
 
         return 'NF';
       },
-      // ******************************
+
+      // ****************************************
       // Methods to create PDF documents
       //
+      // ****************************************
 
       // create135()
       // retrieves and creates the data
@@ -574,7 +616,6 @@
           alert('Could not create CDCR 135 PDF Document!');
         }
       },
-
       // create135PDF()
       // Creates a Transfer Record
       // Creates a pdf file using PDFMake
@@ -2167,8 +2208,6 @@
       createBusSeatPDF(data) {
         console.log('createBusSeat(): data => ', data);
 
-        // const fileName = this.fileName + '.pdf';
-
         const today = new Date();
         const m = today.getMonth() + 1;
         const mm = m < 10 ? '0' + m : m;
@@ -2344,115 +2383,29 @@
                           text: 'Level',
                           style: 'tblHeader',
                           border: [false, true, false, true],
-                          // margin: [ 2, 3, 2, 3],
                         },
                         {
                           text: 'Scheduled',
                           style: 'tblHeader',
                           border: [false, true, false, true],
-                          // margin: [ 2, 3, 2, 3],
                         },
                         {
                           text: 'UnScheduled',
                           style: 'tblHeader',
                           border: [false, true, false, true],
-                          // margin: [ 2, 3, 2, 3],
                         },
                         {
                           text: 'Hold',
                           style: 'tblHeader',
                           border: [false, true, false, true],
-                          // margin: [ 2, 3, 2, 3],
                         },
                         {
                           text: 'Total',
                           style: 'tblHeader',
                           border: [false, true, false, true],
-                          // margin: [ 2, 3, 2, 3],
                         },
                       ],
                       ...data,
-                      // [
-                      //   {
-                      //     text: '----- ACP - Alternative Custody Program -----',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '',
-                      //     style: 'schEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      // ], // End of Row 1
-                      // [
-                      //   {
-                      //     text: '1',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '0',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '2',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '0',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '2',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      // ], // End of Row 2
-                      // [
-                      //   {
-                      //     text: 'Total',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '0',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '2',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '0',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      //   {
-                      //     text: '2',
-                      //     style: 'tblEntry',
-                      //     border: [false, false, false, false],
-                      //   },
-                      // ], // End of Row 2
                     ], // End of Table Body
                     border: [false, false, false, false],
                   },
@@ -2467,13 +2420,10 @@
 
         // alert("createBusSeatPDF() Done!");
       },
-      onChangeEndorsedDate(ctrl) {
-        console.log('onChangeEndorsedDate(); ctrl => ', ctrl);
-      },
       async createBusOrderSeat() {
         let filter = {
           query: {
-            $limit: 500,
+            $limit: 50,
             $sort: {
               endorsedDate: 1,
             },
@@ -2485,14 +2435,41 @@
           filter.query.endorseInstitution = {
             $ne: this.selectedInstitution.institutionName,
           };
+        } else {
+          this.setSnackbar(
+            'Please select an institution and try again.',
+            'info',
+            3000
+          );
+          return;
+        }
+
+        if (this.dateEndorsed) {
+          filter.query['$or'] = [
+            { originalEndorsementDate: this.dateEndorsed },
+            { currentEndorsementDate: this.dateEndorsed },
+          ];
+        }
+
+        if (this.selEndorsedTo) {
+          filter.query.endorsedToId = this.selEndorsedTo;
+        }
+
+        if (!this.includeScheduled) {
+          filter.query.isScheduled = this.includeScheduled;
+        }
+
+        if (this.arrivalDate) {
+          filter.query.transferDate = this.arrivalDate;
         }
 
         let endorsements = [];
         try {
           const response = await this.readTransfers(filter);
           // const response = await endorsedOffenders(filter);
-          if (response) {
+          if (response && response.length > 0) {
             endorsements = response;
+            debugger;
             console.log(
               'createBusOrderSeat(): readTransfers(): endorsements => ',
               endorsements
@@ -2674,7 +2651,10 @@
         // Test data
         //this.selInstitutions = 'DVI';
         this.reportTitle = 'BUS ORDER SEAT REQUEST';
-        const from = this.selectedInstitution.institutionId; // FIXME Replace with institutionId. selectedInstitution needs to be an object
+        const from =
+          this.selectedInstitution.institutionId +
+          ' - ' +
+          this.selectedInstitution.institutionName;
         console.log('createBusOrderSeatPDF(): from => ', from);
         // const dest = this.selEndorsedTo ? this.selEndorsedTo : 'ALL';
 
