@@ -76,7 +76,7 @@ const findAll = async (
     queryObject.query['$skip'] = dataMap.size;
 
     // Keep fetching until we've mapped all of them
-    while (total !== dataMap.size) {
+    while (total > dataMap.size) {
       const response2 = await feathers.service(servicepath).find(queryObject);
       const data2 = response2.data;
       data2.forEach((item) => {

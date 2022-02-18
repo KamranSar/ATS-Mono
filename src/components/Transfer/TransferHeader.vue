@@ -2,7 +2,7 @@
   <v-row class="my-0 pt-2">
     <v-col cols="10" class="pb-1">
       <v-row no-gutters>
-        <v-col cols="1">
+        <!-- <v-col cols="1">
           <offender-image
             height="50px"
             width="40px"
@@ -20,8 +20,32 @@
               {{ somsOffender.institutionName }}
             </span>
           </div>
+        </v-col> -->
+        <v-col cols="3">
+          <table>
+            <tr>
+              <td rowspan="2" class="pr-1">
+                <offender-image
+                  height="50px"
+                  width="40px"
+                  :somsOffender="somsOffender"
+                  @click="showInfo('photo')"
+                ></offender-image>
+              </td>
+              <td>
+                <font class="font-weight-black black--text title">
+                  {{ somsOffender.firstName + ' ' + somsOffender.lastName }}
+                </font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                {{ somsOffender.institutionName }}
+              </td>
+            </tr>
+          </table>
         </v-col>
-        <v-col cols="7" class="pb-1" align-self="center">
+        <v-col cols="3" class="pb-1" align-self="center">
           <div>
             <span>
               <v-btn
@@ -83,6 +107,7 @@
         </v-col>
       </v-row>
       <!-- <v-divider class="pb-2"></v-divider> -->
+      <v-spacer></v-spacer>
     </v-col>
     <v-col cols="2" class="pb-1" align="right" align-self="center">
       <v-dialog v-model="dlgSaveForm" persistent max-width="500px">

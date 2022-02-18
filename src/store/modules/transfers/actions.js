@@ -1,5 +1,6 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 import somsOffender from '@/feathers/services/offender/details.service.js';
+import findAll from '@/feathers/helpers/findAll.js';
 // import router from '@/router/';
 // import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
@@ -140,7 +141,8 @@ const actions = {
   readTransfers: async ({ rootState }, queryObj) => {
     try {
       rootState.app.loading = true;
-      const response = await svcTransfers.find(queryObj);
+      // const response = await svcTransfers.find(queryObj);
+      const response = await findAll(svcTransfers, queryObj);
       console.log('readTransfers(): response => ', response);
       if (response && response.data) {
         for (let item of response.data) {
@@ -167,7 +169,8 @@ const actions = {
           date: dateObj.date,
         },
       };
-      state.transfers = await svcTransfers.find(filter);
+      // state.transfers = await svcTransfers.find(filter);
+      state.transfers = await findAll(svcTransfers, filter);
     } catch (error) {
       return error;
     } finally {
@@ -183,7 +186,8 @@ const actions = {
           institution: institution,
         },
       };
-      const response = await svcTransfers.find(filter);
+      // const response = await svcTransfers.find(filter);
+      const response = await findAll(svcTransfers, filter);
       state.transfers = response.data;
     } catch (error) {
       return error;
@@ -200,7 +204,8 @@ const actions = {
           name: scheduleName,
         },
       };
-      state.transfers = await svcTransfers.find(filter);
+      // state.transfers = await svcTransfers.find(filter);
+      state.transfers = await findAll(svcTransfers, filter);
     } catch (error) {
       return error;
     } finally {
