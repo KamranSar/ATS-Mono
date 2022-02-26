@@ -103,7 +103,7 @@
             const institution = this.getInstitutionByName(
               this.somsOffender.institution
             );
-            if (institution) {
+            if (institution && !institution._notindb) {
               console.log(
                 'getInstitutionByName(): institution => ',
                 institution

@@ -60,7 +60,7 @@ new Vue({
       // When we come back, we must check for a token before anything
       // else happens in the app or API's could fail
       // Skip this for page refreshes. It's handled in the router guards
-      const hours = 2 * 1000 * 60 * 60; // Get a new token every 2 hours.
+      const hours = 0.5 * 1000 * 60 * 60; // Get a new token every 0.5 hours.
       this.keepAliveInterval = setInterval(() => {
         getNewToken();
       }, hours);

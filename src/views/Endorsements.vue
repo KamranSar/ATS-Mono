@@ -91,15 +91,13 @@
         >
           {{ item.cdcrNumber }}
         </router-link>
-        <!-- <a href="" @click="createPDF()">
-          {{ item.cdcrNumber }}
-        </a> -->
       </template>
-      <!-- <template v-slot:item.fullName="{ item }">
-        <span>{{ item.lastName }}, {{ item.firstName }}</span>
-      </template> -->
       <template v-slot:item.endorsedTo="{ item }">
-        <span>{{ getInstitutionId(item.endorseInstitution) }}</span>
+        <span>{{
+          getInstitutionByName(item.endorseInstitution).institutionId +
+          '/' +
+          item.endorseProgram
+        }}</span>
       </template>
       <template v-slot:item.endorseDate="{ item }">
         <span class="nowrap">{{ formatDate(item.endorseDate) }}</span>
@@ -109,6 +107,9 @@
       </template>
       <template v-slot:item.releaseDate="{ item }">
         <span class="nowrap">{{ formatDate(item.releaseDate) }}</span>
+      </template>
+      <template v-slot:item.caseFactor="{ item }">
+        <span>{{ formatCaseFactors(item) }}</span>
       </template>
       <template v-slot:item.inHouseRemarks="{ item }">
         <v-btn icon @click.stop="openRemarks(item)">
@@ -144,10 +145,6 @@
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
-  // import { setSnackbar } from '@/helpers/snackbar.js';
-
-  // import jsPDF from 'jspdf';
-  // import 'jspdf-autotable';
 
   export default {
     name: 'Endorsements',
@@ -357,6 +354,42 @@
         const result = m + '/' + d + '/' + y;
         return result;
       },
+      formatCaseFactors(item) {
+        console.log('formatCaseFactors(): item => ', item);
+        const cf = [];
+        if (item.lifer_lwop_flag) {
+          cf.push(item.sny_value);
+        }
+        if (item.sny_flag) {
+          cf.push(item.sny_value);
+        }
+        if (item.cccms_eop_flag) {
+          cf.push('ccms-eop: ' + item.cccms_eop_value);
+        }
+        if (item.cocci1_flag) {
+          cf.push('cocci1: ' + item.cocci1_value);
+        }
+        if (item.cocci2_flag) {
+          cf.push('cocci2: ' + item.cocci2_value);
+        }
+        if (item.ddp_flag) {
+          cf.push(item.ddp_value);
+        }
+        if (item.dpp_flag) {
+          cf.push(item.dpp_value);
+        }
+        if (item.ice_flag) {
+          cf.push('ice: ' + item.ice_value);
+        }
+        if (item.retainASU_flag) {
+          cf.push(item.retainASU_value);
+        }
+        if (item.transferMERD_flag) {
+          cf.push(item.transferMERD_value);
+        }
+        return cf.join(', ');
+      },
+
       getInstitutionId(location) {
         if (!location) {
           // FIXME write out an error message
@@ -378,7 +411,6 @@
         return 'NF';
       },
       async getEndorsements() {
-        this.loading = true;
         let filter = {
           query: {
             $limit: 500,
@@ -394,8 +426,16 @@
           filter.query.endorseInstitution = {
             $ne: this.selectedInstitution.institutionName,
           };
+        } else {
+          this.setSnackbar(
+            'Please select an institution and try again.',
+            'info',
+            3000
+          );
+          return;
         }
         try {
+          this.loading = true;
           const response = await endorsedOffenders.find(filter);
           console.log('getEndorsements(): response => ', response);
           // const response = await departuresArrivalsSvc.find(filter);
@@ -464,6 +504,7 @@
           seats: selected.seats,
         };
       },
+
       // createPDF() {
       //   const source = this.$refs['myTable'];
       //   let rows = [];
@@ -507,7 +548,11 @@
     computed: {
       ...sync('transfers', ['transfers', 'selTransferReason', 'transferData']),
       ...sync('institutions', ['selectedInstitution']),
-      ...get('institutions', ['listOfInstitutions', 'getInstitutionByName']),
+      ...get('institutions', [
+        'listOfInstitutions',
+        'getInstitutionByName',
+        'getInstitutionById',
+      ]),
       ...get('users', ['loggedInUser']),
       appUserRoles() {
         return this.$store.get('users/getAppUserRoles');

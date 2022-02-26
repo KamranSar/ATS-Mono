@@ -4,6 +4,15 @@ import findAll from '@/feathers/helpers/findAll.js';
 // eslint-disable-next-line no-unused-vars
 import { defaultAdminRole } from '@/config/myApp.js';
 import { make } from 'vuex-pathify';
+const getEmptyInstitution = () => {
+  return {
+    _notindb: true,
+    institutionName: 'NF',
+    institutionId: 'NF',
+    institutionPartyId: 'NF',
+  };
+};
+
 const getDefaultState = () => {
   return {
     selectedInstitution: null, // An object
@@ -64,12 +73,34 @@ const actions = {
 };
 const getters = {
   getInstitutionByName: (state) => (name) => {
-    console.log('getInstitutionByName(): name => ', name);
-    return state.listOfInstitutions.find(
-      (inst) => name == inst.institutionName
+    const result = state.listOfInstitutions.find(
+      (inst) => name === inst.institutionName
     );
+    if (!result) {
+      return getEmptyInstitution();
+    }
+    return result;
+  },
+  getInstitutionById: (state) => (id) => {
+    const result = state.listOfInstitutions.find(
+      (inst) => id === inst.institutionId
+    );
+    if (!result) {
+      return getEmptyInstitution();
+    }
+    return result;
+  },
+  getInstitutionByPartyId: (state) => (partyId) => {
+    const result = state.listOfInstitutions.find(
+      (inst) => partyId === inst.institutionPartyId
+    );
+    if (!result) {
+      return getEmptyInstitution();
+    }
+    return result;
   },
 };
+
 // Vuex Store
 export default {
   namespaced: true,

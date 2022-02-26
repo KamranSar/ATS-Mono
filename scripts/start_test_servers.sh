@@ -84,11 +84,14 @@ docker run \
 --env ORACLE_GUI_PORT=5500 \
 --env ORACLE_USER=aW50ZXJmYWNlX3VzZXJbZW9taXNfcm9fdXNlcl0= \
 --env ORACLE_PASSWORD=VVNFUmlmIyMyMDIw \
---env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/sodstest.vcx \
+--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest.vcx \
 --expose ${MT_EIS_COMMON_PORT} \
 --name $IMAGE_NAME \
 --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 #
+#--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/sodstest.vcx \
+#--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest.vcx \
+
 IMAGE_NAME="mt-eds-ats"
 if docker container ls -a | grep -Fq "$IMAGE_NAME" 1>/dev/null; then
   docker container rm --force $IMAGE_NAME
@@ -103,11 +106,13 @@ docker run \
 --env ORACLE_GUI_PORT=5500 \
 --env ORACLE_USER=aW50ZXJmYWNlX3VzZXJbZW9taXNfcm9fdXNlcl0= \
 --env ORACLE_PASSWORD=VVNFUmlmIyMyMDIw \
---env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/sodstest.vcx \
+--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest.vcx \
 --expose ${MT_EDS_ATS_PORT} \
 --name $IMAGE_NAME \
 --detach ${IMAGE_REPO_DOMAIN}/${IMAGE_ENV_APP}/${IMAGE_NAME}:${IMAGE_VER}
 #* END - REQUIRED CONTAINERS
+#--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/sodstest.vcx \
+#--env ORACLE_CONNSTR=vcx1-scan.accounts.cdcr.ca.gov:1521/somstest.vcx \
 
 #* BEGIN - OPTIONAL CONTAINERS
 #* These are optional DB containers. You may add/remove/change as needed.

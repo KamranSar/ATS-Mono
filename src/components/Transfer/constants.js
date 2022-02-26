@@ -8,6 +8,8 @@
 //     ? somsOffender.securityLevel
 //     : '';
 // }
+import store from '@/store';
+
 const SOMS_DATA_FIELDS = (somsOffender) => [
   {
     label: 'CDCR Number:',
@@ -45,8 +47,8 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
   {
     label: 'Security Level:',
     data:
-      somsOffender && somsOffender.securityLevel
-        ? somsOffender.securityLevel
+      somsOffender && somsOffender.endorseSecurityLevel
+        ? somsOffender.endorseSecurityLevel
         : '',
   },
   {
@@ -199,7 +201,16 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
   { divider: true },
   {
     label: 'Endorsed To: ',
-    data: somsOffender && somsOffender.program ? somsOffender.program : '',
+    data:
+      somsOffender &&
+      somsOffender.endorseInstitution &&
+      somsOffender.endorseProgram
+        ? store.getters['institutions/getInstitutionByName'](
+            somsOffender.endorseInstitution
+          ).institutionId +
+          '/' +
+          somsOffender.endorseProgram
+        : '',
     // somsOffender && somsOffender.institution ? somsOffender.institution : '',
   },
   { break: true },

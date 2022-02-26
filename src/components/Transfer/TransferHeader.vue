@@ -206,6 +206,43 @@
         this.showMedical = choice == 'medical' ? true : false;
         this.showComments = choice == 'comments' ? true : false;
       },
+      formatCaseFactors(item) {
+        console.log('formatCaseFactors(): item => ', item);
+        debugger;
+        const cf = [];
+        if (item.CaseFactors[0].lifer_lwop_flag) {
+          cf.push(item.CaseFactors[0].sny_value);
+        }
+        if (item.CaseFactors[0].sny_flag) {
+          cf.push(item.CaseFactors[0].sny_value);
+        }
+        if (item.CaseFactors[0].cccms_eop_flag) {
+          cf.push('ccms-eop: ' + item.CaseFactors[0].cccms_eop_value);
+        }
+        if (item.CaseFactors[0].cocci1_flag) {
+          cf.push('cocci1: ' + item.CaseFactors[0].cocci1_value);
+        }
+        if (item.CaseFactors[0].cocci2_flag) {
+          cf.push('cocci2: ' + item.CaseFactors[0].cocci2_value);
+        }
+        if (item.CaseFactors[0].ddp_flag) {
+          cf.push(item.CaseFactors[0].ddp_value);
+        }
+        if (item.CaseFactors[0].dpp_flag) {
+          cf.push(item.CaseFactors[0].dpp_value);
+        }
+        if (item.CaseFactors[0].ice_flag) {
+          cf.push('ice: ' + item.CaseFactors[0].ice_value);
+        }
+        if (item.CaseFactors[0].retainASU_flag) {
+          cf.push(item.CaseFactors[0].retainASU_value);
+        }
+        if (item.CaseFactors[0].transferMERD_flag) {
+          cf.push(item.CaseFactors[0].transferMERD_value);
+        }
+        return cf.join(', ');
+      },
+
       async saveTransfer() {
         this.dlgSaveForm = false;
         try {
@@ -231,6 +268,10 @@
               this.transferData.institutionId
             );
           }
+          this.transferData.caseFactor = this.formatCaseFactors(
+            this.somsOffender
+          );
+
           await this.saveForm();
         } catch (ex) {
           console.error(ex);
