@@ -34,6 +34,7 @@ const findAll = async (
   query = null,
   options = {
     type: 'JSON', // Valid Types: "JSON", "Array", "Map"
+    limit: 50,
   }
 ) => {
   try {
@@ -62,7 +63,7 @@ const findAll = async (
     }
 
     // Default it to 50
-    queryObject.query['$limit'] = 50;
+    queryObject.query['$limit'] = options.limit;
 
     // Call once explicitly to get the total;
     const response = await feathers.service(servicepath).find(queryObject);
