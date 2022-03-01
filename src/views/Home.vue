@@ -386,8 +386,8 @@
       },
       convertArrivingDates() {
         this.arrivingOffenders.forEach((element) => {
-          element.endorseDate
-            ? (element.endorseDate = new Date(element.endorseDate)
+          element.endorsedDate
+            ? (element.endorsedDate = new Date(element.endorsedDate)
                 .toISOString()
                 .split('T')[0])
             : null;

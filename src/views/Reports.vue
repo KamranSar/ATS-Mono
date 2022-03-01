@@ -1907,7 +1907,7 @@
 
         if (this.selectedInstitution) {
           filter.query.institutionId = this.selectedInstitution.institutionId;
-          filter.query.endorseInstitution = {
+          filter.query.endorsedInstitution = {
             $ne: this.selectedInstitution.institutionName,
           };
         } else {

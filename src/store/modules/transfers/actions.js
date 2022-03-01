@@ -37,7 +37,7 @@ const actions = {
         state.transferData.securityLevel = state.somsOffender.securityLevel;
         state.transferData.tbCode = state.somsOffender.tbCode;
         state.transferData.currentEndorsementDate =
-          state.somsOffender.endorseDate;
+          state.somsOffender.endorsedDate;
         state.transferData.originalEndorsementDate =
           state.somsOffender.signedDate;
         state.transferData.expirationEndorsementDate =

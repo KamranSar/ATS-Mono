@@ -541,7 +541,7 @@
             this.editEndorsement.securityLevel = person.securityLevel;
             this.editEndorsement.tbCode = person.tbCode;
             // this.editEndorsement.caseFactor = person.caseFactor;
-            this.editEndorsement.currentEndorsementDate = person.endorseDate;
+            this.editEndorsement.currentEndorsementDate = person.endorsedDate;
             setTimeout(() => {
               this.loading = false;
               this.displayOffender = true;

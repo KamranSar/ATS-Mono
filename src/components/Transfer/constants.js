@@ -47,8 +47,8 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
   {
     label: 'Security Level:',
     data:
-      somsOffender && somsOffender.endorseSecurityLevel
-        ? somsOffender.endorseSecurityLevel
+      somsOffender && somsOffender.securityLevel
+        ? somsOffender.securityLevel
         : '',
   },
   {
@@ -203,13 +203,18 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
     label: 'Endorsed To: ',
     data:
       somsOffender &&
-      somsOffender.endorseInstitution &&
-      somsOffender.endorseProgram
+      somsOffender.endorsedInstitution &&
+      somsOffender.endorsedProgram
         ? store.getters['institutions/getInstitutionByName'](
-            somsOffender.endorseInstitution
+            somsOffender.endorsedInstitution
           ).institutionId +
-          '/' +
-          somsOffender.endorseProgram
+          '-' +
+          somsOffender.endorsedSecurityLevel +
+          '(' +
+          (somsOffender.endorsedProgram.toLowerCase() !== 'not applicable'
+            ? somsOffender.endorsedProgram
+            : 'NA') +
+          ')'
         : '',
     // somsOffender && somsOffender.institution ? somsOffender.institution : '',
   },
@@ -223,7 +228,9 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
   {
     label: 'Current Date: ',
     data:
-      somsOffender && somsOffender.endorseDate ? somsOffender.endorseDate : '',
+      somsOffender && somsOffender.endorsedDate
+        ? somsOffender.endorsedDate
+        : '',
   },
   { break: true },
   {
@@ -240,6 +247,11 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
       somsOffender && somsOffender.overrideReason
         ? somsOffender.overrideReason
         : '',
+  },
+  { break: true },
+  {
+    label: 'Endorsement Type: ',
+    data: somsOffender && somsOffender.formType ? somsOffender.formType : '',
   },
 ];
 

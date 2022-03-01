@@ -94,13 +94,18 @@
       </template>
       <template v-slot:item.endorsedTo="{ item }">
         <span>{{
-          getInstitutionByName(item.endorseInstitution).institutionId +
-          '/' +
-          item.endorseProgram
+          getInstitutionByName(item.endorsedInstitution).institutionId +
+          '-' +
+          item.endorsedSecurityLevel +
+          '(' +
+          (item.endorsedProgram.toLowerCase() !== 'not applicable'
+            ? item.endorsedProgram
+            : 'NA') +
+          ')'
         }}</span>
       </template>
-      <template v-slot:item.endorseDate="{ item }">
-        <span class="nowrap">{{ formatDate(item.endorseDate) }}</span>
+      <template v-slot:item.endorsedDate="{ item }">
+        <span class="nowrap">{{ formatDate(item.endorsedDate) }}</span>
       </template>
       <template v-slot:item.expirationDate="{ item }">
         <span class="nowrap">{{ formatDate(item.expirationDate) }}</span>
@@ -165,8 +170,8 @@
         { text: 'Last Name', value: 'lastName' },
         { text: 'First Name', value: 'firstName' },
         { text: 'Level', value: 'securityLevel' },
-        { text: 'Endorsed To/Level', value: 'endorsedTo' },
-        { text: 'Endorsed Date', value: 'endorseDate' },
+        { text: 'Endorsed To-Level(Program)', value: 'endorsedTo' },
+        { text: 'Endorsed Date', value: 'endorsedDate' },
         { text: 'Expired Date', value: 'expirationDate' },
         { text: 'Release Date', value: 'releaseDate' },
         { text: 'Case Factor', value: 'caseFactor' },
@@ -177,7 +182,7 @@
       dataOptions: {
         // page: number,
         // itemsPerPage: number,
-        sortBy: ['endorseDate'],
+        sortBy: ['endorsedDate'],
         // sortDesc: boolean[],
         // groupBy: string[],
         // groupDesc: boolean[],
@@ -341,11 +346,11 @@
           name: 'Home',
         });
       },
-      setSecurityLevel(item) {
-        return item.endorseSecurityLevel !== 'NA'
-          ? item.endorseSecurityLevel
-          : item.securityLevel;
-      },
+      // setSecurityLevel(item) {
+      //   return item.endorsedSecurityLevel !== 'NA'
+      //     ? item.endorsedSecurityLevel
+      //     : item.securityLevel;
+      // },
       formatDate(item) {
         // 0123/56/78
         const y = item.substr(2, 2);
@@ -423,7 +428,7 @@
         if (this.selectedInstitution) {
           filter.query.institutionId =
             this.selectedInstitution.institutionPartyId;
-          filter.query.endorseInstitution = {
+          filter.query.endorsedInstitution = {
             $ne: this.selectedInstitution.institutionName,
           };
         } else {
@@ -474,8 +479,8 @@
       },
       convertDepartingDates() {
         this.departingOffenders.forEach((element) => {
-          element.endorseDate
-            ? (element.endorseDate = new Date(element.endorseDate)
+          element.endorsedDate
+            ? (element.endorsedDate = new Date(element.endorsedDate)
                 .toISOString()
                 .split('T')[0])
             : null;
