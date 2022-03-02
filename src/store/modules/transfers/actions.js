@@ -43,9 +43,8 @@ const actions = {
         state.transferData.expirationEndorsementDate =
           state.somsOffender.expirationDate;
         state.transferData.endorsedToName =
-          state.somsOffender.institutionName === state.somsOffender.institution
-            ? ''
-            : state.somsOffender.institution;
+          state.somsOffender.endorsedInstitution;
+
         // state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
         // state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
 

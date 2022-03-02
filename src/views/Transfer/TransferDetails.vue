@@ -31,6 +31,7 @@
   import TransferHeader from '@/components/Transfer/TransferHeader.vue';
   import TransferPanel from '@/components/Transfer/TransferPanel.vue';
   import TransferHoldsTable from '@/components/Transfer/TransferHoldsTable.vue';
+  // import transferModel from '@/models/transferModel.js';
   // import { setSnackbar } from '@/helpers/snackbar.js';
 
   export default {
@@ -51,6 +52,7 @@
       somsCDCRNumber: '',
     }),
     async created() {
+      // this.transferData = this.transferModel();
       console.log('created()');
       if (this.$route && this.$route.params && this.$route.params.cdcrNumber) {
         this.somsCDCRNumber = this.$route.params.cdcrNumber;

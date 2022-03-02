@@ -57,7 +57,6 @@
       @keypress="filterEndorsements"
       :loading="loading"
       :options="dataOptions"
-      show-select
       loading-text="Syncing Data with SOMS... Please wait"
       no-data-text="No Endorsements"
       no-results-text="No Endorsements Found"
@@ -368,9 +367,9 @@
         if (item.sny_flag) {
           cf.push(item.sny_value);
         }
-        if (item.cccms_eop_flag) {
-          cf.push('ccms-eop: ' + item.cccms_eop_value);
-        }
+        // if (item.cccms_eop_flag) {
+        //   cf.push('ccms-eop: ' + item.cccms_eop_value);
+        // }
         if (item.cocci1_flag) {
           cf.push('cocci1: ' + item.cocci1_value);
         }
