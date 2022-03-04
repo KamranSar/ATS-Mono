@@ -2,7 +2,10 @@ import store from '@/store';
 import router from '@/router';
 import feathersTokenExpiration from '@/config/private/helpers/feathersTokenExpiration';
 import getMidTierToken from '@/config/private/helpers/getMidTierToken';
-import { FAKE_ROLES_ENABLED } from '@/config/appFeatures.js';
+import {
+  FAKE_ROLES_ENABLED,
+  FAKE_INSTITUTION_ENABLED,
+} from '@/config/appFeatures.js';
 import myApp from '@/config/myApp.js';
 
 /**
@@ -47,8 +50,15 @@ const getNewToken = async () => {
       }
 
       const { user, authentication } = midTierToken;
-      if (myApp.isLcl && FAKE_ROLES_ENABLED) {
-        user.appuserroles.roles = FAKE_ROLES_ENABLED;
+
+      if (myApp.isLcl) {
+        // TODO: Does somsinfo.organizationName always come back?
+        if (FAKE_INSTITUTION_ENABLED) {
+          user.somsinfo.organizationName = FAKE_INSTITUTION_ENABLED;
+        }
+        if (FAKE_ROLES_ENABLED) {
+          user.appuserroles.roles = FAKE_ROLES_ENABLED;
+        }
       }
       store.set('users/loggedInUser', { ...user, authentication });
     }

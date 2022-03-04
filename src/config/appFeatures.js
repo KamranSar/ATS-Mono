@@ -29,6 +29,12 @@ const MANAGE_BY_INSTITUTION_ENABLED = true;
  * !FOR TESTING PURPOSES ONLY
  * */
 const FAKE_ROLES_ENABLED = false && ['System Administrator']; // Set to true to add these roles to getNewToken for the loggedInUser
+
+/**
+ * !FOR TESTING PURPOSES ONLY
+ * This does NOT change the organizationId or organizationType on `loggedInuser.somsinfo`
+ */
+const FAKE_INSTITUTION_ENABLED = true && 'California State Prison, Solano'; // Set to true to to change your `organizationName` in `loggedInUser`.
 export {
   LEFT_DRAW_ENABLED,
   RIGHT_DRAW_ENABLED,
@@ -38,4 +44,5 @@ export {
   CLIENT_ROLES_ENABLED,
   MANAGE_BY_INSTITUTION_ENABLED,
   FAKE_ROLES_ENABLED,
+  FAKE_INSTITUTION_ENABLED,
 };

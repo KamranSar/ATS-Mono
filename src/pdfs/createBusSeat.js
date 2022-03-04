@@ -18,10 +18,10 @@ const AGENCY = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
  *  totals: _totalsModel()
  * }
  *
- * @param {String} selEndorsedTo
+ * @param {Object} {selEndorsedTo}
  * @returns {Object} An object with the keys set to the institutionId
  */
-async function _buildObjOfDestinations(selEndorsedTo) {
+async function _buildObjOfDestinations({ selEndorsedTo }) {
   // Factory function to build out the level object
   function _levelModel({
     scheduled = 0,
@@ -77,14 +77,9 @@ async function _buildObjOfDestinations(selEndorsedTo) {
   if (selEndorsedTo) {
     filter.query.destination = selEndorsedTo;
   }
-  console.log('crateBusSeat(): filter => ', filter);
 
   try {
     const response = await departuresArrivalsSvc.find(filter);
-    console.log(
-      'createBusSeat(): departuresArrivalsSvc.find(filter): response => ',
-      response
-    );
 
     if (!response) {
       alert('No Transfers found for requested date range.');
@@ -103,7 +98,7 @@ async function _buildObjOfDestinations(selEndorsedTo) {
 
     // Loop through all inmates
     for (let inmate of response.data) {
-      console.log(`Endorsing ${inmate.firstName} ${inmate.lastName}`, inmate);
+      // console.log(`Endorsing ${inmate.firstName} ${inmate.lastName}`, inmate);
 
       // Build out the destination for the inmate
       if (inmate.destination && !(inmate.destination in objOfDestinations)) {
@@ -130,15 +125,15 @@ async function _buildObjOfDestinations(selEndorsedTo) {
       // FIXME: Are these types mutually exclusive
       // Holds
       if (inmate.transferHolds) {
-        console.log(`\tHolding`);
+        // console.log(`\tHolding`);
         inmateLevel.holds++;
       } else if (inmate.scheduleId) {
         // Scheduled
-        console.log(`\tScheduled`);
+        // console.log(`\tScheduled`);
         inmateLevel.scheduled++;
       } else {
         // Unscheduled
-        console.log(`\tUnscheduled`);
+        // console.log(`\tUnscheduled`);
         inmateLevel.unscheduled++;
       }
       inmateLevel.total = inmateLevel.scheduled + inmateLevel.unscheduled; // Does not include holds
@@ -164,7 +159,6 @@ async function _buildObjOfDestinations(selEndorsedTo) {
 function _buildDestination(destination) {
   const row = [];
   const strText = ` ----- ${destination.institutionId} - ${destination.institutionName} -----`;
-  console.log('strText: ', strText);
 
   // Insert Origin row
   // Column 1 - Destination string
@@ -490,7 +484,7 @@ const _createBusSeatPDF = (data, selEndorsedTo) => {
     ],
   };
 
-  console.log('createBusSeatPDF(): dd => ', dd);
+  // console.log('createBusSeatPDF(): dd => ', dd);
   pdfMake.createPdf(dd).download(fileName);
 };
 
@@ -502,25 +496,34 @@ const createBusSeat = async (selEndorsedTo) => {
   try {
     const data = [];
     const objOfDestinations = await _buildObjOfDestinations(selEndorsedTo);
-    console.log('objOfDestinations: ', objOfDestinations);
+    // console.log('objOfDestinations: ', objOfDestinations);
 
     // Loop through all destinations to build the pdf
     for (const destination in objOfDestinations) {
-      console.log(`Building ${destination}`);
+      // console.log(`Building ${destination}`);
       data.push(_buildDestination(objOfDestinations[destination]));
       data.push(_buildSecurityLevels(objOfDestinations[destination].levels));
       data.push(_buildTotals(objOfDestinations[destination].totals));
     }
 
-    console.log('createBusSeat(): data => ', data);
+    // console.log('createBusSeat(): data => ', data);
     if (data.length) {
       _createBusSeatPDF(data, selEndorsedTo);
     } else {
       // error message
-      alert('Could not create CDCR Bus Seat Report PDF Document!');
+      store.dispatch('app/SET_SNACKBAR', {
+        top: true,
+        center: true,
+        message: 'Could not create CDCR Bus Seat Report PDF Document!',
+      });
     }
-  } catch (ex) {
-    console.error('createBusSeat() exception: ', ex);
+  } catch (er) {
+    store.dispatch('app/SET_SNACKBAR', {
+      top: true,
+      center: true,
+      message: 'Failed to generate bus seat report, try again later',
+    });
+    console.error('createBusSeat() exception: ', er);
   }
 };
 

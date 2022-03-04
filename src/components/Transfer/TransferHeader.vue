@@ -208,7 +208,6 @@
       },
       formatCaseFactors(item) {
         console.log('formatCaseFactors(): item => ', item);
-        debugger;
         const cf = [];
         console.log(
           'formatCaseFactors(): lifer_lwop_flag => ',
