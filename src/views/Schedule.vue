@@ -102,6 +102,7 @@
                 label="Transfer Date"
                 v-model="editSchedule.transferDate"
                 align="top"
+                pickerType="DATE"
               />
             </v-col>
             <v-col cols="1" sm="2" lg="1" align-self="baseline">

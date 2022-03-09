@@ -56,56 +56,46 @@
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-row no-gutters>
-              <v-col cols="6" class="mx-4">
-                <v-menu
-                  v-model="dateEndorsedMenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      dense
-                      label="Endorsed Date"
-                      prepend-inner-icon="mdi-calendar"
-                      v-bind="attrs"
-                      v-on="on"
-                      placeholder=" "
-                      v-model="dateEndorsed"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateEndorsed"
-                    @input="dateEndorsedMenu = false"
-                    @change="onChangeEndorsedDate"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="createBusOrderSeat">
-                  mdi-file-document
-                </v-icon>
+
+            <v-row no-gutters class="px-4">
+              <v-col cols="12">
+                <DateRangePicker
+                  label="Endorsed Date Range"
+                  v-model="dateEndorsed"
+                />
               </v-col>
             </v-row>
-            <v-row no-gutters>
-              <v-col cols="6" class="mx-4">
+
+            <v-row no-gutters class="px-4" justify="space-between">
+              <v-col cols="10">
                 <v-select
+                  dense
                   label="Endorsed To"
                   placeholder="Endorsed To"
                   :items="listOfInstitutions"
-                  item-text="institutionId"
+                  item-text="institutionName"
                   item-value="institutionId"
                   v-model="selEndorsedTo"
                   class="vselectTxtColor"
-                  dense
-                ></v-select>
+                  clearable
+                >
+                  <template v-slot:item="{ item, on, attrs }">
+                    <v-list-item dense v-on="on" v-bind="attrs">
+                      <v-list-item-title>{{
+                        `${item.institutionId} - ${item.institutionName}`
+                      }}</v-list-item-title>
+                    </v-list-item>
+                  </template></v-select
+                >
+              </v-col>
+              <v-col cols="auto">
+                <v-btn icon large @click="createBusOrderSeat">
+                  <v-icon large color="primary"> mdi-file-document </v-icon>
+                </v-btn>
               </v-col>
             </v-row>
-            <v-row no-gutters>
-              <v-col class="mx-4 mb-4">
+            <v-row no-gutters class="px-4 mb-4">
+              <v-col>
                 <v-checkbox
                   v-model="includeScheduled"
                   label="Include Scheduled Offenders"
@@ -115,35 +105,13 @@
                 ></v-checkbox>
               </v-col>
             </v-row>
-            <v-row no-gutters>
-              <v-col cols="6" class="mx-4">
-                <v-menu
-                  v-model="arrivalDateMenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      dense
-                      label="Arrival Date"
-                      prepend-inner-icon="mdi-calendar"
-                      v-bind="attrs"
-                      v-on="on"
-                      placeholder=" "
-                      v-model="arrivalDate"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="arrivalDate"
-                    @input="arrivalDateMenu = false"
-                    @change="onChangeArrivalDate"
-                  ></v-date-picker>
-                </v-menu>
+            <v-row no-gutters class="px-4">
+              <v-col cols="auto">
+                <DateRangePicker
+                  label="Arrival Date Range"
+                  v-model="arrivalDate"
+                />
               </v-col>
-              <v-col cols="1" class="mx-4">&nbsp;</v-col>
             </v-row>
           </v-card>
         </v-col>
@@ -187,6 +155,7 @@
                   dense
                   @change="cdcrNum = cdcrNum.toUpperCase()"
                   @keyup="cdcrNum = cdcrNum.toUpperCase()"
+                  clearable
                 ></v-text-field>
               </v-col>
               <v-col cols="1" class="mx-4">
@@ -227,12 +196,14 @@
                       v-on="on"
                       placeholder=" "
                       v-model="dateBegin"
+                      clearable
                     ></v-text-field>
                   </template>
                   <v-date-picker
                     v-model="dateBegin"
                     @input="dateBeginMenu = false"
                     @change="onChangeBeginDate"
+                    clearable
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -261,11 +232,13 @@
                       v-on="on"
                       placeholder=" "
                       v-model="dateEnd"
+                      clearable
                     ></v-text-field>
                   </template>
                   <v-date-picker
                     v-model="dateEnd"
                     @input="dateEndMenu = false"
+                    clearable
                   ></v-date-picker>
                 </v-menu>
               </v-col>
@@ -330,20 +303,30 @@
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-row no-gutters>
-              <v-col cols="6" class="mx-4">
+            <v-row no-gutters class="mx-4">
+              <v-col cols="6">
                 <v-select
                   label="Endorsed To"
                   placeholder="Endorsed To"
                   :items="listOfInstitutions"
-                  item-text="institutionId"
+                  item-text="institutionName"
                   item-value="institutionId"
                   v-model="selEndorsedTo"
                   class="vselectTxtColor"
+                  clearable
                   dense
-                ></v-select>
+                >
+                  <template v-slot:item="{ item, on, attrs }">
+                    <v-list-item dense v-on="on" v-bind="attrs">
+                      <v-list-item-title>{{
+                        `${item.institutionId} - ${item.institutionName}`
+                      }}</v-list-item-title>
+                    </v-list-item>
+                  </template></v-select
+                >
               </v-col>
-              <v-col cols="1" class="mx-4">
+              <v-spacer />
+              <v-col cols="auto">
                 <v-icon large color="primary" @click="createBusSeat">
                   mdi-file-document
                 </v-icon>
@@ -357,7 +340,7 @@
 </template>
 
 <script>
-  // import findAll from '@/feathers/helpers/findAll.js';
+  import DateRangePicker from '@/components/util/DateRangePicker.vue';
   import { get, sync, call } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -365,16 +348,17 @@
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
   import createBusSeat from '@/pdfs/createBusSeat.js';
   import createBusOrderSeat from '@/pdfs/createBusOrderSeat.js';
-  // import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
-  // import { setSnackbar } from '@/helpers/snackbar.js';
 
   export default {
     name: 'Reports',
+    components: {
+      DateRangePicker,
+    },
     data: (vm) => ({
       loading: false,
       includeScheduled: false,
       arrivalDateMenu: false,
-      arrivalDate: null,
+      arrivalDate: [null, null],
       schedule: [],
       stateOf: 'STATE OF CALIFORNIA',
       agency: 'DEPARTMENT OF CORRECTIONS AND REHABILITATION',
@@ -387,7 +371,7 @@
       sel135Schedule: '',
       sel134Schedule: '',
       selEndorsedTo: '',
-      dateEndorsed: null,
+      dateEndorsed: [null, null],
       dateEndorsedMenu: false,
       dateBeginMenu: false,
       dateBegin: '',

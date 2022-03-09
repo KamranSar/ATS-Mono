@@ -1,7 +1,8 @@
 import store from '@/store';
 import pdfMake from 'pdfmake/build/pdfmake';
 import myApp from '@/config/myApp.js';
-import { format, formatISO } from 'date-fns';
+import { FORMAT } from '@/mixins/DatePicker.js';
+import { format, formatISO, isMatch } from 'date-fns';
 const AGENCY = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
 const REPORT_TITLE = 'BUS ORDER SEAT REQUEST';
 
@@ -287,10 +288,27 @@ const createBusOrderSeat = async ({
     $ne: selectedInstitution.institutionName,
   };
 
-  if (dateEndorsed) {
+  if (
+    dateEndorsed &&
+    Array.isArray(dateEndorsed) &&
+    dateEndorsed[0] &&
+    dateEndorsed[1]
+  ) {
+    // If currentEndorsementDate is between the range....
     filter.query['$or'] = [
-      { originalEndorsementDate: dateEndorsed },
-      { currentEndorsementDate: dateEndorsed },
+      {
+        currentEndorsementDate: {
+          $gte: dateEndorsed[0],
+          $lte: dateEndorsed[1],
+        },
+      },
+      // Or if originalEndorsementDate is between the range...
+      {
+        originalEndorsementDate: {
+          $gte: dateEndorsed[0],
+          $lte: dateEndorsed[1],
+        },
+      },
     ];
   }
 
@@ -302,8 +320,24 @@ const createBusOrderSeat = async ({
     filter.query.isScheduled = includeScheduled;
   }
 
-  if (arrivalDate) {
-    filter.query.transferDate = arrivalDate;
+  if (
+    arrivalDate &&
+    Array.isArray(arrivalDate) &&
+    arrivalDate[0] &&
+    arrivalDate[1]
+  ) {
+    // FIXME: Backend API is expecting 02/17/2022 instead of ISO date
+    if (isMatch(arrivalDate[0], FORMAT.ISO_DATE)) {
+      const [fromYear, fromMonth, fromDay] = arrivalDate[0].split('-');
+      const [toYear, toMonth, toDay] = arrivalDate[1].split('-');
+      arrivalDate[0] = `${fromMonth}/${fromDay}/${fromYear}`;
+      arrivalDate[1] = `${toMonth}/${toDay}/${toYear}`;
+    }
+
+    filter.query.transferDate = {
+      $gte: arrivalDate[0],
+      $lte: arrivalDate[1],
+    };
   }
 
   try {

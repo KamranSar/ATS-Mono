@@ -34,7 +34,7 @@ const FAKE_ROLES_ENABLED = false && ['System Administrator']; // Set to true to 
  * !FOR TESTING PURPOSES ONLY
  * This does NOT change the organizationId or organizationType on `loggedInuser.somsinfo`
  */
-const FAKE_INSTITUTION_ENABLED = true && 'California State Prison, Solano'; // Set to true to to change your `organizationName` in `loggedInUser`.
+const FAKE_INSTITUTION_ENABLED = false && 'California State Prison, Solano'; // Set to true to to change your `organizationName` in `loggedInUser`.
 export {
   LEFT_DRAW_ENABLED,
   RIGHT_DRAW_ENABLED,

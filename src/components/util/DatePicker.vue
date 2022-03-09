@@ -1,6 +1,8 @@
 <template>
   <v-menu
-    :close-on-content-click="false"
+    ref="menu"
+    v-model="menu"
+    :close-on-content-click="closeOnClick"
     transition="scale-transition"
     offset-y
     :disabled="disabled"
@@ -11,11 +13,10 @@
       v-model="datePickerModel"
       :disabled="disabled"
       @change="onChange"
-      @blur="onBlur"
+      @blur="onTextBlur"
       :min="min"
       :max="max"
-      active-picker="YEAR"
-      no-title
+      :active-picker.sync="activePicker"
       v-bind="$attrs"
     ></v-date-picker>
     <template v-slot:activator="{ on, attrs }">
@@ -25,12 +26,13 @@
             <v-text-field
               :label="label"
               @keyup.enter="onKeyup"
-              @blur="onBlur"
+              @blur="onTextBlur"
               v-bind="attrs"
               v-model="textFieldModel"
               :disabled="disabled"
-              hint="MM/DD/YYYY"
-              clearable
+              :hint="String(FORMAT.LOCALE_DATE).toUpperCase()"
+              :solo="solo"
+              :placeholder="placeholder"
               @click:clear="onInput('')"
               v-mask="'##/##/####'"
               :rules="[
@@ -40,7 +42,12 @@
               ]"
             >
               <template v-slot:prepend>
-                <v-btn icon v-bind="attrs" v-on="on" :disabled="disabled"
+                <v-btn
+                  class="pb-2"
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  :disabled="disabled"
                   ><v-icon>mdi-calendar</v-icon></v-btn
                 >
               </template>
@@ -60,43 +67,38 @@
    * But displays in MM/DD/YYYY
    */
 
-  import { isAfter, isBefore } from 'date-fns';
+  import DatePicker, { FORMAT } from '@/mixins/DatePicker.js';
+
   export default {
     name: 'DatePicker',
-
-    /**
-     * ! CAVEAT: v-date-picker accepts ISO 8601 date strings (YYYY-MM-DD).
-     * https://vuetifyjs.com/en/components/date-pickers/#caveats
-     *
-     * Expects and saves date in YYYY-MM-DD
-     * But displays in MM/DD/YYYY
-     *
-     */
     props: {
-      value: {
-        // Type is not defined here as v-mask handles the input and clearable sets value to null
-        required: true,
-      },
-      disabled: {
-        type: Boolean,
-        required: false,
-      },
+      /**
+       * The label shown on the text field
+       */
       label: {
         type: String,
         default: 'Date',
       },
-      min: {
-        type: String,
-        default: '1900-01-01',
+      /**
+       * The v-model binded to <DatePicker v-model="..."/>
+       */
+      value: {
+        // Type is not defined here as v-mask handles the input and clearable sets value to null
+        required: true,
       },
-      max: {
-        type: String,
-        default: '2099-12-31',
-      },
+      disabled: { type: Boolean, required: false },
+      closeOnClick: { type: Boolean, default: false, required: false },
+      solo: { type: Boolean, default: false, required: false },
+      placeholder: { type: String, default: null, required: false },
+      pickerType: { type: String, default: 'DAY', required: false },
     },
+    mixins: [DatePicker], // Brings in min, max, valid, and rules
     data: () => ({
-      valid: null,
+      FORMAT,
       datePickerModel: null,
+      menu: false,
+      activePicker: null,
+      isSolo: false,
     }),
     computed: {
       textFieldModel: {
@@ -111,94 +113,19 @@
       },
     },
     methods: {
-      /**
-       * Takes the formatted date string from the server in YYYY-MM-DD format
-       * and returns it to MM/DD/YYYY
-       * @param {String} date Date in the format of YYYY-MM-DD
-       * @returns {String} MM/DD/YYYY
-       */
-      dateToClient(date) {
-        // arg is in yyyy-MM-DD format from server so it can sort properly
-        if (date) {
-          const [year, month, day] = date.split('-');
-          if (year && month && day) {
-            date = `${month}/${day}/${year}`;
-          }
-        }
-        return date;
-      },
-      dateToServer(date) {
-        // arg is in MM/DD/YYYY format from controller
-        if (date) {
-          const [month, day, year] = date.split('/');
-          if (month && day && year) {
-            date = `${year}-${month}-${day}`;
-          }
-        }
-        return date;
-      },
-
-      /**
-       * Pre-defined Rules for dates
-       */
-      isLocaleDate(value) {
-        const pattern =
-          /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
-        const completeDate = pattern.test(value);
-        const emptyDate = !value || value === '' || value.length !== 10;
-        return emptyDate || completeDate || 'Invalid date.';
-      },
-      isAfterMin(value) {
-        const [month, day, year] = value ? value.split('/') : [];
-        if (value && month && day && year) {
-          const [minYear, minMonth, minDay] = this.min.split('-');
-          const dateValue = new Date(year, month - 1, day);
-          const minDate = new Date(minYear, minMonth - 1, minDay);
-          const validDate = isAfter(dateValue, minDate);
-          return (
-            validDate || `Date must be after ${this.dateToClient(this.min)}`
-          );
-        } else {
-          return true;
-        }
-      },
-      isBeforeMax(value) {
-        const [month, day, year] = value ? value.split('/') : [];
-        if (value && month && day && year) {
-          const [maxYear, maxMonth, maxDay] = this.max.split('-');
-          const dateValue = new Date(year, month - 1, day);
-          const maxDate = new Date(maxYear, maxMonth - 1, maxDay);
-          const validDate = isBefore(dateValue, maxDate);
-          return (
-            validDate || `Date must be before ${this.dateToClient(this.max)}`
-          );
-        } else {
-          return true;
-        }
-      },
-
-      /**
-       * Emitted events
-       * @blur
-       * @keyup
-       * @input a.k.a. v-model
-       */
-      onBlur(e) {
-        // console.log('onBlur', e);
-        this.$emit('blur', e);
-      },
-      onKeyup(e) {
-        // console.log('onKeyup', e);
-        this.$emit('keyup', e);
-      },
-      onInput(e) {
-        // console.log('onInput', e);
-        this.$emit('input', e);
-      },
-
       onChange(value) {
         this.onInput(value);
+        this.$refs.menu.save(value);
         this.$emit('change', value);
+      },
+      onTextBlur(e) {
+        const dateValue = this.dateToServer(e.target.value);
+        this.$emit('textBlur', dateValue);
+      },
+    },
+    watch: {
+      menu(val) {
+        val && setTimeout(() => (this.activePicker = this.pickerType));
       },
     },
   };
