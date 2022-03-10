@@ -163,14 +163,12 @@
       btnMedical: true,
     }),
     created() {
-      // console.log(
-      //   'TransferHeader: created(): loggedInUser/orgName => ',
-      //   this.loggedInUser.somsinfo.organizationName
-      // );
-      // console.log(
-      //   'TransferHeader: created(): offender/orgName => ',
-      //   this.somsOffender.institutionName
-      // );
+      console.log(
+        `TransferHeader::created(): users institution: ${this.loggedInUser.somsinfo.organizationName}`
+      );
+      console.log(
+        `TransferHeader::created(): offender institution: ${this.somsOffender.institutionName}`
+      );
       if (
         this.loggedInUser &&
         this.loggedInUser.somsinfo &&
@@ -178,8 +176,10 @@
         this.loggedInUser.somsinfo.organizationName ===
           this.somsOffender.institutionName
       ) {
+        console.log(`created(): institutions match`);
         this.disableSave = false; // Button enabled
       } else {
+        console.log(`created(): institutions do not match`);
         this.disableSave = true; // Button disabled
       }
     },

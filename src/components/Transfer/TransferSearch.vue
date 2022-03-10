@@ -40,9 +40,7 @@
       </v-col>
       <v-col cols="3" align="right" align-self="center">
         <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-        <a class="text-decoration-none subtitle-2" @click="goHome"
-          >Back to Home</a
-        >
+        <a class="text-decoration-none subtitle-2" @click="goBack">Back</a>
       </v-col>
     </v-row>
   </v-card-title>
@@ -77,10 +75,8 @@
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails']),
-      goHome() {
-        this.$router.push({
-          name: 'Home',
-        });
+      goBack() {
+        this.$router.go(-1); // Will go back 1 step;
       },
       async searchOffender() {
         this.transferData = transferModel();
