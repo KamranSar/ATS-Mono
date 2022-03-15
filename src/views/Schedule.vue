@@ -12,24 +12,11 @@
           class="py-1 selInstitution"
           align-self="center"
         >
-          <v-autocomplete
+          <InstitutionDropdown
             v-model="selectedInstitution"
-            return-object
+            :loading="loading"
             @change="onSelectedInstitution"
-            :disabled="loading"
-            :items="listOfInstitutions"
-            color="blue-grey lighten-2"
-            label="Institution"
-            item-text="institutionName"
-            item-value="institutionName"
-            prepend-icon="mdi-bank"
-            clearable
-            hide-details="auto"
-            class="ma-1 pa-1"
-            autofocus
-            background-color="white"
-          >
-          </v-autocomplete>
+          />
         </v-col>
         <v-col align="right" align-self="center">
           <!-- <v-btn class="secondary ma-2" @click="dialogSchedule = true">
@@ -288,13 +275,14 @@
   // import svcSchedule from '@/feathers/services/offender/details.service.js';
   import { get, sync, call } from 'vuex-pathify';
   import DatePicker from '@/components/util/DatePicker.vue';
+  import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   // import { setSnackbar } from '@/helpers/snackbar.js';
 
   export default {
-    components: { DatePicker },
+    components: { DatePicker, InstitutionDropdown },
     name: 'Schedules',
 
     data: () => ({

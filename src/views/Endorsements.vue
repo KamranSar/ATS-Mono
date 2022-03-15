@@ -12,24 +12,11 @@
           class="py-1 selInstitution"
           align-self="center"
         >
-          <v-autocomplete
+          <InstitutionDropdown
             v-model="selectedInstitution"
-            :disabled="loading"
-            :items="listOfInstitutions"
-            color="blue-grey lighten-2"
-            label="Institution"
-            item-text="institutionName"
-            item-value="institutionName"
-            return-object
-            prepend-icon="mdi-bank"
-            clearable
-            hide-details="auto"
-            class="ma-1 pa-1"
-            autofocus
-            background-color="white"
+            :loading="loading"
             @change="onChangeInstitution"
-          >
-          </v-autocomplete>
+          />
         </v-col>
         <v-col align="right" align-self="center">
           <v-icon small color="primary" right>mdi-arrow-left</v-icon>
@@ -144,6 +131,7 @@
 </template>
 
 <script>
+  import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
   import { get, call, sync } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
@@ -152,6 +140,9 @@
 
   export default {
     name: 'Endorsements',
+    components: {
+      InstitutionDropdown,
+    },
     data: () => ({
       remarks: '',
       dlgRemarks: false,

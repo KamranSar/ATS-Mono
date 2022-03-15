@@ -16,24 +16,11 @@
           class="py-1 selInstitution"
           align-self="center"
         >
-          <v-autocomplete
+          <InstitutionDropdown
             v-model="selectedInstitution"
-            :disabled="loading"
-            :items="listOfInstitutions"
-            color="blue-grey lighten-2"
-            label="Institution"
-            item-text="institutionName"
-            item-value="institutionName"
-            return-object
-            prepend-icon="mdi-bank"
-            clearable
-            hide-details="auto"
-            class="ma-1 pa-1"
-            autofocus
-            background-color="white"
+            :loading="loading"
             @change="onChangeInstitution"
-          >
-          </v-autocomplete>
+          />
         </v-col>
       </v-row>
     </v-card-title>
@@ -211,6 +198,7 @@
 
 <script>
   import { get, sync } from 'vuex-pathify';
+  import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -218,6 +206,9 @@
 
   export default {
     name: 'Home',
+    components: {
+      InstitutionDropdown,
+    },
     data: () => ({
       selDeparture: [],
       selArrival: [],

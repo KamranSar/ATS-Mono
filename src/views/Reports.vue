@@ -13,23 +13,10 @@
           class="py-1 colOutline"
           align-self="center"
         >
-          <v-autocomplete
+          <InstitutionDropdown
             v-model="selectedInstitution"
-            return-object
-            :disabled="loading"
-            :items="listOfInstitutions"
-            color="blue-grey lighten-2"
-            label="Institution"
-            item-text="institutionName"
-            item-value="institutionName"
-            prepend-icon="mdi-bank"
-            clearable
-            hide-details="auto"
-            class="ma-1 pa-1"
-            autofocus
-            background-color="white"
-          >
-          </v-autocomplete>
+            :loading="loading"
+          />
         </v-col>
         <v-col align="right" align-self="center">
           <v-icon small color="primary" right>mdi-arrow-left</v-icon>
@@ -341,6 +328,7 @@
 
 <script>
   import DateRangePicker from '@/components/util/DateRangePicker.vue';
+  import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import { get, sync, call } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -353,6 +341,7 @@
     name: 'Reports',
     components: {
       DateRangePicker,
+      InstitutionDropdown,
     },
     data: (vm) => ({
       loading: false,
