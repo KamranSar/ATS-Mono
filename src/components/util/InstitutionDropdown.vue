@@ -25,7 +25,6 @@
     name: 'InstitutionDropdown',
     props: {
       value: {
-        type: Object,
         required: true,
       },
       loading: {
