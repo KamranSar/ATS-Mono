@@ -232,7 +232,7 @@ const _createBusOrderSeatPDF = (data) => {
                   },
                   {
                     // Column 11
-                    text: 'Remarks',
+                    text: 'In House Remarks',
                     style: 'tblHeader',
                     border: [false, true, false, true],
                   },

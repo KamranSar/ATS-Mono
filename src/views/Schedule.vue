@@ -64,10 +64,20 @@
               ></v-text-field>
             </v-col>
             <v-col cols="2" sm="4" lg="2" align-self="baseline">
+              <!-- 
+                Filtering out selectedInstitution from the list
+                Destination cannot be the origin.
+              -->
               <v-select
                 label="Destination"
                 v-model="editSchedule.destination"
-                :items="listOfInstitutions"
+                :items="
+                  listOfInstitutions.filter(
+                    (inst) =>
+                      inst.institutionName !==
+                      selectedInstitution.institutionName
+                  )
+                "
                 item-text="institutionId"
                 item-value="institutionId"
                 clearable
