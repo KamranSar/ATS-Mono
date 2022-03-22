@@ -202,6 +202,10 @@
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
+  import {
+    departureHeaders,
+    arrivalHeaders,
+  } from '@/components/Home/constants.js';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   export default {
@@ -218,37 +222,8 @@
       arrivalSearch: '',
       departures: [],
       arrivals: [],
-      departureHeaders: [
-        {
-          text: 'CDCR Number',
-          align: 'start',
-          value: 'cdcrNumber',
-        },
-        { text: 'Schedule', value: 'title' },
-        { text: 'Name', value: 'fullName' },
-        { text: 'Destination', value: 'destination' },
-        { text: 'VIAs', value: 'vias' },
-        { text: 'Transfer Reason', value: 'transferReasonCode' },
-        { text: 'Endorsement Date', value: 'transferDate' },
-        { text: 'Release Date', value: 'releaseDate' },
-        { text: 'Print 135', value: 'print135' },
-        // { text: 'Updates?', value: 'updates' },
-      ],
-      arrivalHeaders: [
-        {
-          text: 'CDCR Number',
-          align: 'start',
-          value: 'cdcrNumber',
-        },
-        { text: 'Schedule', value: 'title' },
-        { text: 'Name', value: 'fullName' },
-        { text: 'Transfer From', value: 'origin' },
-        { text: 'VIAs', value: 'vias' },
-        { text: 'Transfer Reason', value: 'transferReasonCode' },
-        { text: 'Endorsement Date', value: 'transferDate' },
-        { text: 'Release Date', value: 'releaseDate' },
-        { text: 'Print 135', value: 'preprint135' },
-      ],
+      departureHeaders,
+      arrivalHeaders,
     }),
     async mounted() {
       this.onChangeInstitution();
