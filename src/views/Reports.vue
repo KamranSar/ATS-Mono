@@ -866,11 +866,10 @@
                     { text: 'Ethnic', style: 'tblHeader' },
                     { text: 'Case Factor', style: 'tblHeader' },
                     {
-                      // text: 'Specific Transfer Reason',
-                      text: 'Reason',
+                      text: 'Specific Transfer Reason',
                       style: 'tblHeader',
                     },
-                    { text: 'Comments', style: 'tblHeader' },
+                    { text: '135 Comments', style: 'tblHeader' },
                   ],
                   ...data,
                 ],
