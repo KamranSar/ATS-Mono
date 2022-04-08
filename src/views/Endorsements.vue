@@ -37,7 +37,7 @@
       :search="endorsementSearch"
       :items-per-page="itemsPerPage"
       dense
-      :headers="Headers"
+      :headers="HEADERS"
       :items="endorsements"
       item-key="cdcrNumber"
       class="elevation-1 ma-4 pa-4"
@@ -137,6 +137,7 @@
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  import { HEADERS } from '@/components/Endorsements/Constants.js';
 
   export default {
     name: 'Endorsements',
@@ -151,24 +152,10 @@
       loading: false,
       endorsementSearch: '',
       endorsements: [],
-      Headers: [
-        {
-          text: 'CDCR #',
-          align: 'start',
-          value: 'cdcrNumber',
-        },
-        { text: 'Last Name', value: 'lastName' },
-        { text: 'First Name', value: 'firstName' },
-        { text: 'Level', value: 'securityLevel' },
-        { text: 'Endorsed To-Level(Program)', value: 'endorsedTo' },
-        { text: 'Endorsed Date', value: 'endorsedDate' },
-        { text: 'Expired Date', value: 'expirationDate' },
-        { text: 'Release Date', value: 'releaseDate' },
-        { text: 'Case Factor', value: 'caseFactor' },
-        { text: 'Ethnicity', value: 'ethnicity' },
-        { text: 'Housing', value: 'housingArea' },
-        { text: 'In House Remarks', value: 'inHouseRemarks' },
-      ],
+      HEADERS,
+      //: [
+      //moved under endorsements constants.
+      // ],
       dataOptions: {
         // page: number,
         // itemsPerPage: number,
