@@ -74,6 +74,7 @@
             name: 'Transfer Details',
             params: { cdcrNumber: item.cdcrNumber },
           }"
+          target="_blank"
         >
           {{ item.cdcrNumber }}
         </router-link>
@@ -136,6 +137,7 @@
   import { get, call, sync } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
+  import transferModel from '@/models/transferModel';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   import { HEADERS } from '@/components/Endorsements/Constants.js';
 
@@ -147,7 +149,6 @@
     data: () => ({
       remarks: '',
       dlgRemarks: false,
-      selEndorsement: null,
       itemsPerPage: 10,
       loading: false,
       endorsementSearch: '',
@@ -200,10 +201,6 @@
           this.dlgRemarks = false;
           return;
         }
-        this.selEndorsement = item;
-        this.dlgRemarks = true;
-
-        console.log('openRemarks(): item =>', item);
 
         try {
           let filter = {
@@ -211,67 +208,40 @@
               cdcrNumber: item.cdcrNumber,
             },
           };
-          console.log('openRemarks(): filter =>', filter);
           let response = await this.readTransfers(filter);
           if (response && response.length > 0) {
-            console.log(
-              'openRemarks(): readTransfers(): response => ',
-              response
-            );
             this.transferData = response[0];
             this.remarks = this.transferData.inHouseRemarks;
-            console.log('openRemarks(): transferData =>', this.transferData);
           } else {
-            console.log('openRemarks(): readOffenderDetails()');
             await this.readOffenderDetails(item.cdcrNumber);
-            console.log(
-              'openRemarks(): this.transferData => ',
-              this.transferData
-            );
           }
+
+          this.dlgRemarks = true;
         } catch (ex) {
-          // setSnackbar error
+          // TODO - setSnackbar error
+          this.setSnackbar(
+            'ERROR ! An error occurred attempting to get offender information.',
+            'error',
+            3000
+          );
           console.error(ex);
         }
       },
       cancelRemarks() {
-        console.log('cancelRemarks()');
         this.dlgRemarks = false;
-        this.selEndorsement = null;
-        this.transferData = null;
+        this.transferData = transferModel();
         this.remarks = '';
       },
       async saveRemarks() {
-        console.log('saveRemarks(): transferData => ', this.transferData);
-        // console.log(
-        //   'saveRemarks(): transferData.inHouseRemarks',
-        //   this.transferData.inHouseRemarks
-        // );
-        console.log('saveRemarks(): remarks => ', this.remarks);
-
-        // if (
-        //   !this.transferData &&
-        //   this.remarks !== this.transferData.inHouseRemarks
-        // ) {
         try {
-          console.log('saveRemarks(): this.remarks => ', this.remarks);
-          console.log(
-            'saveRemarks(): this.transferData.inHouseRemarks => ',
-            this.transferData.inHouseRemarks
-          );
           this.transferData.inHouseRemarks = this.remarks;
 
-          console.log(
-            'saveRemarks(): this.transferData.institutionName => ',
-            this.transferData.institutionName
-          );
           let objIns = this.listOfInstitutions.find(
             (inst) =>
               this.transferData &&
               this.transferData.institutionName &&
               inst.institutionName === this.transferData.institutionName
           );
-          console.log('saveRemarks(): objIns => ', objIns);
           if (!this.transferData.institutionName) {
             this.transferData.institutionName = objIns.institutionName;
           }
@@ -288,7 +258,6 @@
               this.transferData.endorsedToName &&
               inst.institutionName === this.transferData.endorsedToName
           );
-          console.log('saveRemarks(): objIns => ', objIns);
           if (!this.transferData.endorsedToName) {
             this.transferData.endorsedToName = objIns.institutionName;
           }
@@ -337,7 +306,6 @@
         return result;
       },
       formatCaseFactors(item) {
-        console.log('formatCaseFactors(): item => ', item);
         const cf = [];
         if (item.lifer_lwop_flag) {
           cf.push(item.sny_value);
@@ -378,13 +346,7 @@
           return '';
         }
 
-        console.log('getInstitutionId(): location => ', location);
-        console.log(
-          'getInstitutionId(): listOfInstitutions',
-          this.listOfInstitutions
-        );
         for (let i of this.listOfInstitutions) {
-          // console.log('getInstitutionId(): i => ', i);
           if (i.institutionName == location) {
             return i.institutionId;
           }
@@ -419,25 +381,23 @@
         try {
           this.loading = true;
           const response = await endorsedOffenders.find(filter);
-          console.log('getEndorsements(): response => ', response);
-          // const response = await departuresArrivalsSvc.find(filter);
-          // console.log('getEndorsements(): response => ', response);
           if (response && response.data) {
             this.endorsements = response.data;
-            console.log(
-              'getEndorsements(): endorsements => ',
-              this.endorsements
-            );
           } else {
             this.loading = false;
-            alert(
-              'No Endorsements found for institution: ',
-              this.selectedInstitution
+            this.setSnackbar(
+              `No Endorsements found for institution: ${this.selectedInstitution}`,
+              'info',
+              3000
             );
             return;
           }
         } catch (ex) {
-          console.error('getEndorsements() exception: ', ex);
+          this.setSnackbar(
+            `ERROR! getEndorsements(): Exception thrown ${ex}`,
+            'error',
+            3000
+          );
         }
         this.loading = false;
       },
@@ -471,7 +431,6 @@
         });
       },
       updateSelected(selected) {
-        console.log(selected);
         this.selTransferReason = {
           reasonCode: selected.TransferReasonCode,
           reasonDesc: selected.TransferReasonDesc,

@@ -120,6 +120,7 @@
               'info',
               3000
             );
+            this.transferData.inHouseRemarks = '';
           }
           console.log('created(): this.transferData => ', this.transferData);
           this.selTransferReason = {

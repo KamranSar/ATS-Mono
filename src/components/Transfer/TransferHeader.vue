@@ -2,25 +2,6 @@
   <v-row class="my-0 pt-2">
     <v-col cols="10" class="pb-1">
       <v-row no-gutters>
-        <!-- <v-col cols="1">
-          <offender-image
-            height="50px"
-            width="40px"
-            :somsOffender="somsOffender"
-            @click="showInfo('photo')"
-          ></offender-image>
-        </v-col>
-        <v-col cols="4" class="pb-1">
-          <div>
-            <span class="font-weight-black black--text title pa-0 ma-0">
-              {{ somsOffender.firstName + ' ' + somsOffender.lastName }}
-            </span>
-            <br />
-            <span>
-              {{ somsOffender.institutionName }}
-            </span>
-          </div>
-        </v-col> -->
         <v-col cols="4">
           <table>
             <tr>
@@ -119,7 +100,6 @@
             v-on="on"
             @click="dlgSaveForm = true"
             dense
-            :disabled="disableSave"
           >
             <v-icon>mdi-content-save-outline</v-icon>
             Save
@@ -156,33 +136,30 @@
     },
     data: () => ({
       dlgSaveForm: false,
-      disableSave: true,
       btnInfo: true,
       btnHousing: true,
       btnPhysical: true,
       btnMedical: true,
     }),
-    created() {
-      console.log(
-        `TransferHeader::created(): users institution: ${this.loggedInUser.somsinfo.organizationName}`
-      );
-      console.log(
-        `TransferHeader::created(): offender institution: ${this.somsOffender.institutionName}`
-      );
-      if (
-        this.loggedInUser &&
-        this.loggedInUser.somsinfo &&
-        this.loggedInUser.somsinfo.organizationName &&
-        this.loggedInUser.somsinfo.organizationName ===
-          this.somsOffender.institutionName
-      ) {
-        console.log(`created(): institutions match`);
-        this.disableSave = false; // Button enabled
-      } else {
-        console.log(`created(): institutions do not match`);
-        this.disableSave = true; // Button disabled
-      }
-    },
+    // created() {
+    //   console.log(
+    //     `TransferHeader::created(): users institution: ${this.loggedInUser.somsinfo.organizationName}`
+    //   );
+    //   console.log(
+    //     `TransferHeader::created(): offender institution: ${this.somsOffender.institutionName}`
+    //   );
+    //   if (
+    //     this.loggedInUser &&
+    //     this.loggedInUser.somsinfo &&
+    //     this.loggedInUser.somsinfo.organizationName &&
+    //     this.loggedInUser.somsinfo.organizationName ===
+    //       this.somsOffender.institutionName
+    //   ) {
+    //     console.log(`created(): institutions match`);
+    //   } else {
+    //     console.log(`created(): institutions do not match`);
+    //   }
+    // },
     computed: {
       ...get('users', ['loggedInUser']),
       ...get('transfers', ['transferData', 'somsOffender']),
@@ -198,6 +175,16 @@
     },
     methods: {
       ...call('transfers', ['saveForm']),
+      ...call('app', ['SET_SNACKBAR']),
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
+      },
       showInfo(choice) {
         this.showSOMSData = choice == 'info' ? true : false;
         this.showPhoto = choice == 'photo' ? true : false;
@@ -207,75 +194,75 @@
         this.showComments = choice == 'comments' ? true : false;
       },
       formatCaseFactors(item) {
-        console.log('formatCaseFactors(): item => ', item);
+        // console.log('formatCaseFactors(): item => ', item);
         const cf = [];
-        console.log(
-          'formatCaseFactors(): lifer_lwop_flag => ',
-          item.CaseFactors[0].lifer_lwop_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): lifer_lwop_flag => ',
+        //   item.CaseFactors[0].lifer_lwop_flag
+        // );
         if (item.CaseFactors[0].lifer_lwop_flag) {
           cf.push('sny: ' + item.CaseFactors[0].lifer_lwop_value);
         }
-        console.log(
-          'formatCaseFactors(): sny_flag => ',
-          item.CaseFactors[0].sny_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): sny_flag => ',
+        //   item.CaseFactors[0].sny_flag
+        // );
         if (item.CaseFactors[0].sny_flag) {
           cf.push('sny: ' + item.CaseFactors[0].sny_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].cccms_eop_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].cccms_eop_flag
+        // );
         if (item.CaseFactors[0].cccms_eop_flag) {
           cf.push('ccms-eop: ' + item.CaseFactors[0].cccms_eop_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].cocci1_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].cocci1_flag
+        // );
         if (item.CaseFactors[0].cocci1_flag) {
           cf.push('cocci1: ' + item.CaseFactors[0].cocci1_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].cocci2_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].cocci2_flag
+        // );
         if (item.CaseFactors[0].cocci2_flag) {
           cf.push('cocci2: ' + item.CaseFactors[0].cocci2_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].ddp_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].ddp_flag
+        // );
         if (item.CaseFactors[0].ddp_flag) {
           cf.push('DDP: ' + item.CaseFactors[0].ddp_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].dpp_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].dpp_flag
+        // );
         if (item.CaseFactors[0].dpp_flag) {
           cf.push('DPP: ' + item.CaseFactors[0].dpp_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].ice_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].ice_flag
+        // );
         if (item.CaseFactors[0].ice_flag) {
           cf.push('ice: ' + item.CaseFactors[0].ice_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].retainASU_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].retainASU_flag
+        // );
         if (item.CaseFactors[0].retainASU_flag) {
           cf.push('Retain ASU: ' + item.CaseFactors[0].retainASU_value);
         }
-        console.log(
-          'formatCaseFactors(): item => ',
-          item.CaseFactors[0].transferMERD_flag
-        );
+        // console.log(
+        //   'formatCaseFactors(): item => ',
+        //   item.CaseFactors[0].transferMERD_flag
+        // );
         if (item.CaseFactors[0].transferMERD_flag) {
           cf.push('MERD: ' + item.CaseFactors[0].transferMERD_value);
         }
@@ -285,27 +272,27 @@
       async saveTransfer() {
         this.dlgSaveForm = false;
         try {
-          console.log(
-            'saveTransfer(): this.listOfInstitutions => ',
-            this.listOfInstitutions
-          );
-          console.log(
-            'saveTransfer(): this.transferData => ',
-            this.transferData
-          );
+          // console.log(
+          //   'saveTransfer(): this.listOfInstitutions => ',
+          //   this.listOfInstitutions
+          // );
+          // console.log(
+          //   'saveTransfer(): this.transferData => ',
+          //   this.transferData
+          // );
           let objIns = this.listOfInstitutions.find(
             (inst) =>
               this.transferData &&
               this.transferData.institutionName &&
               this.transferData.institutionName === inst.institutionName
           );
-          console.log('saveRemarks(): objIns => ', objIns);
+          // console.log('saveRemarks(): objIns => ', objIns);
           if (objIns) {
             this.transferData.institutionId = objIns.institutionId;
-            console.log(
-              'saveTransfer(): this.transferData.institutionId => ',
-              this.transferData.institutionId
-            );
+            // console.log(
+            //   'saveTransfer(): this.transferData.institutionId => ',
+            //   this.transferData.institutionId
+            // );
           }
           this.transferData.caseFactor = this.formatCaseFactors(
             this.somsOffender
@@ -314,7 +301,7 @@
           await this.saveForm();
         } catch (ex) {
           console.error(ex);
-          // Set Snackbar
+          this.setSnackbar(`ERROR! An error occurred saving the form.`);
         }
       },
     },

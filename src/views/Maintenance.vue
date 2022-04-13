@@ -122,10 +122,10 @@
         });
       },
       editItem(item) {
-        console.log('editItem(): item', item);
+        // console.log('editItem(): item', item);
         this.editedIndex = this.reasons.indexOf(item);
         this.editedItem = Object.assign({}, item);
-        console.log('editItem(): this.editedItem', this.editedItem);
+        // console.log('editItem(): this.editedItem', this.editedItem);
       },
       async reasonDelete(id) {
         if (id) {
@@ -161,17 +161,27 @@
       async saveReason() {
         try {
           let response = [];
-          console.log('saveReason(): this.editedItem => ', this.editedItem);
+          // console.log('saveReason(): this.editedItem => ', this.editedItem);
           if (this.editedItem._id) {
             // Update Reason
             response = await this.updateReason(this.editedItem);
-            console.log('saveReason(): updateReason(): response => ', response);
+            // console.log('saveReason(): updateReason(): response => ', response);
             if (response) {
               Object.assign(this.reasons[this.editedIndex], response);
+            } else {
+              this.setSnackbar(
+                `ERROR! Could not update reason.`,
+                'error',
+                3000
+              );
+              console.log(
+                'saveReason(): updateReason(): response => ',
+                response
+              );
             }
           } else {
             // Create Reason
-            console.log('saveReason(): createReason(): checking for duplicate');
+            // console.log('saveReason(): createReason(): checking for duplicate');
             for (let r of this.reasons) {
               if (r.reasonCode === this.editedItem.reasonCode) {
                 this.setSnackbar(
@@ -184,20 +194,32 @@
               }
             }
             response = await this.createReason(this.editedItem);
-            console.log('saveReason(): createReason(): response => ', response);
+            // console.log('saveReason(): createReason(): response => ', response);
             if (response) {
               this.reasons.push(response);
+            } else {
+              this.setSnackbar(
+                `ERROR! Could not create reason.`,
+                'error',
+                3000
+              );
+              console.log(
+                'saveReason(): createReason(): response => ',
+                response
+              );
             }
           }
+
           if (response) {
             this.editedItem = {};
-            console.log('saveReason(): this.editedItem => ', this.editedItem);
             this.editedIndex = -1;
-            console.log('saveReason(): this.editedIndex => ', this.editedIndex);
-          } else {
-            // TODO error message
           }
         } catch (ex) {
+          this.setSnackbar(
+            `ERROR! Could not create or update reason.`,
+            'error',
+            3000
+          );
           console.error(ex);
         }
       },

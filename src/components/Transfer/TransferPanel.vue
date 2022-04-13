@@ -274,38 +274,38 @@
     },
     methods: {
       updateComments(ctrl) {
-        console.log('updateComments(): ctrl => ', ctrl.target._value);
-        console.log('updateComments(): transferData =>', this.transferData);
+        // console.log('updateComments(): ctrl => ', ctrl.target._value);
+        // console.log('updateComments(): transferData =>', this.transferData);
         if (ctrl) {
           if (ctrl.target.labels[0].innerText === 'In-House Remarks') {
             this.transferData.inHouseRemarks = ctrl.target._value;
-            console.log(
-              'updateComments(): transferData.inHouseRemarks =>',
-              this.transferData.inHouseRemarks
-            );
+            // console.log(
+            //   'updateComments(): transferData.inHouseRemarks =>',
+            //   this.transferData.inHouseRemarks
+            // );
           } else {
             this.transferData.comments = ctrl.target._value;
-            console.log(
-              'updateComments(): transferData.comments =>',
-              this.transferData.comments
-            );
+            // console.log(
+            //   'updateComments(): transferData.comments =>',
+            //   this.transferData.comments
+            // );
           }
         }
-        console.log('updateComments(): transferData =>', this.transferData);
+        // console.log('updateComments(): transferData =>', this.transferData);
       },
       transferReasonSelected(ctrl) {
-        console.log('transferReasonSelected(): ctrl => ', ctrl);
-        console.log(
-          'transferReasonSelected(): transferData =>',
-          this.transferData
-        );
+        // console.log('transferReasonSelected(): ctrl => ', ctrl);
+        // console.log(
+        //   'transferReasonSelected(): transferData =>',
+        //   this.transferData
+        // );
         if (ctrl) {
           this.transferData.transferReasonCode = ctrl.reasonCode;
           this.transferData.transferReasonDesc = ctrl.reasonDesc;
         }
       },
-      scheduleSelected(ctrl) {
-        console.log(`TransferPanel: scheduleSelelcted(): ctrl => ${ctrl}`);
+      scheduleSelected() {
+        // console.log(`TransferPanel: scheduleSelelcted(): ctrl => ${ctrl}`);
         if (
           !this.alertHasBeenViewed &&
           this.somsOffender.TransferHolds &&

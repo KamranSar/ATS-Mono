@@ -197,7 +197,7 @@
 </template>
 
 <script>
-  import { get, sync } from 'vuex-pathify';
+  import { get, call, sync } from 'vuex-pathify';
   import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
   import pdfMake from 'pdfmake/build/pdfmake';
@@ -229,14 +229,25 @@
       this.onChangeInstitution();
     },
     methods: {
+      ...call('app', ['SET_SNACKBAR']),
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
+      },
       getInstitutionId(location) {
         if (!location && this.listOfInstitutions.length > 0) {
-          // FIXME write out an error message
+          console.log(
+            `Home::getInstitutionId(); location => ${location} | this.listOfInstitutions.length => ${this.listOfInstitutions.length}`
+          );
           return '';
         }
 
         for (let i of this.listOfInstitutions) {
-          // console.log('getInstitutionId(): i => ', i);
           if (i.institutionName == location) {
             return i.institutionId;
           }
@@ -261,9 +272,7 @@
           filter.query.origin = this.selectedInstitution.institutionName;
         }
         try {
-          // this.transfers = await this.readTransfers(filter);
           const response = await departuresArrivalsSvc.find(filter);
-          console.log('getDepartures(): response => ', response);
           this.departures = response.data;
           console.log('getDepartures(): departures => ', this.departures);
           if (!response) {
@@ -300,7 +309,6 @@
           const response = await departuresArrivalsSvc.find(filter);
           console.log('getArrivals(): response => ', response);
           this.arrivals = response.data;
-          console.log('getArrivals(): arrivals => ', this.arrivals);
           if (!response) {
             alert(
               'No Transfers found for institution: ',
@@ -367,7 +375,6 @@
         });
       },
       updateSelected(selected) {
-        console.log(selected);
         this.selTransferReason = {
           reasonCode: selected.TransferReasonCode,
           reasonDesc: selected.TransferReasonDesc,
@@ -382,53 +389,9 @@
           seats: selected.seats,
         };
       },
-      routeToDetails(item) {
-        console.log('routeToDetails: item = ', item);
-      },
       // create135()
       //
       async create135(item, group) {
-        // let filter = {
-        //   query: {
-        //     $limit: 50,
-        //     $sort: {
-        //       transferDate: 1,
-        //     },
-        //   },
-        // };
-
-        // if (param == 'schedule' && this.sel135Schedule) {
-        //   filter.query.title = this.sel135Schedule;
-        // if (param == 'schedule' && this.selSchedule) {
-        //   filter.query.scheduleId = this.selSchedule._id;
-        // if (!this.schedule) {
-        //   alert('Selected schedule = ', this.schedule);
-        //   return;
-        // }
-        // this.readTransfersBySchedule(filter);
-        // } else if (param == 'cdcrNumber' && this.cdcrNum) {
-        // if (item.cdcrNumber) {
-        //   let today = new Date().toISOString().split('T')[0];
-        //   filter.query.cdcrNumber = this.cdcrNum;
-        //   filter.query.transferDate = { $gte: today };
-        //   // this.readTransfersBySchedule(filter);
-        // } else {
-        //   alert('Invalid option for CDCR-135 Transfer Record.');
-        //   return;
-        // }
-
-        // try {
-        //   console.log('create135(): filter => ', filter);
-        //   this.transfers = await this.readTransfers(filter);
-        //   console.log('create135(): transfers => ', this.transfers);
-        //   if (!this.transfers) {
-        //     alert('No Transfers found for schedule: ', this.schedule.title);
-        //     return;
-        //   }
-        // } catch (ex) {
-        //   console.error('create135() exception: ', ex);
-        // }
-
         let items = [];
         if (item) {
           items.push(item);
@@ -488,14 +451,16 @@
           this.create135PDF(data, items);
         } else {
           // error message
-          alert('Could not create CDCR 135 PDF Document!');
+          this.setSnackbar(
+            `ERROR! Could not create CDCR 135 PDF Document.`,
+            'error',
+            3000
+          );
         }
       },
       // create135PDF()
       //
       create135PDF(data, items) {
-        console.log('create135PDF(): data => ', data);
-
         // const fileName = this.fileName + '.pdf';
         const stateOf = 'STATE OF CALIFORNIA';
         const agency = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
@@ -806,9 +771,7 @@
           },
         };
 
-        console.log('create135PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
-        // alert("create135PDF() Done!");
       },
     },
     computed: {
