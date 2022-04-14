@@ -74,7 +74,6 @@
             name: 'Transfer Details',
             params: { cdcrNumber: item.cdcrNumber },
           }"
-          target="_blank"
         >
           {{ item.cdcrNumber }}
         </router-link>
@@ -203,6 +202,8 @@
         }
 
         try {
+          this.dlgRemarks = true;
+
           let filter = {
             query: {
               cdcrNumber: item.cdcrNumber,
@@ -215,8 +216,6 @@
           } else {
             await this.readOffenderDetails(item.cdcrNumber);
           }
-
-          this.dlgRemarks = true;
         } catch (ex) {
           // TODO - setSnackbar error
           this.setSnackbar(
@@ -500,7 +499,6 @@
       },
     },
   };
-  //@click.native="updateSelected(item)"
 </script>
 
 <style scoped>

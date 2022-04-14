@@ -32,7 +32,7 @@
   import TransferPanel from '@/components/Transfer/TransferPanel.vue';
   import TransferHoldsTable from '@/components/Transfer/TransferHoldsTable.vue';
   // import transferModel from '@/models/transferModel.js';
-  // import { setSnackbar } from '@/helpers/snackbar.js';
+  // import { setSnackbar } from '@cdcr/vue-frontend/helpers/snackbar.js';
 
   export default {
     name: 'TransferDetails',

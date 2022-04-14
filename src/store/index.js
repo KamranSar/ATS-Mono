@@ -1,20 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-// Manually pull in template provided modules/plugins/services or middleware
-import azureAuthentication from '@/config/private/store/modules/azure/index.js';
-import azureDB from '@/config/private/store/plugins/azureDB';
-
 // Auto import all modules, plugins and services
-import modules from '@/store/modules';
-import plugins from '@/store/plugins';
+import requiredModules from '@cdcr/vue-frontend/store/modules';
+import appModules from '@/store/modules';
+import plugins from '@cdcr/vue-frontend/store/plugins';
 
 // Attach vuex to the vue instance
 Vue.use(Vuex);
 
+const storeModules = { ...requiredModules, ...appModules };
 const store = new Vuex.Store({
-  modules: { ...modules, azureAuthentication },
-  plugins: [...plugins, azureDB],
+  modules: storeModules,
+  plugins: [...plugins],
 });
 
 // TODO: How to guarantee application data during refresh.

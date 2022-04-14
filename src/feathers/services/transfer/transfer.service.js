@@ -1,4 +1,4 @@
-import feathersClient from '@/feathers/index.js';
+import feathersClient from '@cdcr/vue-frontend/feathers/index.js';
 import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures';
 
 // If you've enabled sockets in myApp config...

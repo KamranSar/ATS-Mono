@@ -3,7 +3,7 @@ to: "<%= persisted !== 'No' ? `src/store/modules/${h.changeCase.camel(name)}.js`
 ---
 // This example module wraps around a Feathers service
 import service from '@/feathers/services/<%= h.changeCase.lower(name) %>/<%= h.changeCase.lower(name) %>.service.js';
-// import findAll from '@/feathers/helpers/findAll.js';
+// import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 import { make } from 'vuex-pathify';
 const getDefaultState = () => {
   return {

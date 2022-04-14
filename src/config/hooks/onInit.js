@@ -12,7 +12,7 @@
  */
 const ORDERED_MODULES = []; // Pass in your module name if order matters during init
 
-import initModules from '@/config/private/helpers/initModules.js';
+import initModules from '@cdcr/vue-frontend/helpers/initModules.js';
 // import router from '@/router/index.js';
 export default async () => {
   await initModules(ORDERED_MODULES);

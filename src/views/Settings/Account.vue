@@ -64,7 +64,7 @@
     name: 'Account',
     data: () => ({}),
     computed: {
-      ...get('users', ['loggedInUser']),
+      ...get('users', ['loggedInUser', 'getAppUserRoles']),
       ...get('azureAuthentication', ['myPhoto']),
       accountItems() {
         const newDate = new Date(this.loggedInUser.updatedAt);
@@ -84,7 +84,7 @@
           },
           {
             label: `Role${MULTIPLE_USER_ROLES_ENABLED ? '(s)' : ''}`,
-            value: this.loggedInUser.appuserroles.roles.join(', '),
+            value: this.getAppUserRoles.join(', '),
           },
           {
             label: 'Status',

@@ -4,6 +4,7 @@ local_modules
 node_modules
 /dist
 scripts/preinstall/
+gitinfo
 
 # local env files
 .env
@@ -26,4 +27,3 @@ yarn-error.log*
 # Ignore default temp and cache from vuepress
 .cache
 .temp
-src/views/Transfer.vue

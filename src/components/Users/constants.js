@@ -94,7 +94,7 @@ const OPTIONS = {
   multiSort: true,
   mustSort: false,
   page: 1,
-  sortBy: ['somsinfo.organizationName', 'somsinfo.displayName'],
+  sortBy: ['soms_upn', 'appsession'],
   sortDesc: [true, true],
 };
 

@@ -1,4 +1,4 @@
-import { toTitleCase } from '@/helpers/index.js';
+import toTitleCase from '@cdcr/vue-frontend/helpers/toTitleCase.js';
 
 const isLcl = window.location.hostname.includes('localhost'); // (internal only)
 const isDev = window.location.hostname.includes('dev'); // (internal only)
@@ -81,11 +81,7 @@ var myApp = Object.freeze({
     //   priority: 999,
     // },
   ],
-  helpers: {
-    // reverseText: function (text) {
-    //   return text.split('').reverse().join('');
-    // },
-  },
+  appServers: ['rarts'],
 });
 
 export default myApp;

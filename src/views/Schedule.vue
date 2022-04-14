@@ -149,7 +149,7 @@
           </v-row>
         </v-card-title>
         <v-data-table
-          :headers="headersEndorsements"
+          :headers="headersEndorsement"
           :items="endorsements"
           sort-by="lastName"
           flat
@@ -293,8 +293,7 @@
     headersSchedule,
     headersEndorsement,
   } from '@/components/Schedule/constants.js';
-
-  // import { setSnackbar } from '@/helpers/snackbar.js';
+  // import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
 
   export default {
     components: { DatePicker, InstitutionDropdown },
@@ -405,6 +404,7 @@
       ...sync('schedules', ['schedules', 'selSchedule']),
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
+      ...get('institutions', ['getInstitutionById']),
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
@@ -688,16 +688,12 @@
             console.log('getEndorsements(): filter : ', filter);
             // console.log('newId', newId);
             // const response = await svcTransfers.find(filter);
-            const response = await this.readTransfers(filter);
+            let response = await this.readTransfers(filter);
             if (response) {
               this.endorsements = response;
             } else {
               this.endorsements = [];
             }
-            // console.log(
-            //   'getEndorsements(): this.endorsements => ',
-            //   this.endorsements
-            // );
           }
         } catch (error) {
           console.error('getEndorsements', error);
@@ -707,6 +703,7 @@
             3000
           );
         }
+        this.loading = false;
       },
       openEndorsement(item) {
         this.editEndorsement = Object.assign({}, item);

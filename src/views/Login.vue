@@ -1,57 +1,27 @@
 <template>
-  <Panel title="Login">
+  <Panel title="Login" noLoading>
     <template slot="content">
       <v-container grid-list-md class="pt-5">
-        <v-row justify="center">
-          <v-col md="12" v-for="i in 5" :key="i + 't'"></v-col>
+        <v-row justify="center" align="center">
+          <AppLogo noLoading size="100%" class="mt-12" />
+
+          <v-col cols="12" v-for="i in 4" :key="i + 't'"></v-col>
 
           <transition name="fade" mode="in-out">
             <v-col
-              :cols="$vuetify.breakpoint.smAndDown ? 12 : 6"
+              cols="12"
+              xl="8"
               class="text-center"
               v-if="showSomsImpersonation"
             >
-              <v-form v-model="valid" lazy-validation>
-                <v-text-field
-                  id="soms-username-field"
-                  v-model="impersonatedSomsUPN"
-                  label="Enter a SOMS Email"
-                  type="email"
-                  hint="FIRST.LAST@CDCR.CA.GOV"
-                  filled
-                  clearable
-                  autofocus
-                  prepend-inner-icon="mdi-account"
-                  :disabled="loading"
-                  :rules="emailRules"
-                >
-                  <template v-slot:append>
-                    <v-menu offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn class="mt-n1 pb-1" v-bind="attrs" v-on="on" icon>
-                          <v-icon>mdi-help-circle</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-card>
-                        <v-card-text class="pa-6">
-                          <h4 class="text-center">HOW TO</h4>
-                          <ol>
-                            <li v-for="step in howto" :key="step">
-                              {{ step }}
-                            </li>
-                          </ol>
-                        </v-card-text>
-                      </v-card>
-                    </v-menu>
-                  </template>
-                </v-text-field>
-              </v-form>
+              <SomsLoginForm
+                v-if="showSomsImpersonation"
+                v-model="impersonatedSomsUPN"
+              />
             </v-col>
           </transition>
-          <v-col cols="12" class="text-center">
-            <MicrosoftLoginButton
-              :disabled="loading || !valid"
-            ></MicrosoftLoginButton>
+          <v-col cols="12" xl="8" class="text-center">
+            <MTLoginForm noLoading />
           </v-col>
 
           <v-col md="12" v-for="i in 2" :key="i + 'b'"> </v-col>
@@ -85,57 +55,29 @@
   /**
    * REQUIRED ROUTE: Login
    */
-  import { sync } from 'vuex-pathify';
+  import AppLogo from '@cdcr/vue-frontend/components/util/AppLogo.vue';
+  import SomsLoginForm from '@cdcr/vue-frontend/components/Login/SomsLoginForm.vue';
+  import MTLoginForm from '@cdcr/vue-frontend/components/Login/MTLoginForm.vue';
   export default {
     name: 'Login',
     components: {
-      Panel: () => import('@/components/layouts/Panel'),
-      MicrosoftLoginButton: () =>
-        import('@/config/private/components/SignInWithMicrosoftButton'),
+      Panel: () => import('@cdcr/vue-frontend/components/layouts/Panel'),
+      SomsLoginForm,
+      AppLogo,
+      MTLoginForm,
     },
     data: () => {
       return {
         impersonatedSomsUPN: '', // Comes from sessionStorage
         showSomsImpersonation: false,
-        valid: true,
-        emailRules: [
-          (v) => !!v || 'E-mail is required',
-          (v) => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-        ],
-        howto: [
-          'Enter a SOMS Email Address',
-          'Sign in with Microsoft using your account',
-          'Left Nav will show the SOMS Display Name',
-        ],
       };
-    },
-    created() {
-      this.impersonatedSomsUPN =
-        sessionStorage.getItem('impersonatedSomsUPN') || '';
-    },
-    computed: {
-      ...sync('app', ['loading']),
     },
     methods: {
       toggleSomsImpersonation() {
         this.showSomsImpersonation = !this.showSomsImpersonation;
-
-        // Validate and reset to empy string when invalid.
-        if (!this.showSomsImpersonation && !this.valid) {
+        if (!this.showSomsImpersonation) {
           this.impersonatedSomsUPN = '';
-          this.valid = true;
         }
-      },
-      updatedSomsUPN(value) {
-        sessionStorage.setItem(
-          'impersonatedSomsUPN',
-          value ? value.toUpperCase() : ''
-        );
-      },
-    },
-    watch: {
-      impersonatedSomsUPN: {
-        handler: 'updatedSomsUPN',
       },
     },
   };

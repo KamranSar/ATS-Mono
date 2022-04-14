@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <AppBar></AppBar>
+    <AppBar> </AppBar>
 
-    <NavDrawerLeft v-if="LEFT_DRAW_ENABLED" />
+    <NavDrawerLeft v-if="LEFT_DRAW_ENABLED"></NavDrawerLeft>
 
     <NavDrawerRight v-if="RIGHT_DRAW_ENABLED" title="Right side Drawer">
       <template v-slot:content>
@@ -18,6 +18,7 @@
 
     <Alert />
     <Snackbar />
+    <TermsAndConditions />
 
     <v-main>
       <!-- Remove the transition tag if route transitions are not desired -->
@@ -26,17 +27,18 @@
       </transition>
     </v-main>
 
-    <BottomNavBar v-if="BOTTOM_BAR_ENABLED" />
+    <BottomNavBar v-if="BOTTOM_BAR_ENABLED"></BottomNavBar>
   </v-app>
 </template>
 
 <script>
-  import AppBar from '@/components/layouts/navigation/AppBar.vue';
-  import NavDrawerLeft from '@/components/layouts/navigation/NavDrawerLeft.vue';
-  import NavDrawerRight from '@/components/layouts/navigation/NavDrawerRight.vue';
-  import Alert from '@/components/util/Alert.vue';
-  import Snackbar from '@/components/util/Snackbar.vue';
-  import BottomNavBar from '@/components/layouts/navigation/BottomNavBar.vue';
+  import AppBar from '@cdcr/vue-frontend/components/layouts/navigation/AppBar.vue';
+  import NavDrawerLeft from '@cdcr/vue-frontend/components/layouts/navigation/NavDrawerLeft.vue';
+  import NavDrawerRight from '@cdcr/vue-frontend/components/layouts/navigation/NavDrawerRight.vue';
+  import Alert from '@cdcr/vue-frontend/components/util/Alert.vue';
+  import Snackbar from '@cdcr/vue-frontend/components/util/Snackbar.vue';
+  import BottomNavBar from '@cdcr/vue-frontend/components/layouts/navigation/BottomNavBar.vue';
+  import TermsAndConditions from '@cdcr/vue-frontend/components/util/TermsAndConditions.vue';
   import { get } from 'vuex-pathify';
   import {
     LEFT_DRAW_ENABLED,
@@ -52,6 +54,7 @@
       Alert,
       Snackbar,
       BottomNavBar,
+      TermsAndConditions,
     },
     data: () => ({
       LEFT_DRAW_ENABLED,
@@ -66,11 +69,11 @@
 
 <style lang="scss">
   // Update or remove this if you don't want this scrollbar color
-  @import '@/styles/scrollbar.scss';
+  @import '@cdcr/vue-frontend/styles/scrollbar.scss';
 
   // Update this file for any transitions not used in the app.
-  @import '@/styles/transitions.scss';
+  @import '@cdcr/vue-frontend/styles/transitions.scss';
 
-  // Uncomment this if you want to enable pull down to refresh
-  // @import '@/styles/overscroll.scss';
+  // Uncomment this if you want to disable pull down to refresh
+  // @import '@cdcr/vue-frontend/styles/overscroll.scss';
 </style>

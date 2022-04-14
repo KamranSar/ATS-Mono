@@ -298,7 +298,30 @@
             this.somsOffender
           );
 
-          await this.saveForm();
+          objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.endorsedToName &&
+              inst.institutionName === this.transferData.endorsedToName
+          );
+          if (!this.transferData.endorsedToName) {
+            this.transferData.endorsedToName = objIns.institutionName;
+          }
+          if (!this.transferData.endorsedToId) {
+            this.transferData.endorsedToId = objIns.institutionId;
+          }
+          if (!this.transferData.endorsedToPartyId) {
+            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
+          }
+
+          const response = await this.saveForm();
+          if (response) {
+            // setSnackbar successful
+            this.setSnackbar('Successfully saved form!', 'succesful', 2000);
+          } else {
+            // setSnackbar error
+            this.setSnackbar('Error saving form!', 'error', 6000);
+          }
         } catch (ex) {
           console.error(ex);
           this.setSnackbar(`ERROR! An error occurred saving the form.`);

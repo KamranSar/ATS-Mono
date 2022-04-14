@@ -1,5 +1,5 @@
 import { isAfter, isBefore, isMatch } from 'date-fns';
-// import formatDate from '@/helpers/formatDate.js';
+// import formatDate from '@cdcr/vue-frontend/helpers/formatDate.js';
 
 const FORMAT = {
   ISO_DATE: 'yyyy-MM-dd',

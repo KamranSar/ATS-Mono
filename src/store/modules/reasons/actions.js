@@ -1,5 +1,5 @@
 import svcReasons from '@/feathers/services/reasons/reasons.service.js';
-import findAll from '@/feathers/helpers/findAll.js';
+import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 
 const actions = {
   createReason: async ({ rootState }, reasonObj) => {

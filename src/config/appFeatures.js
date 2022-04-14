@@ -11,6 +11,10 @@ const RIGHT_DRAW_ENABLED = false; // This feature flag is captures in App.vue an
 const BOTTOM_BAR_ENABLED = true; // This feature flag is captures in App.vue
 const WEB_SOCKETS_ENABLED = false; // Set to true to switch from REST to Web Sockets
 const MULTIPLE_USER_ROLES_ENABLED = false; // This feature flag allows assigning multiple roles to a user.
+const TOS_ENABLED = true; // This flag ensures the users agrees to your TOS before logging in. (See @/config/TermsAndConditions.js)
+const SHOW_SIGNUP_URL_ENABLED = true && 'https://account.microsoft.com/account'; // Displays the label with a hyperlink to this URL on Login.
+const SHOW_SIGNUP_LABEL = 'No account? Register here...';
+
 /**
  * The flag, CLIENT_ROLES_ENABLED is used for backwards compatibility between applications
  * that have their roles defined in the code base vs in the MT.
@@ -41,6 +45,9 @@ export {
   BOTTOM_BAR_ENABLED,
   WEB_SOCKETS_ENABLED,
   MULTIPLE_USER_ROLES_ENABLED,
+  TOS_ENABLED,
+  SHOW_SIGNUP_URL_ENABLED,
+  SHOW_SIGNUP_LABEL,
   CLIENT_ROLES_ENABLED,
   MANAGE_BY_INSTITUTION_ENABLED,
   FAKE_ROLES_ENABLED,

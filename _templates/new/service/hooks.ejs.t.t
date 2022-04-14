@@ -1,7 +1,7 @@
 ---
 to: "src/feathers/services/<%= h.changeCase.lower(name) %>/<%= h.changeCase.lower(name) %>.hooks.js"
 ---
-// import myApp from '@/config/myApp.js';
+// import { myApp } from '@/config/myApp.js';
 
 /**
  * @param {*} context

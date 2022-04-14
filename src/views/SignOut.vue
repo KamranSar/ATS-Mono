@@ -31,13 +31,13 @@
   /**
    * REQUIRED ROUTE: Signout
    */
-  import signout from '@/config/private/helpers/signout';
+  import signout from '@cdcr/vue-frontend/helpers/signout';
   import { ref } from '@vue/composition-api';
 
   export default {
     name: 'SignOut',
     components: {
-      Panel: () => import('@/components/layouts/Panel'),
+      Panel: () => import('@cdcr/vue-frontend/components/layouts/Panel'),
     },
     setup() {
       const dialog = ref(true);

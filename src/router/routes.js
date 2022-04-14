@@ -1,20 +1,16 @@
 /**
- * This file contains all the routes used by vue-router and the navigation components
+ * This file contains all the defined routes for the application
  */
 
-import checkForChildren from '@/router/helpers/checkForChildren.js';
-import defaultRoutes from '@/config/private/router/routes.js'; // [Home, Login Logout, Sign Out, Users, 4oh4]
 // import Account from '@/views/Settings/Account.vue';
 // import UserPreferences from '@/views/Settings/UserPreferences.vue';
 /* eslint-disable */
-import hasAnyRoles from '@/router/guards/hasAnyRoles.js';
-// import hasAllRoles from '@/router/guards/hasAllRoles.js';
+import hasAnyRoles from '@cdcr/vue-frontend/router/guards/hasAnyRoles.js';
+import hasAllRoles from '@cdcr/vue-frontend/router/guards/hasAllRoles.js';
 /* eslint-enable */
 import { defaultAdminRole } from '@/config/myApp.js';
-import { mdiFileSign } from '@mdi/js';
 
 const routes = [
-  ...defaultRoutes,
   {
     icon: 'mdi-bus-multiple',
     path: '/transfer',
@@ -101,7 +97,7 @@ const routes = [
     },
   },
   {
-    icon: mdiFileSign,
+    icon: 'mdi-file-sign',
     path: '/endorsements',
     name: 'Endorsements',
     component: () =>
@@ -121,7 +117,9 @@ const routes = [
     name: 'Admin',
     path: '/admin',
     component: () =>
-      import(/* webpackChunkName: "admin" */ '@/views/Admin/Admin.vue'),
+      import(
+        /* webpackChunkName: "admin" */ '@cdcr/vue-frontend/views/Admin/Admin.vue'
+      ),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
@@ -133,7 +131,9 @@ const routes = [
         path: 'users',
         name: 'Users',
         component: () =>
-          import(/* webpackChunkName: "users" */ '@/views/Admin/Users.vue'),
+          import(
+            /* webpackChunkName: "users" */ '@cdcr/vue-frontend/views/Admin/Users.vue'
+          ),
         meta: {
           beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
           hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
@@ -170,64 +170,8 @@ const routes = [
   // },
 ];
 
-// #region getRoutesByName
-/**
- * @name getRoutesByName
- * Filter for routes only in the list.
- *
- * @example
- * getRoutesByName('Home')
- * getRoutesByName('home')
- * getRoutesByName(['Home', 'Users'])
- * getRoutesByName(['Home', 'Users', { name: 'Settings', parentOnly: true }])
- * getRoutesByName({ name: 'Settings', parentOnly: true })
- *
- * @param {*} listOfRouteNames - An Array of route names. A single string with the route name. An array of objects or a single object `{name: String, parentOnly: Boolean}`.
- * @returns {Array[RouteConfig]} An Array of Type Vue Router
- */
-function getRoutesByName(listOfRouteNames) {
-  if (
-    typeof listOfRouteNames === 'string' ||
-    (listOfRouteNames.name && 'parentOnly' in listOfRouteNames)
-  ) {
-    listOfRouteNames = [listOfRouteNames];
-  }
-
-  if (
-    listOfRouteNames &&
-    Array.isArray(listOfRouteNames) &&
-    listOfRouteNames.length &&
-    routes &&
-    routes.length
-  ) {
-    const reducer = (currentValue) =>
-      currentValue.name
-        ? { ...currentValue, name: String(currentValue.name).toLowerCase() }
-        : String(currentValue).toLowerCase();
-    listOfRouteNames = listOfRouteNames.map(reducer);
-    routes.forEach((route) => {
-      const routeName = String(route.name).toLowerCase();
-      const idx = listOfRouteNames.findIndex(
-        (r) => r.name === routeName || r === routeName
-      );
-      if (idx !== -1) {
-        if (listOfRouteNames[idx].parentOnly) {
-          listOfRouteNames[idx] = { ...route, children: [] }; // Spread router contents and prepopulate children with empty array to safely delete later.
-          delete listOfRouteNames[idx].children;
-        } else {
-          listOfRouteNames[idx] = route;
-        }
-      }
-      checkForChildren(route, listOfRouteNames);
-    });
-  }
-  // console.log('listOfRouteNames: ', listOfRouteNames);
-  return listOfRouteNames.filter((route) => typeof route === 'object');
-}
-// #endregion getRoutesByName
-
 // Routes used in AppBar.vue
-const TopNavItems = getRoutesByName([
+const TopNavItems = [
   // 'Home',
   // 'Settings',
   // 'Admin',
@@ -235,19 +179,19 @@ const TopNavItems = getRoutesByName([
   // 'Settings',
   // 'Login',
   // 'Logout',
-]);
+];
 // Routes used in the v-toolbar in AppBar.vue
-const ToolbarItems = getRoutesByName([
+const ToolbarItems = [
   'Home',
   'Login',
   'Logout',
   // { name: 'Settings', parentOnly: true },
-  'CDCR Dashboard',
-]);
+  // 'CDCR Dashboard',
+];
 // Routes used in BottomNavBar.vue
-const BottomNavItems = getRoutesByName(['Home', 'Admin', 'Login', 'Logout']);
+const BottomNavItems = ['Home', 'Admin', 'Login', 'Logout'];
 // Routes used in NavDrawerLeft.vue
-const LeftNavItems = getRoutesByName([
+const LeftNavItems = [
   'Home',
   'Endorsements',
   'Schedule',
@@ -259,13 +203,7 @@ const LeftNavItems = getRoutesByName([
   'Login',
   // 'Settings',
   'Logout',
-]);
+];
 
-export {
-  getRoutesByName,
-  TopNavItems,
-  ToolbarItems,
-  BottomNavItems,
-  LeftNavItems,
-};
+export { routes, TopNavItems, ToolbarItems, BottomNavItems, LeftNavItems };
 export default routes;

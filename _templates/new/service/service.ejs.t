@@ -1,8 +1,8 @@
 ---
 to: "src/feathers/services/<%= h.changeCase.lower(name) %>/<%= h.changeCase.lower(name) %>.service.js"
 ---
-import feathersClient from '@/feathers/index.js';
-// import findAll from '@/feathers/helpers/findAll.js';
+import feathersClient from '@cdcr/vue-frontend/feathers/index.js';
+// import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 import { debug } from 'feathers-hooks-common';
 import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures.js';
 // If you've enabled sockets in appFeatures...

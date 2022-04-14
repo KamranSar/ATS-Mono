@@ -1,5 +1,5 @@
 import svcSchedules from '@/feathers/services/schedule/schedule.service.js';
-import findAll from '@/feathers/helpers/findAll.js';
+import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 
 const actions = {
   // eslint-disable-next-line no-unused-vars

@@ -18,8 +18,8 @@
   /**
    * REQUIRED ROUTE: Settings
    */
-  import { getRoutesByName } from '@/router/routes.js';
-  import NavTab from '@/components/layouts/navigation/helpers/NavTab.vue';
+  import { getRoutesByName } from '@cdcr/vue-frontend/router/helpers';
+  import NavTab from '@cdcr/vue-frontend/components/layouts/navigation/helpers/NavTab.vue';
 
   export default {
     name: 'Settings',

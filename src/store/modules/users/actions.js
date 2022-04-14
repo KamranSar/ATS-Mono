@@ -1,7 +1,7 @@
-import feathers from '@/feathers/index.js';
-import AccountsByApp from '@/feathers/services/accountsbyapp/accountsbyapp.service';
+import feathers from '@cdcr/vue-frontend/feathers/index.js';
+import AccountsByApp from '@cdcr/vue-frontend/feathers/services/accountsbyapp/accountsbyapp.service';
 import { myApp } from '@/config/myApp.js';
-import { findAll } from '@/feathers/helpers/index.js';
+import { findAll } from '@cdcr/vue-frontend/feathers/helpers/index.js';
 
 const actions = {
   // eslint-disable-next-line no-unused-vars

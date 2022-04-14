@@ -1,5 +1,5 @@
-import myApp from '@/config/myApp.js';
-import userPrefsService from '@/feathers/services/userprefs/userprefs.service.js';
+import { myApp } from '@/config/myApp.js';
+import userPrefsService from '@cdcr/vue-frontend/feathers/services/userprefs/userprefs.service.js';
 
 const actions = {
   saveUserPrefs: async ({ state, rootState }) => {

@@ -1,6 +1,6 @@
 import { myApp } from '@/config/myApp.js';
 import { CLIENT_ROLES_ENABLED } from '@/config/appFeatures.js';
-import flatten from '@/helpers/flatten.js';
+import flatten from '@cdcr/vue-frontend/helpers/flatten.js';
 
 const getters = {
   /**
@@ -68,9 +68,9 @@ const getters = {
         if (!highestPriorityLevel) {
           return false;
         }
+
         return role.priority >= highestPriorityLevel;
       });
-
       return appRoles;
     } else if (
       state.loggedInUser &&

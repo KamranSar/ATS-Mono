@@ -1,6 +1,6 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 import somsOffender from '@/feathers/services/offender/details.service.js';
-import findAll from '@/feathers/helpers/findAll.js';
+import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 // import router from '@/router/';
 // import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 
