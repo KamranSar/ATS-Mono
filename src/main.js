@@ -5,6 +5,7 @@ import vuetify from '@/plugins/vuetify';
 import router from '@/router';
 import store from '@/store';
 import '@cdcr/vue-frontend/main.js';
+import { VueMaskDirective } from 'v-mask';
 import { initServiceWorker } from '@/registerServiceWorker.js';
 import '@mdi/font/css/materialdesignicons.css';
 
@@ -15,6 +16,7 @@ Vue.config.productionTip = true;
 Vue.prototype.$vuetify = vuetify;
 
 Vue.use(VueCompositionAPI);
+Vue.directive('mask', VueMaskDirective);
 
 new Vue({
   vuetify,

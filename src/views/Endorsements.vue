@@ -1,5 +1,6 @@
 <template>
   <v-card flat class="mb-12">
+    <!-- TODO: This card title is also duplicated everywhere... turn into component? -->
     <v-card-title class="blue-grey lighten-4">
       <v-row>
         <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
@@ -15,39 +16,29 @@
           <InstitutionDropdown
             v-model="selectedInstitution"
             :loading="loading"
-            @change="onChangeInstitution"
+            @change="getEndorsements"
           />
         </v-col>
         <v-col align="right" align-self="center">
-          <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-          <a class="text-decoration-none subtitle-2" @click="goHome">
-            Back to Home
-          </a>
+          <BackToHome />
         </v-col>
       </v-row>
     </v-card-title>
-    <!-- <v-progress-linear
-      :active="loading"
-      :indeterminate="loading"
-      absolute
-      color="primary"
-    ></v-progress-linear> -->
     <v-data-table
-      ref="myTable"
       :search="endorsementSearch"
-      :items-per-page="itemsPerPage"
+      :items-per-page="ENDORSEMENT_OPTIONS.itemsPerPage"
       dense
-      :headers="HEADERS"
+      :headers="ENDORSEMENT_HEADERS"
       :items="endorsements"
       item-key="cdcrNumber"
       class="elevation-1 ma-4 pa-4"
-      @keypress="filterEndorsements"
       :loading="loading"
-      :options="dataOptions"
+      :options="ENDORSEMENT_OPTIONS"
       loading-text="Syncing Data with SOMS... Please wait"
       no-data-text="No Endorsements"
       no-results-text="No Endorsements Found"
     >
+      <!-- Endorsement Search -->
       <template v-slot:top>
         <v-row>
           <v-col cols="4">
@@ -61,13 +52,11 @@
             ></v-text-field>
           </v-col>
           <v-spacer></v-spacer>
-          <!-- <v-col cols="2" align-self="right">
-            <v-btn small class="secondary mt-2">
-              <v-icon left>mdi-printer</v-icon>Print All Departing 135's
-            </v-btn>
-          </v-col> -->
         </v-row>
       </template>
+
+      <!-- Table columns -->
+      <!-- FIXME: Sorting -->
       <template v-slot:item.cdcrNumber="{ item }">
         <router-link
           :to="{
@@ -103,7 +92,7 @@
         <span>{{ formatCaseFactors(item) }}</span>
       </template>
       <template v-slot:item.inHouseRemarks="{ item }">
-        <v-btn icon @click.stop="openRemarks(item)">
+        <v-btn :disabled="loading" icon @click.stop="openRemarks(item)">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
       </template>
@@ -131,41 +120,27 @@
 </template>
 
 <script>
+  import BackToHome from '@/components/util/BackToHome.vue';
   import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
-  import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
   import { get, call, sync } from 'vuex-pathify';
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   import transferModel from '@/models/transferModel';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
-  import { HEADERS } from '@/components/Endorsements/Constants.js';
+  import {
+    ENDORSEMENT_HEADERS,
+    ENDORSEMENT_OPTIONS,
+  } from '@/components/Endorsements/constants.js';
 
   export default {
     name: 'Endorsements',
-    components: {
-      InstitutionDropdown,
-    },
+    components: { BackToHome, InstitutionDropdown },
     data: () => ({
       remarks: '',
       dlgRemarks: false,
-      itemsPerPage: 10,
-      loading: false,
       endorsementSearch: '',
-      endorsements: [],
-      HEADERS,
-      //: [
-      //moved under endorsements constants.
-      // ],
-      dataOptions: {
-        // page: number,
-        // itemsPerPage: number,
-        sortBy: ['endorsedDate'],
-        // sortDesc: boolean[],
-        // groupBy: string[],
-        // groupDesc: boolean[],
-        // multiSort: boolean,
-        // mustSort: boolean
-      },
+      ENDORSEMENT_HEADERS,
+      ENDORSEMENT_OPTIONS,
       snackbarOptions: {
         top: true,
         center: true,
@@ -175,8 +150,7 @@
       },
     }),
     async mounted() {
-      this.onChangeInstitution();
-      this.getEndorsements();
+      await this.getEndorsements(this.selectedInstitution);
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
@@ -185,6 +159,7 @@
         'readOffenderDetails',
         'saveForm',
       ]),
+      ...call('endorsements', ['getEndorsements']),
       setSnackbar(msg, result, timeout) {
         this.SET_SNACKBAR({
           top: true,
@@ -196,7 +171,12 @@
       },
       async openRemarks(item) {
         if (!item) {
-          // TODO add message
+          // Shouldn't ever get to here..
+          this.setSnackbar(
+            'ERROR ! Refresh the page and try again.',
+            'error',
+            3000
+          );
           this.dlgRemarks = false;
           return;
         }
@@ -217,7 +197,6 @@
             await this.readOffenderDetails(item.cdcrNumber);
           }
         } catch (ex) {
-          // TODO - setSnackbar error
           this.setSnackbar(
             'ERROR ! An error occurred attempting to get offender information.',
             'error',
@@ -281,21 +260,8 @@
           console.error(ex);
           this.setSnackbar('Error occurred saving remarks!', 'error', 6000);
         }
-        // } else {
-        //   this.setSnackbar('Remarks did not change.', 'info', 2000);
-        // }
         this.cancelRemarks();
       },
-      goHome() {
-        this.$router.push({
-          name: 'Home',
-        });
-      },
-      // setSecurityLevel(item) {
-      //   return item.endorsedSecurityLevel !== 'NA'
-      //     ? item.endorsedSecurityLevel
-      //     : item.securityLevel;
-      // },
       formatDate(item) {
         // 0123/56/78
         const y = item.substr(2, 2);
@@ -338,165 +304,13 @@
         }
         return cf.join(', ');
       },
-
-      getInstitutionId(location) {
-        if (!location) {
-          // FIXME write out an error message
-          return '';
-        }
-
-        for (let i of this.listOfInstitutions) {
-          if (i.institutionName == location) {
-            return i.institutionId;
-          }
-        }
-
-        return 'NF';
-      },
-      async getEndorsements() {
-        let filter = {
-          query: {
-            $limit: 500,
-            // $sort: {
-            //   endorsedDate: 1,
-            // },
-          },
-        };
-
-        if (this.selectedInstitution) {
-          filter.query.institutionId =
-            this.selectedInstitution.institutionPartyId;
-          filter.query.endorsedInstitution = {
-            $ne: this.selectedInstitution.institutionName,
-          };
-        } else {
-          this.setSnackbar(
-            'Please select an institution and try again.',
-            'info',
-            3000
-          );
-          return;
-        }
-        try {
-          this.loading = true;
-          const response = await endorsedOffenders.find(filter);
-          if (response && response.data) {
-            this.endorsements = response.data;
-          } else {
-            this.loading = false;
-            this.setSnackbar(
-              `No Endorsements found for institution: ${this.selectedInstitution}`,
-              'info',
-              3000
-            );
-            return;
-          }
-        } catch (ex) {
-          this.setSnackbar(
-            `ERROR! getEndorsements(): Exception thrown ${ex}`,
-            'error',
-            3000
-          );
-        }
-        this.loading = false;
-      },
-      onChangeInstitution() {
-        this.getEndorsements();
-      },
-      searchEndorsements() {},
-      // eslint-disable-next-line no-unused-vars
-      filterEndorsements(value, searchData, item) {
-        return (
-          value != null &&
-          searchData != null &&
-          typeof value === 'string' &&
-          value.toString().toLocaleUpperCase().indexOf(searchData) !== -1
-        );
-      },
-      convertDepartingDates() {
-        this.departingOffenders.forEach((element) => {
-          element.endorsedDate
-            ? (element.endorsedDate = new Date(element.endorsedDate)
-                .toISOString()
-                .split('T')[0])
-            : null;
-        });
-        this.departingOffenders.forEach((element) => {
-          element.releaseDate
-            ? (element.releaseDate = new Date(element.releaseDate)
-                .toISOString()
-                .split('T')[0])
-            : null;
-        });
-      },
-      updateSelected(selected) {
-        this.selTransferReason = {
-          reasonCode: selected.TransferReasonCode,
-          reasonDesc: selected.TransferReasonDesc,
-        };
-        this.selSchedule = {
-          origin: selected.origin,
-          originId: selected.originId,
-          destination: selected.destination,
-          title: selected.title,
-          vias: selected.vias,
-          transferDate: selected.transferDate,
-          seats: selected.seats,
-        };
-      },
-
-      // createPDF() {
-      //   const source = this.$refs['myTable'];
-      //   let rows = [];
-      //   let columnHeader = [
-      //     'CDCR #',
-      //     'Name',
-      //     'Endorsed To',
-      //     'Level',
-      //     'Endorsed Date',
-      //     'Release Date',
-      //     'Case Factor',
-      //     'Ethnicity',
-      //     'Housing',
-      //     'In House Remarks',
-      //   ];
-      //   let pdfName = 'endorsements';
-      //   source.items.forEach((element) => {
-      //     const temp = [
-      //       element.cdcrNumber,
-      //       element.lastName + ', ' + element.firstName,
-      //       element.endorsedTo,
-      //       element.securityLevel,
-      //       element.originalEndorsementDate,
-      //       element.releaseDate,
-      //       element.caseFactor,
-      //       element.ethnicity,
-      //       element.housingArea,
-      //       element.inHouseRemarks,
-      //     ];
-      //     rows.push(temp);
-      //   });
-      //   const doc = new jsPDF({
-      //     orientation: 'landscape',
-      //     unit: 'in',
-      //     format: [22, 17],
-      //   });
-      //   doc.autoTable(columnHeader, rows);
-      //   doc.save(pdfName + '.pdf');
-      // },
     },
     computed: {
-      ...sync('transfers', ['transfers', 'selTransferReason', 'transferData']),
+      ...get('app', ['loading']),
+      ...sync('transfers', ['transferData']),
       ...sync('institutions', ['selectedInstitution']),
-      ...get('institutions', [
-        'listOfInstitutions',
-        'getInstitutionByName',
-        'getInstitutionById',
-      ]),
-      ...get('users', ['loggedInUser']),
-      appUserRoles() {
-        return this.$store.get('users/getAppUserRoles');
-      },
+      ...get('institutions', ['listOfInstitutions', 'getInstitutionByName']),
+      ...get('endorsements', ['endorsements']),
     },
   };
 </script>

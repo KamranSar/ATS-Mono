@@ -1,6 +1,6 @@
 {
   "name": "automated-transfer-system",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "templateVersion": "0.6.4",
   "publicPath": "/ats",
   "cdcrAppID": "38b5c0ad-42d9-48e1-b559-7cde0709e286",
@@ -60,7 +60,7 @@
     "vuex-pathify": "^1.5.1"
   },
   "cdcrDependencies": {
-    "vue-frontend": "0.6.4",
+    "vue-frontend": "0.6.9",
     "vuex-persist": "3.1.3"
   },
   "devDependencies": {

@@ -29,7 +29,7 @@ const mutations = {
 const actions = {
   ...make.actions(state),
   // eslint-disable-next-line no-unused-vars
-  getInstitutions: async ({ state, rootState, rootGetters }) => {
+  getInstitutions: async ({ state, rootState }) => {
     {
       try {
         rootState.loading = true;
@@ -41,21 +41,8 @@ const actions = {
           },
         };
 
-        const loggedInUser = rootState.users.loggedInUser;
         const institutions = await findAll(service, queryObject);
         state.listOfInstitutions = institutions.data;
-
-        if (
-          loggedInUser &&
-          loggedInUser.somsinfo &&
-          loggedInUser.somsinfo.organizationName
-        ) {
-          // Grab entire institution object for the logged in user.
-          state.selectedInstitution = state.listOfInstitutions.find(
-            (inst) =>
-              inst.institutionName === loggedInUser.somsinfo.organizationName
-          );
-        }
       } catch (error) {
         console.error('getInstitutions: ', error);
         state.listOfInstitutions = [];
@@ -67,7 +54,6 @@ const actions = {
 
   // eslint-disable-next-line no-unused-vars
   init: async ({ dispatch }) => {
-    //
     await dispatch('getInstitutions');
   },
 };

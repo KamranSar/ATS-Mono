@@ -81,7 +81,7 @@ var myApp = Object.freeze({
     //   priority: 999,
     // },
   ],
-  appServers: ['rarts'],
+  appServers: ['ats'],
 });
 
 export default myApp;

@@ -3,11 +3,18 @@ import somsOffender from '@/feathers/services/offender/details.service.js';
 import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 // import router from '@/router/';
 // import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
+import transferModel from '@/models/transferModel.js';
+import scheduleModel from '@/models/scheduleModel.js';
+import transferReasonModel from '@/models/transferReasonModel.js';
 
 const actions = {
   async readOffenderDetails({ state, rootState, dispatch }, cdcrNumber) {
     rootState.app.loading = true;
     try {
+      state.transferData = transferModel();
+      rootState.schedules.selSchedule = scheduleModel();
+      state.selTransferReason = transferReasonModel();
+
       const query = {
         query: {
           cdcrnumber: cdcrNumber,
@@ -71,12 +78,13 @@ const actions = {
         state.somsOffender = null;
       }
     } catch (error) {
+      // FIXME: When searching for an offernder that DNE the api returns a SQL query error..
       dispatch(
         'app/SET_SNACKBAR',
         {
           bottom: true,
           center: true,
-          message: 'An error occurred, please try again later.',
+          message: 'No results found.',
         },
         { root: true }
       );

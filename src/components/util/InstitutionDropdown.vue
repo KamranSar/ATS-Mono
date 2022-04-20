@@ -29,7 +29,6 @@
       },
       loading: {
         type: Boolean,
-        default: false,
       },
     },
     computed: {

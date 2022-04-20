@@ -95,6 +95,7 @@
       <v-dialog v-model="dlgSaveForm" persistent max-width="500px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            :disabled="loading"
             color="secondary"
             v-bind="attrs"
             v-on="on"
@@ -161,6 +162,7 @@
     //   }
     // },
     computed: {
+      ...get('app', ['loading']),
       ...get('users', ['loggedInUser']),
       ...get('transfers', ['transferData', 'somsOffender']),
       ...sync('institutions', ['listOfInstitutions']),

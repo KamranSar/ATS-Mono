@@ -1,4 +1,4 @@
-const HEADERS = [
+const ENDORSEMENT_HEADERS = [
   {
     text: 'CDCR #',
     align: 'start',
@@ -16,4 +16,15 @@ const HEADERS = [
   { text: 'Housing', value: 'housingArea' },
   { text: 'In House Remarks', value: 'inHouseRemarks' },
 ];
-export { HEADERS };
+
+const ENDORSEMENT_OPTIONS = {
+  // page: number,
+  itemsPerPage: 10,
+  sortBy: ['endorsedDate'],
+  // sortDesc: boolean[],
+  // groupBy: string[],
+  // groupDesc: boolean[],
+  // multiSort: boolean,
+  // mustSort: boolean
+};
+export { ENDORSEMENT_HEADERS, ENDORSEMENT_OPTIONS };

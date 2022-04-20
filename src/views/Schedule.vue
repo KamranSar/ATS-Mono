@@ -22,10 +22,7 @@
           <!-- <v-btn class="secondary ma-2" @click="dialogSchedule = true">
             Create Schedule
           </v-btn> -->
-          <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-          <a class="text-decoration-none subtitle-2" @click="goHome">
-            Back to Home
-          </a>
+          <BackToHome />
         </v-col>
       </v-row>
     </v-card-title>
@@ -74,8 +71,9 @@
                 :items="
                   listOfInstitutions.filter(
                     (inst) =>
+                      selectedInstitution &&
                       inst.institutionName !==
-                      selectedInstitution.institutionName
+                        selectedInstitution.institutionName
                   )
                 "
                 item-text="institutionId"
@@ -293,10 +291,11 @@
     headersSchedule,
     headersEndorsement,
   } from '@/components/Schedule/constants.js';
+  import BackToHome from '@/components/util/BackToHome.vue';
   // import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
 
   export default {
-    components: { DatePicker, InstitutionDropdown },
+    components: { DatePicker, InstitutionDropdown, BackToHome },
     name: 'Schedules',
 
     data: () => ({

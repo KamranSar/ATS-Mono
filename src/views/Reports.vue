@@ -19,10 +19,7 @@
           />
         </v-col>
         <v-col align="right" align-self="center">
-          <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-          <a @click="goHome" class="text-decoration-none subtitle-2">
-            Back to Home
-          </a>
+          <BackToHome />
         </v-col>
       </v-row>
     </v-card-title>
@@ -336,12 +333,14 @@
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
   import createBusSeat from '@/pdfs/createBusSeat.js';
   import createBusOrderSeat from '@/pdfs/createBusOrderSeat.js';
+  import BackToHome from '@/components/util/BackToHome.vue';
 
   export default {
     name: 'Reports',
     components: {
       DateRangePicker,
       InstitutionDropdown,
+      BackToHome,
     },
     data: (vm) => ({
       loading: false,

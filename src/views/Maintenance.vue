@@ -6,10 +6,7 @@
           <h2>Maintenance</h2>
         </v-col>
         <v-col align="right" align-self="center">
-          <v-icon small color="primary" right>mdi-arrow-left</v-icon>
-          <a @click="goHome" class="text-decoration-none subtitle-2">
-            Back to Home
-          </a>
+          <BackToHome />
         </v-col>
       </v-row>
     </v-card-title>
@@ -62,9 +59,13 @@
 </template>
 
 <script>
+  import BackToHome from '@/components/util/BackToHome.vue';
   import { get, sync, call } from 'vuex-pathify';
 
   export default {
+    components: {
+      BackToHome,
+    },
     data: () => ({
       loading: false,
       headers: [

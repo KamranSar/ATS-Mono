@@ -48,7 +48,6 @@
 
 <script>
   import { sync, call } from 'vuex-pathify';
-  import transferModel from '@/models/transferModel.js';
 
   export default {
     name: 'TransferSearch',
@@ -79,9 +78,6 @@
         this.$router.go(-1); // Will go back 1 step;
       },
       async searchOffender() {
-        this.transferData = transferModel();
-        this.selSchedule = {};
-        this.selTransferReason = {};
         await this.readOffenderDetails(this.somsCDCRNumber);
         if (this.transferData.cdcrNumber) {
           let cdcrNumber = this.transferData.cdcrNumber;
