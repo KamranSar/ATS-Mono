@@ -1,8 +1,4 @@
 <template>
-  <!-- <v-card elevation="3" class="ma-4 px-4 pb-4">
-    <v-card-title>
-      <h2>Institution Transfers</h2>
-    </v-card-title> -->
   <v-card flat class="mb-12">
     <v-card-title class="blue-grey lighten-4">
       <v-row>
@@ -32,19 +28,11 @@
     ></v-progress-linear>
     <v-row class="mx-2 mt-2">
       <v-col cols="6"><h2>Departures</h2></v-col>
-      <!-- FIXME remove <v-col cols="6" class="text-right">
-          <v-btn x-large class="secondary" href="/transfer">
-            New Offender Transfer
-          </v-btn>
-          <v-btn x-large class="secondary ml-2" href="/schedule">
-            Go to Schedules
-          </v-btn>
-        </v-col> -->
     </v-row>
     <v-data-table
       :items-per-page="itemsPerPage"
       dense
-      :headers="departureHeaders"
+      :headers="DEPARTURE_HEADERS"
       :items="departures"
       item-key="cdcrNumber"
       class="elevation-1 mx-4 mb-4 pa-4"
@@ -68,11 +56,6 @@
             ></v-text-field>
           </v-col>
           <v-spacer></v-spacer>
-          <!-- <v-col cols="2" align-self="right">
-            <v-btn small class="secondary mt-2">
-              <v-icon left>mdi-printer</v-icon>Print All Departing 135's
-            </v-btn>
-          </v-col> -->
         </v-row>
       </template>
       <template v-slot:item.cdcrNumber="{ item }">
@@ -93,8 +76,6 @@
         <router-link to="">{{ item.schedule }}</router-link>
       </template>
       <template v-slot:item.print135="{ item }">
-        <!-- <router-link to="">
-          {{ item.print135 }} -->
         <v-icon
           color="primary"
           class="ml-5"
@@ -102,25 +83,7 @@
         >
           mdi-file-document
         </v-icon>
-        <!-- </router-link> -->
       </template>
-      <!-- <template v-slot:item.updates="{ item }">
-        <v-icon color="green" class="ml-3" v-if="item.updates == true">
-          mdi-check-bold
-        </v-icon>
-      </template> -->
-
-      <!-- <template
-        v-slot:footer
-      >
-        <v-row>
-          <v-col class="text-center mt-2">
-<v-btn>Print all 135's</v-btn>
-          </v-col>
-        </v-row>
-          
-        
-      </template> -->
     </v-data-table>
     <v-row class="mx-2">
       <v-col cols="12"><h2>Arrivals</h2></v-col>
@@ -128,7 +91,7 @@
     <v-data-table
       :items-per-page="itemsPerPage"
       dense
-      :headers="arrivalHeaders"
+      :headers="ARRIVAL_HEADERS"
       :items="arrivals"
       item-key="cdcrNumber"
       class="elevation-1 mx-4 mb-4 pa-4"
@@ -151,11 +114,6 @@
             </v-text-field>
           </v-col>
           <v-spacer></v-spacer>
-          <!-- <v-col cols="2" align-self="right">
-            <v-btn small class="secondary mt-2">
-              <v-icon left>mdi-printer</v-icon>Print All Arriving 135's
-            </v-btn>
-          </v-col> -->
         </v-row>
       </template>
       <template v-slot:item.fullName="{ item }">
@@ -164,16 +122,7 @@
       <template v-slot:item.origin="{ item }">
         <span>{{ getInstitutionId(item.origin) }}</span>
       </template>
-      <!-- <template v-slot:item.updates="{ item }">
-        <v-icon class="ml-3" v-if="item.updates == true">
-          mdi-check-bold
-        </v-icon>
-      </template> -->
       <template v-slot:item.preprint135="{ item }">
-        <!-- <router-link to="">
-          {{ item.preprint135 }}
-          <v-icon color="primary" class="ml-7"> mdi-file-document </v-icon>
-        </router-link> -->
         <v-icon
           color="primary"
           class="ml-5"
@@ -203,8 +152,8 @@
   import pdfMake from 'pdfmake/build/pdfmake';
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   import {
-    departureHeaders,
-    arrivalHeaders,
+    DEPARTURE_HEADERS,
+    ARRIVAL_HEADERS,
   } from '@/components/Home/constants.js';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -222,8 +171,8 @@
       arrivalSearch: '',
       departures: [],
       arrivals: [],
-      departureHeaders,
-      arrivalHeaders,
+      DEPARTURE_HEADERS,
+      ARRIVAL_HEADERS,
     }),
     async mounted() {
       this.onChangeInstitution();
@@ -261,10 +210,6 @@
             $sort: {
               transferDate: 1,
             },
-            // transferDate: {
-            //   $gte: this.dateBegin,
-            //   $lte: this.dateEnd,
-            // },
           },
         };
 
@@ -292,10 +237,6 @@
             $sort: {
               transferDate: 1,
             },
-            // transferDate: {
-            //   $gte: this.dateBegin,
-            //   $lte: this.dateEnd,
-            // },
           },
         };
 
@@ -305,7 +246,6 @@
           );
         }
         try {
-          // this.transfers = await this.readTransfers(filter);
           const response = await departuresArrivalsSvc.find(filter);
           console.log('getArrivals(): response => ', response);
           this.arrivals = response.data;
@@ -324,8 +264,7 @@
         this.getDepartures();
         this.getArrivals();
       },
-      // eslint-disable-next-line no-unused-vars
-      filterTransfers(value, search, item) {
+      filterTransfers(value, search) {
         return (
           value != null &&
           search != null &&
@@ -333,8 +272,7 @@
           value.toString().toLocaleUpperCase().indexOf(search) !== -1
         );
       },
-      // eslint-disable-next-line no-unused-vars
-      filterOffenderArrivals(value, search, item) {
+      filterOffenderArrivals(value, search) {
         return (
           value != null &&
           search != null &&
@@ -458,10 +396,7 @@
           );
         }
       },
-      // create135PDF()
-      //
       create135PDF(data, items) {
-        // const fileName = this.fileName + '.pdf';
         const stateOf = 'STATE OF CALIFORNIA';
         const agency = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
         const report135 = 'CDCR 135 (Rev. 03/06)';

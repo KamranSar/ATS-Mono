@@ -4,7 +4,7 @@
  * https://vuetifyjs.com/en/api/v-data-table/#props-headers
  */
 
-const departureHeaders = [
+const DEPARTURE_HEADERS = [
   {
     text: 'CDCR Number',
     align: 'start',
@@ -21,7 +21,7 @@ const departureHeaders = [
   // { text: 'Updates?', value: 'updates' },
 ];
 
-const arrivalHeaders = [
+const ARRIVAL_HEADERS = [
   {
     text: 'CDCR Number',
     align: 'start',
@@ -37,4 +37,4 @@ const arrivalHeaders = [
   { text: 'Print 135', value: 'preprint135' },
 ];
 
-export { departureHeaders, arrivalHeaders };
+export { DEPARTURE_HEADERS, ARRIVAL_HEADERS };

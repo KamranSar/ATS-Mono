@@ -163,9 +163,10 @@
         <v-select
           label="Schedule"
           v-model="selSchedule"
-          :items="schedules"
+          :items="validSchedules"
           item-text="title"
           item-value="title"
+          no-data-text="Not endorsed to any schedules"
           return-object
           class="my-2 pl-1"
           clearable
@@ -270,6 +271,26 @@
       },
       ENDORSEMENT_FIELDS() {
         return ENDORSEMENT_FIELDS(this.somsOffender);
+      },
+      /**
+       * Filter out any schedules with a destination offender is not endorsed for
+       */
+      validSchedules() {
+        if (
+          this.somsOffender &&
+          this.somsOffender.endorsedInstitution &&
+          this.schedules &&
+          Array.isArray(this.schedules)
+        ) {
+          const institutionId = this.$store.getters[
+            'institutions/getInstitutionByName'
+          ](this.somsOffender.endorsedInstitution).institutionId;
+          return this.schedules.filter((sched) =>
+            institutionId.includes(sched.destination)
+          );
+        } else {
+          return [];
+        }
       },
     },
     methods: {

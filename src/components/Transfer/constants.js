@@ -255,9 +255,12 @@ const ENDORSEMENT_FIELDS = (somsOffender) => [
   },
 ];
 
+const NO_DATA_TEXT = 'Not endorsed to any schedules';
+
 export {
   SOMS_DATA_FIELDS,
   COMMENT_FIELDS,
   CASE_FACTOR_FIELDS,
   ENDORSEMENT_FIELDS,
+  NO_DATA_TEXT,
 };

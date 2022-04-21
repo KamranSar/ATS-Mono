@@ -72,6 +72,7 @@
                   listOfInstitutions.filter(
                     (inst) =>
                       selectedInstitution &&
+                      selectedInstitution.institutionName &&
                       inst.institutionName !==
                         selectedInstitution.institutionName
                   )
