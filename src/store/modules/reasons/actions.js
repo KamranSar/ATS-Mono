@@ -13,8 +13,10 @@ const actions = {
     }
   },
 
-  init: async ({ dispatch }) => {
-    await dispatch('readReasons');
+  init: async ({ dispatch, rootGetters }) => {
+    if (rootGetters['users/isUserLoggedIn']) {
+      await dispatch('readReasons');
+    }
   },
 
   // readReason

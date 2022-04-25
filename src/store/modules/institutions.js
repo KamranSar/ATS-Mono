@@ -53,8 +53,10 @@ const actions = {
   },
 
   // eslint-disable-next-line no-unused-vars
-  init: async ({ dispatch }) => {
-    await dispatch('getInstitutions');
+  init: async ({ dispatch, rootGetters }) => {
+    if (rootGetters['users/isUserLoggedIn']) {
+      await dispatch('getInstitutions');
+    }
   },
 };
 const getters = {

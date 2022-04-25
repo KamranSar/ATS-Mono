@@ -37,6 +37,7 @@
       loading-text="Syncing Data with SOMS... Please wait"
       no-data-text="No Endorsements"
       no-results-text="No Endorsements Found"
+      multi-sort
     >
       <!-- Endorsement Search -->
       <template v-slot:top>
@@ -67,16 +68,11 @@
           {{ item.cdcrNumber }}
         </router-link>
       </template>
-      <template v-slot:item.endorsedTo="{ item }">
+      <template v-slot:item.endorsedProgram="{ item }">
         <span>{{
-          getInstitutionByName(item.endorsedInstitution).institutionId +
-          '-' +
-          item.endorsedSecurityLevel +
-          '(' +
-          (item.endorsedProgram.toLowerCase() !== 'not applicable'
+          item.endorsedProgram.toLowerCase() !== 'not applicable'
             ? item.endorsedProgram
-            : 'NA') +
-          ')'
+            : 'NA'
         }}</span>
       </template>
       <template v-slot:item.endorsedDate="{ item }">
