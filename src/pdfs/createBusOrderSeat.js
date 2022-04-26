@@ -316,7 +316,7 @@ const createBusOrderSeat = async ({
     filter.query.endorsedToId = selEndorsedTo;
   }
 
-  if (includeScheduled) {
+  if (includeScheduled === false) {
     filter.query.isScheduled = includeScheduled;
   }
 
@@ -406,7 +406,7 @@ const createBusOrderSeat = async ({
 
       // Column 3 - Schedule
       obj = {
-        text: e.schedule,
+        text: e.isScheduled ? 'YES' : 'NO',
         style: 'tblEntry',
         border: [false, false, false, false],
       };
