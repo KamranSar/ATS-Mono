@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="mb-12" v-bind="$attrs">
     <!-- <v-card elevation="3" class="ma-4 px-4 pb-8" v-bind="$attrs"> -->
-    <TransferSearch v-model="somsCDCRNumber" />
+    <TransferSearch />
     <v-progress-linear
       :active="loading"
       :indeterminate="loading"
@@ -20,9 +20,7 @@
     components: {
       TransferSearch,
     },
-    data: () => ({
-      somsCDCRNumber: '',
-    }),
+    data: () => ({}),
     computed: {
       ...sync('app', ['loading']),
     },

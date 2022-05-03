@@ -1,6 +1,6 @@
 <template>
   <v-card flat class="mb-12" v-bind="$attrs">
-    <TransferSearch v-model="somsCDCRNumber" />
+    <TransferSearch />
 
     <!-- Progress Loader -->
     <v-progress-linear
@@ -48,130 +48,57 @@
       TransferPanel,
       TransferHoldsTable,
     },
-    data: () => ({
-      somsCDCRNumber: '',
-    }),
+    data: () => ({}),
     async created() {
-      // this.transferData = this.transferModel();
-      console.log('created()');
-      if (this.$route && this.$route.params && this.$route.params.cdcrNumber) {
-        this.somsCDCRNumber = this.$route.params.cdcrNumber;
+      try {
+        this.selTransferReason = {
+          reasonCode: this.transferData.transferReasonCode,
+          reasonDesc: this.transferData.transferReasonDesc,
+        };
+      } catch (ex) {
         console.log(
-          'TransferDetails:created(): this.somsCDCRNumber => ',
-          this.somsCDCRNumber
+          'TransferDetails.vue:created():readTransfers() exception => ',
+          ex
         );
-        try {
-          await this.readOffenderDetails(this.somsCDCRNumber);
-        } catch (ex) {
+      }
+
+      try {
+        console.log('TransferDetails.vue:created(): readSchedules()');
+        const respSchedules = await this.readSchedules({
+          query: {
+            origin:
+              this.somsOffender && this.somsOffender.institutionName
+                ? this.somsOffender.institutionName
+                : '',
+          },
+        });
+        console.log('created(): responseData => ', respSchedules);
+        if (respSchedules && this.transferData.scheduleId) {
           console.log(
-            'TransferDetails.vue:created(): readOffenderDetails() exception => ',
-            ex
+            'TransferDetails.vue:created(): this.transferData.scheduleId => ',
+            this.transferData.scheduleId
           );
-        }
-
-        try {
-          const queryObj = {
-            query: {
-              cdcrNumber: this.somsCDCRNumber,
-            },
-          };
-          console.log('created(): queryObj => ', { queryObj });
-          const [responseData] = await this.readTransfers(queryObj);
-          console.log('created(): responseData => ', responseData);
-          if (responseData) {
-            this.transferData._id = responseData._id;
-            this.transferData.scheduleId = responseData.scheduleId;
-            this.transferData.isScheduled = responseData.isScheduled;
-            this.transferData.transferReasonCode =
-              responseData.transferReasonCode &&
-              this.transferData.transferReasonCode !=
-                responseData.transferReasonCode
-                ? responseData.transferReasonCode
-                : this.transferData.transferReasonCode;
-            this.transferData.transferReasonDesc =
-              responseData.transferReasonDesc &&
-              this.transferData.transferReasonDesc !=
-                responseData.transferReasonDesc
-                ? responseData.transferReasonDesc
-                : this.transferData.transferReasonDesc;
-            this.transferData.comments = responseData.comments;
-            this.transferData.inHouseRemarks = responseData.inHouseRemarks;
-            this.transferData.endorsedToName = responseData.endorsedToName;
-            this.transferData.endorsedToId = responseData.endorsedToId;
-            this.transferData.endorsedToPartyId =
-              responseData.endorsedToPartyId;
-          } else {
-            console.log('getInstitutionByName()');
-            const institution = this.getInstitutionByName(
-              this.somsOffender.institution
-            );
-            if (institution && !institution._notindb) {
-              console.log(
-                'getInstitutionByName(): institution => ',
-                institution
-              );
-              this.transferData.endorsedToName = institution.institutionName;
-              this.transferData.endorsedToId = institution.institutionId;
-              this.transferData.endorsedToPartyId =
-                institution.institutionPartyId;
-            }
-            this.setSnackbar(
-              `No record has been saved yet for cdcr number: ${this.somsCDCRNumber}`,
-              'info',
-              3000
-            );
-            this.transferData.inHouseRemarks = '';
-          }
-          console.log('created(): this.transferData => ', this.transferData);
-          this.selTransferReason = {
-            reasonCode: this.transferData.transferReasonCode,
-            reasonDesc: this.transferData.transferReasonDesc,
-          };
-        } catch (ex) {
           console.log(
-            'TransferDetails.vue:created():readTransfers() exception => ',
-            ex
+            'TransferDetails.vue:created(): respSchedules => ',
+            respSchedules
           );
-        }
 
-        try {
-          console.log('TransferDetails.vue:created(): readSchedules()');
-          const respSchedules = await this.readSchedules({
-            query: {
-              origin:
-                this.somsOffender && this.somsOffender.institutionName
-                  ? this.somsOffender.institutionName
-                  : '',
-            },
-          });
-          console.log('created(): responseData => ', respSchedules);
-          if (respSchedules && this.transferData.scheduleId) {
+          for (let schedule of respSchedules) {
             console.log(
-              'TransferDetails.vue:created(): this.transferData.scheduleId => ',
-              this.transferData.scheduleId
+              'TransferDetails.vue:created(): schedule._id => ',
+              schedule._id
             );
-            console.log(
-              'TransferDetails.vue:created(): respSchedules => ',
-              respSchedules
-            );
-
-            for (let schedule of respSchedules) {
-              console.log(
-                'TransferDetails.vue:created(): schedule._id => ',
-                schedule._id
-              );
-              if (this.transferData.scheduleId == schedule._id) {
-                this.selSchedule = schedule;
-                break;
-              }
+            if (this.transferData.scheduleId == schedule._id) {
+              this.selSchedule = schedule;
+              break;
             }
           }
-        } catch (ex) {
-          console.log(
-            'TransferDetails.vue->created()->readSchedules() exception => ',
-            ex
-          );
         }
+      } catch (ex) {
+        console.log(
+          'TransferDetails.vue->created()->readSchedules() exception => ',
+          ex
+        );
       }
     },
     computed: {

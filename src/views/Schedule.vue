@@ -520,7 +520,6 @@
               this.disableSaveEndorsementButton = false;
             }, 500);
 
-            this.somsCDCRNumber = '';
             return offenderInfo;
           } else {
             this.loading = false;

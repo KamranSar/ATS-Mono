@@ -51,35 +51,35 @@
 
   export default {
     name: 'TransferSearch',
-    props: {
-      value: {
-        type: String,
-        default: '',
-      },
-    },
-    data: () => ({}),
+    data: () => ({
+      somsCDCRNumber: '',
+    }),
     computed: {
       ...sync('app', ['loading']),
       ...sync('transfers', ['transferData', 'selTransferReason']),
       ...sync('schedules', ['selSchedule']),
-      somsCDCRNumber: {
-        get() {
-          return this.value;
-        },
-        set(value) {
-          this.$emit('input', value);
-        },
-      },
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
-      ...call('transfers', ['readOffenderDetails']),
+      ...call('transfers', ['readOffenderDetails', 'readTransfers']),
       goBack() {
         this.$router.go(-1); // Will go back 1 step;
       },
       async searchOffender() {
         await this.readOffenderDetails(this.somsCDCRNumber);
-        if (this.transferData.cdcrNumber) {
+        [this.transferData] = await this.readTransfers({
+          query: {
+            cdcrNumber: this.somsCDCRNumber,
+          },
+        });
+
+        if (!this.transferData) {
+          this.setSnackbar(
+            `No record has been saved yet for cdcr number: ${this.somsCDCRNumber}`,
+            'info',
+            3000
+          );
+        } else if (this.transferData.cdcrNumber) {
           let cdcrNumber = this.transferData.cdcrNumber;
           this.$router.push({
             name: 'Transfer Details',
@@ -88,7 +88,20 @@
             },
           });
         }
+        console.log('created(): this.transferData => ', this.transferData);
       },
+    },
+    async created() {
+      const {
+        params: { cdcrNumber },
+      } = this.$route;
+      if (
+        (cdcrNumber && !this.somsCDCRNumber) ||
+        cdcrNumber !== this.somsCDCRNumber
+      ) {
+        this.somsCDCRNumber = cdcrNumber;
+        await this.searchOffender();
+      }
     },
     watch: {},
   };

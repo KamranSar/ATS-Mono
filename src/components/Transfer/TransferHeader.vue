@@ -306,14 +306,16 @@
               this.transferData.endorsedToName &&
               inst.institutionName === this.transferData.endorsedToName
           );
-          if (!this.transferData.endorsedToName) {
-            this.transferData.endorsedToName = objIns.institutionName;
-          }
-          if (!this.transferData.endorsedToId) {
-            this.transferData.endorsedToId = objIns.institutionId;
-          }
-          if (!this.transferData.endorsedToPartyId) {
-            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
+          if (objIns) {
+            if (!this.transferData.endorsedToName) {
+              this.transferData.endorsedToName = objIns.institutionName;
+            }
+            if (!this.transferData.endorsedToId) {
+              this.transferData.endorsedToId = objIns.institutionId;
+            }
+            if (!this.transferData.endorsedToPartyId) {
+              this.transferData.endorsedToPartyId = objIns.institutionPartyId;
+            }
           }
 
           const response = await this.saveForm();
