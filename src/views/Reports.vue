@@ -186,7 +186,6 @@
                   <v-date-picker
                     v-model="dateBegin"
                     @input="dateBeginMenu = false"
-                    @change="onChangeBeginDate"
                     clearable
                   ></v-date-picker>
                 </v-menu>
@@ -455,15 +454,6 @@
         }
         await this.readSchedules(filter);
       },
-      onChangeBeginDate(ctrl) {
-        console.log('onChangeBeginDate(): ctrl => ', ctrl);
-      },
-      onChangeEndorsedDate(ctrl) {
-        console.log('onChangeEndorsedDate(); ctrl => ', ctrl);
-      },
-      onChangeArrivalDate(ctrl) {
-        console.log('onChangeEndorsedDate(); ctrl => ', ctrl);
-      },
       // getInstitutionId(location)
       // Returns the abbreviated institution id
       // for the provided location
@@ -473,11 +463,11 @@
           return '';
         }
 
-        console.log('getInstitutionId(): location => ', location);
-        console.log(
-          'getInstitutionId(): listOfInstitutions',
-          this.listOfInstitutions
-        );
+        // console.log('getInstitutionId(): location => ', location);
+        // console.log(
+        //   'getInstitutionId(): listOfInstitutions',
+        //   this.listOfInstitutions
+        // );
         for (let i of this.listOfInstitutions) {
           // console.log('getInstitutionId(): i => ', i);
           if (i.institutionName == location) {
@@ -526,14 +516,19 @@
         }
 
         try {
-          console.log('create135(): filter => ', filter);
+          // console.log('create135(): filter => ', filter);
           this.transfers = await this.readTransfers(filter);
-          console.log('create135(): transfers => ', this.transfers);
+          // console.log('create135(): transfers => ', this.transfers);
           if (!this.transfers) {
             alert('No Transfers found for schedule: ', this.schedule.title);
             return;
           }
         } catch (ex) {
+          this.setSnackbar(
+            'An error occurred reading Transfer records. Error: ' + ex.Code,
+            'error',
+            3000
+          );
           console.error('create135() exception: ', ex);
         }
 
@@ -581,12 +576,17 @@
           data.push(row);
         }
 
-        console.log('create135(): data => ', data);
+        // console.log('create135(): data => ', data);
         if (data) {
           this.create135PDF(data);
         } else {
           // error message
-          alert('Could not create CDCR 135 PDF Document!');
+          // alert('Could not create CDCR 135 PDF Document!');
+          this.setSnackbar(
+            'ERROR! Could not create CDCR 135 PDF Document!',
+            'error',
+            3000
+          );
         }
       },
       // create135PDF()
@@ -594,7 +594,7 @@
       // Creates a pdf file using PDFMake
       // ********************************
       create135PDF(data) {
-        console.log('create135PDF(): data => ', data);
+        // console.log('create135PDF(): data => ', data);
 
         let doc =
           this.stateOf +
@@ -905,7 +905,7 @@
           },
         };
 
-        console.log('create135PDF(): dd => ', dd);
+        // console.log('create135PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
         // alert("create135PDF() Done!");
       },
@@ -915,7 +915,7 @@
       // ********************************
       async create134() {
         // Get transfer for selected schedule
-        console.log('create134(): this.selSchedule => ', this.selSchedule);
+        // console.log('create134(): this.selSchedule => ', this.selSchedule);
         if (!this.selSchedule || !this.selSchedule._id) {
           this.setSnackbar(
             'Schedule not selected. Please select a schedule and try again.'
@@ -944,7 +944,7 @@
 
         try {
           this.transfers = await this.readTransfers(filter);
-          console.log('build134Data(): transfers => ', this.transfers);
+          // console.log('build134Data(): transfers => ', this.transfers);
           if (!this.transfers) {
             alert('No Transfers found for schedule: ', this.selSchedule.title);
             return;
@@ -1018,7 +1018,7 @@
           row = [];
         }
 
-        console.log('create134(): data => ', data);
+        // console.log('create134(): data => ', data);
         if (data) {
           this.create134PDF(data);
         } else {
@@ -1031,7 +1031,7 @@
       // Creates a pdf file using PDFMake
       // ********************************
       create134PDF(data) {
-        console.log('create134PDF(): data => ' + data);
+        // console.log('create134PDF(): data => ' + data);
 
         // const fileName = this.fileName + '.pdf';
         let today = new Date().toISOString().split('T')[0];
@@ -1339,7 +1339,7 @@
           },
         };
 
-        console.log('create134PDF(): dd => ', dd);
+        // console.log('create134PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
         // alert("create134PDF() Done!");
       },
@@ -1349,27 +1349,28 @@
       // ********************************
       async create7344() {
         if (!this.selectedInstitution) {
-          console.log(
-            'create7344(): selectedInstitution => ',
-            this.selectedInstitution
-          );
+          // console.log(
+          //   'create7344(): selectedInstitution => ',
+          //   this.selectedInstitution
+          // );
           this.setSnackbar('Please select an Instittution.', 'error', 3000);
           return;
         }
 
         if (!this.dateBegin) {
-          console.log('create7344(): dateBegin => ', this.dateBegin);
+          // console.log('create7344(): dateBegin => ', this.dateBegin);
           this.setSnackbar('Please select a Begin date.', 'error', 3000);
           return;
         }
 
         if (!this.dateEnd) {
-          console.log('create7344(): dateEnd => ', this.dateEnd);
+          // console.log('create7344(): dateEnd => ', this.dateEnd);
           this.setSnackbar('Please select a End date.', 'error', 3000);
           return;
         }
 
         if (this.dateBegin > this.dateEnd) {
+          // Do not remove since this is an error condition.
           console.log(
             `create7344(): dateBegin => ${this.dateBegin}. dateEnd => ${this.dateEnd}.`
           );
@@ -1399,7 +1400,7 @@
         try {
           // this.transfers = await this.readTransfers(filter);
           const response = await departuresArrivalsSvc.find(filter);
-          console.log('create7344(): response => ', response);
+          // console.log('create7344(): response => ', response);
           if (response.data.length == 0) {
             alert('No Transfers found for requested date range.');
             return;
@@ -1565,7 +1566,7 @@
           //   data.push(row);
           //   row = [];
           // }
-          console.log('create7344(): data => ', data);
+          // console.log('create7344(): data => ', data);
           if (data) {
             this.create7344PDF(data);
           } else {
@@ -1581,7 +1582,7 @@
       // Creates a pdf file using PDFMake
       // ********************************
       create7344PDF(data) {
-        console.log('create7344PDF(): data => ' + data);
+        // console.log('create7344PDF(): data => ' + data);
 
         // const fileName = this.fileName + '.pdf';
 
@@ -1857,7 +1858,7 @@
           ],
         };
 
-        console.log('create7344PDF(): dd => ', dd);
+        // console.log('create7344PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
       },
       // createBusSeat()

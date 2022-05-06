@@ -279,7 +279,6 @@
 </template>
 
 <script>
-  import somsOffender from '@/feathers/services/offender/details.service.js';
   import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
   // import svcSchedule from '@/feathers/services/offender/details.service.js';
   import { get, sync, call } from 'vuex-pathify';
@@ -344,54 +343,54 @@
       endorsements: [],
       editEndorsementIndex: -1,
       editEndorsement: {
-        cdcrNumber: '',
-        firstName: '',
-        lastName: '',
-        ethnicity: '',
-        housing: '',
-        securityLevel: '',
-        tbCode: '',
-        caseFactor: '',
-        releaseDate: null,
-        originalEndorsementDate: null,
-        currentEndorsementDate: null,
-        transferDate: null,
-        scheduleName: '',
-        scheduleId: '',
-        transferReasonCode: '',
-        transferReasonDesc: '',
-        transferReason: {
-          reasonCode: '',
-          reasonDesc: '',
-        },
-        comments: '',
-        inHouseRemarks: '',
-        // endorsementDetails: '',
+        // cdcrNumber: '',
+        // firstName: '',
+        // lastName: '',
+        // ethnicity: '',
+        // housing: '',
+        // securityLevel: '',
+        // tbCode: '',
+        // caseFactor: '',
+        // releaseDate: null,
+        // originalEndorsementDate: null,
+        // currentEndorsementDate: null,
+        // transferDate: null,
+        // scheduleName: '',
+        // scheduleId: '',
+        // transferReasonCode: '',
+        // transferReasonDesc: '',
+        // transferReason: {
+        //   reasonCode: '',
+        //   reasonDesc: '',
+        // },
+        // comments: '',
+        // inHouseRemarks: '',
+        // // endorsementDetails: '',
       },
       defaultEndorsement: {
-        cdcrNumber: '',
-        firstName: '',
-        lastName: '',
-        ethnicity: '',
-        housing: '',
-        securityLevel: '',
-        tbCode: '',
-        caseFactor: '',
-        releaseDate: null,
-        originalEndorsementDate: null,
-        currentEndorsementDate: null,
-        transferDate: null,
-        scheduleName: '',
-        scheduleId: '',
-        transferReasonCode: '',
-        transferReasonDesc: '',
-        transferReason: {
-          reasonCode: '',
-          reasonDesc: '',
-        },
-        comments: '',
-        inHouseRemarks: '',
-        // endorsementDetails: '',
+        // cdcrNumber: '',
+        // firstName: '',
+        // lastName: '',
+        // ethnicity: '',
+        // housing: '',
+        // securityLevel: '',
+        // tbCode: '',
+        // caseFactor: '',
+        // releaseDate: null,
+        // originalEndorsementDate: null,
+        // currentEndorsementDate: null,
+        // transferDate: null,
+        // scheduleName: '',
+        // scheduleId: '',
+        // transferReasonCode: '',
+        // transferReasonDesc: '',
+        // transferReason: {
+        //   reasonCode: '',
+        //   reasonDesc: '',
+        // },
+        // comments: '',
+        // inHouseRemarks: '',
+        // // endorsementDetails: '',
       },
     }),
     async created() {
@@ -416,7 +415,12 @@
         'updateSchedule',
         'deleteSchedule',
       ]),
-      ...call('transfers', ['readTransfers', 'deleteTransfer', 'saveForm']),
+      ...call('transfers', [
+        'readOffenderDetails',
+        'readTransfers',
+        'deleteTransfer',
+        'saveForm',
+      ]),
       // Example of how to change name of method call
       //   new name       :  existing name
       // { DeleteSchedule: 'deleteSchedule' }
@@ -448,15 +452,7 @@
           } else {
             this.enableEditing = false;
           }
-          // console.log(
-          //   'onSelectedInstitution(): selectedSchedule',
-          //   this.selectedSchedule
-          // );
         } else {
-          // console.log(
-          //   'onSelectedInstitution(): selectedSchedule',
-          //   this.selectedSchedule
-          // );
           this.schedules = [];
           this.enableEditing = false;
         }
@@ -465,75 +461,84 @@
         if (!this.editEndorsement.cdcrNumber) {
           return;
         }
+
+        if (this.endorsements && this.endorsements.length > 0) {
+          const item = this.endorsements.cdcrNumber.find(
+            this.editEndorsement.cdcrNumber
+          );
+          if (item) {
+            this.openEndorsement(item);
+            return;
+          }
+        }
+
         this.loading = true;
         try {
-          const query = {
-            query: {
-              cdcrnumber: this.editEndorsement.cdcrNumber,
-            },
-          };
+          console.log(
+            '5 getOffender(): this.selSchedule => ',
+            this.selSchedule
+          );
 
-          const offenderInfo = await somsOffender.find(query);
+          await this.readOffenderDetails(this.editEndorsement.cdcrNumber);
 
-          if (offenderInfo.data.length > 0) {
-            const person = offenderInfo.data[0];
-            // console.log('searchOffender(): offender => ', offenderInfo.data[0]);
-            if (
-              this.loggedInUser &&
-              this.loggedInUser.somsinfo &&
-              this.loggedInUser.somsinfo.organizationName &&
-              person &&
-              person.institutionName &&
-              person.institutionName !==
-                this.loggedInUser.somsinfo.organizationName
-            ) {
-              const res = confirm(
-                `This person's institutions does not match yours. Are you sure you want to proceed?`
-              );
-              if (!res) {
-                this.loading = false;
-                return;
-              }
-            }
-            if (person.TransferHolds && person.TransferHolds.length > 0) {
-              const resp = confirm(
-                `This person has one or more holds! do you want to continue with this transfer?`
-              );
-              if (!resp) {
-                this.loading = false;
-                return;
-              }
-            }
+          // console.log(
+          //   '6 getOffender(): this.selSchedule => ',
+          //   this.selSchedule
+          // );
+          // console.log('getOffender(): this.transferData => ', this.transferData);
 
-            this.editEndorsement.cdcrNumber = person.cdcrNumber;
-            this.editEndorsement.firstName = person.firstName;
-            this.editEndorsement.lastName = person.lastName;
-            this.editEndorsement.ethnicity = person.ethnicity;
-            this.editEndorsement.housing = person.housingArea;
-            this.editEndorsement.securityLevel = person.securityLevel;
-            this.editEndorsement.tbCode = person.tbCode;
-            // this.editEndorsement.caseFactor = person.caseFactor;
-            this.editEndorsement.currentEndorsementDate = person.endorsedDate;
-            setTimeout(() => {
+          if (
+            this.loggedInUser &&
+            this.loggedInUser.somsinfo &&
+            this.loggedInUser.somsinfo.organizationName &&
+            this.transferData &&
+            this.transferData.institutionName &&
+            this.transferData.institutionName !==
+              this.loggedInUser.somsinfo.organizationName
+          ) {
+            const res = confirm(
+              `This person's institutions does not match yours. Are you sure you want to proceed?`
+            );
+            if (!res) {
               this.loading = false;
-              this.displayOffender = true;
-              this.disableSaveEndorsementButton = false;
-            }, 500);
-
-            return offenderInfo;
-          } else {
-            this.loading = false;
-            this.searchOffenderNotFoundErrorDialog = true;
+              return;
+            }
           }
+          if (
+            this.transferData.TransferHolds &&
+            this.transferData.TransferHolds.length > 0
+          ) {
+            const resp = confirm(
+              `This person has one or more holds! do you want to continue with this transfer?`
+            );
+            if (!resp) {
+              this.loading = false;
+              return;
+            }
+          }
+
+          this.transferData.photograph = '';
+          this.editEndorsement.cdcrNumber = this.transferData.cdcrNumber;
+          this.editEndorsement.firstName = this.transferData.firstName;
+          this.editEndorsement.lastName = this.transferData.lastName;
+          // this.editEndorsement.ethnicity = this.transferData.ethnicity;
+          this.editEndorsement.housing = this.transferData.housing;
+          // this.editEndorsement.securityLevel = this.transferData.securityLevel;
+          // this.editEndorsement.tbCode = this.transferData.tbCode;
+          // this.editEndorsement.caseFactor = this.transferData.caseFactor;
+          this.editEndorsement.currentEndorsementDate =
+            this.transferData.originalEndorsementDate;
+          setTimeout(() => {
+            this.loading = false;
+            this.disableSaveEndorsementButton = false;
+          }, 500);
         } catch (error) {
           this.loading = false;
-          if (error.code == 500) {
-            this.searchOffenderNotFoundErrorDialog = true;
-          } else if (error.message == 'You do not belong to this institution') {
-            this.offenderSearchPermissionDialog = true;
-          } else {
-            // Display a message that an error occurred!!!
-          }
+          this.setSnackbar(
+            `An unexpected error occurred. Error code: ${error.Code}`,
+            'info',
+            3000
+          );
         }
       },
       goHome() {
@@ -542,7 +547,6 @@
         });
       },
       openSchedule(item) {
-        //console.log('openSchedule(): schedule => ', item);
         this.editSchedule = Object.assign({}, item);
       },
       async removeSchedule(id) {
@@ -569,9 +573,7 @@
             scheduleId: item._id,
           },
         };
-        // console.log('filter : ', filter);
         const response = await svcTransfers.find(filter);
-        // console.log('endorsementsExists(): response => ', response);
         if (response && response.total > 0) {
           return true;
         } else {
@@ -579,9 +581,7 @@
         }
       },
       async scheduleDelete(item) {
-        // console.log('scheduleDelete(): item => ', item);
         const exists = await this.endorsementsExists(item);
-        // console.log('scheduleDelete(): exists => ', exists);
         if (exists) {
           this.setSnackbar(
             'Please delete the transfers assigned to the schedule before deleting the scdedule.',
@@ -642,8 +642,6 @@
         // Clear the edit boxes
         self.editSchedule = Object.assign({}, self.defaultSchedule);
 
-        const dt = Date.now();
-        console.log(dt);
         try {
           await self.readSchedulesByOrigin({
             institution: self.selectedInstitution.institutionName,
@@ -653,7 +651,6 @@
         }
       },
       transferReasonSelected(ctrl) {
-        // console.log('transferReasonSelected(): ', ctrl);
         if (ctrl) {
           this.editEndorsement.transferReasonCode = ctrl.reasonCode;
           this.editEndorsement.transferReasonDesc = ctrl.reasonDesc;
@@ -664,15 +661,22 @@
         if (item.value) {
           // Schedule Selected
           this.selSchedule = item.item;
+          // console.log(
+          //   '1 onSelectedSchedule(): this.selSchedule => ',
+          //   this.selSchedule
+          // );
           this.getEndorsements(item.item, {});
         } else {
           this.selSchedule = {};
           this.endorsements = [];
         }
+        // console.log(
+        //   '3 onSelectedSchedule(): this.selSchedule => ',
+        //   this.selSchedule
+        // );
       },
       async getEndorsements(newVal, oldVal) {
-        // console.log('getEndorsements(): newVal => ', newVal);
-        // console.log('getEndorsements(): oldVal => ', oldVal);
+        // console.log('2 getEndorsement(): selSchedule => ', this.selSchedule);
         try {
           const oldId = oldVal._id || '';
           const newId = newVal._id || '';
@@ -680,22 +684,22 @@
           if (newId && newId !== oldId) {
             let filter = {
               query: {
+                institutionName: this.selectedInstitution.institutionName,
                 endorsedToId: newVal.destination,
                 $or: [{ scheduleId: newId }, { isScheduled: false }],
               },
             };
-            console.log('getEndorsements(): filter : ', filter);
-            // console.log('newId', newId);
-            // const response = await svcTransfers.find(filter);
             let response = await this.readTransfers(filter);
             if (response) {
               this.endorsements = response;
             } else {
               this.endorsements = [];
             }
+          } else {
+            // console.log('getEndorsements(): ', newVal, oldVal);
           }
         } catch (error) {
-          console.error('getEndorsements', error);
+          // console.error('getEndorsements', error);
           this.setSnackbar(
             'Failed to fetch endorsements, try again later.',
             'error',
@@ -703,6 +707,7 @@
           );
         }
         this.loading = false;
+        // console.log('4 getEndorsement(): selSchedule => ', this.selSchedule);
       },
       openEndorsement(item) {
         this.editEndorsement = Object.assign({}, item);
@@ -734,7 +739,6 @@
         return true;
       },
       deleteEndorsement(item) {
-        // console.log('deleteEndorsement(): item => ', item);
         const index = this.endorsements.indexOf(item);
 
         let res = confirm('Are you sure you want to delete this endorsement?');
@@ -747,16 +751,61 @@
         }
       },
       async saveEndorsement() {
-        // console.log(
-        //   'saveEndorsement() this.editEndorsement => ',
-        //   this.editEndorsement
-        // );
+        // console.log('4 saveEndorsement(): selSchedule => ', this.selSchedule);
 
-        // Assign the endorsement to the transferData object
-        // And have saveForm save the transferData
-        this.transferData = this.editEndorsement;
+        if (this.editEndorsement._id) {
+          this.transferData = this.editEndorsement;
+        } else {
+          if (this.selTransferReason) {
+            this.transferData.transferReasonCode =
+              this.selTransferReason.reasonCode;
+            this.transferData.transferReasonDesc =
+              this.selTransferReason.reasonDesc;
+          }
+        }
 
         try {
+          let objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.institutionName &&
+              inst.institutionName === this.transferData.institutionName
+          );
+          if (!objIns) {
+            this.setSnackbar(
+              `Could not find institution in list of Institutions. Institution => ${this.transferData.institutionName}`,
+              `error`,
+              3000
+            );
+            return;
+          }
+
+          if (!this.transferData.institutionName) {
+            this.transferData.institutionName = objIns.institutionName;
+          }
+          if (!this.transferData.institutionId) {
+            this.transferData.institutionId = objIns.institutionId;
+          }
+          if (!this.transferData.institutionPartyId) {
+            this.transferData.institutionPartyId = objIns.institutionPartyId;
+          }
+
+          objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.endorsedToName &&
+              inst.institutionName === this.transferData.endorsedToName
+          );
+          if (!this.transferData.endorsedToName) {
+            this.transferData.endorsedToName = objIns.institutionName;
+          }
+          if (!this.transferData.endorsedToId) {
+            this.transferData.endorsedToId = objIns.institutionId;
+          }
+          if (!this.transferData.endorsedToPartyId) {
+            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
+          }
+
           const response = await this.saveForm();
           if (response && response._id) {
             this.setSnackbar('Success!', 'success', 3000);
@@ -764,6 +813,10 @@
             this.selTransferReason = null;
             this.disableSaveEndorsementButton = true;
 
+            // console.log(
+            //   '5 saveEndorsement(): selSchedule => ',
+            //   this.selSchedule
+            // );
             await this.getEndorsements(this.selSchedule, {});
           }
         } catch (ex) {
@@ -781,13 +834,7 @@
           return '';
         }
 
-        console.log('getInstitutionId(): location => ', location);
-        console.log(
-          'getInstitutionId(): listOfInstitutions',
-          this.listOfInstitutions
-        );
         for (let i of this.listOfInstitutions) {
-          // console.log('getInstitutionId(): i => ', i);
           if (i.institutionName == location) {
             return i.institutionId;
           }
@@ -816,9 +863,7 @@
           return;
         }
         try {
-          console.log('create135(): filter => ', filter);
           this.transfers = await this.readTransfers(filter);
-          console.log('create135(): transfers => ', this.transfers);
           if (!this.transfers) {
             alert('No Transfers found for schedule: ', item.schedule.title);
             return;
@@ -869,7 +914,6 @@
           row.push(Object.assign({}, obj));
           data.push(row);
         }
-        console.log('create135(): data => ', data);
         if (data) {
           this.create135PDF(data, item, param);
         } else {
@@ -880,9 +924,6 @@
       // create135PDF()
       //
       create135PDF(data, item, param) {
-        console.log('create135PDF(): data => ', data);
-
-        // const fileName = this.fileName + '.pdf';
         const stateOf = 'STATE OF CALIFORNIA';
         const agency = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
         const report135 = 'CDCR 135 (Rev. 03/06)';
@@ -1195,7 +1236,6 @@
           },
         };
 
-        console.log('create135PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
         // alert("create135PDF() Done!");
       },

@@ -166,8 +166,8 @@
           // Build the toDate
           const [toYear, toMonth, toDay] = value[1].split('-');
           const toDate = new Date(toYear, toMonth - 1, toDay);
-          console.log('fromDate: ', fromDate);
-          console.log('toDate: ', toDate);
+          // console.log('fromDate: ', fromDate);
+          // console.log('toDate: ', toDate);
 
           // If the from date is after the to date... swap them
           if (isAfter(fromDate, toDate)) {

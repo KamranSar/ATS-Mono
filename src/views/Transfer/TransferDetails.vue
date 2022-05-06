@@ -61,45 +61,6 @@
           ex
         );
       }
-
-      try {
-        console.log('TransferDetails.vue:created(): readSchedules()');
-        const respSchedules = await this.readSchedules({
-          query: {
-            origin:
-              this.somsOffender && this.somsOffender.institutionName
-                ? this.somsOffender.institutionName
-                : '',
-          },
-        });
-        console.log('created(): responseData => ', respSchedules);
-        if (respSchedules && this.transferData.scheduleId) {
-          console.log(
-            'TransferDetails.vue:created(): this.transferData.scheduleId => ',
-            this.transferData.scheduleId
-          );
-          console.log(
-            'TransferDetails.vue:created(): respSchedules => ',
-            respSchedules
-          );
-
-          for (let schedule of respSchedules) {
-            console.log(
-              'TransferDetails.vue:created(): schedule._id => ',
-              schedule._id
-            );
-            if (this.transferData.scheduleId == schedule._id) {
-              this.selSchedule = schedule;
-              break;
-            }
-          }
-        }
-      } catch (ex) {
-        console.log(
-          'TransferDetails.vue->created()->readSchedules() exception => ',
-          ex
-        );
-      }
     },
     computed: {
       ...sync('transfers', ['transferData', 'selTransferReason']),

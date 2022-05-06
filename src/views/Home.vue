@@ -190,9 +190,9 @@
       },
       getInstitutionId(location) {
         if (!location && this.listOfInstitutions.length > 0) {
-          console.log(
-            `Home::getInstitutionId(); location => ${location} | this.listOfInstitutions.length => ${this.listOfInstitutions.length}`
-          );
+          // console.log(
+          //   `Home::getInstitutionId(); location => ${location} | this.listOfInstitutions.length => ${this.listOfInstitutions.length}`
+          // );
           return '';
         }
 
@@ -219,7 +219,7 @@
         try {
           const response = await departuresArrivalsSvc.find(filter);
           this.departures = response.data;
-          console.log('getDepartures(): departures => ', this.departures);
+          // console.log('getDepartures(): departures => ', this.departures);
           if (!response) {
             alert(
               'No Transfers found for institution: ',
@@ -247,7 +247,7 @@
         }
         try {
           const response = await departuresArrivalsSvc.find(filter);
-          console.log('getArrivals(): response => ', response);
+          // console.log('getArrivals(): response => ', response);
           this.arrivals = response.data;
           if (!response) {
             alert(
@@ -384,7 +384,7 @@
           data.push(row);
         }
 
-        console.log('create135(): data => ', data);
+        // console.log('create135(): data => ', data);
         if (data) {
           this.create135PDF(data, items);
         } else {

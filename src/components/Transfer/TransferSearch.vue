@@ -48,6 +48,7 @@
 
 <script>
   import { sync, call } from 'vuex-pathify';
+  import scheduleModel from '@/models/scheduleModel.js';
 
   export default {
     name: 'TransferSearch',
@@ -62,8 +63,18 @@
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails', 'readTransfers']),
+      ...call('schedules', ['readSchedules']),
       goBack() {
         this.$router.go(-1); // Will go back 1 step;
+      },
+      setSnackbar(msg, result, timeout) {
+        this.SET_SNACKBAR({
+          top: true,
+          center: true,
+          message: msg,
+          color: result,
+          timeout: timeout,
+        });
       },
       async searchOffender() {
         await this.readOffenderDetails(this.somsCDCRNumber);
@@ -80,6 +91,32 @@
             3000
           );
         } else if (this.transferData.cdcrNumber) {
+          if (!this.transferData.scheduleId) {
+            this.selSchedule = scheduleModel();
+          } else {
+            console.log(
+              'TransferSearch::searchOffender(): this.transferData.scheduleId => ',
+              this.transferData.scheduleId
+            );
+            if (!this.schedules) {
+              await this.readSchedules({
+                query: { origin: this.transferData.institutionName },
+              });
+            }
+            if (this.schedules) {
+              this.selSchedule = this.schedules.find((item) => {
+                if (item._id === this.transferData.scheduleId) {
+                  return item;
+                } else {
+                  return {};
+                }
+              });
+              console.log(
+                'TransferSearch::searchOffender(): this.selSchedule => ',
+                this.selSchedule
+              );
+            }
+          }
           let cdcrNumber = this.transferData.cdcrNumber;
           this.$router.push({
             name: 'Transfer Details',
@@ -88,17 +125,18 @@
             },
           });
         }
-        console.log('created(): this.transferData => ', this.transferData);
       },
     },
     async created() {
+      console.log('TransferSearch::created()');
       const {
         params: { cdcrNumber },
       } = this.$route;
-      if (
-        (cdcrNumber && !this.somsCDCRNumber) ||
-        cdcrNumber !== this.somsCDCRNumber
-      ) {
+      // if (
+      //   (cdcrNumber && !this.somsCDCRNumber) ||
+      //   cdcrNumber !== this.somsCDCRNumber
+      // ) {
+      if (cdcrNumber && cdcrNumber !== this.somsCDCRNumber) {
         this.somsCDCRNumber = cdcrNumber;
         await this.searchOffender();
       }

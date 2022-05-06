@@ -1,10 +1,7 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 import somsOffender from '@/feathers/services/offender/details.service.js';
 import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
-// import router from '@/router/';
-// import svcDA from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 import transferModel from '@/models/transferModel.js';
-import scheduleModel from '@/models/scheduleModel.js';
 import transferReasonModel from '@/models/transferReasonModel.js';
 
 const actions = {
@@ -12,7 +9,6 @@ const actions = {
     rootState.app.loading = true;
     try {
       state.transferData = transferModel();
-      rootState.schedules.selSchedule = scheduleModel();
       state.selTransferReason = transferReasonModel();
 
       const query = {
@@ -21,13 +17,7 @@ const actions = {
         },
       };
 
-      console.log('readOffenderDetails(): query => ', query);
       const response = await somsOffender.find(query);
-      console.log('readOffenderDetails(): response => ', response);
-      console.log(
-        'readOffenderDetails(): transferData => ',
-        state.transferData
-      );
       if (response && response.data && response.data.length) {
         state.somsOffender = response.data[0];
         state.transferData.cdcrNumber = state.somsOffender.cdcrNumber;
@@ -39,7 +29,6 @@ const actions = {
           state.somsOffender.institutionId;
         state.transferData.releaseDate = state.somsOffender.releaseDate;
         state.transferData.ethnicity = state.somsOffender.ethnicity;
-        // state.transferData.caseFactor = state.somsOffender.caseFactor;
         state.transferData.housing = state.somsOffender.housingArea;
         state.transferData.securityLevel = state.somsOffender.securityLevel;
         state.transferData.tbCode = state.somsOffender.tbCode;
@@ -54,17 +43,6 @@ const actions = {
 
         // state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
         // state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
-
-        console.log(
-          'readOffenderDetails(): state.transferData => ',
-          state.transferData
-        );
-        // router.push({
-        //   name: 'Transfer Details',
-        //   params: {
-        //     cdcrNumber,
-        //   },
-        // });
       } else {
         dispatch(
           'app/SET_SNACKBAR',
@@ -93,12 +71,11 @@ const actions = {
     }
   },
   async saveForm({ state, rootState, dispatch }) {
-    console.log('saveForm(): state => ', state);
     if (rootState.schedules && rootState.schedules.selSchedule) {
       const schedules = rootState.schedules.schedules;
+      console.log('saveForm(): selSchedule', rootState.schedules.selschedule);
       const selSchedule = rootState.schedules.selSchedule;
       for (let schedule of schedules) {
-        console.log('saveForm(): schedule => ', schedule);
         if (schedule.title === selSchedule.title) {
           // FIXME Check to make sure fields are valid
           state.transferData.title = schedule.title;
@@ -193,7 +170,6 @@ const actions = {
           institution: institution,
         },
       };
-      // const response = await svcTransfers.find(filter);
       const response = await findAll(svcTransfers, filter);
       state.transfers = response.data;
     } catch (error) {
@@ -224,7 +200,6 @@ const actions = {
   updateTransfer: async ({ state, rootState }, transferObj) => {
     try {
       rootState.app.loading = true;
-      console.log('updateTransfer(): transferObj => ', transferObj);
       const response = await svcTransfers.patch(transferObj._id, transferObj);
       return response;
     } catch (error) {
