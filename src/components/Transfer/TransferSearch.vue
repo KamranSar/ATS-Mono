@@ -87,8 +87,6 @@
           this.transferData = txResp;
         }
 
-        console.log('transferData: ', this.transferData);
-        debugger;
         if (!this.transferData) {
           this.setSnackbar(
             `No record has been saved yet for cdcr number: ${this.somsCDCRNumber}`,
@@ -123,8 +121,6 @@
             }
           }
           let cdcrNumber = this.transferData.cdcrNumber;
-          console.log('$route: ', this.$route);
-          debugger;
           this.$router.push({
             name: 'Transfer Details',
             params: {
