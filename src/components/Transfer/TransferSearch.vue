@@ -78,12 +78,17 @@
       },
       async searchOffender() {
         await this.readOffenderDetails(this.somsCDCRNumber);
-        [this.transferData] = await this.readTransfers({
+        const txResp = await this.readTransfers({
           query: {
             cdcrNumber: this.somsCDCRNumber,
           },
         });
+        if (txResp && txResp.length) {
+          this.transferData = txResp;
+        }
 
+        console.log('transferData: ', this.transferData);
+        debugger;
         if (!this.transferData) {
           this.setSnackbar(
             `No record has been saved yet for cdcr number: ${this.somsCDCRNumber}`,
@@ -118,6 +123,8 @@
             }
           }
           let cdcrNumber = this.transferData.cdcrNumber;
+          console.log('$route: ', this.$route);
+          debugger;
           this.$router.push({
             name: 'Transfer Details',
             params: {
