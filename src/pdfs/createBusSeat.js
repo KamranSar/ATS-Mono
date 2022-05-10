@@ -5,6 +5,18 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const AGENCY = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
+/**
+ * The format all security levels should eventually have...
+ * The format that comes back from SOMS, Roman Numerals
+ */
+const SECURITY_LEVEL_FORMATS = {
+  I: 'Level 1',
+  II: 'Level 2',
+  III: 'Level 3',
+  IV: 'Level 4',
+  V: 'Level 5',
+};
+const UNKNOWN_LEVEL = 'Level Unknown';
 
 /**
  * Fetches all the endorsements for the location passed in or all of them if none
@@ -18,10 +30,10 @@ const AGENCY = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
  *  totals: _totalsModel()
  * }
  *
- * @param {Object} {selEndorsedTo}
+ * @param {String} selEndorsedTo
  * @returns {Object} An object with the keys set to the institutionId
  */
-async function _buildObjOfDestinations({ selEndorsedTo }) {
+async function _buildObjOfDestinations(selEndorsedTo) {
   // Factory function to build out the level object
   function _levelModel({
     scheduled = 0,
@@ -114,15 +126,38 @@ async function _buildObjOfDestinations({ selEndorsedTo }) {
       const inmatesDestination = objOfDestinations[inmate.destination];
 
       // Build out the level for the destination
-      if (
-        inmate.securityLevel &&
-        !(inmate.securityLevel in inmatesDestination.levels)
-      ) {
-        inmatesDestination.levels[inmate.securityLevel] = _levelModel();
-      }
-      const inmateLevel = inmatesDestination.levels[inmate.securityLevel];
+      let { securityLevel } = inmate;
+      if (securityLevel) {
+        // Determine what the security level format is...
+        Object.keys(SECURITY_LEVEL_FORMATS).forEach((romanNumeralLevel) => {
+          // I security level is in roman numeral, convert it to ... Level X
+          if (romanNumeralLevel === securityLevel) {
+            securityLevel = SECURITY_LEVEL_FORMATS[romanNumeralLevel];
+            return;
+          } else if (
+            securityLevel.includes(SECURITY_LEVEL_FORMATS[romanNumeralLevel])
+          ) {
+            securityLevel = SECURITY_LEVEL_FORMATS[romanNumeralLevel];
+            return;
+          }
+          // else if (
+          //   romanNumeralLevel === Object.keys(SECURITY_LEVEL_FORMATS).pop()
+          // ) {
+          //   // If on the last romanNumeralLevel, then no match found... set to unknown level
+          //   securityLevel = UNKNOWN_LEVEL;
+          // }
 
-      // FIXME: Are these types mutually exclusive
+          //  TODO: What is none of those formats exists...
+        });
+      } else {
+        securityLevel = UNKNOWN_LEVEL;
+      }
+
+      if (securityLevel && !(securityLevel in inmatesDestination.levels)) {
+        inmatesDestination.levels[securityLevel] = _levelModel();
+      }
+      const inmateLevel = inmatesDestination.levels[securityLevel];
+
       // Holds
       if (inmate.transferHolds) {
         // console.log(`\tHolding`);
@@ -147,9 +182,8 @@ async function _buildObjOfDestinations({ selEndorsedTo }) {
       destinationTotals.scheduled += inmateLevel.scheduled;
       destinationTotals.unscheduled += inmateLevel.unscheduled;
       destinationTotals.totalOfTotals += inmateLevel.total;
-
-      return objOfDestinations;
     }
+    return objOfDestinations;
   } catch (error) {
     console.error('Error fetching endorsements', error);
     return {};
@@ -181,51 +215,47 @@ function _buildDestination(destination) {
   return row;
 }
 
-function _buildSecurityLevels(securityLevels) {
+function _buildSecurityLevel(securityLevel, securityLevelObject) {
   const row = [];
-  console.log(Object.keys(securityLevels));
+  // Column 1 - Level
+  const levelCol = {
+    text: securityLevel,
+    style: 'tblEntry',
+    border: [false, false, false, false],
+  };
+  row.push(levelCol);
 
-  for (let sl of Object.keys(securityLevels)) {
-    // Column 1 - Level
-    const levelCol = {
-      text: sl,
-      style: 'tblEntry',
-      border: [false, false, false, false],
-    };
-    row.push(levelCol);
+  // Column 2 - Scheduled
+  const scheduledCol = {
+    text: securityLevelObject.scheduled,
+    style: 'tblEntry',
+    border: [false, false, false, false],
+  };
+  row.push(scheduledCol);
 
-    // Column 2 - Scheduled
-    const scheduledCol = {
-      text: securityLevels[sl].scheduled,
-      style: 'tblEntry',
-      border: [false, false, false, false],
-    };
-    row.push(scheduledCol);
+  // Column 3 - Unscheduled
+  const unScheduledCol = {
+    text: securityLevelObject.unscheduled,
+    style: 'tblEntry',
+    border: [false, false, false, false],
+  };
+  row.push(unScheduledCol);
 
-    // Column 3 - Unscheduled
-    const unScheduledCol = {
-      text: securityLevels[sl].unscheduled,
-      style: 'tblEntry',
-      border: [false, false, false, false],
-    };
-    row.push(unScheduledCol);
+  // Column 4 - Hold
+  const holdsCol = {
+    text: securityLevelObject.holds,
+    style: 'tblEntry',
+    border: [false, false, false, false],
+  };
+  row.push(holdsCol);
 
-    // Column 4 - Hold
-    const holdsCol = {
-      text: securityLevels[sl].holds,
-      style: 'tblEntry',
-      border: [false, false, false, false],
-    };
-    row.push(holdsCol);
-
-    // Column 5 - Total
-    const totalCol = {
-      text: securityLevels[sl].total,
-      style: 'tblEntry',
-      border: [false, false, false, false],
-    };
-    row.push(totalCol);
-  }
+  // Column 5 - Total
+  const totalCol = {
+    text: securityLevelObject.total,
+    style: 'tblEntry',
+    border: [false, false, false, false],
+  };
+  row.push(totalCol);
 
   return row;
 }
@@ -502,7 +532,16 @@ const createBusSeat = async (selEndorsedTo) => {
     for (const destination in objOfDestinations) {
       // console.log(`Building ${destination}`);
       data.push(_buildDestination(objOfDestinations[destination]));
-      data.push(_buildSecurityLevels(objOfDestinations[destination].levels));
+      for (let securityLevel of Object.keys(
+        objOfDestinations[destination].levels
+      )) {
+        data.push(
+          _buildSecurityLevel(
+            securityLevel,
+            objOfDestinations[destination].levels[securityLevel]
+          )
+        );
+      }
       data.push(_buildTotals(objOfDestinations[destination].totals));
     }
 
@@ -514,7 +553,7 @@ const createBusSeat = async (selEndorsedTo) => {
       store.dispatch('app/SET_SNACKBAR', {
         top: true,
         center: true,
-        message: 'Could not create CDCR Bus Seat Report PDF Document!',
+        message: `No records found for endorsed institution ${selEndorsedTo}`,
       });
     }
   } catch (er) {

@@ -275,47 +275,7 @@
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" lg="3">
-          <v-card class="blue-grey lighten-4" min-width="200px" height="100%">
-            <v-card-title style="line-height: 1rem">
-              <v-row>
-                <v-col>
-                  <span class="title">Bus Seat Report</span>
-                  <br />
-                  <!-- Line below is colored the same as background to hide text & to make things line up -->
-                  <span style="font-size: 12px; color: #cfd8dc">.</span>
-                </v-col>
-              </v-row>
-            </v-card-title>
-            <v-row no-gutters class="mx-4">
-              <v-col cols="6">
-                <v-select
-                  label="Endorsed To"
-                  placeholder="Endorsed To"
-                  :items="listOfInstitutions"
-                  item-text="institutionName"
-                  item-value="institutionId"
-                  v-model="selEndorsedTo"
-                  class="vselectTxtColor"
-                  clearable
-                  dense
-                >
-                  <template v-slot:item="{ item, on, attrs }">
-                    <v-list-item dense v-on="on" v-bind="attrs">
-                      <v-list-item-title>{{
-                        `${item.institutionId} - ${item.institutionName}`
-                      }}</v-list-item-title>
-                    </v-list-item>
-                  </template></v-select
-                >
-              </v-col>
-              <v-spacer />
-              <v-col cols="auto">
-                <v-icon large color="primary" @click="createBusSeat">
-                  mdi-file-document
-                </v-icon>
-              </v-col>
-            </v-row>
-          </v-card>
+          <BusSeatReportCard />
         </v-col>
       </v-row>
     </v-card>
@@ -330,9 +290,9 @@
   import pdfFonts from 'pdfmake/build/vfs_fonts';
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
-  import createBusSeat from '@/pdfs/createBusSeat.js';
   import createBusOrderSeat from '@/pdfs/createBusOrderSeat.js';
   import BackToHome from '@/components/util/BackToHome.vue';
+  import BusSeatReportCard from '@/components/Reports/BusSeatReportCard.vue';
 
   export default {
     name: 'Reports',
@@ -340,6 +300,7 @@
       DateRangePicker,
       InstitutionDropdown,
       BackToHome,
+      BusSeatReportCard,
     },
     data: (vm) => ({
       loading: false,
@@ -1860,13 +1821,6 @@
 
         // console.log('create7344PDF(): dd => ', dd);
         pdfMake.createPdf(dd).download(fileName);
-      },
-      // createBusSeat()
-      // Builds data for Bus Seat report
-      // Calls createBusSeatPDF(data) to generate PDF report file
-      // *******************************
-      createBusSeat() {
-        createBusSeat(this.selEndorsedTo);
       },
       createBusOrderSeat() {
         createBusOrderSeat({

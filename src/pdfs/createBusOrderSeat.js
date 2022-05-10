@@ -481,14 +481,14 @@ const createBusOrderSeat = async ({
       row = [];
       console.log('createBusOrderSeat(): data => ', data);
     }
-    if (data) {
+    if (data.length) {
       _createBusOrderSeatPDF(data);
     } else {
       // error message
       store.dispatch('app/SET_SNACKBAR', {
         top: true,
         center: true,
-        messsage: 'Could not create CDCR Bus Order Seat Request PDF Document!',
+        message: `No records found for endorsed institution ${selectedInstitution.institutionName}`,
       });
     }
   } catch (ex) {
