@@ -84,7 +84,7 @@
           },
         });
         if (txResp && txResp.length) {
-          this.transferData = txResp;
+          this.transferData = txResp[0];
         }
 
         if (!this.transferData) {
