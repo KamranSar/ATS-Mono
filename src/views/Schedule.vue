@@ -689,6 +689,16 @@
                 $or: [{ scheduleId: newId }, { isScheduled: false }],
               },
             };
+
+            // This accounts for schedules where the transfer date has past.
+            let today = Date.now();
+            let xfrDate = new Date(this.selSchedule.transferDate);
+            if (today > xfrDate) {
+              filter.query = {
+                scheduleId: newId,
+              };
+            }
+
             let response = await this.readTransfers(filter);
             if (response) {
               this.endorsements = response;
