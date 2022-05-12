@@ -46,75 +46,78 @@
         @item-selected="onSelectedSchedule"
       >
         <template v-slot:top>
-          <v-toolbar
+          <v-card-text
+            class="py-0"
             flat
             color="white"
             v-show="enableEditing && hasInstitutionRole"
           >
-            <v-col cols="1" sm="2" lg="1" align-self="baseline">
-              <v-text-field
-                label="Schedule"
-                v-model="editSchedule.title"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2" sm="4" lg="2" align-self="baseline">
-              <!-- 
+            <v-row>
+              <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <v-text-field
+                  label="Schedule"
+                  v-model="editSchedule.title"
+                ></v-text-field>
+              </v-col>
+              <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <!-- 
                 Filtering out selectedInstitution from the list
                 Destination cannot be the origin.
               -->
-              <v-select
-                label="Destination"
-                v-model="editSchedule.destination"
-                :items="
-                  listOfInstitutions.filter(
-                    (inst) =>
-                      selectedInstitution &&
-                      selectedInstitution.institutionName &&
-                      inst.institutionName !==
-                        selectedInstitution.institutionName
-                  )
-                "
-                item-text="institutionId"
-                item-value="institutionId"
-                clearable
-              ></v-select>
-            </v-col>
-            <v-col cols="2" sm="4" lg="2" align-self="baseline">
-              <v-select
-                label="Vias"
-                v-model="editSchedule.vias"
-                :items="Vias"
-                item-text="institutionName"
-                item-value="institutionName"
-                multiple
-                clearable
-              ></v-select>
-            </v-col>
-            <v-col cols="2" sm="4" lg="2" align-self="start">
-              <DatePicker
-                label="Transfer Date"
-                v-model="editSchedule.transferDate"
-                align="top"
-                pickerType="DATE"
-              />
-            </v-col>
-            <v-col cols="1" sm="2" lg="1" align-self="baseline">
-              <v-text-field
-                label="Seats"
-                v-model="editSchedule.seats"
-              ></v-text-field>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col cols="1" sm="2" lg="1" align-self="center">
-              <v-btn class="secondary ma-2 btns" @click="saveSchedule()">
-                <!-- {{ btnAddEditSchedule }} -->
-                SAVE
-              </v-btn>
-            </v-col>
-            <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
-              <v-btn class="secondary ma-2 btns">Filter</v-btn>
-            </v-col>
-          </v-toolbar>
+                <v-select
+                  label="Destination"
+                  v-model="editSchedule.destination"
+                  :items="
+                    listOfInstitutions.filter(
+                      (inst) =>
+                        selectedInstitution &&
+                        selectedInstitution.institutionName &&
+                        inst.institutionName !==
+                          selectedInstitution.institutionName
+                    )
+                  "
+                  item-text="institutionId"
+                  item-value="institutionId"
+                  clearable
+                ></v-select>
+              </v-col>
+              <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <v-select
+                  label="Vias"
+                  v-model="editSchedule.vias"
+                  :items="Vias"
+                  item-text="institutionName"
+                  item-value="institutionName"
+                  multiple
+                  clearable
+                ></v-select>
+              </v-col>
+              <v-col xs="12" sm="12" md="4" lg="2" align-self="start">
+                <DatePicker
+                  label="Transfer Date"
+                  v-model="editSchedule.transferDate"
+                  align="top"
+                  pickerType="DATE"
+                />
+              </v-col>
+              <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <v-text-field
+                  label="Seats"
+                  v-model="editSchedule.seats"
+                ></v-text-field>
+              </v-col>
+              <!-- <v-spacer></v-spacer> -->
+              <v-col xs="12" sm="12" md="3" lg="1" align-self="center">
+                <v-btn class="secondary ma-2 btns" @click="saveSchedule()">
+                  <!-- {{ btnAddEditSchedule }} -->
+                  SAVE
+                </v-btn>
+              </v-col>
+              <!-- <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
+                <v-btn class="secondary ma-2 btns">Filter</v-btn>
+              </v-col> -->
+            </v-row>
+          </v-card-text>
         </template>
         <template v-slot:item.print135="{ item }">
           <v-icon
@@ -162,88 +165,90 @@
           class="ma-2"
         >
           <template v-slot:top>
-            <v-toolbar
+            <v-card-text
+              class="py-0 mt-4"
               flat
               color="white"
               v-show="enableEditing && hasInstitutionRole"
             >
-              <v-col cols="1" sm="2" lg="1" align-self="baseline">
-                <v-text-field
-                  label="CDCR #"
-                  v-model="editEndorsement.cdcrNumber"
-                  @blur="getOffender"
-                  @change="onChangeCDCRNumber"
-                  @keyup="onChangeCDCRNumber"
-                  clearable
-                  @click:clear="onClearCDCRNumber"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="1" sm="3" lg="1" align-self="baseline">
-                <v-text-field
-                  label="Last Name"
-                  v-model="editEndorsement.lastName"
-                  readonly
-                ></v-text-field>
-              </v-col>
-              <v-col cols="1" sm="3" lg="1" align-self="baseline">
-                <v-text-field
-                  label="First Name"
-                  v-model="editEndorsement.firstName"
-                  readonly
-                ></v-text-field>
-              </v-col>
-              <v-col cols="1" sm="2" lg="1" align-self="baseline">
-                <v-text-field
-                  label="Housing"
-                  v-model="editEndorsement.housing"
-                  readonly
-                ></v-text-field>
-              </v-col>
-              <v-col cols="2" sm="3" lg="2" align-self="baseline">
-                <v-select
-                  label="Specific Transfer Reason"
-                  v-model="selTransferReason"
-                  return-object
-                  :items="reasons"
-                  item-value="reasonCode"
-                  item-text="reasonDesc"
-                  class="mt-4 pl-1"
-                  hide-details="true"
-                  clearable
-                  @change="transferReasonSelected"
-                >
-                  <template v-slot:item="{ item, on, attrs }">
-                    <v-list-item v-on="on" v-bind="attrs">
-                      <v-list-item-content>
-                        {{ item.reasonCode }} - {{ item.reasonDesc }}
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-select>
-              </v-col>
-              <v-col cols="2" sm="3" lg="2" align-self="baseline">
-                <v-text-field
-                  label="Endorsement Date"
-                  v-model="editEndorsement.currentEndorsementDate"
-                  readonly
-                ></v-text-field>
-              </v-col>
-              <v-spacer></v-spacer>
-              <v-col cols="1" sm="2" lg="1" align-self="center">
-                <v-btn
-                  :disabled="disableSaveEndorsementButton"
-                  class="secondary ma-2 btns"
-                  @click="saveEndorsement()"
-                >
-                  SAVE
-                </v-btn>
-              </v-col>
-              <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
+              <v-row>
+                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                  <v-text-field
+                    label="CDCR #"
+                    v-model="editEndorsement.cdcrNumber"
+                    @blur="getOffender"
+                    @change="onChangeCDCRNumber"
+                    @keyup="onChangeCDCRNumber"
+                    clearable
+                    @click:clear="onClearCDCRNumber"
+                  ></v-text-field>
+                </v-col>
+                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                  <v-text-field
+                    label="Last Name"
+                    v-model="editEndorsement.lastName"
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                  <v-text-field
+                    label="First Name"
+                    v-model="editEndorsement.firstName"
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                  <v-text-field
+                    label="Housing"
+                    v-model="editEndorsement.housing"
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col xs="12" sm="12" md="4" lg="2" align-self="baseline">
+                  <v-select
+                    label="Specific Transfer Reason"
+                    v-model="selTransferReason"
+                    return-object
+                    :items="reasons"
+                    item-value="reasonCode"
+                    item-text="reasonDesc"
+                    class="mt-4 pl-1"
+                    hide-details="true"
+                    clearable
+                    @change="transferReasonSelected"
+                  >
+                    <template v-slot:item="{ item, on, attrs }">
+                      <v-list-item v-on="on" v-bind="attrs">
+                        <v-list-item-content>
+                          {{ item.reasonCode }} - {{ item.reasonDesc }}
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                  </v-select>
+                </v-col>
+                <v-col xs="12" sm="12" md="4" lg="2" align-self="baseline">
+                  <v-text-field
+                    label="Endorsement Date"
+                    v-model="editEndorsement.currentEndorsementDate"
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <!-- <v-spacer></v-spacer> -->
+                <v-col xs="12" sm="12" md="3" lg="1" align-self="center">
+                  <v-btn
+                    :disabled="disableSaveEndorsementButton"
+                    class="secondary ma-2 btns"
+                    @click="saveEndorsement()"
+                  >
+                    SAVE
+                  </v-btn>
+                </v-col>
+                <!-- <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
                 <v-btn class="secondary ma-2 btns">Filter</v-btn>
-              </v-col>
-            </v-toolbar>
+              </v-col> -->
+              </v-row>
+            </v-card-text>
           </template>
-
           <template v-slot:item.cdcrNumber="{ item }">
             <router-link
               :to="{
@@ -256,7 +261,6 @@
           <template v-slot:item.isScheduled="{ item }">
             {{ item.isScheduled ? 'Y' : 'N' }}
           </template>
-
           <template v-slot:item.actions="{ item }">
             <v-icon
               small
