@@ -49,10 +49,7 @@
           <v-toolbar
             flat
             color="white"
-            v-show="
-              enableEditing &&
-              $hasAnyRoles(['Institution Administrator', 'Institution User'])
-            "
+            v-show="enableEditing && hasInstitutionRole"
           >
             <v-col cols="1" sm="2" lg="1" align-self="baseline">
               <v-text-field
@@ -129,10 +126,20 @@
           </v-icon>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="openSchedule(item)">
+          <v-icon
+            small
+            class="mr-2"
+            @click="openSchedule(item)"
+            v-show="enableEditing && hasInstitutionRole"
+          >
             mdi-pencil
           </v-icon>
-          <v-icon small @click="scheduleDelete(item)">mdi-delete</v-icon>
+          <v-icon
+            small
+            @click="scheduleDelete(item)"
+            v-show="enableEditing && hasInstitutionRole"
+            >mdi-delete</v-icon
+          >
         </template>
         <template v-slot:no-data>
           <span>No Results</span>
@@ -158,10 +165,7 @@
             <v-toolbar
               flat
               color="white"
-              v-show="
-                enableEditing &&
-                $hasAnyRoles(['Institution Administrator', 'Institution User'])
-              "
+              v-show="enableEditing && hasInstitutionRole"
             >
               <v-col cols="1" sm="2" lg="1" align-self="baseline">
                 <v-text-field
@@ -254,10 +258,20 @@
           </template>
 
           <template v-slot:item.actions="{ item }">
-            <v-icon small class="mr-2" @click="openEndorsement(item)">
+            <v-icon
+              small
+              class="mr-2"
+              @click="openEndorsement(item)"
+              v-show="enableEditing && hasInstitutionRole"
+            >
               mdi-pencil
             </v-icon>
-            <v-icon small @click="deleteEndorsement(item)">mdi-delete</v-icon>
+            <v-icon
+              small
+              @click="deleteEndorsement(item)"
+              v-show="enableEditing && hasInstitutionRole"
+              >mdi-delete</v-icon
+            >
           </template>
           <template v-slot:item.print="{ item }">
             <v-icon
@@ -404,6 +418,12 @@
       ...get('users', ['loggedInUser']),
       ...get('reasons', ['reasons']),
       ...get('institutions', ['getInstitutionById']),
+      hasInstitutionRole() {
+        return this.$hasAnyRoles([
+          'Institution Administrator',
+          'Institution User',
+        ]);
+      },
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
