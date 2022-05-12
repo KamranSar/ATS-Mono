@@ -125,34 +125,34 @@ async function _buildObjOfDestinations(selEndorsedTo) {
       }
       const inmatesDestination = objOfDestinations[inmate.destination];
 
-      // Build out the level for the destination
+      // Format the security level so they are all the same.
       let { securityLevel } = inmate;
+      let formattedSecurityLevel = '';
       if (securityLevel) {
         // Determine what the security level format is...
         Object.keys(SECURITY_LEVEL_FORMATS).forEach((romanNumeralLevel) => {
-          // I security level is in roman numeral, convert it to ... Level X
-          if (romanNumeralLevel === securityLevel) {
-            securityLevel = SECURITY_LEVEL_FORMATS[romanNumeralLevel];
-            return;
+          // If security level is in roman numeral, convert it to ... Level X
+          if (securityLevel === romanNumeralLevel) {
+            formattedSecurityLevel = SECURITY_LEVEL_FORMATS[romanNumeralLevel];
           } else if (
+            // If the securityLevel is in `Level X (99)` format...
             securityLevel.includes(SECURITY_LEVEL_FORMATS[romanNumeralLevel])
           ) {
-            securityLevel = SECURITY_LEVEL_FORMATS[romanNumeralLevel];
-            return;
+            formattedSecurityLevel = SECURITY_LEVEL_FORMATS[romanNumeralLevel];
+          } else if (
+            romanNumeralLevel === Object.keys(SECURITY_LEVEL_FORMATS).pop() &&
+            !formattedSecurityLevel
+          ) {
+            // If on the last romanNumeralLevel and formattedSecurityLevel is still not set... set it to unknown level
+            formattedSecurityLevel = UNKNOWN_LEVEL;
           }
-          // else if (
-          //   romanNumeralLevel === Object.keys(SECURITY_LEVEL_FORMATS).pop()
-          // ) {
-          //   // If on the last romanNumeralLevel, then no match found... set to unknown level
-          //   securityLevel = UNKNOWN_LEVEL;
-          // }
-
-          //  TODO: What is none of those formats exists...
         });
+        securityLevel = formattedSecurityLevel;
       } else {
         securityLevel = UNKNOWN_LEVEL;
       }
 
+      // Build out the level for the destination
       if (securityLevel && !(securityLevel in inmatesDestination.levels)) {
         inmatesDestination.levels[securityLevel] = _levelModel();
       }
