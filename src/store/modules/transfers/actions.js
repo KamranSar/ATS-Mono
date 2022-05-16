@@ -3,6 +3,7 @@ import somsOffender from '@/feathers/services/offender/details.service.js';
 import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 import transferModel from '@/models/transferModel.js';
 import transferReasonModel from '@/models/transferReasonModel.js';
+import formatCaseFactors from '@/helpers/formatCaseFactors';
 
 const actions = {
   async readOffenderDetails({ state, rootState, dispatch }, cdcrNumber) {
@@ -29,6 +30,7 @@ const actions = {
           originalEndorsementDate: state.somsOffender.signedDate,
           expirationEndorsementDate: state.somsOffender.expirationDate,
           endorsedToName: state.somsOffender.endorsedInstitution,
+          caseFactor: formatCaseFactors(state.somsOffender),
         });
 
         // state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
@@ -63,7 +65,7 @@ const actions = {
   async saveForm({ state, rootState, dispatch }) {
     if (rootState.schedules && rootState.schedules.selSchedule) {
       const schedules = rootState.schedules.schedules;
-      console.log('saveForm(): selSchedule', rootState.schedules.selschedule);
+      // console.log('saveForm(): selSchedule', rootState.schedules.selschedule);
       const selSchedule = rootState.schedules.selSchedule;
       for (let schedule of schedules) {
         if (schedule.title === selSchedule.title) {
@@ -77,7 +79,7 @@ const actions = {
         }
       }
     } else {
-      console.log('saveForm(): rootState.schedules => ', rootState.schedules);
+      // console.log('saveForm(): rootState.schedules => ', rootState.schedules);
     }
 
     console.log('saveForm(): transferData => ', state.transferData);
