@@ -302,7 +302,7 @@
   } from '@/components/Schedule/constants.js';
   import BackToHome from '@/components/util/BackToHome.vue';
   // import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
-  import formatCaseFactors from '@/helper/formatCaseFactors.js';
+  import formatCaseFactors from '@/helpers/formatCaseFactors.js';
   export default {
     components: { DatePicker, InstitutionDropdown, BackToHome },
     name: 'Schedules',
