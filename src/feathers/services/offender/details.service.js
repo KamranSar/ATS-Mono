@@ -12,22 +12,20 @@ async function forceBoolean(input, fieldNames) {
       input.map((current) => forceBoolean(current, fieldNames))
     );
   }
+
   const data = JSON.parse(JSON.stringify(input)); // copy the input
-  console.log('forceBoolean(): input(before) => ', input);
+  // console.log('forceBoolean(): input(before) => ', input);
 
   for (let field of fieldNames) {
     if (data.CaseFactors[0][field] !== undefined) {
       const val = data.CaseFactors[0][field];
       if (val) {
-        if (typeof val === 'string') {
-          const valtmp = val.toLowerCase();
-          if (valtmp === 'true' || valtmp === 'yes' || valtmp === 'y') {
-            data.CaseFactors[0][field] = true;
-          } else {
-            data.CaseFactors[0][field] = false;
-          }
-        } else if (typeof val === 'boolean') {
+        if (typeof val === 'boolean') {
           // skip, already a boolean
+        } else if (typeof val === 'string') {
+          const valtmp = val.toLowerCase();
+          const STR_TRUE = ['true', 'yes', 'y'];
+          data.CaseFactors[0][field] = STR_TRUE.includes(valtmp); // `String.includes()` returns true or false as appropriate
         } else if (typeof val === 'number') {
           if (val) {
             data.CaseFactors[0][field] = Boolean(data[field]);
@@ -41,7 +39,7 @@ async function forceBoolean(input, fieldNames) {
     }
   }
 
-  console.log('forceBoolean(): data(After) => ', data);
+  // console.log('forceBoolean(): data(After) => ', data);
   return data;
 }
 

@@ -20,26 +20,16 @@ const actions = {
       const response = await somsOffender.find(query);
       if (response && response.data && response.data.length) {
         state.somsOffender = response.data[0];
-        state.transferData.cdcrNumber = state.somsOffender.cdcrNumber;
-        state.transferData.offenderId = state.somsOffender.offenderId;
-        state.transferData.firstName = state.somsOffender.firstName;
-        state.transferData.lastName = state.somsOffender.lastName;
-        state.transferData.institutionName = state.somsOffender.institutionName;
-        state.transferData.institutionPartyId =
-          state.somsOffender.institutionId;
-        state.transferData.releaseDate = state.somsOffender.releaseDate;
-        state.transferData.ethnicity = state.somsOffender.ethnicity;
-        state.transferData.housing = state.somsOffender.housingArea;
-        state.transferData.securityLevel = state.somsOffender.securityLevel;
-        state.transferData.tbCode = state.somsOffender.tbCode;
-        state.transferData.currentEndorsementDate =
-          state.somsOffender.endorsedDate;
-        state.transferData.originalEndorsementDate =
-          state.somsOffender.signedDate;
-        state.transferData.expirationEndorsementDate =
-          state.somsOffender.expirationDate;
-        state.transferData.endorsedToName =
-          state.somsOffender.endorsedInstitution;
+        // Some fields don't match up entirely from SOMS to Transfers
+        state.transferData = transferModel({
+          ...state.somsOffender,
+          institutionPartyId: state.somsOffender.institutionId,
+          housing: state.somsOffender.housingArea,
+          currentEndorsementDate: state.somsOffender.endorsedDate,
+          originalEndorsementDate: state.somsOffender.signedDate,
+          expirationEndorsementDate: state.somsOffender.expirationDate,
+          endorsedToName: state.somsOffender.endorsedInstitution,
+        });
 
         // state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
         // state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also

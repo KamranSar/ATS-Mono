@@ -67,15 +67,7 @@
                 <v-select
                   label="Destination"
                   v-model="editSchedule.destination"
-                  :items="
-                    listOfInstitutions.filter(
-                      (inst) =>
-                        selectedInstitution &&
-                        selectedInstitution.institutionName &&
-                        inst.institutionName !==
-                          selectedInstitution.institutionName
-                    )
-                  "
+                  :items="listOfDestinations"
                   item-text="institutionId"
                   item-value="institutionId"
                   clearable
@@ -298,7 +290,6 @@
 
 <script>
   import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
-  // import svcSchedule from '@/feathers/services/offender/details.service.js';
   import { get, sync, call } from 'vuex-pathify';
   import DatePicker from '@/components/util/DatePicker.vue';
   import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
@@ -428,6 +419,19 @@
           'Institution User',
         ]);
       },
+      listOfDestinations() {
+        return this.listOfInstitutions
+          .filter(
+            (inst) =>
+              this.selectedInstitution &&
+              this.selectedInstitution.institutionName &&
+              inst.institutionName !== this.selectedInstitution.institutionName
+          )
+          .sort(function (a, b) {
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+            return a.institutionId.localeCompare(b.institutionId);
+          });
+      },
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
@@ -485,10 +489,10 @@
         if (!this.editEndorsement.cdcrNumber) {
           return;
         }
-
         if (this.endorsements && this.endorsements.length > 0) {
-          const item = this.endorsements.cdcrNumber.find(
-            this.editEndorsement.cdcrNumber
+          const item = this.endorsements.find(
+            (offender) =>
+              offender.cdcrNumber === this.editEndorsement.cdcrNumber
           );
           if (item) {
             this.openEndorsement(item);

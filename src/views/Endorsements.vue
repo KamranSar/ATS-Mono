@@ -100,7 +100,7 @@
         </v-card-title>
 
         <v-card-text>
-          <v-textarea v-model="remarks" />
+          <v-textarea v-model="transferData.inHouseRemarks" />
         </v-card-text>
 
         <v-divider></v-divider>
@@ -132,7 +132,6 @@
     name: 'Endorsements',
     components: { BackToHome, InstitutionDropdown },
     data: () => ({
-      remarks: '',
       dlgRemarks: false,
       endorsementSearch: '',
       ENDORSEMENT_HEADERS,
@@ -167,7 +166,6 @@
       },
       async openRemarks(item) {
         if (!item) {
-          // Shouldn't ever get to here..
           this.setSnackbar(
             'ERROR ! Refresh the page and try again.',
             'error',
@@ -188,7 +186,6 @@
           let response = await this.readTransfers(filter);
           if (response && response.length > 0) {
             this.transferData = response[0];
-            this.remarks = this.transferData.inHouseRemarks;
           } else {
             await this.readOffenderDetails(item.cdcrNumber);
           }
@@ -204,12 +201,9 @@
       cancelRemarks() {
         this.dlgRemarks = false;
         this.transferData = transferModel();
-        this.remarks = '';
       },
       async saveRemarks() {
         try {
-          this.transferData.inHouseRemarks = this.remarks;
-
           let objIns = this.listOfInstitutions.find(
             (inst) =>
               this.transferData &&
