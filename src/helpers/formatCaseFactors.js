@@ -4,6 +4,12 @@
  * @returns {String} case factors as a string
  */
 const formatCaseFactors = (item) => {
+  if (!item && !item.CaseFactors && item.CaseFactors.length === 0) {
+    // item is empty
+    // console.log('ERROR! Schedule::formatCaseFactors(): item => ', item);
+    return;
+  }
+
   // console.log('formatCaseFactors(): item => ', item);
   const cf = [];
   // console.log(
