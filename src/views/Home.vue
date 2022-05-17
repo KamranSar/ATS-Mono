@@ -40,7 +40,11 @@
       @keypress="filterTransfers"
       :loading="loading"
       loading-text="Syncing Data with SOMS... Please wait"
-      no-data-text="No Pending Departures"
+      :no-data-text="
+        selectedInstitution && selectedInstitution.institutionName
+          ? 'No Pending Departures'
+          : NO_INST_TEXT
+      "
       no-results-text="No Departing Offender Data Found"
     >
       <template v-slot:top>
@@ -97,7 +101,11 @@
       class="elevation-1 mx-4 mb-4 pa-4"
       :search="arrivalSearch"
       @keypress="filterOffenderArrivals"
-      no-data-text="No Pending Arrivals"
+      :no-data-text="
+        selectedInstitution && selectedInstitution.institutionName
+          ? 'No Pending Arrivals'
+          : NO_INST_TEXT
+      "
       no-results-text="No Arriving Offender Data Found"
     >
       <template v-slot:top>
@@ -173,9 +181,10 @@
       arrivals: [],
       DEPARTURE_HEADERS,
       ARRIVAL_HEADERS,
+      NO_INST_TEXT: 'Select an institution from the dropdown',
     }),
     async mounted() {
-      this.onChangeInstitution();
+      // this.onChangeInstitution();
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
@@ -261,6 +270,11 @@
         }
       },
       onChangeInstitution() {
+        if (!this.selectedInstitution) {
+          this.departures = [];
+          this.arrivals = [];
+          return;
+        }
         this.getDepartures();
         this.getArrivals();
       },
