@@ -177,12 +177,20 @@ async function _buildObjOfDestinations(selEndorsedTo) {
       if (!('totals' in inmatesDestination)) {
         inmatesDestination.totals = _totalsModel();
       }
-      const destinationTotals = inmatesDestination.totals;
-      destinationTotals.holds += inmateLevel.holds;
-      destinationTotals.scheduled += inmateLevel.scheduled;
-      destinationTotals.unscheduled += inmateLevel.unscheduled;
-      destinationTotals.totalOfTotals += inmateLevel.total;
     }
+
+    // Finally update the totals for each destination
+    Object.keys(objOfDestinations).forEach((dest) => {
+      Object.keys(objOfDestinations[dest].levels).forEach((level) => {
+        const destinationTotals = objOfDestinations[dest].totals;
+        const destinationLevel = objOfDestinations[dest].levels[level];
+        destinationTotals.holds += destinationLevel.holds;
+        destinationTotals.scheduled += destinationLevel.scheduled;
+        destinationTotals.unscheduled += destinationLevel.unscheduled;
+        destinationTotals.totalOfTotals += destinationLevel.total;
+        // console.log('destinationLevel: ', destinationLevel);
+      });
+    });
     return objOfDestinations;
   } catch (error) {
     console.error('Error fetching endorsements', error);

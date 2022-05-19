@@ -568,18 +568,18 @@
         let dtLabel =
           'The following identified persons will be transferred this date';
         let xfrNum = this.schedules.length;
-        let title = this.schedules[0].title;
-        let to = this.schedules[0].destination;
-        let from = this.getInstitutionId(this.schedules[0].origin);
-        let vias = this.schedules[0].vias;
-        let xfrDate = this.schedules[0].transferDate;
+        let title = this.selSchedule.title;
+        let to = this.selSchedule.destination;
+        let from = this.getInstitutionId(this.selSchedule.origin);
+        let vias = this.selSchedule.vias;
+        let xfrDate = this.selSchedule.transferDate;
 
         let today = new Date().toISOString();
         let fileName = `135_${today}.pdf`;
         if (data.length === 1) {
           fileName = `135_${this.cdcrNum}_${today}.pdf`;
         } else {
-          fileName = `135_${this.schedules[0].title}_${today}.pdf`;
+          fileName = `135_${this.selSchedule.title}_${today}.pdf`;
         }
 
         let dd = {
