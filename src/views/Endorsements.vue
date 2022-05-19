@@ -127,6 +127,7 @@
     ENDORSEMENT_HEADERS,
     ENDORSEMENT_OPTIONS,
   } from '@/components/Endorsements/constants.js';
+  import scheduleModel from '@/models/scheduleModel';
 
   export default {
     name: 'Endorsements',
@@ -145,6 +146,7 @@
       },
     }),
     async mounted() {
+      this.selSchedule = scheduleModel(); // Reset selected schedule when entering Endorsements page.
       await this.getEndorsements(this.selectedInstitution);
     },
     methods: {
@@ -298,6 +300,7 @@
     computed: {
       ...get('app', ['loading']),
       ...sync('transfers', ['transferData']),
+      ...sync('schedules', ['selSchedule']),
       ...sync('institutions', ['selectedInstitution']),
       ...get('institutions', ['listOfInstitutions', 'getInstitutionByName']),
       ...get('endorsements', ['endorsements']),
