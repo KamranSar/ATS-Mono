@@ -84,15 +84,18 @@ const actions = {
 
     console.log('saveForm(): transferData => ', state.transferData);
     try {
+      let response = [];
       if (state.transferData._id) {
-        return await dispatch('updateTransfer', state.transferData);
-        // const response = await dispatch('updateTransfer', state.transferData);
-        // return response;
+        // return await dispatch('updateTransfer', state.transferData);
+        response = await dispatch('updateTransfer', state.transferData);
       } else {
-        return await dispatch('createTransfer', state.transferData);
-        // const response = await dispatch('createTransfer', state.transferData);
-        // return response;
+        // return await dispatch('createTransfer', state.transferData);
+        response = await dispatch('createTransfer', state.transferData);
       }
+      if (response) {
+        state.transferData = response;
+      }
+      return response;
     } catch (ex) {
       console.error(ex);
     }

@@ -212,32 +212,22 @@
               this.transferData.institutionName &&
               inst.institutionName === this.transferData.institutionName
           );
-          if (!this.transferData.institutionName) {
+          if (objIns) {
             this.transferData.institutionName = objIns.institutionName;
-          }
-          if (!this.transferData.institutionId) {
             this.transferData.institutionId = objIns.institutionId;
-          }
-          if (!this.transferData.institutionPartyId) {
             this.transferData.institutionPartyId = objIns.institutionPartyId;
           }
-
           objIns = this.listOfInstitutions.find(
             (inst) =>
               this.transferData &&
               this.transferData.endorsedToName &&
               inst.institutionName === this.transferData.endorsedToName
           );
-          if (!this.transferData.endorsedToName) {
+          if (objIns) {
             this.transferData.endorsedToName = objIns.institutionName;
-          }
-          if (!this.transferData.endorsedToId) {
             this.transferData.endorsedToId = objIns.institutionId;
-          }
-          if (!this.transferData.endorsedToPartyId) {
             this.transferData.endorsedToPartyId = objIns.institutionPartyId;
           }
-
           const response = await this.saveForm();
 
           if (response) {

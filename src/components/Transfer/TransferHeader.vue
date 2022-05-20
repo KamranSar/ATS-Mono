@@ -200,27 +200,16 @@
       async saveTransfer() {
         this.dlgSaveForm = false;
         try {
-          // console.log(
-          //   'saveTransfer(): this.listOfInstitutions => ',
-          //   this.listOfInstitutions
-          // );
-          // console.log(
-          //   'saveTransfer(): this.transferData => ',
-          //   this.transferData
-          // );
           let objIns = this.listOfInstitutions.find(
             (inst) =>
               this.transferData &&
               this.transferData.institutionName &&
               this.transferData.institutionName === inst.institutionName
           );
-          // console.log('saveRemarks(): objIns => ', objIns);
           if (objIns) {
+            this.transferData.institutionName = objIns.institutionName;
             this.transferData.institutionId = objIns.institutionId;
-            // console.log(
-            //   'saveTransfer(): this.transferData.institutionId => ',
-            //   this.transferData.institutionId
-            // );
+            this.transferData.institutionPartyId = objIns.institutionPartyId;
           }
 
           this.transferData.caseFactor = formatCaseFactors(this.somsOffender);
@@ -232,15 +221,9 @@
               inst.institutionName === this.transferData.endorsedToName
           );
           if (objIns) {
-            if (!this.transferData.endorsedToName) {
-              this.transferData.endorsedToName = objIns.institutionName;
-            }
-            if (!this.transferData.endorsedToId) {
-              this.transferData.endorsedToId = objIns.institutionId;
-            }
-            if (!this.transferData.endorsedToPartyId) {
-              this.transferData.endorsedToPartyId = objIns.institutionPartyId;
-            }
+            this.transferData.endorsedToName = objIns.institutionName;
+            this.transferData.endorsedToId = objIns.institutionId;
+            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
           }
 
           const response = await this.saveForm();
