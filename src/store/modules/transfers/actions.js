@@ -14,7 +14,7 @@ const actions = {
 
       const query = {
         query: {
-          cdcrnumber: cdcrNumber,
+          cdcrNumber: cdcrNumber,
         },
       };
 

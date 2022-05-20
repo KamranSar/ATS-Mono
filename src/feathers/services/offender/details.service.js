@@ -55,7 +55,7 @@ const booleanFields = [
   'retainASU_flag',
   'transferMERD_flag',
 ];
-const servicePath = 'api/cdcr/ats/v1/offenderdetail';
+const servicePath = 'api/cdcr/ats/v1/offender_detail';
 const service = feathersClient.service(servicePath);
 service.hooks({
   before: {
