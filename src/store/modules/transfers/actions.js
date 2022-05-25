@@ -24,6 +24,7 @@ const actions = {
         // Some fields don't match up entirely from SOMS to Transfers
         state.transferData = transferModel({
           ...state.somsOffender,
+          comments: '', // Comments from SOMS should not end up in editable comments field. Only read only comments field.
           institutionPartyId: state.somsOffender.institutionId,
           housing: state.somsOffender.housingArea,
           currentEndorsementDate: state.somsOffender.endorsedDate,
