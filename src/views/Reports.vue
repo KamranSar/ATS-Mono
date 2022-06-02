@@ -567,7 +567,6 @@
 
         let dtLabel =
           'The following identified persons will be transferred this date';
-        debugger;
         let xfrNum = data.length;
         let title = this.selSchedule.title;
         let to = this.selSchedule.destination;
