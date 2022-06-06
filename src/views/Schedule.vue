@@ -61,9 +61,9 @@
               </v-col>
               <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
                 <!-- 
-                Filtering out selectedInstitution from the list
-                Destination cannot be the origin.
-              -->
+                  Filtering out selectedInstitution from the list
+                  Destination cannot be the origin.
+                -->
                 <v-select
                   label="Destination"
                   v-model="editSchedule.destination"
@@ -74,12 +74,16 @@
                 ></v-select>
               </v-col>
               <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <!-- 
+                  Filtering out selectedInstitution from the list
+                  Destination cannot be the origin.
+                -->
                 <v-select
                   label="Vias"
                   v-model="editSchedule.vias"
-                  :items="Vias"
-                  item-text="institutionName"
-                  item-value="institutionName"
+                  :items="listOfDestinations"
+                  item-text="institutionId"
+                  item-value="institutionId"
                   multiple
                   clearable
                 ></v-select>
@@ -301,7 +305,6 @@
     headersEndorsement,
   } from '@/components/Schedule/constants.js';
   import BackToHome from '@/components/util/BackToHome.vue';
-  // import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
   import formatCaseFactors from '@/helpers/formatCaseFactors.js';
   export default {
     components: { DatePicker, InstitutionDropdown, BackToHome },
@@ -313,7 +316,6 @@
       loading: false,
       title: '',
       selDestination: '',
-      selVias: '',
       transferDate: null,
       seats: 0,
       dialogSchedule: false,
@@ -323,7 +325,6 @@
       disableSaveEndorsementButton: true,
       headersSchedule,
       headersEndorsement,
-      Vias: ['FOL-II', 'SAC-II', 'CSP-II', 'ASP-II', 'RJD-II', 'CMC-II'],
       editScheduleIndex: -1,
       editSchedule: {
         id: '',
@@ -351,62 +352,13 @@
       },
       endorsements: [],
       editEndorsementIndex: -1,
-      editEndorsement: {
-        // cdcrNumber: '',
-        // firstName: '',
-        // lastName: '',
-        // ethnicity: '',
-        // housing: '',
-        // securityLevel: '',
-        // tbCode: '',
-        // caseFactor: '',
-        // releaseDate: null,
-        // originalEndorsementDate: null,
-        // currentEndorsementDate: null,
-        // transferDate: null,
-        // scheduleName: '',
-        // scheduleId: '',
-        // transferReasonCode: '',
-        // transferReasonDesc: '',
-        // transferReason: {
-        //   reasonCode: '',
-        //   reasonDesc: '',
-        // },
-        // comments: '',
-        // inHouseRemarks: '',
-        // // endorsementDetails: '',
-      },
-      defaultEndorsement: {
-        // cdcrNumber: '',
-        // firstName: '',
-        // lastName: '',
-        // ethnicity: '',
-        // housing: '',
-        // securityLevel: '',
-        // tbCode: '',
-        // caseFactor: '',
-        // releaseDate: null,
-        // originalEndorsementDate: null,
-        // currentEndorsementDate: null,
-        // transferDate: null,
-        // scheduleName: '',
-        // scheduleId: '',
-        // transferReasonCode: '',
-        // transferReasonDesc: '',
-        // transferReason: {
-        //   reasonCode: '',
-        //   reasonDesc: '',
-        // },
-        // comments: '',
-        // inHouseRemarks: '',
-        // // endorsementDetails: '',
-      },
+      editEndorsement: {},
+      defaultEndorsement: {},
     }),
     async created() {
       this.onSelectedInstitution();
     },
     computed: {
-      // ...get('institutions', ['listOfInstitutions']),
       ...sync('institutions', ['selectedInstitution', 'listOfInstitutions']),
       ...sync('transfers', ['transferData', 'somsOffender']),
       ...sync('schedules', ['schedules', 'selSchedule']),
