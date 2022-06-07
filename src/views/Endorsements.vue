@@ -82,7 +82,7 @@
         <span class="nowrap">{{ formatDate(item.expirationDate) }}</span>
       </template>
       <template v-slot:item.releaseDate="{ item }">
-        <span class="nowrap">{{ formatDate(item.releaseDate) }}</span>
+        <span>{{ formatDate(item.releaseDate) }}</span>
       </template>
       <template v-slot:item.caseFactor="{ item }">
         <span>{{ formatCaseFactors(item) }}</span>
@@ -128,6 +128,7 @@
     ENDORSEMENT_OPTIONS,
   } from '@/components/Endorsements/constants.js';
   import scheduleModel from '@/models/scheduleModel';
+  import { LWOP_DATE, CONDEMNED_DATE, TBD_DATE } from '@/helpers/constants';
 
   export default {
     name: 'Endorsements',
@@ -245,11 +246,20 @@
         this.cancelRemarks();
       },
       formatDate(item) {
-        // 0123/56/78
-        const y = item.substr(2, 2);
+        // 2022-06-07
+        const y = item.substr(0, 4);
         const m = item.substr(5, 2);
         const d = item.substr(8, 2);
-        const result = m + '/' + d + '/' + y;
+        let result = m + '/' + d + '/' + y;
+        if (item === LWOP_DATE) {
+          result += '\n(LWOP)';
+        } else if (item === CONDEMNED_DATE) {
+          result += '\n(Condemned)';
+        }
+        if (item === TBD_DATE) {
+          result += '\n(TBD)';
+        }
+
         return result;
       },
       formatCaseFactors(item) {

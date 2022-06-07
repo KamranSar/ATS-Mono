@@ -9,6 +9,7 @@
 //     : '';
 // }
 import store from '@/store';
+import { LWOP_DATE, CONDEMNED_DATE, TBD_DATE } from '@/helpers/constants.js';
 
 const SOMS_DATA_FIELDS = (somsOffender) => [
   {
@@ -28,8 +29,10 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
   },
   {
     label: 'Release Date:',
-    data:
-      somsOffender && somsOffender.releaseDate ? somsOffender.releaseDate : '',
+    data: _formatReleaseDate(
+      somsOffender && somsOffender.releaseDate ? somsOffender.releaseDate : ''
+    ),
+    // somsOffender && somsOffender.releaseDate ? somsOffender.releaseDate : '',
   },
   {
     label: 'Release Type:',
@@ -74,6 +77,19 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
   //       : '',
   // },
 ];
+
+function _formatReleaseDate(data) {
+  if (data === LWOP_DATE) {
+    return '(LWOP) ' + data;
+  } else if (data === CONDEMNED_DATE) {
+    return '(Condemned) ' + data;
+  }
+  if (data === TBD_DATE) {
+    return '(TBD) ' + data;
+  }
+
+  return data;
+}
 
 const COMMENT_FIELDS = (somsOffender) => [
   {
