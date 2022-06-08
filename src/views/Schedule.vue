@@ -671,14 +671,17 @@
             };
 
             // This accounts for schedules where the transfer date has past.
-            let today = Date.now();
+            let today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+            today.setMilliseconds(0);
             let xfrDate = new Date(this.selSchedule.transferDate);
             if (today > xfrDate) {
               filter.query = {
                 scheduleId: newId,
               };
             }
-
             let response = await this.readTransfers(filter);
             if (response) {
               this.endorsements = response;
