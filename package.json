@@ -1,7 +1,7 @@
 {
   "name": "ats",
   "description": "This is the Database server for the ATS client.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "",
   "private": true,
   "main": "src",

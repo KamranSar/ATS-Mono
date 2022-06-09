@@ -59,6 +59,8 @@ MSSQL_PASSWORD=msSql2017@
 #=============================
 NODE_ENV=development
 AUTH_DOMAIN=https://apidev.cdcr.ca.gov
+OAUTH_DOMAIN=localhost:3000
+OAUTH_PROTOCOL=http
 DOC_HOST=testApiServer
 PUBLISH_DOCS=true
 PROXY_USER_AGENT=cdcr_midtier_api_auth
