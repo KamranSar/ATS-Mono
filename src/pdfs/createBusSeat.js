@@ -1,3 +1,4 @@
+import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 import myApp from '@/config/myApp.js';
 import store from '@/store';
@@ -91,7 +92,7 @@ async function _buildObjOfDestinations(selEndorsedTo) {
   }
 
   try {
-    const response = await departuresArrivalsSvc.find(filter);
+    const response = await findAll(departuresArrivalsSvc, filter);
 
     if (!response) {
       alert('No Transfers found for requested date range.');

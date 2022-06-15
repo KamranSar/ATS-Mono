@@ -154,6 +154,7 @@
 </template>
 
 <script>
+  import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
   import { get, call, sync } from 'vuex-pathify';
   import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
@@ -226,7 +227,7 @@
           filter.query.origin = this.selectedInstitution.institutionName;
         }
         try {
-          const response = await departuresArrivalsSvc.find(filter);
+          const response = await findAll(departuresArrivalsSvc, filter);
           this.departures = response.data;
           // console.log('getDepartures(): departures => ', this.departures);
           if (!response) {
@@ -255,7 +256,7 @@
           );
         }
         try {
-          const response = await departuresArrivalsSvc.find(filter);
+          const response = await findAll(departuresArrivalsSvc, filter);
           // console.log('getArrivals(): response => ', response);
           this.arrivals = response.data;
           if (!response) {

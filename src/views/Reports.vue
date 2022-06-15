@@ -293,6 +293,7 @@
   import createBusOrderSeat from '@/pdfs/createBusOrderSeat.js';
   import BackToHome from '@/components/util/BackToHome.vue';
   import BusSeatReportCard from '@/components/Reports/BusSeatReportCard.vue';
+  import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 
   export default {
     name: 'Reports',
@@ -1359,8 +1360,7 @@
         };
 
         try {
-          // this.transfers = await this.readTransfers(filter);
-          const response = await departuresArrivalsSvc.find(filter);
+          const response = await findAll(departuresArrivalsSvc, filter);
           // console.log('create7344(): response => ', response);
           if (response.data.length == 0) {
             alert('No Transfers found for requested date range.');
