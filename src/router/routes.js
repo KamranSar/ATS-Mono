@@ -8,7 +8,7 @@
 import hasAnyRoles from '@cdcr/vue-frontend/router/guards/hasAnyRoles.js';
 import hasAllRoles from '@cdcr/vue-frontend/router/guards/hasAllRoles.js';
 /* eslint-enable */
-import { defaultAdminRole } from '@/config/myApp.js';
+import { SYS_ADMIN, INST_ADMIN, INST_USER, GUEST } from '@/helpers/appRoles.js';
 
 const routes = [
   {
@@ -22,10 +22,10 @@ const routes = [
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [
-        defaultAdminRole.name,
-        'Institution Administrator',
-        'Institution User',
-        'Guest',
+        SYS_ADMIN.name,
+        INST_ADMIN.name,
+        INST_USER.name,
+        GUEST.name,
       ],
     },
   },
@@ -41,10 +41,10 @@ const routes = [
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [
-        defaultAdminRole.name,
-        'Institution Administrator',
-        'Institution User',
-        'Guest',
+        SYS_ADMIN.name,
+        INST_ADMIN.name,
+        INST_USER.name,
+        GUEST.name,
       ],
     },
   },
@@ -57,10 +57,10 @@ const routes = [
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [
-        defaultAdminRole.name,
-        'Institution Administrator',
-        'Institution User',
-        'Guest',
+        SYS_ADMIN.name,
+        INST_ADMIN.name,
+        INST_USER.name,
+        GUEST.name,
       ],
     },
   },
@@ -72,12 +72,7 @@ const routes = [
       import(/* webpackChunkName: "Maintenance" */ '@/views/Maintenance.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [
-        // defaultAdminRole.name,
-        'Institution Administrator',
-        'Institution User',
-        // 'Guest',
-      ],
+      hasAnyRoles: [INST_ADMIN.name, INST_USER.name],
     },
   },
   {
@@ -89,10 +84,10 @@ const routes = [
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [
-        defaultAdminRole.name,
-        'Institution Administrator',
-        'Institution User',
-        'Guest',
+        SYS_ADMIN.name,
+        INST_ADMIN.name,
+        INST_USER.name,
+        GUEST.name,
       ],
     },
   },
@@ -104,12 +99,7 @@ const routes = [
       import(/* webpackChunkName: "Endorsements" */ '@/views/Endorsements.vue'),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [
-        // defaultAdminRole.name,
-        'Institution Administrator',
-        'Institution User',
-        // 'Guest',
-      ],
+      hasAnyRoles: [INST_ADMIN.name, INST_USER.name],
     },
   },
   {
@@ -122,7 +112,7 @@ const routes = [
       ),
     meta: {
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
+      hasAnyRoles: [SYS_ADMIN.name, INST_ADMIN.name],
     },
     children: [
       {
@@ -136,7 +126,7 @@ const routes = [
           ),
         meta: {
           beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-          hasAnyRoles: [defaultAdminRole.name, 'Institution Administrator'],
+          hasAnyRoles: [SYS_ADMIN.name, INST_ADMIN.name],
         },
       },
     ],

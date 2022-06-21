@@ -1,88 +1,54 @@
+const CASE_FACTORS = {
+  /* key: { 
+    prefix: String // Included if `value` is Boolean
+    value: String,
+    forDisplay: Boolean, // If true, the Case Factors will NOT show up with the prefix
+  }, */
+  lifer_lwop_flag: {
+    prefix: 'lwop:',
+    value: 'lifer_lwop_value',
+  },
+  sny_flag: { prefix: 'sny:', value: 'sny_value' },
+  // cccms_eop_flag: { prefix: 'ccms-eop', value: 'cccms_eop_value' }, // cccms_eop_flag is NOT displayed in Transfer or Endorsements page
+  cocci1_flag: { prefix: 'cocci1:', value: 'cocci1_value' },
+  cocci2_flag: { prefix: 'cocci2:', value: 'cocci2_value' },
+  ddp_flag: { prefix: 'ddp:', value: 'ddp_value' },
+  dpp_flag: { prefix: 'dpp:', value: 'dpp_value' },
+  ice_flag: { prefix: 'ice:', value: 'ice_value' },
+  retainASU_flag: {
+    prefix: 'retain asu:',
+    value: 'retainASU_value',
+  },
+  transferMERD_flag: {
+    prefix: 'merd:',
+    value: 'transferMERD_value',
+  },
+};
+
 /**
  * Takes in the soms Offender object and returns the formated case factors from it.
  * @param {SomsOffender} item
  * @returns {String} case factors as a string
  */
 const formatCaseFactors = (item) => {
-  if (!item && !item.CaseFactors && item.CaseFactors.length === 0) {
-    // item is empty
-    // console.log('ERROR! Schedule::formatCaseFactors(): item => ', item);
-    return;
-  }
+  if (!item) return;
 
-  // console.log('formatCaseFactors(): item => ', item);
+  // Coming from offender_detail case factors are in an  array called `CaseFactors`
+  const offendersCF = item && item.CaseFactors ? item.CaseFactors : [];
   const cf = [];
-  // console.log(
-  //   'formatCaseFactors(): lifer_lwop_flag => ',
-  //   item.CaseFactors[0].lifer_lwop_flag
-  // );
-  if (item.CaseFactors[0].lifer_lwop_flag) {
-    cf.push('sny: ' + item.CaseFactors[0].lifer_lwop_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): sny_flag => ',
-  //   item.CaseFactors[0].sny_flag
-  // );
-  if (item.CaseFactors[0].sny_flag) {
-    cf.push('sny: ' + item.CaseFactors[0].sny_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].cccms_eop_flag
-  // );
-  if (item.CaseFactors[0].cccms_eop_flag) {
-    cf.push('ccms-eop: ' + item.CaseFactors[0].cccms_eop_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].cocci1_flag
-  // );
-  if (item.CaseFactors[0].cocci1_flag) {
-    cf.push('cocci1: ' + item.CaseFactors[0].cocci1_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].cocci2_flag
-  // );
-  if (item.CaseFactors[0].cocci2_flag) {
-    cf.push('cocci2: ' + item.CaseFactors[0].cocci2_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].ddp_flag
-  // );
-  if (item.CaseFactors[0].ddp_flag) {
-    cf.push('DDP: ' + item.CaseFactors[0].ddp_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].dpp_flag
-  // );
-  if (item.CaseFactors[0].dpp_flag) {
-    cf.push('DPP: ' + item.CaseFactors[0].dpp_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].ice_flag
-  // );
-  if (item.CaseFactors[0].ice_flag) {
-    cf.push('ice: ' + item.CaseFactors[0].ice_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].retainASU_flag
-  // );
-  if (item.CaseFactors[0].retainASU_flag) {
-    cf.push('Retain ASU: ' + item.CaseFactors[0].retainASU_value);
-  }
-  // console.log(
-  //   'formatCaseFactors(): item => ',
-  //   item.CaseFactors[0].transferMERD_flag
-  // );
-  if (item.CaseFactors[0].transferMERD_flag) {
-    cf.push('MERD: ' + item.CaseFactors[0].transferMERD_value);
-  }
+
+  Object.keys(CASE_FACTORS).forEach((key) => {
+    if (key in offendersCF) {
+      const caseFactorValue = `${CASE_FACTORS[key].prefix} ${
+        offendersCF[CASE_FACTORS[key].value]
+      }`;
+      cf.push(caseFactorValue);
+    }
+  });
+
   return cf.join(', ');
 };
 
 export default formatCaseFactors;
+
+export { CASE_FACTORS, formatCaseFactors };

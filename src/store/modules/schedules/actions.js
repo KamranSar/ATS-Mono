@@ -113,11 +113,30 @@ const actions = {
   },
   // deleteSchedule
   // eslint-disable-next-line no-unused-vars
-  deleteSchedule: async ({ state, rootState }, id) => {
+  deleteSchedule: async ({ state, rootState, dispatch }, scheduleObj) => {
     try {
       rootState.app.loading = true;
 
-      await svcSchedules.remove(id);
+      // Remove the endorsements
+      let queryObj = {
+        query: {
+          scheduleId: scheduleObj._id,
+        },
+      };
+      const transfers = await dispatch('transfers/readTransfers', queryObj, {
+        root: true,
+      });
+
+      for (const transfer of transfers) {
+        await dispatch('transfers/deleteTransfer', transfer._id, {
+          root: true,
+        });
+      }
+      const index = state.schedules.indexOf(scheduleObj);
+      if (index !== -1) {
+        state.schedules.splice(index, 1);
+      }
+      await svcSchedules.remove(scheduleObj._id);
     } catch (error) {
       return error;
     } finally {

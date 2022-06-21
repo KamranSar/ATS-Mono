@@ -1,4 +1,18 @@
-const headersSchedule = [
+import CdcrNumTableHeader from '@/classes/CdcrNumTableHeader';
+import dataTableHeadersModel from '@/models/dataTableHeadersModel';
+
+const DELETE_DIALOG = {
+  DEFAULT: {
+    title: 'Removing selected schedule',
+    text: 'The schedule and ALL pertaining data will be removed from ATS.',
+  },
+  EXISTS: {
+    title: 'Schedule contains endorsements',
+    text: 'The schedule, endorsement records and ALL pertaining data will be removed from ATS.',
+  },
+};
+
+const headersSchedule = dataTableHeadersModel([
   { text: 'Schedule', value: 'title' },
   {
     text: 'Destination',
@@ -13,23 +27,25 @@ const headersSchedule = [
   // { text: 'Remaining Seats', value: 'remainingSeats' },
   { text: 'Print-135', value: 'print135' },
   { text: 'Edit/Delete', value: 'actions', sortable: false },
-];
-const headersEndorsement = [
-  {
-    text: 'CDCR Number',
-    align: 'start',
-    sortable: false,
-    value: 'cdcrNumber',
-  },
+]);
+
+const headersEndorsement = dataTableHeadersModel([
+  new CdcrNumTableHeader(),
   { text: 'Last Name', value: 'lastName' },
   { text: 'First Name', value: 'firstName' },
   // { text: 'Housing', value: 'housing' },
-  { text: 'Scheduled', value: 'isScheduled' },
+  {
+    text: 'Scheduled',
+    value: 'isScheduled',
+    formatter: function (item, value) {
+      return item[value] ? 'Y' : 'N';
+    },
+  },
   { text: 'Transfer Reason', value: 'transferReasonCode' },
   { text: 'Endorsement Date', value: 'currentEndorsementDate' },
   { text: 'Expire Date', value: 'expirationEndorsementDate' },
   // { text: 'Endorsement Details', value: 'endorsementDetails' },
   { text: 'Print', value: 'print' },
   { text: 'Edit/Delete', value: 'actions', sortable: false },
-];
-export { headersSchedule, headersEndorsement };
+]);
+export { DELETE_DIALOG, headersSchedule, headersEndorsement };

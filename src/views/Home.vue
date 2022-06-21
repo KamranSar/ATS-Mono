@@ -12,11 +12,7 @@
           class="py-1 selInstitution"
           align-self="center"
         >
-          <InstitutionDropdown
-            v-model="selectedInstitution"
-            :loading="loading"
-            @change="onChangeInstitution"
-          />
+          <InstitutionDropdown @change="onChangeInstitution" />
         </v-col>
       </v-row>
     </v-card-title>
@@ -39,11 +35,11 @@
       :search="departureSearch"
       @keypress="filterTransfers"
       :loading="loading"
-      loading-text="Syncing Data with SOMS... Please wait"
+      :loading-text="LOADING_TEXT"
       :no-data-text="
         selectedInstitution && selectedInstitution.institutionName
           ? 'No Pending Departures'
-          : NO_INST_TEXT
+          : NO_INST_SEL_TEXT
       "
       no-results-text="No Departing Offender Data Found"
     >
@@ -104,7 +100,7 @@
       :no-data-text="
         selectedInstitution && selectedInstitution.institutionName
           ? 'No Pending Arrivals'
-          : NO_INST_TEXT
+          : NO_INST_SEL_TEXT
       "
       no-results-text="No Arriving Offender Data Found"
     >
@@ -164,6 +160,8 @@
     DEPARTURE_HEADERS,
     ARRIVAL_HEADERS,
   } from '@/components/Home/constants.js';
+  import { LOADING_TEXT, NO_INST_SEL_TEXT } from '@/helpers/tables.js';
+
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   export default {
@@ -175,18 +173,15 @@
       selDeparture: [],
       selArrival: [],
       itemsPerPage: 5,
-      loading: false,
       departureSearch: '',
       arrivalSearch: '',
       departures: [],
       arrivals: [],
       DEPARTURE_HEADERS,
       ARRIVAL_HEADERS,
-      NO_INST_TEXT: 'Select an institution from the dropdown',
+      NO_INST_SEL_TEXT,
+      LOADING_TEXT,
     }),
-    async mounted() {
-      // this.onChangeInstitution();
-    },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       setSnackbar(msg, result, timeout) {
@@ -270,14 +265,18 @@
           console.error('getArrivals() exception: ', ex);
         }
       },
-      onChangeInstitution() {
+      async onChangeInstitution() {
         if (!this.selectedInstitution) {
           this.departures = [];
           this.arrivals = [];
           return;
         }
-        this.getDepartures();
-        this.getArrivals();
+
+        // TODO: Try catch
+        this.loading = true;
+        await this.getDepartures();
+        await this.getArrivals();
+        this.loading = false;
       },
       filterTransfers(value, search) {
         return (
@@ -727,9 +726,9 @@
     computed: {
       ...sync('transfers', ['transfers', 'selTransferReason']),
       ...sync('schedules', ['schedules', 'selSchedule']),
-      ...sync('institutions', ['selectedInstitution']),
-      ...get('institutions', ['listOfInstitutions']),
+      ...get('institutions', ['selectedInstitution', 'listOfInstitutions']),
       ...get('users', ['loggedInUser']),
+      ...sync('app', ['loading']),
       appUserRoles() {
         return this.$store.get('users/getAppUserRoles');
       },

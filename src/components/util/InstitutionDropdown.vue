@@ -1,6 +1,6 @@
 <template>
   <v-autocomplete
-    v-model="selected"
+    v-model="selectedInstitution"
     :disabled="loading"
     :items="listOfInstitutions"
     color="blue-grey lighten-2"
@@ -14,38 +14,20 @@
     class="ma-1 pa-1"
     autofocus
     background-color="white"
-    @change="onChange"
+    @change="$emit('change')"
   >
   </v-autocomplete>
 </template>
 
 <script>
-  import { get } from 'vuex-pathify';
+  import { get, sync } from 'vuex-pathify';
   export default {
     name: 'InstitutionDropdown',
-    props: {
-      value: {
-        required: true,
-      },
-      loading: {
-        type: Boolean,
-      },
-    },
     computed: {
+      // listOfInstitution is fetched on institutions modules init
       ...get('institutions', ['listOfInstitutions']),
-      selected: {
-        get() {
-          return this.value;
-        },
-        set(value) {
-          this.$emit('input', value);
-        },
-      },
-    },
-    methods: {
-      onChange(e) {
-        this.$emit('change', e);
-      },
+      ...sync('institutions', ['selectedInstitution']),
+      ...get('app', ['loading']),
     },
   };
 </script>

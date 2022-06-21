@@ -13,11 +13,7 @@
           class="py-1 selInstitution"
           align-self="center"
         >
-          <InstitutionDropdown
-            v-model="selectedInstitution"
-            :loading="loading"
-            @change="getEndorsements"
-          />
+          <InstitutionDropdown @change="getEndorsements(selectedInstitution)" />
         </v-col>
         <v-col align="right" align-self="center">
           <BackToHome />
@@ -34,9 +30,9 @@
       class="elevation-1 ma-4 pa-4"
       :loading="loading"
       :options="ENDORSEMENT_OPTIONS"
-      loading-text="Syncing Data with SOMS... Please wait"
-      no-data-text="No Endorsements"
-      no-results-text="No Endorsements Found"
+      :loading-text="LOADING_TEXT"
+      :no-data-text="NO_DATA_TEXT"
+      :no-results-text="NO_RESULTS_TEXT"
       multi-sort
     >
       <!-- Endorsement Search -->
@@ -58,35 +54,17 @@
 
       <!-- Table columns -->
       <!-- FIXME: Sorting -->
-      <template v-slot:item.cdcrNumber="{ item }">
-        <router-link
-          :to="{
-            name: 'Transfer Details',
-            params: { cdcrNumber: item.cdcrNumber },
-          }"
-        >
-          {{ item.cdcrNumber }}
-        </router-link>
+      <template
+        v-for="header in ENDORSEMENT_HEADERS"
+        v-slot:[`item.${header.value}`]="{ item }"
+      >
+        <DataTableItem
+          :header="header"
+          :item="item"
+          :key="header.value"
+        ></DataTableItem>
       </template>
-      <template v-slot:item.endorsedProgram="{ item }">
-        <span>{{
-          item.endorsedProgram.toLowerCase() !== 'not applicable'
-            ? item.endorsedProgram
-            : 'NA'
-        }}</span>
-      </template>
-      <template v-slot:item.endorsedDate="{ item }">
-        <span class="nowrap">{{ formatDate(item.endorsedDate) }}</span>
-      </template>
-      <template v-slot:item.expirationDate="{ item }">
-        <span class="nowrap">{{ formatDate(item.expirationDate) }}</span>
-      </template>
-      <template v-slot:item.releaseDate="{ item }">
-        <span>{{ formatDate(item.releaseDate) }}</span>
-      </template>
-      <template v-slot:item.caseFactor="{ item }">
-        <span>{{ formatCaseFactors(item) }}</span>
-      </template>
+
       <template v-slot:item.inHouseRemarks="{ item }">
         <v-btn :disabled="loading" icon @click.stop="openRemarks(item)">
           <v-icon>mdi-pencil</v-icon>
@@ -100,7 +78,10 @@
         </v-card-title>
 
         <v-card-text>
-          <v-textarea v-model="transferData.inHouseRemarks" />
+          <v-textarea
+            :disabled="loading"
+            v-model="transferData.inHouseRemarks"
+          />
         </v-card-text>
 
         <v-divider></v-divider>
@@ -126,18 +107,24 @@
   import {
     ENDORSEMENT_HEADERS,
     ENDORSEMENT_OPTIONS,
+    LOADING_TEXT,
+    NO_DATA_TEXT,
+    NO_RESULTS_TEXT,
   } from '@/components/Endorsements/constants.js';
   import scheduleModel from '@/models/scheduleModel';
-  import { LWOP_DATE, CONDEMNED_DATE, TBD_DATE } from '@/helpers/constants';
+  import DataTableItem from '@/components/util/DataTableItem.vue';
 
   export default {
     name: 'Endorsements',
-    components: { BackToHome, InstitutionDropdown },
+    components: { BackToHome, InstitutionDropdown, DataTableItem },
     data: () => ({
       dlgRemarks: false,
       endorsementSearch: '',
       ENDORSEMENT_HEADERS,
       ENDORSEMENT_OPTIONS,
+      LOADING_TEXT,
+      NO_DATA_TEXT,
+      NO_RESULTS_TEXT,
       snackbarOptions: {
         top: true,
         center: true,
@@ -245,64 +232,16 @@
         }
         this.cancelRemarks();
       },
-      formatDate(item) {
-        // 2022-06-07
-        const y = item.substr(0, 4);
-        const m = item.substr(5, 2);
-        const d = item.substr(8, 2);
-        let result = m + '/' + d + '/' + y;
-        if (item === LWOP_DATE) {
-          result += '\n(LWOP)';
-        } else if (item === CONDEMNED_DATE) {
-          result += '\n(Condemned)';
-        }
-        if (item === TBD_DATE) {
-          result += '\n(TBD)';
-        }
-
-        return result;
-      },
-      formatCaseFactors(item) {
-        const cf = [];
-        if (item.lifer_lwop_flag) {
-          cf.push(item.sny_value);
-        }
-        if (item.sny_flag) {
-          cf.push(item.sny_value);
-        }
-        // if (item.cccms_eop_flag) {
-        //   cf.push('ccms-eop: ' + item.cccms_eop_value);
-        // }
-        if (item.cocci1_flag) {
-          cf.push('cocci1: ' + item.cocci1_value);
-        }
-        if (item.cocci2_flag) {
-          cf.push('cocci2: ' + item.cocci2_value);
-        }
-        if (item.ddp_flag) {
-          cf.push(item.ddp_value);
-        }
-        if (item.dpp_flag) {
-          cf.push(item.dpp_value);
-        }
-        if (item.ice_flag) {
-          cf.push('ice: ' + item.ice_value);
-        }
-        if (item.retainASU_flag) {
-          cf.push(item.retainASU_value);
-        }
-        if (item.transferMERD_flag) {
-          cf.push(item.transferMERD_value);
-        }
-        return cf.join(', ');
-      },
     },
     computed: {
       ...get('app', ['loading']),
       ...sync('transfers', ['transferData']),
       ...sync('schedules', ['selSchedule']),
-      ...sync('institutions', ['selectedInstitution']),
-      ...get('institutions', ['listOfInstitutions', 'getInstitutionByName']),
+      ...get('institutions', [
+        'selectedInstitution',
+        'listOfInstitutions',
+        'getInstitutionByName',
+      ]),
       ...get('endorsements', ['endorsements']),
     },
   };

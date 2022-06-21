@@ -4,6 +4,11 @@ import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js'
 const getDefaultState = () => {
   return {
     // Update your default state here
+    /**
+     * TODO: Persist/cache the endorsements
+     * Set a timestamp of the last time it was pulled from SOMS
+     * Ability to cache multiple institutions
+     */
     endorsements: [],
   };
 };

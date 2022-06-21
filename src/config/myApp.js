@@ -1,4 +1,5 @@
 import toTitleCase from '@cdcr/vue-frontend/helpers/toTitleCase.js';
+import { SYS_ADMIN, INST_ADMIN, INST_USER, GUEST } from '@/helpers/appRoles.js';
 
 const isLcl = window.location.hostname.includes('localhost'); // (internal only)
 const isDev = window.location.hostname.includes('dev'); // (internal only)
@@ -13,11 +14,7 @@ const isPoc = window.location.hostname.includes('poc'); // (internal and externa
  *
  * TODO: Define a default role for the first logged in user.
  */
-const defaultAdminRole = {
-  name: 'System Administrator',
-  description: 'Gives access to manage users in the application',
-  priority: 1, // Default: 1 - Highest priority level
-};
+const defaultAdminRole = SYS_ADMIN;
 
 const appVersion = process.env.VUE_APP_VERSION
   ? 'v' + process.env.VUE_APP_VERSION
@@ -49,38 +46,7 @@ var myApp = Object.freeze({
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     ),
-  approles: [
-    // TODO: Add your application roles here
-    /* {
-      name: String,
-      description: String,
-      priority: Number, // Default: 1 - Highest priority level; NOTE: Cannot assign roles of a higher priority level than your own
-    } */
-    defaultAdminRole,
-    {
-      name: 'Institution Administrator',
-      description:
-        'Institution Administrator has permission to assign roles and create and update records.',
-      priority: 10,
-    },
-    {
-      name: 'Institution User',
-      description:
-        'Institution User has permission to create and update records.',
-      priority: 20,
-    },
-    {
-      name: 'Guest',
-      description: 'Guest role has read or view access only.',
-      priority: 99,
-    },
-    // {
-    //   name: 'Example Role',
-    //   description:
-    //     'Generic application role, change this to suit your app needs',
-    //   priority: 999,
-    // },
-  ],
+  approles: [defaultAdminRole, INST_ADMIN, INST_USER, GUEST],
   appServers: ['ats'],
 });
 

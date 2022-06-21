@@ -1,22 +1,98 @@
-const ENDORSEMENT_HEADERS = [
-  {
-    text: 'CDCR #',
-    align: 'start',
-    value: 'cdcrNumber',
-  },
+import { LOADING_TEXT } from '@/helpers/tables.js';
+import DataTableHeadersModel from '@/models/dataTableHeadersModel.js';
+import CdcrNumTableHeader from '@/classes/CdcrNumTableHeader';
+import formatDate from '@/helpers/formatDate.js';
+import { CASE_FACTORS } from '@/helpers/formatCaseFactors';
+
+/**
+ * This helper is private to the Endorsements page as there are only 4 fields that show their prefixes.
+ *
+ * @param {SomsOffender} item
+ * @returns {String} Concatenated string of case factors
+ */
+const _formatCaseFactors = function (item) {
+  const cf = [];
+  const PREFIXED_CF = [
+    CASE_FACTORS.cocci1_flag,
+    CASE_FACTORS.cocci2_flag,
+    CASE_FACTORS.ice_flag,
+  ];
+
+  Object.keys(CASE_FACTORS).forEach((key) => {
+    if (key in item) {
+      // If flag then push the value
+      if (item[key]) {
+        let caseFactorValue = item[CASE_FACTORS[key].value];
+        if (key in Object.keys(PREFIXED_CF)) {
+          caseFactorValue = `${CASE_FACTORS[key].prefix} ${
+            item[CASE_FACTORS[key].value]
+          }`;
+        }
+
+        cf.push(caseFactorValue);
+      }
+    }
+  });
+  return cf.join(', ');
+};
+
+const ENDORSEMENT_HEADERS = DataTableHeadersModel([
+  new CdcrNumTableHeader(),
   { text: 'Last Name', value: 'lastName' },
   { text: 'First Name', value: 'firstName' },
-  { text: 'Endorsed Institution', value: 'endorsedInstitution' },
-  { text: 'Level', value: 'securityLevel', align: 'center' },
-  { text: 'Endorsed To Program', value: 'endorsedProgram' },
-  { text: 'Endorsed Date', value: 'endorsedDate', align: 'center' },
-  { text: 'Expired Date', value: 'expirationDate', align: 'center' },
-  { text: 'Release Date', value: 'releaseDate', align: 'center' },
-  { text: 'Case Factor', value: 'caseFactor' },
+  {
+    text: 'Endorsed Institution',
+    value: 'endorsedInstitution',
+  },
+  {
+    text: 'Level',
+    value: 'securityLevel',
+    align: 'center',
+  },
+  {
+    text: 'Endorsed To Program',
+    value: 'endorsedProgram',
+    formatter: function (item, value) {
+      return item[value].toLowerCase() !== 'not applicable'
+        ? item[value]
+        : 'NA';
+    },
+  },
+  {
+    text: 'Endorsed Date',
+    value: 'endorsedDate',
+    classList: ['nowrap'],
+    formatter: function (item, value) {
+      return formatDate(item[value]);
+    },
+  },
+  {
+    text: 'Expired Date',
+    value: 'expirationDate',
+    classList: ['nowrap'],
+    formatter: function (item, value) {
+      return formatDate(item[value]);
+    },
+  },
+  {
+    text: 'Release Date',
+    value: 'releaseDate',
+    classList: ['nowrap'],
+    formatter: function (item, value) {
+      return formatDate(item[value]);
+    },
+  },
+  {
+    text: 'Case Factor',
+    value: 'caseFactor',
+    formatter: function (item) {
+      return _formatCaseFactors(item);
+    },
+  },
   { text: 'Ethnicity', value: 'ethnicity' },
   { text: 'Housing', value: 'housingArea' },
   { text: 'In House Remarks', value: 'inHouseRemarks' },
-];
+]);
 
 const ENDORSEMENT_OPTIONS = {
   // page: number,
@@ -28,4 +104,15 @@ const ENDORSEMENT_OPTIONS = {
   // multiSort: boolean,
   // mustSort: boolean
 };
-export { ENDORSEMENT_HEADERS, ENDORSEMENT_OPTIONS };
+
+const NO_DATA_TEXT = 'No Endorsements';
+
+const NO_RESULTS_TEXT = 'No Endorsements Found';
+
+export {
+  ENDORSEMENT_HEADERS,
+  ENDORSEMENT_OPTIONS,
+  NO_DATA_TEXT,
+  NO_RESULTS_TEXT,
+  LOADING_TEXT,
+};

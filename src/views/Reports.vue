@@ -13,10 +13,7 @@
           class="py-1 colOutline"
           align-self="center"
         >
-          <InstitutionDropdown
-            v-model="selectedInstitution"
-            :loading="loading"
-          />
+          <InstitutionDropdown />
         </v-col>
         <v-col align="right" align-self="center">
           <BackToHome />
@@ -304,7 +301,6 @@
       BusSeatReportCard,
     },
     data: (vm) => ({
-      loading: false,
       includeScheduled: false,
       arrivalDateMenu: false,
       arrivalDate: [null, null],
@@ -335,9 +331,9 @@
     computed: {
       ...sync('transfers', ['transfers']),
       ...sync('schedules', ['schedules', 'selSchedule']),
-      ...sync('institutions', ['selectedInstitution']),
-      ...get('institutions', ['listOfInstitutions']),
+      ...get('institutions', ['selectedInstitution', 'listOfInstitutions']),
       ...get('users', ['loggedInUser']),
+      ...get('app', ['loading']),
     },
     async mounted() {
       await this.readSchedulesByInstitution();
