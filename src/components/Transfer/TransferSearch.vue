@@ -94,31 +94,20 @@
             3000
           );
         } else if (this.transferData.cdcrNumber) {
-          if (!this.transferData.scheduleId) {
-            this.selSchedule = scheduleModel();
+          await this.readSchedules({
+            query: { origin: this.transferData.institutionName },
+          });
+
+          if (this.schedules && !this.transferData.scheduleId) {
+            this.selSchedule = this.schedules.find((item) => {
+              if (item._id === this.transferData.scheduleId) {
+                return item;
+              } else {
+                return scheduleModel();
+              }
+            });
           } else {
-            console.log(
-              'TransferSearch::searchOffender(): this.transferData.scheduleId => ',
-              this.transferData.scheduleId
-            );
-            if (!this.schedules) {
-              await this.readSchedules({
-                query: { origin: this.transferData.institutionName },
-              });
-            }
-            if (this.schedules) {
-              this.selSchedule = this.schedules.find((item) => {
-                if (item._id === this.transferData.scheduleId) {
-                  return item;
-                } else {
-                  return {};
-                }
-              });
-              console.log(
-                'TransferSearch::searchOffender(): this.selSchedule => ',
-                this.selSchedule
-              );
-            }
+            this.selSchedule = scheduleModel();
           }
           let cdcrNumber = this.transferData.cdcrNumber;
           this.$router.push({

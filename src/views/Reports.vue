@@ -114,13 +114,18 @@
                   v-model="selSchedule"
                   :items="schedules"
                   item-text="title"
-                  item-value="title"
+                  item-value="_id"
                   return-object
                   class="my-2 pl-1"
                   clearable
                   hide-details="true"
                   dense
-                ></v-select>
+                >
+                  <template v-slot:item="{ item }">
+                    {{ item.title }} --- {{ item.transferDate }} ---
+                    {{ item.destination }}
+                  </template>
+                </v-select>
               </v-col>
               <v-col cols="1" class="mx-4">
                 <v-icon large color="primary" @click="create135('schedule')">
@@ -244,13 +249,18 @@
                   v-model="selSchedule"
                   :items="schedules"
                   item-text="title"
-                  item-value="title"
+                  item-value="_id"
                   return-object
                   class="my-2 pl-1"
                   clearable
                   hide-details="true"
                   dense
-                ></v-select>
+                >
+                  <template v-slot:item="{ item }">
+                    {{ item.title }} --- {{ item.transferDate }} ---
+                    {{ item.destination }}
+                  </template>
+                </v-select>
                 <!-- <v-select
                   label="By Schedule"
                   placeholder="Schedule"

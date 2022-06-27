@@ -17,12 +17,12 @@
         >
           <template v-slot:item="{ item, on, attrs }">
             <v-list-item dense v-on="on" v-bind="attrs">
-              <v-list-item-title>{{
-                `${item.institutionId} - ${item.institutionName}`
-              }}</v-list-item-title>
+              <v-list-item-title>
+                {{ `${item.institutionId} - ${item.institutionName}` }}
+              </v-list-item-title>
             </v-list-item>
-          </template></v-select
-        >
+          </template>
+        </v-select>
       </v-col>
       <v-spacer />
       <v-col cols="auto">

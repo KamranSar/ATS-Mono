@@ -65,19 +65,15 @@ const actions = {
   },
   async saveForm({ state, rootState, dispatch }) {
     if (rootState.schedules && rootState.schedules.selSchedule) {
-      const schedules = rootState.schedules.schedules;
-      // console.log('saveForm(): selSchedule', rootState.schedules.selschedule);
       const selSchedule = rootState.schedules.selSchedule;
-      for (let schedule of schedules) {
-        if (schedule.title === selSchedule.title) {
-          // FIXME Check to make sure fields are valid
-          state.transferData.title = schedule.title;
-          state.transferData.scheduleId = schedule._id;
-          state.transferData.transferDate = schedule.transferDate;
-          state.transferData.vias = schedule.vias;
-          state.transferData.isScheduled = true;
-          break;
-        }
+      if (selSchedule && selSchedule._id) {
+        state.transferData.title = selSchedule.title;
+        state.transferData.scheduleId = selSchedule._id;
+        state.transferData.transferDate = selSchedule.transferDate;
+        state.transferData.vias = selSchedule.vias;
+        state.transferData.isScheduled = true;
+      } else {
+        state.transferData.isScheduled = false;
       }
     } else {
       // console.log('saveForm(): rootState.schedules => ', rootState.schedules);
@@ -87,10 +83,8 @@ const actions = {
     try {
       let response = [];
       if (state.transferData._id) {
-        // return await dispatch('updateTransfer', state.transferData);
         response = await dispatch('updateTransfer', state.transferData);
       } else {
-        // return await dispatch('createTransfer', state.transferData);
         response = await dispatch('createTransfer', state.transferData);
       }
       if (response) {

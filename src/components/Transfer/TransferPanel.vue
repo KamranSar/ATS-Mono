@@ -175,6 +175,11 @@
           @change="scheduleSelected"
         ></v-select>
       </span>
+      <span class="font-weight-bold pr-4">Destination: </span>
+      <span class="float-right" v-if="selSchedule && selSchedule.destination">
+        {{ selSchedule.destination }}
+      </span>
+      <br />
       <span class="font-weight-bold pr-4">Vias: </span>
       <span class="float-right" v-if="selSchedule && selSchedule.vias">
         {{ selSchedule.vias.join(',') }}
