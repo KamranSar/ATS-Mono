@@ -60,14 +60,14 @@
                   Filtering out selectedInstitution from the list
                   Destination cannot be the origin.
                 -->
-                <v-select
+                <v-combobox
                   label="Destination"
                   v-model="editSchedule.destination"
                   :items="listOfDestinations"
                   item-text="institutionId"
                   item-value="institutionId"
                   clearable
-                ></v-select>
+                ></v-combobox>
               </v-col>
               <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
                 <!-- 
