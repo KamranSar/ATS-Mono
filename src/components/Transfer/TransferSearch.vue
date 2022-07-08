@@ -94,18 +94,14 @@
             3000
           );
         } else if (this.transferData.cdcrNumber) {
-          await this.readSchedules({
+          const response = await this.readSchedules({
             query: { origin: this.transferData.institutionName },
           });
 
-          if (this.schedules && !this.transferData.scheduleId) {
-            this.selSchedule = this.schedules.find((item) => {
-              if (item._id === this.transferData.scheduleId) {
-                return item;
-              } else {
-                return scheduleModel();
-              }
-            });
+          if (response && this.transferData.scheduleId) {
+            this.selSchedule = response.find(
+              (item) => item._id === this.transferData.scheduleId
+            );
           } else {
             this.selSchedule = scheduleModel();
           }

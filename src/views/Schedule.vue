@@ -55,7 +55,7 @@
                   v-model="editSchedule.title"
                 ></v-text-field>
               </v-col>
-              <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+              <v-col xs="12" sm="12" md="4" lg="2" align-self="baseline">
                 <!-- 
                   Filtering out selectedInstitution from the list
                   Destination cannot be the origin.
@@ -64,10 +64,14 @@
                   label="Destination"
                   v-model="editSchedule.destination"
                   :items="listOfDestinations"
-                  item-text="institutionId"
+                  item-text="institutionName"
                   item-value="institutionId"
                   clearable
-                ></v-combobox>
+                >
+                  <template v-slot:item="{ item }">
+                    {{ item.institutionId }} --- {{ item.institutionName }}
+                  </template>
+                </v-combobox>
               </v-col>
               <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
                 <!-- 
@@ -143,6 +147,7 @@
           <span>No Results</span>
         </template>
       </v-data-table>
+
       <v-card
         v-show="
           selectedSchedule && selectedSchedule[0] && selectedSchedule[0]._id
@@ -152,7 +157,7 @@
         <v-card-title class="blue-grey lighten-4">
           <v-row>
             <v-col cols="2" xs="12" sm="2" class="py-1" align-self="center">
-              <span>Endorsements</span>
+              <span>Endorsements <font size="2">(IN ATS)</font></span>
             </v-col>
             <v-spacer></v-spacer>
           </v-row>
@@ -547,7 +552,7 @@
       },
       async openSchedule(item) {
         await this.onSelectedSchedule({ item, value: true });
-        this.editSchedule = item;
+        this.editSchedule = JSON.parse(JSON.stringify(item));
       },
       /**
        * @param {Object} item - The schedule object meant for deletion
@@ -604,52 +609,79 @@
       },
       async saveSchedule() {
         const self = this;
-        if (
-          !self.selectedInstitution ||
-          !self.editSchedule.title ||
-          !self.editSchedule.destination ||
-          !self.editSchedule.transferDate ||
-          self.editSchedule.seats == 0
-        ) {
-          alert('A required field is empty.');
-          return;
-        }
-        if (self.editSchedule._id) {
-          try {
-            await self.updateSchedule(self.editSchedule);
-            this.setSnackbar(`Successfully updated schedule!`, 'success', 3000);
-          } catch (e) {
-            console.error(e);
-            this.setSnackbar(`Failed to update schedule!`, 'error', 3000);
+        await setTimeout(async () => {
+          console.log('saveSchedule(): editSchedule => ', self.editSchedule);
+          if (
+            !self.selectedInstitution ||
+            !self.editSchedule.title ||
+            !self.editSchedule.destination ||
+            !self.editSchedule.transferDate ||
+            self.editSchedule.seats == 0
+          ) {
+            alert('A required field is empty.');
             return;
           }
-        } else {
-          if (!self.editSchedule.origin) {
-            self.editSchedule.origin = self.selectedInstitution.institutionName;
+
+          // Move data from edit fields to
+          //this.selSchedule = this.editSchedule;
+          // Dropdown returns the destination as an object if user selects from list
+          // Dropdowm returns the destination as a string if user types an entry manually
+          if (
+            self.editSchedule.destination &&
+            typeof self.editSchedule.destination === 'object'
+          ) {
+            self.editSchedule.destination =
+              self.editSchedule.destination.institutionId;
           }
-          if (!self.editSchedule.originId) {
-            self.editSchedule.originId = self.selectedInstitution.institutionId;
+          if (self.editSchedule._id) {
+            try {
+              // Update existing schedule
+              await self.updateSchedule(self.editSchedule);
+              this.setSnackbar(
+                `Successfully updated schedule!`,
+                'success',
+                3000
+              );
+            } catch (e) {
+              console.error(e);
+              this.setSnackbar(`Failed to update schedule!`, 'error', 3000);
+              return;
+            }
+          } else {
+            // Create new schedule
+            if (!self.editSchedule.origin) {
+              self.editSchedule.origin =
+                self.selectedInstitution.institutionName;
+            }
+            if (!self.editSchedule.originId) {
+              self.editSchedule.originId =
+                self.selectedInstitution.institutionId;
+            }
+
+            try {
+              await self.createSchedule(self.editSchedule);
+              this.setSnackbar(
+                `Successfully created schedule!`,
+                'success',
+                3000
+              );
+            } catch (e) {
+              console.error(e);
+              this.setSnackbar(`Failed to create schedule!`, 'error', 3000);
+              return;
+            }
           }
+          // Clear the edit boxes
+          self.editSchedule = Object.assign({}, scheduleModel());
 
           try {
-            await self.createSchedule(self.editSchedule);
-            this.setSnackbar(`Successfully created schedule!`, 'success', 3000);
+            await self.readSchedulesByOrigin({
+              institution: self.selectedInstitution.institutionName,
+            });
           } catch (e) {
             console.error(e);
-            this.setSnackbar(`Failed to create schedule!`, 'error', 3000);
-            return;
           }
-        }
-        // Clear the edit boxes
-        self.editSchedule = Object.assign({}, scheduleModel());
-
-        try {
-          await self.readSchedulesByOrigin({
-            institution: self.selectedInstitution.institutionName,
-          });
-        } catch (e) {
-          console.error(e);
-        }
+        }, 100);
       },
       transferReasonSelected(ctrl) {
         if (ctrl) {
@@ -1259,6 +1291,24 @@
           this.selTransferReason = {};
         }
       },
+      // onChangeDestination() {
+      //   console.log('onChangeDestination(): fired');
+      //   setTimeout(() => {
+      //     console.log('onChangeDestination(): setTimeout(): processing');
+      //     if (
+      //       this.editSchedule &&
+      //       this.editSchedule.destination &&
+      //       typeof this.editSchedule.destination === 'string'
+      //     ) {
+      //       this.editSchedule.destination =
+      //         this.editSchedule.destination.toUpperCase();
+      //       console.log(
+      //         'onChangeDestination(): editSchedule.destination',
+      //         this.editSchedule.destination
+      //       );
+      //     }
+      //   }, 37500);
+      // },
     },
   };
 </script>

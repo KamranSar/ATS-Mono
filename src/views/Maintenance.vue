@@ -41,7 +41,7 @@
             </v-col>
             <v-col cols="2" sm="4" lg="2" align-self="baseline">
               <v-btn color="secondary" class="mb-2" dark @click="saveReason">
-                <v-icon>mdi-content-saveReason-outline</v-icon>
+                <v-icon>mdi-content-save-outline</v-icon>
                 Save
               </v-btn>
             </v-col>

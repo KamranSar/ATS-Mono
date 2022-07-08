@@ -3,8 +3,10 @@
     <!-- TODO: This card title is also duplicated everywhere... turn into component? -->
     <v-card-title class="blue-grey lighten-4">
       <v-row>
-        <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
-          <h2>Endorsements</h2>
+        <v-col cols="6" xs="12" md="4" class="py-1" align-self="center">
+          <h2>
+            Endorsements <font size="3" font-weight="100">(IN SOMS)</font>
+          </h2>
         </v-col>
         <v-col
           cols="4"
@@ -13,27 +15,34 @@
           class="py-1 selInstitution"
           align-self="center"
         >
-          <InstitutionDropdown @change="getEndorsements(selectedInstitution)" />
+          <InstitutionDropdown @change="_getEndorsements()" />
         </v-col>
         <v-col align="right" align-self="center">
           <BackToHome />
         </v-col>
       </v-row>
     </v-card-title>
+    <v-progress-linear
+      :loading="loading"
+      :active="loading"
+      :indeterminate="loading"
+      absolute
+      color="primary"
+    ></v-progress-linear>
     <v-data-table
+      v-if="endorsementsLoaded"
       :search="endorsementSearch"
       :items-per-page="ENDORSEMENT_OPTIONS.itemsPerPage"
-      dense
       :headers="ENDORSEMENT_HEADERS"
       :items="endorsements"
       item-key="cdcrNumber"
       class="elevation-1 ma-4 pa-4"
-      :loading="loading"
       :options="ENDORSEMENT_OPTIONS"
       :loading-text="LOADING_TEXT"
       :no-data-text="NO_DATA_TEXT"
       :no-results-text="NO_RESULTS_TEXT"
       multi-sort
+      dense
     >
       <!-- Endorsement Search -->
       <template v-slot:top>
@@ -65,6 +74,11 @@
         ></DataTableItem>
       </template>
 
+      <template v-slot:item.saved="{ item }">
+        <v-icon>
+          {{ item && item.saved ? 'mdi-check' : '' }}
+        </v-icon>
+      </template>
       <template v-slot:item.inHouseRemarks="{ item }">
         <v-btn :disabled="loading" icon @click.stop="openRemarks(item)">
           <v-icon>mdi-pencil</v-icon>
@@ -76,14 +90,14 @@
         <v-card-title class="text-h5 grey lighten-2">
           In-House Remarks
         </v-card-title>
-
-        <v-card-text>
-          <v-textarea
-            :disabled="loading"
-            v-model="transferData.inHouseRemarks"
-          />
-        </v-card-text>
-
+        <v-overlay :value="loading" absolute color="primary">
+          <v-card-text>
+            <v-textarea
+              :disabled="loading"
+              v-model="transferData.inHouseRemarks"
+            />
+          </v-card-text>
+        </v-overlay>
         <v-divider></v-divider>
 
         <v-card-actions>
@@ -113,11 +127,13 @@
   } from '@/components/Endorsements/constants.js';
   import scheduleModel from '@/models/scheduleModel';
   import DataTableItem from '@/components/util/DataTableItem.vue';
+  import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 
   export default {
     name: 'Endorsements',
     components: { BackToHome, InstitutionDropdown, DataTableItem },
     data: () => ({
+      endorsementsLoaded: false,
       dlgRemarks: false,
       endorsementSearch: '',
       ENDORSEMENT_HEADERS,
@@ -135,7 +151,10 @@
     }),
     async mounted() {
       this.selSchedule = scheduleModel(); // Reset selected schedule when entering Endorsements page.
-      await this.getEndorsements(this.selectedInstitution);
+      // await this.getEndorsements(this.selectedInstitution);
+      // await this.endorsementExists(this.endorsements);
+      await this._getEndorsements();
+      // await this.itemExists();
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
@@ -193,6 +212,7 @@
         this.transferData = transferModel();
       },
       async saveRemarks() {
+        this.loading = true;
         try {
           let objIns = this.listOfInstitutions.find(
             (inst) =>
@@ -220,6 +240,13 @@
 
           if (response) {
             // setSnackbar successful
+            const resp = this.endorsements.find(
+              (end) => end.cdcrNumber === this.transferData.cdcrNumber
+            );
+            if (resp) {
+              resp.saved = true;
+            }
+
             this.setSnackbar('Successfully saved remarks!', 'succesful', 2000);
           } else {
             // setSnackbar error
@@ -231,10 +258,72 @@
           this.setSnackbar('Error occurred saving remarks!', 'error', 6000);
         }
         this.cancelRemarks();
+        this.loading = false;
+      },
+      async _getEndorsements() {
+        this.endorsementsLoaded = false;
+        if (this.selectedInstitution) {
+          await this.getEndorsements(this.selectedInstitution);
+          console.log('getEndorsements() Finished.');
+
+          this.loading = true;
+          await this.endorsementExists();
+          this.endorsementsLoaded = true;
+          this.loading = false;
+        }
+      },
+      async endorsementExists() {
+        if (!this.endorsements) {
+          return false;
+        }
+
+        const promiseArray = [];
+        this.endorsements.forEach((element) => {
+          try {
+            let filter = {
+              query: {
+                $limit: 1,
+                cdcrNumber: element.cdcrNumber,
+              },
+            };
+            promiseArray.push(svcTransfers.find(filter));
+          } catch (ex) {
+            console.error(ex);
+          }
+        });
+
+        const respArray = await Promise.all(promiseArray);
+
+        respArray.forEach((response) => {
+          if (response && response.total > 0) {
+            // response.data[0].cdcrNumber;
+            const resp = this.endorsements.find(
+              (end) => end.cdcrNumber === response.data[0].cdcrNumber
+            );
+            if (resp) {
+              resp.saved = true;
+              console.log('resp: ', resp);
+            }
+          }
+        });
+
+        return true;
+      },
+      itemExists(item) {
+        if (item && item.saved) {
+          console.log(
+            'Endorsements::itemExists(): item.cdcrNumber => ',
+            item.cdcrNumber
+          );
+          console.log('Endorsements::itemExists(): item.saved => ', item.saved);
+          return true;
+        } else {
+          return false;
+        }
       },
     },
     computed: {
-      ...get('app', ['loading']),
+      ...sync('app', ['loading']),
       ...sync('transfers', ['transferData']),
       ...sync('schedules', ['selSchedule']),
       ...get('institutions', [

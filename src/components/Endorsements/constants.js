@@ -12,6 +12,7 @@ import { CASE_FACTORS } from '@/helpers/formatCaseFactors';
  */
 const _formatCaseFactors = function (item) {
   const cf = [];
+  // eslint-disable-next-line no-unused-vars
   const PREFIXED_CF = [
     CASE_FACTORS.cocci1_flag,
     CASE_FACTORS.cocci2_flag,
@@ -23,7 +24,8 @@ const _formatCaseFactors = function (item) {
       // If flag then push the value
       if (item[key]) {
         let caseFactorValue = item[CASE_FACTORS[key].value];
-        if (key in Object.keys(PREFIXED_CF)) {
+        // if (key in Object.keys(PREFIXED_CF)) {
+        if (item[CASE_FACTORS[key].value] === 'Y') {
           caseFactorValue = `${CASE_FACTORS[key].prefix} ${
             item[CASE_FACTORS[key].value]
           }`;
@@ -37,6 +39,7 @@ const _formatCaseFactors = function (item) {
 };
 
 const ENDORSEMENT_HEADERS = DataTableHeadersModel([
+  { text: 'Saved', value: 'saved' },
   new CdcrNumTableHeader(),
   { text: 'Last Name', value: 'lastName' },
   { text: 'First Name', value: 'firstName' },
