@@ -28,12 +28,10 @@
     data: () => ({
       itemsPerPage: 5,
       holdsHeader: [
-        // { text: 'Number', value: 'number' },
         { text: 'Date', value: 'effectiveDate' },
         { text: 'Reason', value: 'holdType' },
         { text: 'Exp. Date', value: 'expirationDate' },
         { text: 'Comments', value: 'comments' },
-        // { text: 'Actions', value: 'actions', sortable: false },
       ],
     }),
     computed: {
