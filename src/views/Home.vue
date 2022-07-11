@@ -34,7 +34,6 @@
       class="elevation-1 mx-4 mb-4 pa-4"
       :search="departureSearch"
       @keypress="filterTransfers"
-      :loading="loading"
       :loading-text="LOADING_TEXT"
       :no-data-text="
         selectedInstitution && selectedInstitution.institutionName

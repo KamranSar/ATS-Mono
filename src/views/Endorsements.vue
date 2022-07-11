@@ -90,14 +90,12 @@
         <v-card-title class="text-h5 grey lighten-2">
           In-House Remarks
         </v-card-title>
-        <v-overlay :value="loading" absolute color="primary">
-          <v-card-text>
-            <v-textarea
-              :disabled="loading"
-              v-model="transferData.inHouseRemarks"
-            />
-          </v-card-text>
-        </v-overlay>
+        <v-card-text>
+          <v-textarea
+            :disabled="loading"
+            v-model="transferData.inHouseRemarks"
+          />
+        </v-card-text>
         <v-divider></v-divider>
 
         <v-card-actions>
