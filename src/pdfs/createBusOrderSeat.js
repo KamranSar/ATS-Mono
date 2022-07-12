@@ -264,6 +264,7 @@ const createBusOrderSeat = async ({
       $limit: 50,
       $sort: {
         endorsedDate: 1,
+        endorsedToName: 1,
       },
     },
   };

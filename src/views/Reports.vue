@@ -1378,9 +1378,11 @@
           let row = [];
           let obj = [];
           let sch = '';
+          let xfrDate = null;
           for (let xfr of response.data) {
-            if (sch !== xfr.title) {
+            if (sch !== xfr.title || xfrDate !== xfr.transferDate) {
               sch = xfr.title;
+              xfrDate = xfr.transferDate;
 
               // Column 1 - dashes
               obj = {
