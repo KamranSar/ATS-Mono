@@ -3,12 +3,16 @@ import dataTableHeadersModel from '@/models/dataTableHeadersModel';
 
 const DELETE_DIALOG = {
   DEFAULT: {
-    title: 'Removing selected schedule',
+    title: 'Remove selected schedule',
     text: 'The schedule and ALL pertaining data will be removed from ATS.',
   },
   EXISTS: {
     title: 'Schedule contains endorsements',
     text: 'The schedule, endorsement records and ALL pertaining data will be removed from ATS.',
+  },
+  ENDORSEMENT: {
+    title: 'Remove endorsement from schedule',
+    text: 'Are you sure you want to remove this endorsement?',
   },
 };
 
@@ -42,6 +46,7 @@ const headersEndorsement = dataTableHeadersModel([
     },
   },
   { text: 'Transfer Reason', value: 'transferReasonCode' },
+  { text: 'Endorsed To', value: 'endorsedToId' },
   { text: 'Endorsement Date', value: 'currentEndorsementDate' },
   { text: 'Expire Date', value: 'expirationEndorsementDate' },
   // { text: 'Endorsement Details', value: 'endorsementDetails' },

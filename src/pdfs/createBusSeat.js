@@ -118,6 +118,9 @@ async function _buildObjOfDestinations(selEndorsedTo) {
         const institution = listOfInstitutions.find(
           (inst) => inst.institutionId === inmate.destination
         );
+        if (!institution) {
+          continue;
+        }
         objOfDestinations[inmate.destination] = {
           institutionId: institution ? institution.institutionId : '',
           institutionName: institution ? institution.institutionName : '',

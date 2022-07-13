@@ -281,6 +281,7 @@
        * Filter out any schedules with a destination offender is not endorsed for
        */
       validSchedules() {
+        let result = [];
         if (
           this.somsOffender &&
           this.somsOffender.endorsedInstitution &&
@@ -290,12 +291,16 @@
           const institutionId = this.$store.getters[
             'institutions/getInstitutionByName'
           ](this.somsOffender.endorsedInstitution).institutionId;
-          return this.schedules.filter((sched) =>
-            institutionId.includes(sched.destination)
+          debugger;
+          const id = this.transferData.scheduleId;
+          result = this.schedules.filter(
+            (sched) =>
+              institutionId.includes(sched.destination) ||
+              id === this.transferData.scheduleId
           );
-        } else {
-          return [];
         }
+
+        return result;
       },
     },
     methods: {

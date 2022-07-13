@@ -277,7 +277,7 @@
             </v-icon>
             <v-icon
               small
-              @click="deleteEndorsement(item)"
+              @click="onDeleteEndorsement(item)"
               v-show="enableEditing && hasInstitutionRole"
               >mdi-delete</v-icon
             >
@@ -325,6 +325,48 @@
               @click="onDeleteSchedule(selectedSchedule[0])"
             >
               Remove Schedule
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog persistent v-model="dialogDeleteEndorsement" width="500">
+        <v-card>
+          <v-card-title class="blue-grey lighten-4">
+            {{ deleteDialogTitle }}
+            <v-spacer />
+            <v-btn small icon @click="dialogDeleteEndorsement = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-card-text>
+            {{ deleteDialogText }}
+            <v-row no-gutters class="mt-2 caption">
+              CDCR#: {{ selectedEndorsement.cdcrNumber }}
+            </v-row>
+            <v-row no-gutters class="mt-2 caption">
+              Name:
+              {{
+                selectedEndorsement.firstName +
+                ' ' +
+                selectedEndorsement.lastName
+              }}
+            </v-row>
+            <v-row no-gutters class="mt-2 caption">
+              From Schedule: {{ selectedSchedule[0].title }}
+            </v-row>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              text
+              @click="onDeleteEndorsement(selectedEndorsement)"
+            >
+              Remove Endorsement
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -378,6 +420,7 @@
       editEndorsement: {},
       deleteDialogTitle: DELETE_DIALOG.DEFAULT.title,
       deleteDialogText: DELETE_DIALOG.DEFAULT.text,
+      selectedEndorsement: [],
     }),
     async created() {
       this.onSelectedInstitution();
@@ -715,8 +758,11 @@
             let filter = {
               query: {
                 institutionName: this.selectedInstitution.institutionName,
-                endorsedToId: newVal.destination,
-                $or: [{ scheduleId: newId }, { isScheduled: false }],
+                $or: [
+                  { endorsedToId: newVal.destination },
+                  { scheduleId: newId },
+                  { isScheduled: false },
+                ],
               },
             };
 
@@ -759,37 +805,27 @@
         };
         this.disableSaveEndorsementButton = false;
       },
-      async removeEndorsement(id) {
-        if (id) {
-          try {
-            await this.deleteTransfer(id);
-            this.setSnackbar(
-              'Successfully deleted endorsement!',
-              'success',
-              3000
-            );
-          } catch (ex) {
-            console.error(ex);
-            this.setSnackbar(`Failed to delete endorsement!`, 'error', 3000);
-            return false;
-          }
-        } else {
-          this.setSnackbar('Cannot remove endorsement. id = ', id);
-          return false;
+      async onDeleteEndorsement(item) {
+        const index = this.endorsements.indexOf(item);
+        this.selectedEndorsement = item;
+
+        if (!this.dialogDeleteEndorsement) {
+          this.deleteDialogText = DELETE_DIALOG.ENDORSEMENT.text;
+          this.deleteDialogTitle = DELETE_DIALOG.ENDORSEMENT.title;
+          this.dialogDeleteEndorsement = true;
+          return;
         }
 
-        return true;
-      },
-      deleteEndorsement(item) {
-        const index = this.endorsements.indexOf(item);
-
-        let res = confirm('Are you sure you want to delete this endorsement?');
-        if (res) {
-          res = this.removeEndorsement(item._id);
-          if (res) {
-            this.endorsements.splice(index, 1);
-            this.editEndorsement = {};
-          }
+        try {
+          await this.deleteTransfer(item._id);
+        } catch (ex) {
+          console.error(ex);
+          this.setSnackbar(`Failed to delete endorsement!`, 'error', 3000);
+          return false;
+        } finally {
+          this.endorsements.splice(index, 1);
+          this.editEndorsement = {};
+          this.dialogDeleteEndorsement = false;
         }
       },
       async saveEndorsement() {
