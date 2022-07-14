@@ -291,7 +291,6 @@
           const institutionId = this.$store.getters[
             'institutions/getInstitutionByName'
           ](this.somsOffender.endorsedInstitution).institutionId;
-          debugger;
           const id = this.transferData.scheduleId;
           result = this.schedules.filter(
             (sched) =>
