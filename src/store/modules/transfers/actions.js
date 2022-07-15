@@ -112,7 +112,7 @@ const actions = {
     // await dispatch('readTransfers');
   },
   // readTransfers
-  readTransfers: async ({ rootState }, queryObj) => {
+  readTransfers: async ({ state, rootState }, queryObj) => {
     try {
       rootState.app.loading = true;
       // const response = await svcTransfers.find(queryObj);
@@ -125,6 +125,10 @@ const actions = {
             reasonDesc: item.transferReasonDesc,
           };
         }
+        state.selTransferReason = {
+          reasonCode: response.data[0].transferReasonCode,
+          reasonDesc: response.data[0].transferReasonDesc,
+        };
       }
       return response && response.data ? response.data : [];
     } catch (error) {

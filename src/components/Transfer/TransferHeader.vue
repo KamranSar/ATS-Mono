@@ -143,25 +143,6 @@
       btnPhysical: true,
       btnMedical: true,
     }),
-    // created() {
-    //   console.log(
-    //     `TransferHeader::created(): users institution: ${this.loggedInUser.somsinfo.organizationName}`
-    //   );
-    //   console.log(
-    //     `TransferHeader::created(): offender institution: ${this.somsOffender.institutionName}`
-    //   );
-    //   if (
-    //     this.loggedInUser &&
-    //     this.loggedInUser.somsinfo &&
-    //     this.loggedInUser.somsinfo.organizationName &&
-    //     this.loggedInUser.somsinfo.organizationName ===
-    //       this.somsOffender.institutionName
-    //   ) {
-    //     console.log(`created(): institutions match`);
-    //   } else {
-    //     console.log(`created(): institutions do not match`);
-    //   }
-    // },
     computed: {
       ...get('app', ['loading']),
       ...get('users', ['loggedInUser']),

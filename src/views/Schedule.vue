@@ -248,6 +248,14 @@
                     SAVE
                   </v-btn>
                 </v-col>
+                <v-col xs="12" sm="12" md="3" lg="2" align-self="center">
+                  <v-checkbox
+                    v-show="chkbxShowAllEndorsements"
+                    label="Show ALL Endorsements"
+                    v-model="showAllEndorsements"
+                    @click="onShowAllEndorsements"
+                  ></v-checkbox>
+                </v-col>
                 <!-- <v-col cols="1" sm="2" lg="1" align-self="center" align="right">
                 <v-btn class="secondary ma-2 btns">Filter</v-btn>
               </v-col> -->
@@ -397,6 +405,8 @@
     components: { DatePicker, InstitutionDropdown, BackToHome, DataTableItem },
     name: 'Schedules',
     data: () => ({
+      chkbxShowAllEndorsements: false,
+      showAllEndorsements: false,
       enableEditing: false,
       title: '',
       selDestination: '',
@@ -743,11 +753,29 @@
         if (item.value) {
           // Schedule Selected
           this.selectedSchedule = [item.item];
+          console.log(this.selectedSchedule[0].destination);
+          const result = this.listOfDestinations.find(
+            (inst) =>
+              this.selectedSchedule[0].destination === inst.institutionId
+          );
+          console.log('listOfDestinations.find(): ', result);
+          if (result) {
+            this.chkbxShowAllEndorsements = true;
+          } else {
+            this.chkbxShowAllEndorsements = false;
+          }
+          console.log(
+            'chkbxShowAllEndorsements: ',
+            this.chkbxShowAllEndorsements
+          );
           await this.getEndorsements(item.item, {});
         } else {
           this.selectedSchedule = [scheduleModel()];
           this.endorsements = [];
         }
+      },
+      async onShowAllEndorsements() {
+        await this.getEndorsements(this.selectedSchedule[0], {});
       },
       async getEndorsements(newVal, oldVal) {
         try {
@@ -755,16 +783,30 @@
           const newId = newVal._id || '';
 
           if (newId && newId !== oldId) {
-            let filter = {
-              query: {
-                institutionName: this.selectedInstitution.institutionName,
-                $or: [
-                  { endorsedToId: newVal.destination },
-                  { scheduleId: newId },
-                  { isScheduled: false },
-                ],
-              },
-            };
+            let filter = {};
+            let result = this.listOfDestinations.find(
+              (inst) => inst.institutionId === newVal.destination
+            );
+            if (result && !this.showAllEndorsements) {
+              filter = {
+                query: {
+                  institutionName: this.selectedInstitution.institutionName,
+                  endorsedToId: newVal.destination,
+                  $or: [{ scheduleId: newId }, { isScheduled: false }],
+                },
+              };
+            } else {
+              filter = {
+                query: {
+                  institutionName: this.selectedInstitution.institutionName,
+                  $or: [
+                    { endorsedToId: newVal.destination },
+                    { scheduleId: newId },
+                    { isScheduled: false },
+                  ],
+                },
+              };
+            }
 
             // This accounts for schedules where the transfer date has past.
             let today = new Date();
@@ -1327,24 +1369,6 @@
           this.selTransferReason = {};
         }
       },
-      // onChangeDestination() {
-      //   console.log('onChangeDestination(): fired');
-      //   setTimeout(() => {
-      //     console.log('onChangeDestination(): setTimeout(): processing');
-      //     if (
-      //       this.editSchedule &&
-      //       this.editSchedule.destination &&
-      //       typeof this.editSchedule.destination === 'string'
-      //     ) {
-      //       this.editSchedule.destination =
-      //         this.editSchedule.destination.toUpperCase();
-      //       console.log(
-      //         'onChangeDestination(): editSchedule.destination',
-      //         this.editSchedule.destination
-      //       );
-      //     }
-      //   }, 37500);
-      // },
     },
   };
 </script>

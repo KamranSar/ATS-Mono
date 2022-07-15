@@ -60,6 +60,17 @@
           <v-spacer></v-spacer>
         </v-row>
       </template>
+      <!-- Save ALL Endorsements -->
+      <!-- <template v-slot:top>
+        <v-row>
+          <v-col cols="4">
+            <v-btn class="secondary ma-2 btns" @click="saveAll()">
+              SAVE ALL
+            </v-btn>
+          </v-col>
+          <v-spacer></v-spacer>
+        </v-row>
+      </template> -->
 
       <!-- Table columns -->
       <!-- FIXME: Sorting -->
@@ -181,10 +192,12 @@
           this.dlgRemarks = false;
           return;
         }
+        this.dlgRemarks = true;
 
+        await this.getOffender(item);
+      },
+      async getOffender(item) {
         try {
-          this.dlgRemarks = true;
-
           let filter = {
             query: {
               cdcrNumber: item.cdcrNumber,

@@ -578,7 +578,7 @@
         let title = this.selSchedule.title;
         let to = this.selSchedule.destination;
         let from = this.getInstitutionId(this.selSchedule.origin);
-        let vias = this.selSchedule.vias;
+        let vias = this.selSchedule.vias.join(', ');
         let xfrDate = this.selSchedule.transferDate;
 
         let today = new Date().toISOString();
@@ -1012,7 +1012,7 @@
 
         let from = this.getInstitutionId(this.selSchedule.origin);
         let to = this.selSchedule.destination;
-        let vias = this.selSchedule.vias;
+        let vias = this.selSchedule.vias.join(', ');
         let txtDate = this.selSchedule.transferDate;
 
         const fileName = `134_${from}_${today}.pdf`;
@@ -1379,10 +1379,16 @@
           let obj = [];
           let sch = '';
           let xfrDate = null;
+          let xfrDest = '';
           for (let xfr of response.data) {
-            if (sch !== xfr.title || xfrDate !== xfr.transferDate) {
+            if (
+              sch !== xfr.title ||
+              xfrDate !== xfr.transferDate ||
+              xfrDest !== xfr.destination
+            ) {
               sch = xfr.title;
               xfrDate = xfr.transferDate;
+              xfrDest = xfr.destination;
 
               // Column 1 - dashes
               obj = {
@@ -1441,7 +1447,7 @@
 
               // Column 6 - Vias
               obj = {
-                text: xfr.vias,
+                text: xfr.vias.join(', '),
                 style: 'schEntry',
                 border: [false, false, false, false],
                 fillColor: '#F0F0F0',
