@@ -1,4 +1,10 @@
 /**
+ * I'm ugly, don't look at me too much...
+ *
+ * Pay more attention to the models
+ *
+ * I mean... @/models/dataTableHeadersModel.js 😉
+ *
  * @class DataTableHeader as defined by Vuetify (https://vuetifyjs.com/en/api/v-data-table/#props)
  * @classdesc Import this file to extend beyond the defaults...
  */

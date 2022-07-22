@@ -181,6 +181,9 @@
       NO_INST_SEL_TEXT,
       LOADING_TEXT,
     }),
+    async created() {
+      await this.onChangeInstitution();
+    },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
       setSnackbar(msg, result, timeout) {
