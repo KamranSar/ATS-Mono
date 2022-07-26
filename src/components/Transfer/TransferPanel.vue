@@ -163,10 +163,10 @@
         <v-select
           label="Schedule"
           v-model="selSchedule"
-          :items="validSchedules"
+          :items="schedules"
           item-text="title"
           item-value="title"
-          no-data-text="Not endorsed to any schedules"
+          no-data-text="No schedules to display"
           return-object
           class="my-2 pl-1"
           clearable
