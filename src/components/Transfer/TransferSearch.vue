@@ -19,8 +19,8 @@
           label="Enter CDCR Number"
           type="text"
           @keypress.enter="searchOffender"
-          @change="somsCDCRNumber = somsCDCRNumber.toUpperCase()"
-          @keyup="somsCDCRNumber = somsCDCRNumber.toUpperCase()"
+          @change="onToUpperCase(somsCDCRNumber)"
+          @keyup="onToUpperCase(somsCDCRNumber)"
           v-model="somsCDCRNumber"
           hide-details
           background-color="white"
@@ -49,6 +49,7 @@
 <script>
   import { sync, call } from 'vuex-pathify';
   import scheduleModel from '@/models/scheduleModel.js';
+  import onToUpperCase from '@/helpers/onToUpperCase.js';
 
   export default {
     name: 'TransferSearch',
@@ -64,6 +65,7 @@
       ...call('app', ['SET_SNACKBAR']),
       ...call('transfers', ['readOffenderDetails', 'readTransfers']),
       ...call('schedules', ['readSchedules']),
+      onToUpperCase,
       goBack() {
         this.$router.go(-1); // Will go back 1 step;
       },

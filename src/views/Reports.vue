@@ -139,8 +139,8 @@
                   label="By CDCR #"
                   v-model="cdcrNum"
                   dense
-                  @change="cdcrNum = cdcrNum.toUpperCase()"
-                  @keyup="cdcrNum = cdcrNum.toUpperCase()"
+                  @change="onToUpperCase(cdcrNum)"
+                  @keyup="onToUpperCase(cdcrNum)"
                   clearable
                 ></v-text-field>
               </v-col>
@@ -303,6 +303,7 @@
   import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
   import create135 from '@/pdfs/create135.js';
   import svcSchedules from '@/feathers/services/schedule/schedule.service.js';
+  import onToUpperCase from '@/helpers/onToUpperCase.js';
   export default {
     name: 'Reports',
     components: {
@@ -364,7 +365,7 @@
         'readTransfersBySchedule',
       ]),
       ...call('institutions', ['getInstitutionIdByOrigin']),
-
+      onToUpperCase,
       goHome() {
         this.$router.push({
           name: 'Home',
@@ -460,15 +461,11 @@
             },
           },
         };
-        let today = new Date().toISOString().split('T')[0];
         filter.query.cdcrNumber = this.cdcrNum;
-        filter.query.transferDate = { $gte: today };
         this.transfers = await this.readTransfers(filter);
 
         if (!this.transfers.length) {
-          this.setSnackbar(
-            `${this.cdcrNum} is not on an active or pending transfer`
-          );
+          this.setSnackbar(`${this.cdcrNum} is not on any schedule`);
           return;
         }
 
