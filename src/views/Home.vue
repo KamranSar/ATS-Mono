@@ -75,11 +75,7 @@
         <router-link to="">{{ item.schedule }}</router-link>
       </template>
       <template v-slot:item.print135="{ item }">
-        <v-icon
-          color="primary"
-          class="ml-5"
-          @click="create135(item, 'departures')"
-        >
+        <v-icon color="primary" class="ml-5" @click="create135(item, [item])">
           mdi-file-document
         </v-icon>
       </template>
@@ -123,14 +119,10 @@
         <span>{{ item.firstName }} {{ item.lastName }}</span>
       </template>
       <template v-slot:item.origin="{ item }">
-        <span>{{ getInstitutionId(item.origin) }}</span>
+        <span>{{ getInstitutionIdByOrigin(item.origin) }}</span>
       </template>
       <template v-slot:item.preprint135="{ item }">
-        <v-icon
-          color="primary"
-          class="ml-5"
-          @click="create135(item, 'arrivals')"
-        >
+        <v-icon color="primary" class="ml-5" @click="create135(item, [item])">
           mdi-file-document
         </v-icon>
       </template>
@@ -160,6 +152,7 @@
     ARRIVAL_HEADERS,
   } from '@/components/Home/constants.js';
   import { LOADING_TEXT, NO_INST_SEL_TEXT } from '@/helpers/tables.js';
+  import create135 from '@/pdfs/create135.js';
 
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -186,6 +179,8 @@
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
+      ...call('institutions', ['getInstitutionIdByOrigin']),
+      create135,
       setSnackbar(msg, result, timeout) {
         this.SET_SNACKBAR({
           top: true,
@@ -194,22 +189,6 @@
           color: result,
           timeout: timeout,
         });
-      },
-      getInstitutionId(location) {
-        if (!location && this.listOfInstitutions.length > 0) {
-          // console.log(
-          //   `Home::getInstitutionId(); location => ${location} | this.listOfInstitutions.length => ${this.listOfInstitutions.length}`
-          // );
-          return '';
-        }
-
-        for (let i of this.listOfInstitutions) {
-          if (i.institutionName == location) {
-            return i.institutionId;
-          }
-        }
-
-        return 'NF';
       },
       async getDepartures() {
         let filter = {
@@ -248,7 +227,7 @@
         };
 
         if (this.selectedInstitution) {
-          filter.query.destination = this.getInstitutionId(
+          filter.query.destination = this.getInstitutionIdByOrigin(
             this.selectedInstitution.institutionName
           );
         }
@@ -342,387 +321,6 @@
           transferDate: selected.transferDate,
           seats: selected.seats,
         };
-      },
-      // create135()
-      //
-      async create135(item, group) {
-        let items = [];
-        if (item) {
-          items.push(item);
-        } else {
-          if (group === 'departures') {
-            items = this.departures;
-          } else if (group === 'arrivals') {
-            items = this.arrivals;
-          }
-        }
-        let data = [];
-        // let row = [];
-        const obj = {
-          text: '',
-          style: 'tblData',
-          border: [false, false, false, false],
-        };
-        let num = 1;
-        for (let xfr of items) {
-          const row = [];
-          // Column 1 - Row Number
-          obj.text = String(num++);
-          row.push(Object.assign({}, obj));
-          // Column 2 - CDCR Number
-          obj.text = xfr.cdcrNumber;
-          row.push(Object.assign({}, obj));
-          // Column 3 - Name
-          obj.text = xfr.lastName + ', ' + xfr.firstName;
-          row.push(Object.assign({}, obj));
-          // Column 4 - Level
-          obj.text = xfr.securityLevel;
-          row.push(Object.assign({}, obj));
-          // Column 5 - Housing
-          obj.text = xfr.housing;
-          row.push(Object.assign({}, obj));
-          // Column 6 - TB Code
-          obj.text = xfr.tbCode;
-          row.push(Object.assign({}, obj));
-          // Column 7 - Ethnic
-          obj.text = xfr.ethnicity;
-          row.push(Object.assign({}, obj));
-          // Column 8 - Case Factor
-          obj.text = xfr.caseFactor;
-          row.push(Object.assign({}, obj));
-          // Column 9 - Specific Transfer Reason
-          obj.text = xfr.transferReasonCode;
-          row.push(Object.assign({}, obj));
-          // Column 10 - Comments
-          obj.text = xfr.comments;
-          row.push(Object.assign({}, obj));
-
-          data.push(row);
-        }
-
-        // console.log('create135(): data => ', data);
-        if (data) {
-          this.create135PDF(data, items);
-        } else {
-          // error message
-          this.setSnackbar(
-            `ERROR! Could not create CDCR 135 PDF Document.`,
-            'error',
-            3000
-          );
-        }
-      },
-      create135PDF(data, items) {
-        const stateOf = 'STATE OF CALIFORNIA';
-        const agency = 'DEPARTMENT OF CORRECTIONS AND REHABILITATION';
-        const report135 = 'CDCR 135 (Rev. 03/06)';
-
-        const doc = `${stateOf}\n${report135}\nDISTRIBUTION PER INSTITUTION POLICY`;
-        const reportTitle = 'TRANSFER RECORD';
-
-        let dtLabel =
-          'The following identified persons will be transferred this date';
-        let xfrNum = items.length;
-        let title = items[0].title;
-        let to = items[0].destination;
-        let from = this.getInstitutionId(items[0].origin);
-        let vias = items[0].vias;
-        let xfrDate = items[0].transferDate;
-
-        let today = Date.now();
-        let fileName = '';
-        if (items.length === 1) {
-          fileName = `135_${items[0].cdcrNumber}_${today}.pdf`;
-        } else {
-          fileName = `135_${items[0].title}_${today}.pdf`;
-        }
-
-        let dd = {
-          pageSize: 'LETTER',
-          pageMargins: [10, 80, 10, 160],
-          borders: [true, true, true, true],
-          header: function () {
-            //currentPage, pageCount, pageSize) {
-            let header = {
-              margin: [10, 10, 10, 10],
-              table: {
-                widths: ['auto', '*', 'auto'],
-                body: [
-                  // Row 1 - Title
-                  [
-                    {
-                      text: doc,
-                      style: 'hdrLeft',
-                      border: [true, true, false, true],
-                    },
-                    {
-                      text: reportTitle,
-                      style: 'tblCenter',
-                      border: [false, true, false, true],
-                      // alignment: 'center',
-                    },
-                    {
-                      text: agency,
-                      style: 'hdrRight',
-                      border: [false, true, true, true],
-                      // alignment: 'right',
-                    },
-                  ],
-                  // Row 2 - Header Row 1
-                  [
-                    {
-                      text: dtLabel,
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                    },
-                    {
-                      text: 'DATE:  ' + xfrDate,
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                    },
-                    {
-                      text: 'NUMBER TRANSFERRING:  ' + xfrNum,
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                    },
-                  ],
-                  // Row 3 - Header Row 2
-                  [
-                    {
-                      table: {
-                        widths: ['*', '*', '*', '*'],
-                        body: [
-                          [
-                            {
-                              text: 'SCHEDULE:  ' + title,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                            {
-                              text: 'FROM:  ' + from,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                            {
-                              text: 'TO:  ' + to,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                            {
-                              text: 'VIAS:  ' + vias,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                          ],
-                        ],
-                      },
-                      colSpan: 3,
-                      margins: [0, 0, 0, 0],
-                    },
-                    {},
-                    [],
-                  ],
-                ],
-              },
-            };
-
-            return header;
-          },
-
-          footer: function (currentPage, pageCount) {
-            let footer = {
-              margin: [10, 10, 10, 10],
-              table: {
-                widths: ['35%', '30%', '35%'],
-                body: [
-                  [
-                    // Row 1
-                    {
-                      text: 'PREPARED BY',
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'TITLE',
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'SENDING INSTITUTION',
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                  ],
-                  [
-                    // Row 2
-                    {
-                      text: 'Receipt of the above-name persons and their records is acknowledged',
-                      fontSize: 8,
-                      alignment: 'center',
-                      margin: [2, 2, 2, 16],
-                      colSpan: 3,
-                    },
-                    {},
-                    {},
-                  ],
-                  [
-                    {
-                      text: 'SIGNATURE OF TRANSPORTING OFFICER',
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'TITLE',
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'INSTITUTION',
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                  ],
-                  [
-                    {
-                      text: 'SIGNATURE OF RECEIVING OFFICER',
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'TITLE',
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'INSTITUTION',
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                  ],
-                  [
-                    {
-                      text: currentPage.toString() + ' of ' + pageCount,
-                      fontSize: 9,
-                      alignment: 'center',
-                      border: [false, false, false, false],
-                      colSpan: 3,
-                    },
-                    {},
-                    {},
-                  ],
-                ],
-              },
-            };
-
-            return footer;
-          },
-
-          content: [
-            {
-              style: '',
-              layout: {
-                // code from lightHorizontalLines:
-                hLineWidth: function (i, node) {
-                  if (i === 0 || i === node.table.body.length) {
-                    return 0;
-                  }
-                  return i === node.table.headerRows ? 2 : 1;
-                },
-                // eslint-disable-next-line no-unused-vars
-                vLineWidth: function (i) {
-                  return 0;
-                },
-                hLineColor: function (i) {
-                  return i === 1 ? 'black' : '#aaa';
-                },
-                paddingLeft: function (i) {
-                  return i === 0 ? 0 : 8;
-                },
-                paddingRight: function (i, node) {
-                  return i === node.table.widths.length - 1 ? 0 : 8;
-                },
-                // code for zebra style:
-                fillColor: function (i) {
-                  return i % 2 !== 0 ? '#F0F0F0' : null;
-                },
-              },
-              table: {
-                layout: 'lightHorizontalLines',
-                headerRows: 1,
-                widths: [
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  '*',
-                ],
-                body: [
-                  [
-                    { text: '#', style: 'tblHeader' },
-                    { text: 'CDCR #', style: 'tblHeader' },
-                    { text: 'Name', style: 'tblHeader' },
-                    { text: 'Level', style: 'tblHeader' },
-                    { text: 'Housing', style: 'tblHeader' },
-                    { text: 'TB Cd', style: 'tblHeader' },
-                    { text: 'Ethnic', style: 'tblHeader' },
-                    { text: 'Case Factor', style: 'tblHeader' },
-                    {
-                      // text: 'Specific Transfer Reason',
-                      text: 'Reason',
-                      style: 'tblHeader',
-                    },
-                    { text: 'Comments', style: 'tblHeader' },
-                  ],
-                  ...data,
-                ],
-              },
-            },
-          ],
-          styles: {
-            hdrLeft: {
-              bold: true,
-              fontSize: 7,
-            },
-            hdrRight: {
-              alignment: 'right',
-              bold: true,
-              fontSize: 8,
-            },
-            hdrSchedule: {
-              bold: true,
-              fontSize: 8,
-            },
-            tblHeader: {
-              bold: true,
-              fontSize: 8,
-              color: 'black',
-            },
-            tblData: {
-              fontSize: 9,
-            },
-            tblCenter: {
-              alignment: 'center',
-              bold: true,
-              fontSize: 10,
-            },
-          },
-        };
-
-        pdfMake.createPdf(dd).download(fileName);
       },
     },
     computed: {

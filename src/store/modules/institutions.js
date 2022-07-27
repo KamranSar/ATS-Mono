@@ -87,6 +87,28 @@ const getters = {
     }
     return result;
   },
+  /**
+   * @example
+   * getInstitutionIdByOrigin(this.selSchedule.origin)
+   *
+   * @param {*} origin
+   * @returns Returns the abbreviated institution id
+   */
+  getInstitutionIdByOrigin: (state) => (origin) => {
+    if (!origin) {
+      console.error('No origin passed into getter getInstitutionId');
+      return getEmptyInstitution().institutionId;
+    }
+
+    for (let i of state.listOfInstitutions) {
+      // console.log('getInstitutionIdByOrigin(): i => ', i);
+      if (i.institutionName == origin) {
+        return i.institutionId;
+      }
+    }
+
+    return getEmptyInstitution().institutionId;
+  },
 };
 
 // Vuex Store

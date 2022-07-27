@@ -116,21 +116,21 @@ const actions = {
     try {
       rootState.app.loading = true;
       // const response = await svcTransfers.find(queryObj);
-      const response = await findAll(svcTransfers, queryObj);
-      console.log('readTransfers(): response => ', response);
-      if (response && response.data) {
-        for (let item of response.data) {
+      const { data } = await findAll(svcTransfers, queryObj);
+      // console.log('readTransfers(): response => ', data);
+      if (data && data.length) {
+        for (let item of data) {
           item.transferReason = {
             reasonCode: item.transferReasonCode,
             reasonDesc: item.transferReasonDesc,
           };
         }
         state.selTransferReason = {
-          reasonCode: response.data[0].transferReasonCode,
-          reasonDesc: response.data[0].transferReasonDesc,
+          reasonCode: data[0].transferReasonCode,
+          reasonDesc: data[0].transferReasonDesc,
         };
       }
-      return response && response.data ? response.data : [];
+      return data.length ? data : [];
     } catch (error) {
       console.error(error);
       return [];

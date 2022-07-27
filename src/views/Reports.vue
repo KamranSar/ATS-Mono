@@ -128,7 +128,7 @@
                 </v-select>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="create135('schedule')">
+                <v-icon large color="primary" @click="print135BySchedule()">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -145,7 +145,7 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="1" class="mx-4">
-                <v-icon large color="primary" @click="create135('cdcrNumber')">
+                <v-icon large color="primary" @click="print135ByCdcrNumber()">
                   mdi-file-document
                 </v-icon>
               </v-col>
@@ -301,7 +301,8 @@
   import BackToHome from '@/components/util/BackToHome.vue';
   import BusSeatReportCard from '@/components/Reports/BusSeatReportCard.vue';
   import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
-
+  import create135 from '@/pdfs/create135.js';
+  import svcSchedules from '@/feathers/services/schedule/schedule.service.js';
   export default {
     name: 'Reports',
     components: {
@@ -362,6 +363,7 @@
         'readTransfersByInstitution',
         'readTransfersBySchedule',
       ]),
+      ...call('institutions', ['getInstitutionIdByOrigin']),
 
       goHome() {
         this.$router.push({
@@ -422,39 +424,34 @@
         }
         await this.readSchedules(filter);
       },
-      // getInstitutionId(location)
-      // Returns the abbreviated institution id
-      // for the provided location
-      getInstitutionId(location) {
-        if (!location) {
-          // FIXME write out an error message
-          return '';
-        }
-
-        // console.log('getInstitutionId(): location => ', location);
-        // console.log(
-        //   'getInstitutionId(): listOfInstitutions',
-        //   this.listOfInstitutions
-        // );
-        for (let i of this.listOfInstitutions) {
-          // console.log('getInstitutionId(): i => ', i);
-          if (i.institutionName == location) {
-            return i.institutionId;
-          }
-        }
-
-        return 'NF';
-      },
 
       // ****************************************
       // Methods to create PDF documents
       //
       // ****************************************
+      async print135BySchedule() {
+        if (!this.selSchedule || !this.selSchedule._id) {
+          this.setSnackbar('Please select a schedule before printing');
+          return;
+        }
+        const filter = {
+          query: {
+            $limit: 50,
+            $sort: {
+              transferDate: 1,
+            },
+            scheduleId: this.selSchedule._id,
+          },
+        };
+        this.transfers = await this.readTransfers(filter);
+        await create135(this.selSchedule, this.transfers);
+      },
+      async print135ByCdcrNumber() {
+        if (!this.cdcrNum) {
+          this.setSnackbar('Please enter a cdcr number to print by CDCR#');
+          return;
+        }
 
-      // create135()
-      // retrieves and creates the data
-      // to be loaded in the PDF doc
-      async create135(param) {
         let filter = {
           query: {
             $limit: 50,
@@ -463,419 +460,20 @@
             },
           },
         };
+        let today = new Date().toISOString().split('T')[0];
+        filter.query.cdcrNumber = this.cdcrNum;
+        filter.query.transferDate = { $gte: today };
+        this.transfers = await this.readTransfers(filter);
 
-        // if (param == 'schedule' && this.sel135Schedule) {
-        //   filter.query.title = this.sel135Schedule;
-        if (param == 'schedule' && this.selSchedule) {
-          filter.query.scheduleId = this.selSchedule._id;
-          // if (!this.schedule) {
-          //   alert('Selected schedule = ', this.schedule);
-          //   return;
-          // }
-          // this.readTransfersBySchedule(filter);
-        } else if (param == 'cdcrNumber' && this.cdcrNum) {
-          let today = new Date().toISOString().split('T')[0];
-          filter.query.cdcrNumber = this.cdcrNum;
-          filter.query.transferDate = { $gte: today };
-          // this.readTransfersBySchedule(filter);
-        } else {
-          alert('Invalid option for CDCR-135 Transfer Record.');
+        if (!this.transfers.length) {
+          this.setSnackbar(
+            `${this.cdcrNum} is not on an active or pending transfer`
+          );
           return;
         }
 
-        try {
-          // console.log('create135(): filter => ', filter);
-          this.transfers = await this.readTransfers(filter);
-          // console.log('create135(): transfers => ', this.transfers);
-          if (!this.transfers) {
-            alert('No Transfers found for schedule: ', this.schedule.title);
-            return;
-          }
-        } catch (ex) {
-          this.setSnackbar(
-            'An error occurred reading Transfer records. Error: ' + ex.Code,
-            'error',
-            3000
-          );
-          console.error('create135() exception: ', ex);
-        }
-
-        let data = [];
-        // let row = [];
-        const obj = {
-          text: '',
-          style: 'tblData',
-          border: [false, false, false, false],
-        };
-        let num = 1;
-        for (let xfr of this.transfers) {
-          const row = [];
-          // Column 1 - Row Number
-          obj.text = String(num++);
-          row.push(Object.assign({}, obj));
-          // Column 2 - CDCR Number
-          obj.text = xfr.cdcrNumber;
-          row.push(Object.assign({}, obj));
-          // Column 3 - Name
-          obj.text = xfr.lastName + ', ' + xfr.firstName;
-          row.push(Object.assign({}, obj));
-          // Column 4 - Level
-          obj.text = xfr.securityLevel;
-          row.push(Object.assign({}, obj));
-          // Column 5 - Housing
-          obj.text = xfr.housing;
-          row.push(Object.assign({}, obj));
-          // Column 6 - TB Code
-          obj.text = xfr.tbCode;
-          row.push(Object.assign({}, obj));
-          // Column 7 - Ethnic
-          obj.text = xfr.ethnicity;
-          row.push(Object.assign({}, obj));
-          // Column 8 - Case Factor
-          obj.text = xfr.caseFactor;
-          row.push(Object.assign({}, obj));
-          // Column 9 - Specific Transfer Reason
-          obj.text = xfr.transferReasonCode;
-          row.push(Object.assign({}, obj));
-          // Column 10 - Comments
-          obj.text = xfr.comments;
-          row.push(Object.assign({}, obj));
-
-          data.push(row);
-        }
-
-        // console.log('create135(): data => ', data);
-        if (data) {
-          this.create135PDF(data);
-        } else {
-          // error message
-          // alert('Could not create CDCR 135 PDF Document!');
-          this.setSnackbar(
-            'ERROR! Could not create CDCR 135 PDF Document!',
-            'error',
-            3000
-          );
-        }
-      },
-      // create135PDF()
-      // Creates a Transfer Record
-      // Creates a pdf file using PDFMake
-      // ********************************
-      create135PDF(data) {
-        // console.log('create135PDF(): data => ', data);
-
-        let doc =
-          this.stateOf +
-          '\n' +
-          this.report135 +
-          '\nDISTRIBUTION PER INSTITUTION POLICY';
-        let reportTitle = 'TRANSFER RECORD';
-        let agency = this.agency;
-
-        let dtLabel =
-          'The following identified persons will be transferred this date';
-        let xfrNum = data.length;
-        let title = this.selSchedule.title;
-        let to = this.selSchedule.destination;
-        let from = this.getInstitutionId(this.selSchedule.origin);
-        let vias = this.selSchedule.vias.join(', ');
-        let xfrDate = this.selSchedule.transferDate;
-
-        let today = new Date().toISOString();
-        let fileName = `135_${today}.pdf`;
-        if (data.length === 1) {
-          fileName = `135_${this.cdcrNum}_${today}.pdf`;
-        } else {
-          fileName = `135_${this.selSchedule.title}_${today}.pdf`;
-        }
-
-        let dd = {
-          pageSize: 'LETTER',
-          pageMargins: [10, 80, 10, 160],
-          borders: [true, true, true, true],
-          header: function () {
-            //currentPage, pageCount, pageSize) {
-            let header = {
-              margin: [10, 10, 10, 10],
-              table: {
-                widths: ['auto', '*', 'auto'],
-                body: [
-                  // Row 1 - Title
-                  [
-                    {
-                      text: doc,
-                      style: 'hdrLeft',
-                      border: [true, true, false, true],
-                    },
-                    {
-                      text: reportTitle,
-                      style: 'tblCenter',
-                      border: [false, true, false, true],
-                      // alignment: 'center',
-                    },
-                    {
-                      text: agency,
-                      style: 'hdrRight',
-                      border: [false, true, true, true],
-                      // alignment: 'right',
-                    },
-                  ],
-                  // Row 2 - Header Row 1
-                  [
-                    {
-                      text: dtLabel,
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                    },
-                    {
-                      text: 'DATE:  ' + xfrDate,
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                    },
-                    {
-                      text: 'NUMBER TRANSFERRING:  ' + xfrNum,
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                    },
-                  ],
-                  // Row 3 - Header Row 2
-                  [
-                    {
-                      table: {
-                        widths: ['*', '*', '*', '*'],
-                        body: [
-                          [
-                            {
-                              text: 'SCHEDULE:  ' + title,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                            {
-                              text: 'FROM:  ' + from,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                            {
-                              text: 'TO:  ' + to,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                            {
-                              text: 'VIAS:  ' + vias,
-                              style: 'hdrSchedule',
-                              border: [false, false, false, false],
-                            },
-                          ],
-                        ],
-                      },
-                      colSpan: 3,
-                      margins: [0, 0, 0, 0],
-                    },
-                    {},
-                    [],
-                  ],
-                ],
-              },
-            };
-
-            return header;
-          },
-
-          footer: function (currentPage, pageCount) {
-            let footer = {
-              margin: [10, 10, 10, 10],
-              table: {
-                widths: ['35%', '30%', '35%'],
-                body: [
-                  [
-                    // Row 1
-                    {
-                      text: 'PREPARED BY',
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'TITLE',
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'SENDING INSTITUTION',
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                  ],
-                  [
-                    // Row 2
-                    {
-                      text: 'Receipt of the above-name persons and their records is acknowledged',
-                      fontSize: 8,
-                      alignment: 'center',
-                      margin: [2, 2, 2, 16],
-                      colSpan: 3,
-                    },
-                    {},
-                    {},
-                  ],
-                  [
-                    {
-                      text: 'SIGNATURE OF TRANSPORTING OFFICER',
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'TITLE',
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'INSTITUTION',
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                  ],
-                  [
-                    {
-                      text: 'SIGNATURE OF RECEIVING OFFICER',
-                      style: 'hdrSchedule',
-                      border: [true, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'TITLE',
-                      style: 'hdrSchedule',
-                      border: [false, true, false, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                    {
-                      text: 'INSTITUTION',
-                      style: 'hdrSchedule',
-                      border: [false, true, true, true],
-                      margin: [2, 2, 2, 16],
-                    },
-                  ],
-                  [
-                    {
-                      text: currentPage.toString() + ' of ' + pageCount,
-                      fontSize: 9,
-                      alignment: 'center',
-                      border: [false, false, false, false],
-                      colSpan: 3,
-                    },
-                    {},
-                    {},
-                  ],
-                ],
-              },
-            };
-
-            return footer;
-          },
-
-          content: [
-            {
-              style: '',
-              layout: {
-                // code from lightHorizontalLines:
-                hLineWidth: function (i, node) {
-                  if (i === 0 || i === node.table.body.length) {
-                    return 0;
-                  }
-                  return i === node.table.headerRows ? 2 : 1;
-                },
-                // eslint-disable-next-line no-unused-vars
-                vLineWidth: function (i) {
-                  return 0;
-                },
-                hLineColor: function (i) {
-                  return i === 1 ? 'black' : '#aaa';
-                },
-                paddingLeft: function (i) {
-                  return i === 0 ? 0 : 8;
-                },
-                paddingRight: function (i, node) {
-                  return i === node.table.widths.length - 1 ? 0 : 8;
-                },
-                // code for zebra style:
-                fillColor: function (i) {
-                  return i % 2 !== 0 ? '#F0F0F0' : null;
-                },
-              },
-              table: {
-                layout: 'lightHorizontalLines',
-                headerRows: 1,
-                widths: [
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  'auto',
-                  '*',
-                ],
-                body: [
-                  [
-                    { text: '#', style: 'tblHeader' },
-                    { text: 'CDCR #', style: 'tblHeader' },
-                    { text: 'Name', style: 'tblHeader' },
-                    { text: 'Level', style: 'tblHeader' },
-                    { text: 'Housing', style: 'tblHeader' },
-                    { text: 'TB Cd', style: 'tblHeader' },
-                    { text: 'Ethnic', style: 'tblHeader' },
-                    { text: 'Case Factor', style: 'tblHeader' },
-                    {
-                      text: 'Specific Transfer Reason',
-                      style: 'tblHeader',
-                    },
-                    { text: '135 Comments', style: 'tblHeader' },
-                  ],
-                  ...data,
-                ],
-              },
-            },
-          ],
-          styles: {
-            hdrLeft: {
-              bold: true,
-              fontSize: 7,
-            },
-            hdrRight: {
-              alignment: 'right',
-              bold: true,
-              fontSize: 8,
-            },
-            hdrSchedule: {
-              bold: true,
-              fontSize: 8,
-            },
-            tblHeader: {
-              bold: true,
-              fontSize: 8,
-              color: 'black',
-            },
-            tblData: {
-              fontSize: 9,
-            },
-            tblCenter: {
-              alignment: 'center',
-              bold: true,
-              fontSize: 10,
-            },
-          },
-        };
-
-        // console.log('create135PDF(): dd => ', dd);
-        pdfMake.createPdf(dd).download(fileName);
-        // alert("create135PDF() Done!");
+        const schedule = await svcSchedules.get(this.transfers[0].scheduleId);
+        if (schedule) await create135(schedule, this.transfers);
       },
       // create134()
       // Builds the document format for the 134 report
@@ -1010,7 +608,7 @@
 
         let nXfer = this.transfers.length;
 
-        let from = this.getInstitutionId(this.selSchedule.origin);
+        let from = this.getInstitutionIdByOrigin(this.selSchedule.origin);
         let to = this.selSchedule.destination;
         let vias = this.selSchedule.vias.join(', ');
         let txtDate = this.selSchedule.transferDate;
