@@ -1,5 +1,4 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
-const redisCache = require('feathers-redis-cache').hooks;
 const { discard, setNow, iff, alterItems, isProvider } = require('feathers-hooks-common');
 const checkPermissions = require('feathers-permissions');
 const { logSvcMsg, setUserID, fixQueryType } = require('cdcrhooks');
@@ -43,9 +42,8 @@ module.exports = {
         fixQueryType('some_number_field', 'Number'),
         fixQueryType('some_nullable_field', 'Null')
       ),
-      redisCache.before(),
     ],
-    get: [redisCache.before()],
+    get: [],
     create: [setUserID('updatedBy', 'createdBy'), setNow('createdAt'), setNow('updatedAt')],
     update: [setUserID('updatedBy'), setNow('updatedAt'), discard('createdAt', 'createdBy')],
     patch: [setUserID('updatedBy'), setNow('updatedAt'), discard('createdAt', 'createdBy')],
@@ -68,16 +66,12 @@ module.exports = {
         }
       }),
     ],
-    find: [
-      redisCache.after({ expiration: 600 }), // 10 minutes
-    ],
-    get: [
-      redisCache.after({ expiration: 600 }), // 10 minutes
-    ],
-    create: [redisCache.purge()],
-    update: [redisCache.purge()],
-    patch: [redisCache.purge()],
-    remove: [redisCache.purge()],
+    find: [],
+    get: [],
+    create: [],
+    update: [],
+    patch: [],
+    remove: [],
   },
 
   error: {
