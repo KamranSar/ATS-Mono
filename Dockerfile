@@ -28,9 +28,10 @@ ENV PATH=/app/node_modules/.bin:$PATH \
 # Copy everything into the image
 COPY  . .
 
-# Install Packages
-# --unsafe-perm option allows preinstall script to be run during Docker build
-RUN cd /app  &&  npm install --unsafe-perm
+# Go into the /app folder and create a file indicating to the 
+# preinstall script that it was invoked during a Docker build
+RUN cd /app  &&  touch dockerbuild
+
 # RUN ls -al
 
 # Remove unnecessary files & folders to reduce image size & improve security
