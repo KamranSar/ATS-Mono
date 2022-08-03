@@ -252,7 +252,7 @@ const _ddTransferRecordFooter = (currentPage, pageCount) => {
  * @param {Array} transfers
  * @returns {Object} The content object
  */
-const _ddGet135Content = (transfers) => {
+const _ddTransferRecordContent = (transfers) => {
   const TABLE_HEADERS = {
     '#': (transfer, index) => {
       return index++;
@@ -358,10 +358,10 @@ const create135 = async (selSchedule, transfers) => {
   const documentDefinition = {
     pageSize: 'LETTER',
     pageMargins: [10, 80, 10, 160],
-    borders: [true, true, true, true],
+    borders: Array(4).fill(true),
     header: _ddTransferRecordHeader(selSchedule, transfers.length),
     footer: _ddTransferRecordFooter, // pdfMake will pass (Number: currentPage, Number: pageCount) as part of the callback
-    content: _ddGet135Content(transfers),
+    content: _ddTransferRecordContent(transfers),
     styles: _ddTransferRecordStyle(),
   };
   await pdfMake.createPdf(documentDefinition).download(fileName);
