@@ -3,7 +3,7 @@
     <v-card-title class="blue-grey lighten-4">
       <v-row>
         <v-col cols="4" xs="12" md="4" class="py-1" align-self="center">
-          <h2>Maintenance</h2>
+          <h2>Transfer Reasons</h2>
         </v-col>
         <v-col align="right" align-self="center">
           <BackToHome />
