@@ -43,6 +43,12 @@ module.exports = {
       enabled: true,
       description: 'Gets departing offenders from institution on that day',
     },
+    {
+      name: 'destination',
+      version: 'v1',
+      enabled: true,
+      description: 'CRUD service for custom destinations.',
+    },
   ],
 };
 //*** DO NOT MODIFY THIS CODE ***//
