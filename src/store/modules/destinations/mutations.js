@@ -1,4 +1,4 @@
-import { getDefaultState } from '@/store/modules/transfers/index.js';
+import { getDefaultState } from '@/store/modules/destinations/index.js';
 
 const mutations = {
   resetState(state) {

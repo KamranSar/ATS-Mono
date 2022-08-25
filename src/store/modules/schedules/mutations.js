@@ -1,4 +1,4 @@
-import { getDefaultState } from '@/store/modules/userPrefs/index.js';
+import { getDefaultState } from '@/store/modules/schedules/index.js';
 
 const mutations = {
   resetState(state) {

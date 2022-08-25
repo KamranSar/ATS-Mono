@@ -444,6 +444,7 @@
       ...get('reasons', ['reasons']),
       ...get('institutions', ['selectedInstitution', 'getInstitutionById']),
       ...sync('app', ['loading']),
+      ...sync('destinations', ['destinations']),
       /**
        * ? The need for this computed comes from v-data-table
        * ? v-data-table wants the v-model to be an array
@@ -461,6 +462,7 @@
       },
       listOfDestinations() {
         return this.listOfInstitutions
+          .concat(this.destinations)
           .filter(
             (inst) =>
               this.selectedInstitution &&

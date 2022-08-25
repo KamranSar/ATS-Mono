@@ -65,17 +65,6 @@ const routes = [
     },
   },
   {
-    icon: 'mdi-cog-outline',
-    path: '/maintenance',
-    name: 'Maintenance',
-    component: () =>
-      import(/* webpackChunkName: "Maintenance" */ '@/views/Maintenance.vue'),
-    meta: {
-      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
-      hasAnyRoles: [INST_ADMIN.name, INST_USER.name],
-    },
-  },
-  {
     icon: 'mdi-file-document',
     path: '/reports',
     name: 'Reports',
@@ -101,6 +90,39 @@ const routes = [
       beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
       hasAnyRoles: [INST_ADMIN.name, INST_USER.name],
     },
+  },
+  {
+    icon: 'mdi-cog-outline',
+    name: 'Maintenance',
+    path: '/maintenance',
+    component: () =>
+      import(
+        /* webpackChunkName: "maintenance" */ '@/views/Maintenance/Maintenance.vue'
+      ),
+    meta: {
+      beforeResolve: (to, from, next) => hasAnyRoles(to, from, next),
+      hasAnyRoles: [SYS_ADMIN.name, INST_ADMIN.name, INST_USER.name],
+    },
+    children: [
+      {
+        icon: 'mdi-map-marker',
+        path: 'destinations',
+        name: 'Destinations',
+        component: () =>
+          import(
+            /* webpackChunkName: "Destinations" */ '@/views/Maintenance/Destinations.vue'
+          ),
+      },
+      {
+        icon: 'mdi-adjust', // mdi-adjust, mdi-tag, mdi-tooltip
+        path: 'transferreasons',
+        name: 'Transfer Reasons',
+        component: () =>
+          import(
+            /* webpackChunkName: "TransferReasons" */ '@/views/Maintenance/TransferReasons.vue'
+          ),
+      },
+    ],
   },
   {
     icon: 'mdi-account-key-outline',
@@ -186,8 +208,8 @@ const LeftNavItems = [
   'Endorsements',
   'Schedule',
   'Transfer',
-  'Maintenance',
   'Reports',
+  'Maintenance',
   'Admin',
   // { name: 'Settings', parentOnly: true },
   'Login',
