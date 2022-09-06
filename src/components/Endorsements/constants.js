@@ -94,6 +94,7 @@ const ENDORSEMENT_HEADERS = DataTableHeadersModel([
   },
   { text: 'Ethnicity', value: 'ethnicity' },
   { text: 'Housing', value: 'housingArea' },
+  { text: 'Bed', value: 'bed' },
   { text: 'In House Remarks', value: 'inHouseRemarks' },
 ]);
 

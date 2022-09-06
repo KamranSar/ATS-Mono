@@ -78,8 +78,8 @@ const _ddAdvancedTransferNoticeContent = async (
   const TABLE_HEADERS = {
     'CDCR #': (transfer) => transfer.cdcrNumber,
     Name: (transfer) => transfer.lastName + ', ' + transfer.firstName,
-    '': () => '',
     Housing: (transfer) => transfer.housing,
+    Bed: (transfer) => (transfer.bed ? transfer.bed : ''),
     Level: (transfer) => transfer.securityLevel,
     Ethnic: (transfer) => transfer.ethnicity,
     'Specific Transfer Reason': (transfer) => transfer.transferReasonCode,
@@ -122,7 +122,6 @@ const _ddAdvancedTransferNoticeContent = async (
         fillColor: '#F0F0F0',
       },
       // Column 5 - Destination
-
       {
         text: transfer.destination,
         style: 'schEntry',
@@ -147,7 +146,7 @@ const _ddAdvancedTransferNoticeContent = async (
 
     if (
       index === 0 ||
-      transfer.transferDate !== advTransfers[index - 1].transferDate
+      transfer.scheduleId !== advTransfers[index - 1].scheduleId
     ) {
       TABLE_DATA.push(DATA_ROW);
     }
@@ -181,7 +180,7 @@ const _ddAdvancedTransferNoticeContent = async (
   // =============================
   const REPORT_NAME = 'CDCR FORM 7344 (XX/XX)';
   const dateNow = new Date(); // Local Time
-  const MM = dateNow.getMonth().toString().padStart(2, '0');
+  const MM = (dateNow.getMonth() + 1).toString().padStart(2, '0');
   const dd = dateNow.getDate().toString().padStart(2, '0');
   const YYYY = dateNow.getFullYear();
   const HH = dateNow.getHours().toString().padStart(2, '0');

@@ -126,7 +126,6 @@
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
-            small
             class="mr-2"
             @click="openSchedule(item)"
             v-show="enableEditing && hasInstitutionRole"
@@ -140,7 +139,7 @@
             icon
             small
           >
-            <v-icon small>mdi-delete</v-icon>
+            <v-icon>mdi-delete-forever</v-icon>
           </v-btn>
         </template>
         <template v-slot:no-data>
@@ -206,6 +205,13 @@
                   <v-text-field
                     label="Housing"
                     v-model="editEndorsement.housing"
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                  <v-text-field
+                    label="Bed"
+                    v-model="editEndorsement.bed"
                     readonly
                   ></v-text-field>
                 </v-col>
@@ -276,7 +282,6 @@
 
           <template v-slot:item.actions="{ item }">
             <v-icon
-              small
               class="mr-2"
               @click="openEndorsement(item)"
               v-show="enableEditing && hasInstitutionRole"
@@ -284,10 +289,9 @@
               mdi-pencil
             </v-icon>
             <v-icon
-              small
               @click="onDeleteEndorsement(item)"
               v-show="enableEditing && hasInstitutionRole"
-              >mdi-delete</v-icon
+              >mdi-delete-forever</v-icon
             >
           </template>
           <template v-slot:item.print="{ item }">
@@ -576,13 +580,13 @@
               return;
             }
           }
-
           this.transferData.photograph = '';
           this.editEndorsement.cdcrNumber = this.transferData.cdcrNumber;
           this.editEndorsement.firstName = this.transferData.firstName;
           this.editEndorsement.lastName = this.transferData.lastName;
           // this.editEndorsement.ethnicity = this.transferData.ethnicity;
           this.editEndorsement.housing = this.transferData.housing;
+          this.editEndorsement.bed = this.transferData.bed;
           // this.editEndorsement.securityLevel = this.transferData.securityLevel;
           // this.editEndorsement.tbCode = this.transferData.tbCode;
           // this.editEndorsement.caseFactor = this.transferData.caseFactor;

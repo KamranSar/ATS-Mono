@@ -1,5 +1,6 @@
 import { make } from 'vuex-pathify';
 import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
+import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 
 const getDefaultState = () => {
   return {
@@ -33,7 +34,7 @@ const actions = {
     console.log('selectedInstitution: ', selectedInstitution);
     let filter = {
       query: {
-        $limit: 500,
+        $limit: 200,
         // $sort: {
         //   endorsedDate: 1,
         // },
@@ -55,7 +56,8 @@ const actions = {
     }
     try {
       rootState.app.loading = true;
-      const response = await endorsedOffenders.find(filter);
+      // const response = await endorsedOffenders.find(filter);
+      const response = await findAll(endorsedOffenders, filter);
       if (response && response.data) {
         state.endorsements = response.data;
       } else {

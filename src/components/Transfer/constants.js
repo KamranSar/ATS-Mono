@@ -48,6 +48,10 @@ const SOMS_DATA_FIELDS = (somsOffender) => [
       somsOffender && somsOffender.housingArea ? somsOffender.housingArea : '',
   },
   {
+    label: 'Bed',
+    data: somsOffender && somsOffender.bed ? somsOffender.bed : '',
+  },
+  {
     label: 'Security Level:',
     data:
       somsOffender && somsOffender.securityLevel

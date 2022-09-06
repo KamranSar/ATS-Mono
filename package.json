@@ -1,6 +1,6 @@
 {
   "name": "automated-transfer-system",
-  "version": "0.6.30",
+  "version": "0.6.31",
   "templateVersion": "0.6.4",
   "publicPath": "/ats",
   "cdcrAppID": "38b5c0ad-42d9-48e1-b559-7cde0709e286",
@@ -76,7 +76,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-vue": "^6.2.2",
     "hygen": "^6.1.0",
