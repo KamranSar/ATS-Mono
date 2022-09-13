@@ -134,7 +134,7 @@ const _ddBusOrderSeatContent = (endorsements, from) => {
     'CDCR #': (transfer) => transfer.cdcrNumber,
     Name: (transfer) => transfer.lastName + ', ' + transfer.firstName,
     Scheduled: (transfer) => (transfer.isScheduled ? 'YES' : 'NO'),
-    Level: (transfer) => transfer.securityLevel,
+    Level: (transfer) => transfer.endorsedSecurityLevel,
     'Endorsed Date': (transfer) => transfer.currentEndorsementDate,
     'Expire Date': (transfer) => transfer.expirationEndorsementDate,
     'Release Date': (transfer) => transfer.releaseDate,

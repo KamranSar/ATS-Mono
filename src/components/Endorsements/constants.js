@@ -48,13 +48,14 @@ const ENDORSEMENT_HEADERS = DataTableHeadersModel([
     value: 'endorsedInstitution',
   },
   {
-    text: 'Level',
-    value: 'securityLevel',
+    text: 'Endorsed Level',
+    value: 'endorsedSecurityLevel',
     align: 'center',
   },
   {
     text: 'Endorsed To Program',
     value: 'endorsedProgram',
+    align: 'center',
     formatter: function (item, value) {
       return item[value].toLowerCase() !== 'not applicable'
         ? item[value]
@@ -64,6 +65,7 @@ const ENDORSEMENT_HEADERS = DataTableHeadersModel([
   {
     text: 'Endorsed Date',
     value: 'endorsedDate',
+    align: 'center',
     classList: ['nowrap'],
     formatter: function (item, value) {
       return formatDate(item[value]);
@@ -72,6 +74,7 @@ const ENDORSEMENT_HEADERS = DataTableHeadersModel([
   {
     text: 'Expired Date',
     value: 'expirationDate',
+    align: 'center',
     classList: ['nowrap'],
     formatter: function (item, value) {
       return formatDate(item[value]);
@@ -80,6 +83,7 @@ const ENDORSEMENT_HEADERS = DataTableHeadersModel([
   {
     text: 'Release Date',
     value: 'releaseDate',
+    align: 'center',
     classList: ['nowrap'],
     formatter: function (item, value) {
       return formatDate(item[value]);
@@ -92,10 +96,11 @@ const ENDORSEMENT_HEADERS = DataTableHeadersModel([
       return _formatCaseFactors(item);
     },
   },
-  { text: 'Ethnicity', value: 'ethnicity' },
-  { text: 'Housing', value: 'housingArea' },
-  { text: 'Bed', value: 'bed' },
-  { text: 'In House Remarks', value: 'inHouseRemarks' },
+  { text: 'Ethnicity', value: 'ethnicity', align: 'center' },
+  { text: 'Housing', value: 'housingArea', align: 'center' },
+  { text: 'Bed', value: 'bed', align: 'center' },
+  // { text: 'In House Remarks', value: 'inHouseRemarks' },
+  { text: 'Save/Remove', value: 'actions', sortable: false, align: 'center' },
 ]);
 
 const ENDORSEMENT_OPTIONS = {
@@ -109,9 +114,12 @@ const ENDORSEMENT_OPTIONS = {
   // mustSort: boolean
 };
 
-const NO_DATA_TEXT = 'No Endorsements';
+const NO_DATA_TEXT = 'No Endorsements. Is institution selected?';
 
 const NO_RESULTS_TEXT = 'No Endorsements Found';
+
+const SAVE_ALL_PLACEHOLDER =
+  'Optional - remarks will be added to all newly saved endorsements';
 
 export {
   ENDORSEMENT_HEADERS,
@@ -119,4 +127,6 @@ export {
   NO_DATA_TEXT,
   NO_RESULTS_TEXT,
   LOADING_TEXT,
+  SAVE_ALL_PLACEHOLDER,
+  _formatCaseFactors,
 };

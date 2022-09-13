@@ -32,10 +32,10 @@
     <v-data-table
       v-if="endorsementsLoaded"
       :search="endorsementSearch"
-      :items-per-page="ENDORSEMENT_OPTIONS.itemsPerPage"
       :headers="ENDORSEMENT_HEADERS"
       :items="endorsements"
       item-key="cdcrNumber"
+      :items-per-page="ENDORSEMENT_OPTIONS.itemsPerPage"
       class="elevation-1 ma-4 pa-4"
       :options="ENDORSEMENT_OPTIONS"
       :loading-text="LOADING_TEXT"
@@ -44,6 +44,12 @@
       multi-sort
       dense
     >
+      <!--
+      This will changed the dropdown options but ALL does not work
+      :footer-props="{
+        'items-per-page-options': [25, 100, 200, 'ALL'],
+      }"
+ -->
       <!-- Endorsement Search -->
       <template v-slot:top>
         <v-row>
@@ -57,21 +63,37 @@
               clearable
             ></v-text-field>
           </v-col>
-          <v-spacer></v-spacer>
-        </v-row>
-      </template>
-      <!-- Save ALL Endorsements -->
-      <!-- <template v-slot:top>
-        <v-row>
-          <v-col cols="4">
-            <v-btn class="secondary ma-2 btns" @click="saveAll()">
-              SAVE ALL
-            </v-btn>
+          <v-col cols="3">
+            <v-row>
+              <v-col cols="6">
+                <v-btn
+                  id="btnSaveAll"
+                  color="secondary"
+                  class="mb-2"
+                  dark
+                  @click="onSaveAll"
+                >
+                  <v-icon>mdi-content-save-outline</v-icon>
+                  SAVE ALL
+                </v-btn>
+              </v-col>
+              <v-col cols="6">
+                <v-btn
+                  id="btnRemoveAll"
+                  color="secondary"
+                  class="mb-2"
+                  dark
+                  @click="onClickRemove()"
+                >
+                  <v-icon>mdi-delete-forever</v-icon>
+                  REMOVE ALL
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-col>
           <v-spacer></v-spacer>
         </v-row>
-      </template> -->
-
+      </template>
       <!-- Table columns -->
       <!-- FIXME: Sorting -->
       <template
@@ -95,6 +117,10 @@
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
       </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon @click="openRemarks(item)">mdi-pencil</v-icon>
+        <v-icon @click="onClickRemove(item)">mdi-delete-forever</v-icon>
+      </template>
     </v-data-table>
     <v-dialog v-model="dlgRemarks" width="500">
       <v-card>
@@ -108,11 +134,40 @@
           />
         </v-card-text>
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="cancelRemarks()">CANCEL</v-btn>
-          <v-btn color="primary" text @click="saveRemarks()">SAVE</v-btn>
+          <v-btn color="primary" text @click="onSaveEndorsement()">SAVE</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog persistent v-model="dlgRemoveEndorsement" width="500">
+      <v-card>
+        <v-card-title class="blue-grey lighten-4">
+          {{ dlgRemoveTitle }}
+          <v-spacer />
+          <v-btn small icon @click="dlgRemoveEndorsement = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          {{ dlgRemoveText }}
+          <!-- <v-row no-gutters class="mt-2 caption">
+            CDCR#: {{ cdcrNumber }}
+          </v-row>
+          <v-row no-gutters class="mt-2 caption">
+            Name:
+            {{
+              selectedEndorsement.firstName + ' ' + selectedEndorsement.lastName
+            }}
+          </v-row> -->
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="onRemoveEndorsement()">
+            Remove Endorsement
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -133,11 +188,17 @@
     LOADING_TEXT,
     NO_DATA_TEXT,
     NO_RESULTS_TEXT,
+    SAVE_ALL_PLACEHOLDER,
   } from '@/components/Endorsements/constants.js';
   import scheduleModel from '@/models/scheduleModel';
   import DataTableItem from '@/components/util/DataTableItem.vue';
   import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 
+  const DLG_REMOVE_TITLE = 'Remove Endorsement(s)';
+  const DLG_REMOVE_TEXT =
+    'Are you sure you want to remove this endorsement from ATS?';
+  const DLG_REMOVE_ALL_TEXT =
+    'Are you sure you want to remove ALL endorsements from ATS?';
   export default {
     name: 'Endorsements',
     components: { BackToHome, InstitutionDropdown, DataTableItem },
@@ -145,11 +206,13 @@
       endorsementsLoaded: false,
       dlgRemarks: false,
       endorsementSearch: '',
+      bRemoveAll: false,
       ENDORSEMENT_HEADERS,
       ENDORSEMENT_OPTIONS,
       LOADING_TEXT,
       NO_DATA_TEXT,
       NO_RESULTS_TEXT,
+      SAVE_ALL_PLACEHOLDER,
       snackbarOptions: {
         top: true,
         center: true,
@@ -157,13 +220,24 @@
         color: '',
         timeout: 6000,
       },
+      dlgRemoveEndorsement: false,
+      dlgRemoveTitle: DLG_REMOVE_TITLE,
+      dlgRemoveText: DLG_REMOVE_TEXT,
     }),
     async mounted() {
       this.selSchedule = scheduleModel(); // Reset selected schedule when entering Endorsements page.
-      // await this.getEndorsements(this.selectedInstitution);
-      // await this.endorsementExists(this.endorsements);
       await this._getEndorsements();
-      // await this.itemExists();
+    },
+    computed: {
+      ...sync('app', ['loading']),
+      ...sync('transfers', ['transferData']),
+      ...sync('schedules', ['selSchedule']),
+      ...get('institutions', [
+        'selectedInstitution',
+        'listOfInstitutions',
+        'getInstitutionByName',
+      ]),
+      ...get('endorsements', ['endorsements']),
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
@@ -171,6 +245,7 @@
         'readTransfers',
         'readOffenderDetails',
         'saveForm',
+        'deleteTransfer',
       ]),
       ...call('endorsements', ['getEndorsements']),
       setSnackbar(msg, result, timeout) {
@@ -181,20 +256,6 @@
           color: result,
           timeout: timeout,
         });
-      },
-      async openRemarks(item) {
-        if (!item) {
-          this.setSnackbar(
-            'ERROR ! Refresh the page and try again.',
-            'error',
-            3000
-          );
-          this.dlgRemarks = false;
-          return;
-        }
-        this.dlgRemarks = true;
-
-        await this.getOffender(item);
       },
       async getOffender(item) {
         try {
@@ -207,7 +268,8 @@
           if (response && response.length > 0) {
             this.transferData = response[0];
           } else {
-            await this.readOffenderDetails(item.cdcrNumber);
+            // response = await this.readOffenderDetails(item.cdcrNumber);
+            this.transferData = item;
           }
         } catch (ex) {
           this.setSnackbar(
@@ -218,64 +280,10 @@
           console.error(ex);
         }
       },
-      cancelRemarks() {
-        this.dlgRemarks = false;
-        this.transferData = transferModel();
-      },
-      async saveRemarks() {
-        this.loading = true;
-        try {
-          let objIns = this.listOfInstitutions.find(
-            (inst) =>
-              this.transferData &&
-              this.transferData.institutionName &&
-              inst.institutionName === this.transferData.institutionName
-          );
-          if (objIns) {
-            this.transferData.institutionName = objIns.institutionName;
-            this.transferData.institutionId = objIns.institutionId;
-            this.transferData.institutionPartyId = objIns.institutionPartyId;
-          }
-          objIns = this.listOfInstitutions.find(
-            (inst) =>
-              this.transferData &&
-              this.transferData.endorsedToName &&
-              inst.institutionName === this.transferData.endorsedToName
-          );
-          if (objIns) {
-            this.transferData.endorsedToName = objIns.institutionName;
-            this.transferData.endorsedToId = objIns.institutionId;
-            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
-          }
-          const response = await this.saveForm();
-
-          if (response) {
-            // setSnackbar successful
-            const resp = this.endorsements.find(
-              (end) => end.cdcrNumber === this.transferData.cdcrNumber
-            );
-            if (resp) {
-              resp.saved = true;
-            }
-
-            this.setSnackbar('Successfully saved remarks!', 'succesful', 2000);
-          } else {
-            // setSnackbar error
-            this.setSnackbar('Error saving remarks!', 'error', 6000);
-          }
-        } catch (ex) {
-          // setSnackbar error
-          console.error(ex);
-          this.setSnackbar('Error occurred saving remarks!', 'error', 6000);
-        }
-        this.cancelRemarks();
-        this.loading = false;
-      },
       async _getEndorsements() {
         this.endorsementsLoaded = false;
         if (this.selectedInstitution) {
           await this.getEndorsements(this.selectedInstitution);
-          console.log('getEndorsements() Finished.');
 
           this.loading = true;
           await this.endorsementExists();
@@ -313,36 +321,178 @@
             );
             if (resp) {
               resp.saved = true;
-              console.log('resp: ', resp);
+              resp._id = response.data[0]._id;
             }
           }
         });
 
         return true;
       },
-      itemExists(item) {
-        if (item && item.saved) {
-          console.log(
-            'Endorsements::itemExists(): item.cdcrNumber => ',
-            item.cdcrNumber
+      async openRemarks(item) {
+        if (this.loading) {
+          return;
+        }
+        if (!item) {
+          this.setSnackbar(
+            'ERROR ! Refresh the page and try again.',
+            'error',
+            3000
           );
-          console.log('Endorsements::itemExists(): item.saved => ', item.saved);
-          return true;
+          this.dlgRemarks = false;
+          return;
+        }
+        this.dlgRemarks = true;
+
+        await this.getOffender(item);
+      },
+      cancelRemarks() {
+        this.dlgRemarks = false;
+        this.transferData = transferModel();
+      },
+      async onSaveEndorsement() {
+        if (this.remarksPlaceholder) {
+          this.saveAll();
         } else {
-          return false;
+          this.saveEndorsement();
         }
       },
-    },
-    computed: {
-      ...sync('app', ['loading']),
-      ...sync('transfers', ['transferData']),
-      ...sync('schedules', ['selSchedule']),
-      ...get('institutions', [
-        'selectedInstitution',
-        'listOfInstitutions',
-        'getInstitutionByName',
-      ]),
-      ...get('endorsements', ['endorsements']),
+      async saveEndorsement() {
+        this.loading = true;
+        try {
+          let objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.institutionName &&
+              inst.institutionName === this.transferData.institutionName
+          );
+          if (objIns) {
+            this.transferData.institutionName = objIns.institutionName;
+            this.transferData.institutionId = objIns.institutionId;
+            this.transferData.institutionPartyId = objIns.institutionPartyId;
+          }
+          objIns = this.listOfInstitutions.find(
+            (inst) =>
+              this.transferData &&
+              this.transferData.endorsedToName &&
+              inst.institutionName === this.transferData.endorsedToName
+          );
+          if (objIns) {
+            this.transferData.endorsedToName = objIns.institutionName;
+            this.transferData.endorsedToId = objIns.institutionId;
+            this.transferData.endorsedToPartyId = objIns.institutionPartyId;
+          }
+
+          const response = await this.saveForm();
+          this.setSaveState(response, true);
+        } catch (ex) {
+          // setSnackbar error
+          console.error(ex);
+          this.setSnackbar('Error occurred saving remarks!', 'error', 3000);
+        }
+        this.cancelRemarks();
+        this.loading = false;
+      },
+      async onSaveAll() {
+        this.remarksPlaceholder = this.SAVE_ALL_PLACEHOLDER;
+        this.dlgRemarks = true;
+      },
+      async saveAll() {
+        this.loading = true;
+
+        let remarks = '';
+        if (this.transferData && this.transferData.inHouseRemarks) {
+          remarks = this.transferData.inHouseRemarks;
+        }
+        for (const element of this.endorsements) {
+          this.transferData = element;
+          if (!element.saved || element.saved === false) {
+            this.transferData.inHouseRemarks = remarks;
+            await this.saveEndorsement();
+          }
+        }
+
+        this.remarksPlaceholder = '';
+        this.transferData = transferModel;
+        this.loading = false;
+      },
+      onClickRemove(item) {
+        if (item) {
+          this.transferData = item;
+          this.dlgRemoveText = DLG_REMOVE_TEXT;
+        } else {
+          // Assume 'Remove All' button clicked
+          this.dlgRemoveText = DLG_REMOVE_ALL_TEXT;
+        }
+        this.dlgRemoveEndorsement = true;
+      },
+      async onRemoveEndorsement() {
+        if (this.dlgRemoveText.includes('ALL')) {
+          this.removeAll();
+        } else {
+          await this.removeEndorsement();
+        }
+      },
+      async removeEndorsement(_id) {
+        const id = _id ? _id : this.transferData._id;
+        try {
+          const response = await this.deleteTransfer(id);
+          this.setSaveState(response, false);
+        } catch (ex) {
+          console.error(ex);
+          this.setSnackbar(`Failed to delete endorsement!`, 'error', 3000);
+          return false;
+        } finally {
+          this.dlgRemoveEndorsement = false;
+        }
+      },
+      async removeAll() {
+        this.loading = true;
+
+        for (const element of this.endorsements) {
+          if (element) {
+            await this.removeEndorsement(element._id);
+          }
+        }
+
+        this.transferData = transferModel();
+        this.bRemoveAll = false;
+        this.loading = false;
+      },
+      setSaveState(response, save) {
+        if (response) {
+          let resp = this.endorsements.find(
+            (end) => end.cdcrNumber === response.cdcrNumber
+          );
+          if (resp) {
+            if (save) {
+              resp.saved = true;
+              resp._id = response._id;
+              this.setSnackbar(
+                'Successfully saved endorsement!',
+                'successful',
+                2000
+              );
+            } else {
+              // resp.saved = false;
+              // resp.inHouseRemarks = '';
+              delete resp['saved'];
+              delete resp['inHouseRemarks'];
+              delete resp['_id'];
+              this.setSnackbar(
+                `Successfully removed endorsement!`,
+                'successful',
+                1500
+              );
+            }
+          }
+        } else {
+          this.setSnackbar(
+            `Unable to setSaveState. Refresh page to update data`,
+            'warning',
+            1500
+          );
+        }
+      },
     },
   };
 </script>

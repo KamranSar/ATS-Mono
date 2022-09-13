@@ -259,7 +259,10 @@ const _ddTransferRecordContent = (transfers) => {
     },
     'CDCR #': (transfer) => transfer.cdcrNumber,
     Name: (transfer) => transfer.lastName + ', ' + transfer.firstName,
-    Level: (transfer) => transfer.securityLevel,
+    Level: (transfer) =>
+      transfer.endorsedSecurityLevel !== 'NA'
+        ? transfer.endorsedSecurityLevel
+        : transfer.securityLevel,
     Housing: (transfer) => transfer.housing,
     'TB Cd': (transfer) => transfer.tbCode,
     Ethnic: (transfer) => transfer.ethnicity,

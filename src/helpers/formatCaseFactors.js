@@ -32,15 +32,20 @@ const CASE_FACTORS = {
  */
 const formatCaseFactors = (item) => {
   if (!item) return;
-
   // Coming from offender_detail case factors are in an  array called `CaseFactors`
   const offendersCF = item && item.CaseFactors ? item.CaseFactors : [];
   const cf = [];
 
   Object.keys(CASE_FACTORS).forEach((key) => {
-    if (key in offendersCF) {
+    const items = offendersCF[0];
+    const itemFlag = items[key];
+    // if (key in offendersCF[0]) {
+    // if (key in items) {
+    if (itemFlag) {
+      const cfValue = CASE_FACTORS[key].value;
       const caseFactorValue = `${CASE_FACTORS[key].prefix} ${
-        offendersCF[CASE_FACTORS[key].value]
+        // offendersCF[CASE_FACTORS[key].value]
+        items[cfValue]
       }`;
       cf.push(caseFactorValue);
     }

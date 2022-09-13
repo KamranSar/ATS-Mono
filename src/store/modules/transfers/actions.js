@@ -33,9 +33,6 @@ const actions = {
           endorsedToName: state.somsOffender.endorsedInstitution,
           caseFactor: formatCaseFactors(state.somsOffender),
         });
-
-        // state.transferData.comments = state.somsOffender.comments; // TODO Need to read from ATS db also
-        // state.transferData.inHouseRemarks = state.somsOffender.inHouseRemarks; // TODO Need to read from ATS db also
       } else {
         dispatch(
           'app/SET_SNACKBAR',
@@ -75,11 +72,8 @@ const actions = {
       } else {
         state.transferData.isScheduled = false;
       }
-    } else {
-      // console.log('saveForm(): rootState.schedules => ', rootState.schedules);
     }
 
-    console.log('saveForm(): transferData => ', state.transferData);
     try {
       let response = [];
       if (state.transferData._id) {
@@ -115,9 +109,7 @@ const actions = {
   readTransfers: async ({ state, rootState }, queryObj) => {
     try {
       rootState.app.loading = true;
-      // const response = await svcTransfers.find(queryObj);
       const { data } = await findAll(svcTransfers, queryObj);
-      // console.log('readTransfers(): response => ', data);
       if (data && data.length) {
         for (let item of data) {
           item.transferReason = {

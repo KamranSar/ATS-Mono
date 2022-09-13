@@ -80,7 +80,10 @@ const _ddAdvancedTransferNoticeContent = async (
     Name: (transfer) => transfer.lastName + ', ' + transfer.firstName,
     Housing: (transfer) => transfer.housing,
     Bed: (transfer) => (transfer.bed ? transfer.bed : ''),
-    Level: (transfer) => transfer.securityLevel,
+    Level: (transfer) =>
+      transfer.endorsedSecurityLevel !== 'NA'
+        ? transfer.endorsedSecurityLevel
+        : transfer.securityLevel,
     Ethnic: (transfer) => transfer.ethnicity,
     'Specific Transfer Reason': (transfer) => transfer.transferReasonCode,
   };
