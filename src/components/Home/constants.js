@@ -30,7 +30,7 @@ const ARRIVAL_HEADERS = [
   },
   { text: 'Name', value: 'fullName' },
   { text: 'Schedule', value: 'title' },
-  { text: 'Transfer From', value: 'origin' },
+  { text: 'Transfer From', value: 'endorsedToId' },
   { text: 'VIAs', value: 'vias' },
   { text: 'Transfer Reason', value: 'transferReasonCode' },
   { text: 'Transfer Date', value: 'transferDate' },
@@ -39,4 +39,7 @@ const ARRIVAL_HEADERS = [
   { text: 'Print 135', value: 'preprint135' },
 ];
 
-export { DEPARTURE_HEADERS, ARRIVAL_HEADERS };
+const DEPARTURES = 1;
+const ARRIVALS = 2;
+
+export { DEPARTURE_HEADERS, ARRIVAL_HEADERS, DEPARTURES, ARRIVALS };

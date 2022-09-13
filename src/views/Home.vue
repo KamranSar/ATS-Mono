@@ -119,7 +119,7 @@
         <span>{{ item.firstName }} {{ item.lastName }}</span>
       </template>
       <template v-slot:item.origin="{ item }">
-        <span>{{ getInstitutionIdByOrigin(item.origin) }}</span>
+        <span>{{ getInstitutionByName(item.origin).institutionId }}</span>
       </template>
       <template v-slot:item.preprint135="{ item }">
         <v-icon color="primary" class="ml-5" @click="create135(item, [item])">
@@ -150,6 +150,8 @@
   import {
     DEPARTURE_HEADERS,
     ARRIVAL_HEADERS,
+    DEPARTURES,
+    ARRIVALS,
   } from '@/components/Home/constants.js';
   import { LOADING_TEXT, NO_INST_SEL_TEXT } from '@/helpers/tables.js';
   import create135 from '@/pdfs/create135.js';
@@ -173,13 +175,18 @@
       ARRIVAL_HEADERS,
       NO_INST_SEL_TEXT,
       LOADING_TEXT,
+      DEPARTURES,
+      ARRIVALS,
     }),
     async created() {
       await this.onChangeInstitution();
     },
     methods: {
       ...call('app', ['SET_SNACKBAR']),
-      ...call('institutions', ['getInstitutionIdByOrigin']),
+      ...call('institutions', [
+        'getInstitutionIdByOrigin',
+        'getInstitutionByName',
+      ]),
       create135,
       setSnackbar(msg, result, timeout) {
         this.SET_SNACKBAR({
@@ -190,52 +197,93 @@
           timeout: timeout,
         });
       },
-      async getDepartures() {
+      // async getDepartures() {
+      //   let filter = {
+      //     query: {
+      //       $sort: {
+      //         transferDate: 1,
+      //       },
+      //     },
+      //   };
+
+      //   if (this.selectedInstitution) {
+      //     filter.query.origin = this.selectedInstitution.institutionName;
+      //   }
+      //   try {
+      //     const response = await findAll(departuresArrivalsSvc, filter);
+      //     this.departures = response.data;
+      //     // console.log('getDepartures(): departures => ', this.departures);
+      //     if (!response) {
+      //       alert(
+      //         'No Transfers found for institution: ',
+      //         this.selectedInstitution
+      //       );
+      //       return;
+      //     }
+      //   } catch (ex) {
+      //     console.error('getDepartures() exception: ', ex);
+      //   }
+      // },
+      // async getArrivals() {
+      //   let filter = {
+      //     query: {
+      //       $sort: {
+      //         transferDate: 1,
+      //       },
+      //     },
+      //   };
+
+      //   if (this.selectedInstitution) {
+      //     filter.query.destination = this.getInstitutionIdByOrigin(
+      //       this.selectedInstitution.institutionName
+      //     );
+      //   }
+      //   try {
+      //     const response = await findAll(departuresArrivalsSvc, filter);
+      //     // console.log('getArrivals(): response => ', response);
+      //     this.arrivals = response.data;
+      //     if (!response) {
+      //       alert(
+      //         'No Transfers found for institution: ',
+      //         this.selectedInstitution
+      //       );
+      //       return;
+      //     }
+      //   } catch (ex) {
+      //     console.error('getArrivals() exception: ', ex);
+      //   }
+      // },
+      async getTransfers(option) {
+        if (!this.selectedInstitution) {
+          // pop up a message
+          return;
+        }
+
         let filter = {
           query: {
             $sort: {
               transferDate: 1,
             },
+            isScheduled: true,
+            isTransferred: false,
           },
         };
 
-        if (this.selectedInstitution) {
+        if (option === DEPARTURES) {
           filter.query.origin = this.selectedInstitution.institutionName;
+        } else if (option === ARRIVALS) {
+          filter.query.destination = this.selectedInstitution.institutionId;
         }
-        try {
-          const response = await findAll(departuresArrivalsSvc, filter);
-          this.departures = response.data;
-          // console.log('getDepartures(): departures => ', this.departures);
-          if (!response) {
-            alert(
-              'No Transfers found for institution: ',
-              this.selectedInstitution
-            );
-            return;
-          }
-        } catch (ex) {
-          console.error('getDepartures() exception: ', ex);
-        }
-      },
-      async getArrivals() {
-        let filter = {
-          query: {
-            $sort: {
-              transferDate: 1,
-            },
-          },
-        };
 
-        if (this.selectedInstitution) {
-          filter.query.destination = this.getInstitutionIdByOrigin(
-            this.selectedInstitution.institutionName
-          );
-        }
         try {
           const response = await findAll(departuresArrivalsSvc, filter);
-          // console.log('getArrivals(): response => ', response);
-          this.arrivals = response.data;
-          if (!response) {
+          if (response && response.data) {
+            if (option === DEPARTURES) {
+              this.departures = response.data;
+            } else if (option === ARRIVALS) {
+              this.arrivals = response.data;
+            }
+          } else {
             alert(
               'No Transfers found for institution: ',
               this.selectedInstitution
@@ -243,7 +291,7 @@
             return;
           }
         } catch (ex) {
-          console.error('getArrivals() exception: ', ex);
+          console.error('getDeparturesArrivals() exception: ', ex);
         }
       },
       async onChangeInstitution() {
@@ -255,8 +303,8 @@
 
         // TODO: Try catch
         this.loading = true;
-        await this.getDepartures();
-        await this.getArrivals();
+        await this.getTransfers(DEPARTURES);
+        await this.getTransfers(ARRIVALS);
         this.loading = false;
       },
       filterTransfers(value, search) {
