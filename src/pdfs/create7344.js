@@ -81,7 +81,7 @@ const _ddAdvancedTransferNoticeContent = async (
     Housing: (transfer) => transfer.housing,
     Bed: (transfer) => (transfer.bed ? transfer.bed : ''),
     Level: (transfer) =>
-      transfer.endorsedSecurityLevel !== 'NA'
+      transfer.endorsedSecurityLevel && transfer.endorsedSecurityLevel !== 'NA'
         ? transfer.endorsedSecurityLevel
         : transfer.securityLevel,
     Ethnic: (transfer) => transfer.ethnicity,
