@@ -88,8 +88,15 @@ const _ddAdvancedTransferNoticeContent = async (
     'Specific Transfer Reason': (transfer) => transfer.transferReasonCode,
   };
   const TABLE_DATA = [];
-  console.log('advTransfers: ', advTransfers);
   advTransfers.forEach((transfer, index) => {
+    const EMPTY_ROW = [
+      {
+        text: ' ',
+        style: 'schEntry',
+        border: [false, false, false, true],
+        colSpan: 7,
+      },
+    ];
     const DATA_ROW = [
       // Column 1 - dashes
       {
@@ -133,7 +140,8 @@ const _ddAdvancedTransferNoticeContent = async (
       },
       // Column 6 - Vias
       {
-        text: transfer.vias.join(', '),
+        text:
+          transfer.vias.length > 0 ? 'VIA: ' + transfer.vias.join(', ') : '',
         style: 'schEntry',
         border: [false, false, false, false],
         fillColor: '#F0F0F0',
@@ -151,6 +159,9 @@ const _ddAdvancedTransferNoticeContent = async (
       index === 0 ||
       transfer.scheduleId !== advTransfers[index - 1].scheduleId
     ) {
+      if (index !== 0) {
+        TABLE_DATA.push(EMPTY_ROW);
+      }
       TABLE_DATA.push(DATA_ROW);
     }
 

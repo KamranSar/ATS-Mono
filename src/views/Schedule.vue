@@ -164,7 +164,8 @@
         <v-data-table
           :headers="headersEndorsement"
           :items="endorsements"
-          sort-by="lastName"
+          :sort-by="['isScheduled', 'lastName']"
+          :sort-desc="[true, false]"
           flat
           class="ma-2"
         >
@@ -798,19 +799,17 @@
               filter = {
                 query: {
                   institutionName: this.selectedInstitution.institutionName,
-                  endorsedToId: newVal.destination,
-                  $or: [{ scheduleId: newId }, { isScheduled: false }],
+                  $or: [
+                    { scheduleId: newId },
+                    { endorsedToId: newVal.destination },
+                    { isScheduled: false },
+                  ],
                 },
               };
             } else {
               filter = {
                 query: {
                   institutionName: this.selectedInstitution.institutionName,
-                  $or: [
-                    { endorsedToId: newVal.destination },
-                    { scheduleId: newId },
-                    { isScheduled: false },
-                  ],
                 },
               };
             }
