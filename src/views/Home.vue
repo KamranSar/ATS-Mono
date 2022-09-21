@@ -141,7 +141,7 @@
 </template>
 
 <script>
-  import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+  import findAll from '@/helpers/findAll.js';
   import { get, call, sync } from 'vuex-pathify';
   import InstitutionDropdown from '@/components/util/InstitutionDropdown.vue';
   import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';

@@ -1,4 +1,4 @@
-import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+import findAll from '@/helpers/findAll.js';
 import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 import myApp from '@/config/myApp.js';
 import store from '@/store';

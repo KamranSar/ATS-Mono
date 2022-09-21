@@ -67,10 +67,10 @@
             <v-row>
               <v-col cols="6">
                 <v-btn
-                  id="btnSaveAll"
                   color="secondary"
                   class="mb-2"
                   dark
+                  :disabled="loading"
                   @click="onSaveAll"
                 >
                   <v-icon>mdi-content-save-outline</v-icon>
@@ -79,10 +79,10 @@
               </v-col>
               <v-col cols="6">
                 <v-btn
-                  id="btnRemoveAll"
                   color="secondary"
                   class="mb-2"
                   dark
+                  :disabled="loading"
                   @click="onClickRemove()"
                 >
                   <v-icon>mdi-delete-forever</v-icon>
@@ -118,10 +118,15 @@
         </v-btn>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon @click="openRemarks(item)">mdi-pencil</v-icon>
-        <v-icon @click="onClickRemove(item)">mdi-delete-forever</v-icon>
+        <v-icon :disabled="loading" @click="openRemarks(item)"
+          >mdi-pencil</v-icon
+        >
+        <v-icon :disabled="loading" @click="onClickRemove(item)"
+          >mdi-delete-forever</v-icon
+        >
       </template>
     </v-data-table>
+
     <v-dialog v-model="dlgRemarks" width="500">
       <v-card>
         <v-card-title class="text-h5 grey lighten-2">
@@ -141,6 +146,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-dialog persistent v-model="dlgRemoveEndorsement" width="500">
       <v-card>
         <v-card-title class="blue-grey lighten-4">
@@ -206,7 +212,6 @@
       endorsementsLoaded: false,
       dlgRemarks: false,
       endorsementSearch: '',
-      bRemoveAll: false,
       ENDORSEMENT_HEADERS,
       ENDORSEMENT_OPTIONS,
       LOADING_TEXT,
@@ -285,10 +290,8 @@
         if (this.selectedInstitution) {
           await this.getEndorsements(this.selectedInstitution);
 
-          this.loading = true;
           await this.endorsementExists();
           this.endorsementsLoaded = true;
-          this.loading = false;
         }
       },
       async endorsementExists() {
@@ -350,14 +353,15 @@
         this.transferData = transferModel();
       },
       async onSaveEndorsement() {
+        this.loading = true;
         if (this.remarksPlaceholder) {
           this.saveAll();
         } else {
           this.saveEndorsement();
         }
+        this.loading = false;
       },
       async saveEndorsement() {
-        this.loading = true;
         try {
           let objIns = this.listOfInstitutions.find(
             (inst) =>
@@ -390,30 +394,26 @@
           this.setSnackbar('Error occurred saving remarks!', 'error', 3000);
         }
         this.cancelRemarks();
-        this.loading = false;
       },
       async onSaveAll() {
         this.remarksPlaceholder = this.SAVE_ALL_PLACEHOLDER;
         this.dlgRemarks = true;
       },
       async saveAll() {
-        this.loading = true;
-
         let remarks = '';
         if (this.transferData && this.transferData.inHouseRemarks) {
           remarks = this.transferData.inHouseRemarks;
         }
         for (const element of this.endorsements) {
           this.transferData = element;
-          if (!element.saved || element.saved === false) {
-            this.transferData.inHouseRemarks = remarks;
-            await this.saveEndorsement();
-          }
+          // if (!element.saved || element.saved === false) {
+          this.transferData.inHouseRemarks = remarks;
+          await this.saveEndorsement();
+          // }
         }
 
         this.remarksPlaceholder = '';
         this.transferData = transferModel;
-        this.loading = false;
       },
       onClickRemove(item) {
         if (item) {
@@ -426,11 +426,13 @@
         this.dlgRemoveEndorsement = true;
       },
       async onRemoveEndorsement() {
+        this.loading = true;
         if (this.dlgRemoveText.includes('ALL')) {
           this.removeAll();
         } else {
           await this.removeEndorsement();
         }
+        this.loading = false;
       },
       async removeEndorsement(_id) {
         const id = _id ? _id : this.transferData._id;
@@ -446,8 +448,6 @@
         }
       },
       async removeAll() {
-        this.loading = true;
-
         for (const element of this.endorsements) {
           if (element) {
             await this.removeEndorsement(element._id);
@@ -455,8 +455,6 @@
         }
 
         this.transferData = transferModel();
-        this.bRemoveAll = false;
-        this.loading = false;
       },
       setSaveState(response, save) {
         if (response) {

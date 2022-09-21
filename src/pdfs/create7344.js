@@ -1,5 +1,5 @@
 import store from '@/store';
-import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+import findAll from '@/helpers/findAll.js';
 import departuresArrivalsSvc from '@/feathers/services/departuresarrivals/departuresarrivals.service.js';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';

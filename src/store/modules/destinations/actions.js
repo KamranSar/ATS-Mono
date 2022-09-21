@@ -1,5 +1,5 @@
 import svcDestinations from '@/feathers/services/destinations/destinations.service.js';
-import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+import findAll from '@/helpers/findAll.js';
 
 const actions = {
   createDestination: async ({ rootState }, destinationObj) => {

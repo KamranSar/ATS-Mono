@@ -1,6 +1,6 @@
 import { make } from 'vuex-pathify';
 import endorsedOffenders from '@/feathers/services/offender/endorsed.service.js';
-import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+import findAll from '@/helpers/findAll.js';
 import { _formatCaseFactors } from '@/components/Endorsements/constants.js';
 import store from '@/store/';
 

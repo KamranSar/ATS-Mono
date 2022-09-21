@@ -11,8 +11,12 @@ const DELETE_DIALOG = {
     text: 'The schedule, endorsement records and ALL pertaining data will be removed from ATS.',
   },
   ENDORSEMENT: {
-    title: 'Remove endorsement from schedule',
-    text: 'Are you sure you want to remove this endorsement?',
+    title: 'Remove/Delete endorsement',
+    text: 'Are you sure you want to remove or delete this endorsement?',
+  },
+  ENDORSEMENTS: {
+    title: 'Remove/Delete endorsements',
+    text: 'Are you sure you want to remove or delete the selected endorsements?',
   },
 };
 
@@ -21,7 +25,6 @@ const headersSchedule = dataTableHeadersModel([
   {
     text: 'Destination',
     align: 'start',
-    sortable: false,
     value: 'destination',
   },
   { text: 'via', value: 'vias' },

@@ -1,5 +1,4 @@
 import feathersClient from '@cdcr/vue-frontend/feathers/index.js';
-// import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
 import { WEB_SOCKETS_ENABLED } from '@/config/appFeatures.js';
 // If you've enabled sockets in appFeatures...
 // Toggle this to true or false to watch for service changes on the socket.

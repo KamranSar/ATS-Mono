@@ -37,7 +37,8 @@
         :items="schedules"
         single-select
         show-select
-        sort-by="scheduleId"
+        :sort-by="['transferDate', 'title', 'destination']"
+        :sort-desc="[true, false, false]"
         class="elevation-1 pa-2 mt-2"
         @item-selected="onSelectedSchedule"
       >
@@ -164,10 +165,14 @@
         <v-data-table
           :headers="headersEndorsement"
           :items="endorsements"
-          :sort-by="['isScheduled', 'lastName']"
-          :sort-desc="[true, false]"
+          item-key="cdcrNumber"
+          :sort-by="['isScheduled', 'endorsedToId', 'lastName']"
+          :sort-desc="[true, false, false]"
           flat
           class="ma-2"
+          v-model="selectedEndorsement"
+          :show-select="enableEditing && hasInstitutionRole"
+          @input="onInputEndorsement"
         >
           <template v-slot:top>
             <v-card-text
@@ -177,7 +182,7 @@
               v-show="enableEditing && hasInstitutionRole"
             >
               <v-row>
-                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <v-col xs="12" sm="12" md="2" lg="1" align-self="baseline">
                   <v-text-field
                     label="CDCR #"
                     v-model="editEndorsement.cdcrNumber"
@@ -202,14 +207,14 @@
                     readonly
                   ></v-text-field>
                 </v-col>
-                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <v-col xs="12" sm="12" md="1" lg="1" align-self="baseline">
                   <v-text-field
                     label="Housing"
                     v-model="editEndorsement.housing"
                     readonly
                   ></v-text-field>
                 </v-col>
-                <v-col xs="12" sm="12" md="3" lg="1" align-self="baseline">
+                <v-col xs="12" sm="12" md="1" lg="1" align-self="baseline">
                   <v-text-field
                     label="Bed"
                     v-model="editEndorsement.bed"
@@ -238,7 +243,7 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col xs="12" sm="12" md="4" lg="2" align-self="baseline">
+                <v-col xs="12" sm="12" md="2" lg="1" align-self="baseline">
                   <v-text-field
                     label="Endorsement Date"
                     v-model="editEndorsement.currentEndorsementDate"
@@ -246,18 +251,26 @@
                   ></v-text-field>
                 </v-col>
                 <!-- <v-spacer></v-spacer> -->
-                <v-col xs="12" sm="12" md="3" lg="1" align-self="center">
+                <v-col xs="12" sm="12" md="2" lg="1" align-self="center">
                   <v-btn
-                    :disabled="disableSaveEndorsementButton"
+                    :disabled="disableEndorsementButtons"
                     class="secondary ma-2 btns"
-                    @click="saveEndorsement()"
+                    @click="onSaveEndorsement()"
                   >
                     SAVE
                   </v-btn>
                 </v-col>
+                <v-col xs="12" sm="12" md="2" lg="1" align-self="center">
+                  <v-btn
+                    :disabled="disableEndorsementButtons"
+                    class="secondary ma-2 btns"
+                    @click="onRemoveEndorsement()"
+                  >
+                    REMOVE
+                  </v-btn>
+                </v-col>
                 <v-col xs="12" sm="12" md="3" lg="2" align-self="center">
                   <v-checkbox
-                    v-show="chkbxShowAllEndorsements"
                     label="Show ALL Endorsements"
                     v-model="showAllEndorsements"
                     @click="onShowAllEndorsements"
@@ -290,7 +303,7 @@
               mdi-pencil
             </v-icon>
             <v-icon
-              @click="onDeleteEndorsement(item)"
+              @click="onRemoveEndorsement(item)"
               v-show="enableEditing && hasInstitutionRole"
               >mdi-delete-forever</v-icon
             >
@@ -355,6 +368,13 @@
           <v-card-text>
             {{ deleteDialogText }}
             <v-row no-gutters class="mt-2 caption">
+              REMOVE ENDORSEMENT: removes endorsement from schedule, but
+              endorsement remains in ATS.
+            </v-row>
+            <v-row no-gutters class="mt-2 caption">
+              DELETE ENDORSEMENT: deletes endorsement from ATS entirely.
+            </v-row>
+            <!-- <v-row no-gutters class="mt-2 caption">
               CDCR#: {{ selectedEndorsement.cdcrNumber }}
             </v-row>
             <v-row no-gutters class="mt-2 caption">
@@ -367,19 +387,22 @@
             </v-row>
             <v-row no-gutters class="mt-2 caption">
               From Schedule: {{ selectedSchedule[0].title }}
-            </v-row>
+            </v-row> -->
           </v-card-text>
 
           <v-divider></v-divider>
 
           <v-card-actions>
+            <v-btn color="error" text @click="removeSelectedEndorsements(true)">
+              Remove Endorsement
+            </v-btn>
             <v-spacer></v-spacer>
             <v-btn
               color="error"
               text
-              @click="onDeleteEndorsement(selectedEndorsement)"
+              @click="removeSelectedEndorsements(false)"
             >
-              Remove Endorsement
+              Delete Endorsement
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -411,28 +434,22 @@
     components: { DatePicker, InstitutionDropdown, BackToHome, DataTableItem },
     name: 'Schedules',
     data: () => ({
-      chkbxShowAllEndorsements: false,
       showAllEndorsements: false,
       enableEditing: false,
       title: '',
-      selDestination: '',
       transferDate: null,
       seats: 0,
-      dialogSchedule: false,
       dialogDeleteSchedule: false,
-      dialogEndorsement: false,
       dialogDeleteEndorsement: false,
-      disableSaveEndorsementButton: true,
+      disableEndorsementButtons: true,
       headersSchedule,
       headersEndorsement,
-      editScheduleIndex: -1,
       editSchedule: scheduleModel(),
       selTransferReason: {
         reasonCode: '',
         reasonDesc: '',
       },
       endorsements: [],
-      editEndorsementIndex: -1,
       editEndorsement: {},
       deleteDialogTitle: DELETE_DIALOG.DEFAULT.title,
       deleteDialogText: DELETE_DIALOG.DEFAULT.text,
@@ -493,6 +510,7 @@
       ...call('transfers', [
         'readOffenderDetails',
         'readTransfers',
+        'updateTransfer',
         'deleteTransfer',
         'saveForm',
       ]),
@@ -550,8 +568,6 @@
         try {
           await this.readOffenderDetails(this.editEndorsement.cdcrNumber);
 
-          // console.log('getOffender(): this.transferData => ', this.transferData);
-
           if (
             this.loggedInUser &&
             this.loggedInUser.somsinfo &&
@@ -595,7 +611,7 @@
             this.transferData.originalEndorsementDate;
           setTimeout(() => {
             this.loading = false;
-            this.disableSaveEndorsementButton = false;
+            this.disableEndorsementButtons = false;
           }, 500);
         } catch (error) {
           this.loading = false;
@@ -671,7 +687,6 @@
       async saveSchedule() {
         const self = this;
         await setTimeout(async () => {
-          console.log('saveSchedule(): editSchedule => ', self.editSchedule);
           if (
             !self.selectedInstitution ||
             !self.editSchedule.title ||
@@ -761,21 +776,11 @@
         if (item.value) {
           // Schedule Selected
           this.selectedSchedule = [item.item];
-          console.log(this.selectedSchedule[0].destination);
-          const result = this.listOfDestinations.find(
+          this.listOfDestinations.find(
             (inst) =>
               this.selectedSchedule[0].destination === inst.institutionId
           );
-          console.log('listOfDestinations.find(): ', result);
-          if (result) {
-            this.chkbxShowAllEndorsements = true;
-          } else {
-            this.chkbxShowAllEndorsements = false;
-          }
-          console.log(
-            'chkbxShowAllEndorsements: ',
-            this.chkbxShowAllEndorsements
-          );
+
           await this.getEndorsements(item.item, {});
         } else {
           this.selectedSchedule = [scheduleModel()];
@@ -783,7 +788,9 @@
         }
       },
       async onShowAllEndorsements() {
-        await this.getEndorsements(this.selectedSchedule[0], {});
+        if (this.selectedSchedule && this.selectedSchedule[0]) {
+          await this.getEndorsements(this.selectedSchedule[0], {});
+        }
       },
       async getEndorsements(newVal, oldVal) {
         try {
@@ -801,8 +808,7 @@
                   institutionName: this.selectedInstitution.institutionName,
                   $or: [
                     { scheduleId: newId },
-                    { endorsedToId: newVal.destination },
-                    { isScheduled: false },
+                    { endorsedToId: newVal.destination, isScheduled: false },
                   ],
                 },
               };
@@ -825,6 +831,11 @@
               filter.query = {
                 scheduleId: newId,
               };
+              this.setSnackbar(
+                "The 'Transfer Date' has passed.<br/>Only transfers on the schedule will be displayed.<br/>Even if 'Show ALL Endorsements' is checked.",
+                'info',
+                5000
+              );
             }
             let response = await this.readTransfers(filter);
             if (response) {
@@ -836,7 +847,6 @@
             // console.log('getEndorsements(): ', newVal, oldVal);
           }
         } catch (error) {
-          // console.error('getEndorsements', error);
           this.setSnackbar(
             'Failed to fetch endorsements, try again later.',
             'error',
@@ -851,18 +861,49 @@
           reasonCode: this.editEndorsement.transferReasonCode,
           reasonDesc: this.editEndorsement.transferReasonDesc,
         };
-        this.disableSaveEndorsementButton = false;
+        this.disableEndorsementButtons = false;
       },
-      async onDeleteEndorsement(item) {
-        const index = this.endorsements.indexOf(item);
-        this.selectedEndorsement = item;
-
-        if (!this.dialogDeleteEndorsement) {
+      onRemoveEndorsement(item) {
+        if (item) {
           this.deleteDialogText = DELETE_DIALOG.ENDORSEMENT.text;
-          this.deleteDialogTitle = DELETE_DIALOG.ENDORSEMENT.title;
-          this.dialogDeleteEndorsement = true;
+          this.selectedEndorsement = [];
+          this.selectedEndorsement.push(item);
+        } else if (
+          this.selectedEndorsement &&
+          this.selectedEndorsement.length > 0
+        ) {
+          this.deleteDialogText = DELETE_DIALOG.ENDORSEMENTS.text;
+        } else {
+          this.setSnackbar('Endorsement(s) not captured.', 'warning', 2000);
           return;
         }
+        this.deleteDialogTitle = DELETE_DIALOG.ENDORSEMENT.title;
+        this.dialogDeleteEndorsement = true;
+      },
+      async removeEndorsement(item) {
+        let objData = {};
+        try {
+          objData.isScheduled = false;
+          objData.scheduleId = null;
+          objData._id = item._id;
+          await this.updateTransfer(objData);
+          item.isScheduled = false;
+          item.scheduleId = null;
+        } catch (ex) {
+          console.error(ex);
+          this.setSnackbar(`Failed to remove endorsement!`, 'error', 3000);
+          return false;
+        } finally {
+          this.editEndorsement = {};
+          this.setSnackbar(
+            `Successfully removed from schedule`,
+            'successful',
+            1500
+          );
+        }
+      },
+      async deleteEndorsement(item) {
+        const index = this.endorsements.indexOf(item);
 
         try {
           await this.deleteTransfer(item._id);
@@ -873,19 +914,49 @@
         } finally {
           this.endorsements.splice(index, 1);
           this.editEndorsement = {};
-          this.dialogDeleteEndorsement = false;
+          this.setSnackbar(
+            `Successfully removed from schedule`,
+            'successful',
+            1500
+          );
+        }
+      },
+      async removeSelectedEndorsements(bRemove) {
+        this.dialogDeleteEndorsement = false;
+
+        for (const item of this.selectedEndorsement) {
+          if (bRemove) {
+            await this.removeEndorsement(item);
+          } else {
+            await this.deleteEndorsement(item);
+          }
+        }
+
+        await this.getEndorsements(this.selectedSchedule[0], {});
+      },
+      async onSaveEndorsement() {
+        if (this.editEndorsement && this.editEndorsement.cdcrNumber) {
+          await this.saveEndorsement();
+        } else if (
+          this.selectedEndorsement &&
+          this.selectedEndorsement.length > 0
+        ) {
+          await this.saveSelectedEndorsements();
         }
       },
       async saveEndorsement() {
         if (this.editEndorsement._id) {
           this.transferData = this.editEndorsement;
+        }
+
+        if (this.selTransferReason) {
+          this.transferData.transferReasonCode =
+            this.selTransferReason.reasonCode;
+          this.transferData.transferReasonDesc =
+            this.selTransferReason.reasonDesc;
         } else {
-          if (this.selTransferReason) {
-            this.transferData.transferReasonCode =
-              this.selTransferReason.reasonCode;
-            this.transferData.transferReasonDesc =
-              this.selTransferReason.reasonDesc;
-          }
+          this.transferData.transferReasonCode = '';
+          this.transferData.transferReasonDesc = '';
         }
 
         try {
@@ -937,14 +1008,35 @@
             this.setSnackbar('Success!', 'success', 3000);
             this.editEndorsement = {};
             this.selTransferReason = null;
-            this.disableSaveEndorsementButton = true;
-            await this.getEndorsements(this.selectedSchedule[0], {});
+            this.disableEndorsementButtons = true;
           }
         } catch (ex) {
           console.error(ex);
           this.setSnackbar(`Failure!`, 'error', 3000);
           return false;
         }
+        await this.getEndorsements(this.selectedSchedule[0], {});
+      },
+      async saveSelectedEndorsements() {
+        let objData = {};
+        objData.isScheduled = true;
+        objData.scheduleId = this.selectedSchedule[0]._id;
+        for (const item of this.selectedEndorsement) {
+          try {
+            objData._id = item._id;
+            await this.updateTransfer(objData);
+          } catch (ex) {
+            console.error(ex);
+            this.setSnackbar(`Failed to save endorsement!`, 'error', 2000);
+          } finally {
+            this.setSnackbar(
+              `Successfully added to schedule`,
+              'successful',
+              1500
+            );
+          }
+        }
+        await this.getEndorsements(this.selectedSchedule[0], {});
       },
       async print135BySchedule(schedule) {
         const filter = {
@@ -964,7 +1056,7 @@
       },
       onClearCDCRNumber() {
         this.editEndorsement = {};
-        this.disableSaveEndorsementButton = true;
+        this.disableEndorsementButtons = true;
         this.selTransferReason = {};
       },
       onChangeCDCRNumber() {
@@ -973,8 +1065,15 @@
             this.editEndorsement.cdcrNumber.toUpperCase();
         } else {
           this.editEndorsement = {};
-          this.disableSaveEndorsementButton = true;
+          this.disableEndorsementButtons = true;
           this.selTransferReason = {};
+        }
+      },
+      onInputEndorsement() {
+        if (this.selectedEndorsement && this.selectedEndorsement.length > 0) {
+          this.disableEndorsementButtons = false;
+        } else {
+          this.disableEndorsementButtons = true;
         }
       },
     },

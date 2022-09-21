@@ -1,6 +1,6 @@
 import svcTransfers from '@/feathers/services/transfer/transfer.service.js';
 import somsOffender from '@/feathers/services/offender/details.service.js';
-import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+import findAll from '@/helpers/findAll.js';
 import transferModel from '@/models/transferModel.js';
 import transferReasonModel from '@/models/transferReasonModel.js';
 import formatCaseFactors from '@/helpers/formatCaseFactors';

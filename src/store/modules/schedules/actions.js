@@ -1,5 +1,5 @@
 import svcSchedules from '@/feathers/services/schedule/schedule.service.js';
-import findAll from '@cdcr/vue-frontend/feathers/helpers/findAll.js';
+import findAll from '@/helpers/findAll.js';
 
 const actions = {
   // eslint-disable-next-line no-unused-vars
@@ -127,10 +127,13 @@ const actions = {
         root: true,
       });
 
+      queryObj = {
+        scheduleId: null,
+        isScheduled: false,
+      };
       for (const transfer of transfers) {
-        await dispatch('transfers/deleteTransfer', transfer._id, {
-          root: true,
-        });
+        queryObj._id = transfer._id;
+        await dispatch('transfers/updateTransfer', queryObj, { root: true });
       }
       const index = state.schedules.indexOf(scheduleObj);
       if (index !== -1) {
