@@ -978,7 +978,10 @@
           if (!this.transferData.institutionName) {
             this.transferData.institutionName = objIns.institutionName;
           }
-          if (!this.transferData.institutionId) {
+          if (
+            !this.transferData.institutionId ||
+            this.transferData.institutionId === objIns.institutionPartyId
+          ) {
             this.transferData.institutionId = objIns.institutionId;
           }
           if (!this.transferData.institutionPartyId) {
