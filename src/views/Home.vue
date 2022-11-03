@@ -258,6 +258,8 @@
           // pop up a message
           return;
         }
+        // Find all messages greeater than yeesterday
+        const DAY_MS = 24 * 60 * 60 * 1000;
 
         let filter = {
           query: {
@@ -266,6 +268,9 @@
             },
             isScheduled: true,
             isTransferred: false,
+            transferDate: {
+              $gt: new Date().getTime() - DAY_MS,
+            },
           },
         };
 
