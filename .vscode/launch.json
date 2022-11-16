@@ -5,6 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
+<<<<<<< HEAD
       "type": "node",
       "request": "launch",
       "name": "Launch Dev Linux",
@@ -39,6 +40,67 @@
         "NODE_ENV": "production",
         "AUTHACTIVE": "true"
       }
+=======
+      "name": "Attach to Edge",
+      "port": 9222,
+      "request": "attach",
+      "type": "pwa-msedge",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch Edge",
+      "request": "launch",
+      "type": "pwa-msedge",
+      "url": "http://localhost:8080/app",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "request": "attach",
+      "type": "pwa-chrome",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch Chrome against localhost:8080",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:8080/app",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch Incognito Chrome against localhost:8080",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:8080",
+      "runtimeArgs": ["--incognito"],
+      "webRoot": "${workspaceFolder}",
+      "browserLaunchLocation": null
+    },
+    {
+      "name": "npm run serve",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "serve"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    },
+    {
+      "name": "npm run build",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "build"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+    },
+    {
+      "name": "npm run prod",
+      "request": "launch",
+      "runtimeArgs": ["run-script", "prod"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node"
+>>>>>>> ats-client-tsg/prepare_frontend
     }
   ]
 }

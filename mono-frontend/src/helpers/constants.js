@@ -1,0 +1,5 @@
+const LWOP_DATE = '9999-01-25';
+const CONDEMNED_DATE = '9999-01-30';
+const TBD_DATE = '1000-01-01';
+
+export { LWOP_DATE, CONDEMNED_DATE, TBD_DATE };

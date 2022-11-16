@@ -15,5 +15,10 @@
   "eslint.alwaysShowStatus": true,
   "eslint.format.enable": true,
   "editor.tabCompletion": "on",
+<<<<<<< HEAD
   "eslint.validate": ["javascript", "vue", "html"]
+=======
+  "eslint.validate": ["javascript", "vue", "html"],
+  "files.autoSave": "onWindowChange"
+>>>>>>> ats-client-tsg/prepare_frontend
 }

@@ -1,0 +1,101 @@
+#=============================
+## Test Server Arrays
+#=============================
+# Define the test servers/containers your MT server is using.
+#* DO NOT MODIFY THE REQ_ ARRAY - THESE ARE REQUIRED FOR YOUR SERVER TO RUN SUCCESSFULLY AND THEIR ORDER IS IMPORTANT
+REQ_ContainerArray=("redis" "mongodb" "mt-auth" "mt-eis-common" "mt-eds-ats")
+#* The OPT_ array is for optional DB servers. You may add/remove/change as needed.
+OPT_ContainerArray=()
+#
+#=============================
+## Harbor Image Repo settings
+#=============================
+# Harbor Repo Server
+#-------------------
+IMAGE_REPO_DOMAIN=fdctwebharbor.accounts.cdcr.ca.gov
+#
+# Harbor Repo Credentials
+#------------------------
+IMAGE_REPO_USER=readonly
+IMAGE_REPO_PSWD=H@rb0r3p0
+#
+# Harbor Repo Folders & Version
+#------------------------------
+# App servers always default to eismt-dev
+IMAGE_ENV_APP=eismt-dev
+# Database servers always default to eismt-core
+IMAGE_ENV_CORE=eismt-core
+# Version defaults to "latest"
+IMAGE_VER=latest
+#
+#=============================
+## MT Server Listening Ports
+#=============================
+#
+MT_AUTH_PORT=3000
+MT_EIS_COMMON_PORT=51401
+MT_EDS_ATS_PORT=51422
+MT_API_ATS_PORT=51423
+#
+#=============================
+## Local DB Server settings
+#=============================
+#
+## Oracle Docker Server
+ORACLE_SVR_PORT=1521
+ORACLE_GUI_PORT=5500
+ORACLE_USER=system
+ORACLE_PASSWORD=Oradoc_db1
+ORACLE_CONNSTR=localhost:1521/ORCLPDB1.localdomain
+#
+## MS SQL Docker Server
+MSSQL_PORT=1433
+MSSQL_DB=master
+MSSQL_USER=SA
+MSSQL_PASSWORD=msSql2017@
+#
+#=============================
+## Auth Server Settings
+#=============================
+NODE_ENV=development
+AUTH_DOMAIN=https://apidev.cdcr.ca.gov
+OAUTH_DOMAIN=localhost:3000
+OAUTH_PROTOCOL=http
+DOC_HOST=testApiServer
+PUBLISH_DOCS=true
+PROXY_USER_AGENT=cdcr_midtier_api_auth
+#
+## Debugging settings
+# =============================
+DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*
+#DEBUG=cdcr*,*feathersjs*,*feathers-permissions*,*feathers-sync*,feathers-distributed*
+DEBUG_COLORS=true
+DEBUG_HIDE_DATE=false
+DEBUG_SHOW_HIDDEN=false
+#
+## JWT Authentication 
+# =============================
+JWT_SALT_SECRET=m4L65xpHaRavfc36c+vh26pdS6A=
+#
+## MiddleTier & App Mongo Servers
+# =============================
+MTMONGO_SVR=localhost
+MTMONGO_PORT=27017
+MONGO_SVR=localhost
+MONGO_PORT=27017
+#
+# REDIS Settings
+# =============================
+REDIS_SVR=localhost
+REDIS_PORT=6379
+REDIS_SESSION_SECRET="o9i#q3#xNi!oqQc)kA!elNY5YIRW@+:A8fJ+C+Ec8f0S!7DW(PI+pLPH60Jhm##1"
+ENABLE_REDIS_CACHE_LOGGER=true
+DISABLE_REDIS_CACHE=true
+#
+# FEATHERS DISTRIBUTION CONFIGURATION
+# ===================================
+BASE_PORT=10000
+HIGHEST_PORT=65535
+PUBLICATION_DELAY=10000
+COMPONENT_DELAY=1000
+COTE_DELAY=1000
